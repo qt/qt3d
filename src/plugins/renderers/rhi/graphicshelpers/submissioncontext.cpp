@@ -1237,7 +1237,8 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack, RHISha
         // Needed to avoid conflict where the buffer would already
         // be bound as a VertexArray
         bindRHIBuffer(ssbo, RHIBuffer::ShaderStorageBuffer);
-        ssbo->bindBufferBase(this, b.m_bindingIndex, RHIBuffer::ShaderStorageBuffer);
+        // TO DO: This should update QRhiShaderResourceBinding
+
         // TO DO: Make sure that there's enough binding points
     }
 
@@ -1254,7 +1255,10 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack, RHISha
         // Needed to avoid conflict where the buffer would already
         // be bound as a VertexArray
         bindRHIBuffer(ubo, RHIBuffer::UniformBuffer);
-        ubo->bindBufferBase(this, uboIndex++, RHIBuffer::UniformBuffer);
+        // TO DO: This should update QRhiShaderResourceBinding
+
+
+//        ubo->bindBufferBase(this, uboIndex++, RHIBuffer::UniformBuffer);
         // TO DO: Make sure that there's enough binding points
     }
 
@@ -1309,7 +1313,7 @@ void SubmissionContext::releaseBuffer(Qt3DCore::QNodeId bufferId)
 
         Q_ASSERT(glBuff);
         // Destroy the GPU resource
-        glBuff->destroy(this);
+        glBuff->destroy();
         // Destroy the RHIBuffer instance
         m_renderer->rhiResourceManagers()->rhiBufferManager()->releaseResource(bufferId);
         // Remove Id - HRHIBuffer entry
@@ -1343,7 +1347,7 @@ bool SubmissionContext::bindRHIBuffer(RHIBuffer *buffer, RHIBuffer::Type type)
     return buffer->bind(this, type);
 }
 
-void SubmissionContext::uploadDataToRHIBuffer(Buffer *buffer, RHIBuffer *b, bool releaseBuffer)
+void SubmissionContext::uploadDataToRHIBuffer(Buffer *buffer, RHIBuffer *b)
 {
     // If the buffer is dirty (hence being called here)
     // there are two possible cases
@@ -1377,19 +1381,15 @@ void SubmissionContext::uploadDataToRHIBuffer(Buffer *buffer, RHIBuffer *b, bool
             }
             // TO DO: based on the number of updates .., it might make sense to
             // sometime use glMapBuffer rather than glBufferSubData
-            b->update(this, update->data, update->offset);
+            b->update(update->data, update->offset);
         } else {
             // We have an update that was done by calling QBuffer::setData
             // which is used to resize or entirely clear the buffer
             // Note: we use the buffer data directly in that case
-            b->orphan(this); // orphan the buffer
-            b->allocate(this, buffer->data(), false);
+            b->allocate(buffer->data(), false);
         }
     }
 
-    if (releaseBuffer) {
-        b->release(this);
-    }
     qCDebug(Io) << "uploaded buffer size=" << buffer->data().size();
 }
 

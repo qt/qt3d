@@ -53,6 +53,9 @@
 
 #include <private/qrhi_p.h>
 #include <rhihandle_types_p.h>
+#include <pipelineuboset_p.h>
+#include <Qt3DCore/qnodeid.h>
+#include <Qt3DRender/private/handle_types_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -64,55 +67,57 @@ namespace Rhi {
 
 class RHIBuffer;
 
+// Geometry | Shader | RenderStateMask
+struct GraphicsPipelineIdentifier
+{
+    HGeometry geometry;
+    Qt3DCore::QNodeId shader;
+    Qt3DCore::QNodeId renderTarget;
+    int renderViewIndex = 0;
+};
+
 class RHIGraphicsPipeline
 {
 public:
-    struct UBOBuffer
-    {
-        HRHIBuffer handle {};
-        RHIBuffer *buffer {};
-    };
-
     RHIGraphicsPipeline();
     ~RHIGraphicsPipeline();
 
-    QRhiBuffer *commandUBO() const { return m_cmdUbo; }
-    QRhiBuffer *renderViewUBO() const { return m_rvUbo; }
+    PipelineUBOSet* uboSet() { return &m_uboSet; }
     QRhiGraphicsPipeline *pipeline() const { return m_pipeline; }
     QRhiShaderResourceBindings *shaderResourceBindings() const { return m_shaderResourceBindings; }
-    QHash<int, UBOBuffer> ubos() const { return m_ubos; }
     int score() const { return m_score; }
 
+    void setKey(const GraphicsPipelineIdentifier &key) { m_key = key; }
+    GraphicsPipelineIdentifier key() const { return m_key; }
     void setPipeline(QRhiGraphicsPipeline *pipeline) { m_pipeline = pipeline; }
-    void setCommandUBO(QRhiBuffer *commandUBO) { m_cmdUbo = commandUBO; }
-    void setRenderViewUBO(QRhiBuffer *rvUBO) { m_rvUbo = rvUBO; }
+
     void setShaderResourceBindings(QRhiShaderResourceBindings *shaderResourceBindings)
     {
         m_shaderResourceBindings = shaderResourceBindings;
     }
-    void setUBOs(const QHash<int, UBOBuffer> ubos) { m_ubos = ubos; }
 
     void setAttributesToBindingHash(const QHash<int, int> &attributeNameToBinding)
     {
         m_attributeNameIdToBindingIndex = attributeNameToBinding;
     }
+
     int bindingIndexForAttribute(int attributeNameId) const
     {
         return m_attributeNameIdToBindingIndex.value(attributeNameId, -1);
     }
-    void increaseScore() { ++m_score; }
+
+    void increaseScore() { m_score += 2; }
     void decreaseScore() { --m_score; }
 
     void cleanup();
 
 private:
-    QRhiBuffer *m_rvUbo;
-    QRhiBuffer *m_cmdUbo;
     QRhiGraphicsPipeline *m_pipeline;
     QRhiShaderResourceBindings *m_shaderResourceBindings;
     // For user defined uniforms
-    QHash<int, UBOBuffer> m_ubos;
     QHash<int, int> m_attributeNameIdToBindingIndex;
+    PipelineUBOSet m_uboSet;
+    GraphicsPipelineIdentifier m_key;
     int m_score;
 };
 

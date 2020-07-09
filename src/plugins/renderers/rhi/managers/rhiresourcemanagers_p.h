@@ -94,15 +94,6 @@ public:
     explicit RHIShaderManager() : APIShaderManager<RHIShader>() { }
 };
 
-// Geometry | Shader | RenderStateMask
-struct GraphicsPipelineIdentifier
-{
-    HGeometry geometry;
-    Qt3DCore::QNodeId shader;
-    Qt3DCore::QNodeId renderTarget;
-    int renderViewIndex;
-};
-
 class Q_AUTOTEST_EXPORT RHIGraphicsPipelineManager
     : public Qt3DCore::QResourceManager<RHIGraphicsPipeline, GraphicsPipelineIdentifier,
                                         Qt3DCore::NonLockingPolicy>

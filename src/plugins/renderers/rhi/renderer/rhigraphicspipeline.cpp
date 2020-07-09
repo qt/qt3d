@@ -48,11 +48,9 @@ namespace Render {
 namespace Rhi {
 
 RHIGraphicsPipeline::RHIGraphicsPipeline()
-    : m_rvUbo(nullptr),
-      m_cmdUbo(nullptr),
-      m_pipeline(nullptr),
-      m_shaderResourceBindings(nullptr),
-      m_score(0)
+    : m_pipeline(nullptr)
+    , m_shaderResourceBindings(nullptr)
+    , m_score(5)
 {
 }
 
@@ -61,15 +59,16 @@ RHIGraphicsPipeline::~RHIGraphicsPipeline() { }
 void RHIGraphicsPipeline::cleanup()
 {
     delete m_shaderResourceBindings;
-    delete m_rvUbo;
-    delete m_cmdUbo;
+    if (m_pipeline)
+        m_pipeline->destroy();
     delete m_pipeline;
-    m_rvUbo = nullptr;
-    m_cmdUbo = nullptr;
     m_pipeline = nullptr;
     m_shaderResourceBindings = nullptr;
-    m_ubos.clear();
     m_attributeNameIdToBindingIndex.clear();
+    m_uboSet.releaseResources();
+    m_uboSet.clear();
+    m_key = {};
+    m_score = 5;
 }
 
 } // Rhi

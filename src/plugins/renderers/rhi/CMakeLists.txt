@@ -24,6 +24,7 @@ qt_internal_add_plugin(RhiRendererPlugin
         renderer/rhishader.cpp renderer/rhishader_p.h
         renderer/shaderparameterpack.cpp renderer/shaderparameterpack_p.h
         renderer/shadervariables_p.h
+        renderer/pipelineuboset.cpp renderer/pipelineuboset_p.h
         textures/renderbuffer.cpp textures/renderbuffer_p.h
         textures/texture.cpp textures/texture_p.h
     DEFINES

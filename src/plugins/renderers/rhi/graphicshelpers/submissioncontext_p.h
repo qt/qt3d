@@ -197,7 +197,7 @@ private:
     void resolveRenderTargetFormat();
     // Buffers
     HRHIBuffer createRHIBufferFor(Buffer *buffer);
-    void uploadDataToRHIBuffer(Buffer *buffer, RHIBuffer *b, bool releaseBuffer = false);
+    void uploadDataToRHIBuffer(Buffer *buffer, RHIBuffer *b);
     QByteArray downloadDataFromRHIBuffer(Buffer *buffer, RHIBuffer *b);
     bool bindRHIBuffer(RHIBuffer *buffer, RHIBuffer::Type type);
 

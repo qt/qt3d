@@ -68,7 +68,10 @@ QRhiBuffer::UsageFlag bufferTypeToRhi(RHIBuffer::Type t)
 // A UBO is created for each ShaderData Shader Pair
 // That means a UBO is unique to a shader/shaderdata
 
-RHIBuffer::RHIBuffer() : m_bufferId(0), m_dynamic(true), m_lastTarget(GL_ARRAY_BUFFER) { }
+RHIBuffer::RHIBuffer()
+    : m_bufferId(Qt3DCore::QNodeId())
+    , m_dynamic(true)
+{ }
 
 bool RHIBuffer::bind(SubmissionContext *ctx, Type t)
 {
@@ -86,11 +89,9 @@ bool RHIBuffer::bind(SubmissionContext *ctx, Type t)
         const auto kind = m_dynamic ? QRhiBuffer::Dynamic : QRhiBuffer::Static;
         const auto usage = bufferTypeToRhi(t);
 
-        if (!m_rhiBuffer)
-            m_rhiBuffer = ctx->rhi()->newBuffer(kind, usage, m_allocSize);
-        assert(m_rhiBuffer);
-
-        m_rhiBuffer->create();
+        m_rhiBuffer = ctx->rhi()->newBuffer(kind, usage, m_allocSize);
+        if (!m_rhiBuffer->create())
+            return false;
 #if defined(QT_DEBUG)
         {
             // for debug: we set the buffer to zero
@@ -100,6 +101,7 @@ bool RHIBuffer::bind(SubmissionContext *ctx, Type t)
         }
 #endif
     }
+    assert(m_rhiBuffer);
 
     for (const std::pair<QByteArray, int> &pair : this->m_datasToUpload) {
         const QByteArray &data = pair.first;
@@ -111,52 +113,37 @@ bool RHIBuffer::bind(SubmissionContext *ctx, Type t)
     return true;
 }
 
-bool RHIBuffer::release(SubmissionContext *ctx)
+void RHIBuffer::destroy()
 {
-    Q_UNUSED(ctx);
-    if (m_rhiBuffer)
-        m_rhiBuffer->destroy();
-    return true;
-}
-
-bool RHIBuffer::create(SubmissionContext *ctx)
-{
-    Q_UNUSED(ctx);
-    return true;
-}
-
-void RHIBuffer::destroy(SubmissionContext *ctx)
-{
-    Q_UNUSED(ctx);
     if (m_rhiBuffer) {
-        m_rhiBuffer->deleteLater();
+        m_rhiBuffer->destroy();
+        delete m_rhiBuffer;
         m_rhiBuffer = nullptr;
     }
     m_allocSize = 0;
 }
 
-void RHIBuffer::orphan(SubmissionContext *)
+void RHIBuffer::orphan()
 {
     m_datasToUpload.clear();
-    if (m_rhiBuffer) {
-        m_rhiBuffer->deleteLater();
-        m_rhiBuffer = nullptr;
-    }
-    m_allocSize = 0;
+    destroy();
 }
 
-void RHIBuffer::allocate(SubmissionContext *ctx, const QByteArray &data, bool dynamic)
+void RHIBuffer::allocate(const QByteArray &data, bool dynamic)
 {
-    Q_UNUSED(ctx);
+    // We orphan only if new size is larger than current size
+    // Otherwise, we can just reuse current buffer
+    if (data.size() > m_allocSize)
+        orphan();
+
     m_datasToUpload.clear();
     m_datasToUpload.push_back({ data, 0 });
-    m_allocSize = data.size();
+    m_allocSize = std::max(m_allocSize, data.size());
     m_dynamic = dynamic;
 }
 
-void RHIBuffer::update(SubmissionContext *ctx, const QByteArray &data, int offset)
+void RHIBuffer::update(const QByteArray &data, int offset)
 {
-    Q_UNUSED(ctx);
     m_datasToUpload.push_back({ data, offset });
 }
 
@@ -176,26 +163,11 @@ QByteArray RHIBuffer::download(SubmissionContext *ctx, uint size)
     return {};
 }
 
-void RHIBuffer::bindBufferBase(SubmissionContext *ctx, int bindingPoint, RHIBuffer::Type t)
-{
-    Q_UNUSED(ctx);
-    Q_UNUSED(bindingPoint);
-    Q_UNUSED(t);
-    RHI_UNIMPLEMENTED;
-    //    ctx->bindBufferBase(glBufferTypes[t], bindingPoint, m_bufferId);
-}
-
-void RHIBuffer::bindBufferBase(SubmissionContext *ctx, int bindingPoint)
-{
-    Q_UNUSED(ctx);
-    Q_UNUSED(bindingPoint);
-    RHI_UNIMPLEMENTED;
-    //    ctx->bindBufferBase(m_lastTarget, bindingPoint, m_bufferId);
-}
-
 void RHIBuffer::cleanup()
 {
-    destroy(nullptr);
+    m_bufferId = Qt3DCore::QNodeId();
+    m_dynamic = true;
+    destroy();
 }
 
 } // namespace Rhi

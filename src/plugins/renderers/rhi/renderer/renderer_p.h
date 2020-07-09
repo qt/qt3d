@@ -404,6 +404,7 @@ private:
     std::vector<FrameGraphNode *> m_frameGraphLeaves;
     QScreen *m_screen = nullptr;
     QSharedPointer<ResourceAccessor> m_scene2DResourceAccessor;
+    QHash<RenderView *, std::vector<RHIGraphicsPipeline *>> m_rvToPipelines;
 
     bool m_hasSwapChain = false;
 
@@ -411,7 +412,18 @@ private:
 
     float m_textureTransform[4];
 
-    void updateGraphicsPipeline(RenderCommand &command, RenderView *rv, int renderViewIndex);
+    bool prepareGeometryInputBindings(const Geometry *geometry, const RHIShader *shader,
+                                      QVarLengthArray<QRhiVertexInputBinding, 8> &inputBindings,
+                                      QVarLengthArray<QRhiVertexInputAttribute, 8> &rhiAttributes,
+                                      QHash<int, int> &attributeNameToBinding);
+
+    void updateGraphicsPipeline(RenderCommand &command, RenderView *rv,
+                                int renderViewIndex);
+
+    void buildGraphicsPipelines(RHIGraphicsPipeline *graphicsPipeline,
+                                RenderView *rv,
+                                const RenderCommand &command);
+
     void cleanupRenderTarget(const RenderTarget *renderTarget);
 
     void createRenderTarget(RenderView* rv, RHIRenderTarget *);
@@ -419,8 +431,6 @@ private:
 
     bool uploadBuffersForCommand(QRhiCommandBuffer *cb, const RenderView *rv,
                                  RenderCommand &command);
-    bool uploadUBOsForCommand(QRhiCommandBuffer *cb, const RenderView *rv,
-                              const RenderCommand &command);
     bool performDraw(QRhiCommandBuffer *cb, const QRhiViewport &vp, const QRhiScissor *scissor,
                      const RenderCommand &command);
 };

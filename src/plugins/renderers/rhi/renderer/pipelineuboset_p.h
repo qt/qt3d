@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RHI_RHIBUFFER_P_H
-#define QT3DRENDER_RENDER_RHI_RHIBUFFER_P_H
+#ifndef QT3DRENDER_RENDER_RHI_PIPELINEUBOSET_H
+#define QT3DRENDER_RENDER_RHI_PIPELINEUBOSET_H
 
 //
 //  W A R N I N G
@@ -51,62 +51,74 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qnodeid.h>
-#include <qbytearray.h>
+#include <rhihandle_types_p.h>
+#include <private/qrhi_p.h>
 
 QT_BEGIN_NAMESPACE
-class QRhiBuffer;
+
 namespace Qt3DRender {
 
 namespace Render {
 
 namespace Rhi {
 
+class RHIShader;
+class RHIBuffer;
+class RenderCommand;
 class SubmissionContext;
+class RenderView;
+class RHIResourceManagers;
 
-class RHIBuffer
+class PipelineUBOSet
 {
 public:
-    RHIBuffer();
-
-    enum Type {
-        ArrayBuffer = 0,
-        UniformBuffer,
-        IndexBuffer,
-        ShaderStorageBuffer,
-        PixelPackBuffer,
-        PixelUnpackBuffer,
-        DrawIndirectBuffer
+    struct UBOBufferWithBindingAndBlockSize
+    {
+        int binding = -1;
+        int blockSize = -1;
+        HRHIBuffer buffer;
     };
 
-    bool bind(SubmissionContext *ctx, Type t);
-    void destroy();
-    void allocate(const QByteArray &data, bool dynamic = true);
-    void update(const QByteArray &data, int offset = 0);
-    QByteArray download(SubmissionContext *ctx, uint size);
-    void cleanup();
+    PipelineUBOSet();
+    ~PipelineUBOSet();
 
-    int size() const { return m_allocSize; }
-    QRhiBuffer *rhiBuffer() const noexcept { return m_rhiBuffer; }
+    void clear();
+    void addRenderCommand(const RenderCommand &cmd);
+
+    size_t distanceToCommand(const RenderCommand &command) const;
+    std::vector<QRhiCommandBuffer::DynamicOffset> offsets(const RenderCommand &command) const;
+    std::vector<QRhiShaderResourceBinding> resourceLayout(const RenderCommand &command);
+    std::vector<QRhiShaderResourceBinding> resourceBindings(const RenderCommand &command);
+
+    bool allocateUBOs(SubmissionContext *ctx);
+    void uploadUBOs(SubmissionContext *ctx, RenderView *rv);
+    void setResourceManager(RHIResourceManagers *manager);
+    void initializeLayout(RHIShader *shader);
 
 private:
-    void orphan();
+    void releaseResources();
+    void uploadUBOsForCommand(const RenderCommand &command,
+                              size_t distanceToCommand);
 
-    uint m_bufferId;
-    bool m_dynamic;
-    int m_allocSize {};
+    UBOBufferWithBindingAndBlockSize m_rvUBO; // Fixed size
+    UBOBufferWithBindingAndBlockSize m_commandsUBO; // Variable size
+    std::vector<UBOBufferWithBindingAndBlockSize> m_materialsUBOs; // Variable size
 
-    QRhiBuffer *m_rhiBuffer {};
+    // TO DO: We also need to handle cases where UBO was directly provided by the frontend
+    // API and is not built up from Parameters
+    std::vector<const RenderCommand *> m_renderCommands;
+    RHIResourceManagers *m_resourceManagers = nullptr;
 
-    std::vector<std::pair<QByteArray /*data*/, int /*offset*/>> m_datasToUpload;
+    friend class RHIGraphicsPipeline;
 };
 
-} // namespace Rhi
 
-} // namespace Render
+} // Rhi
 
-} // namespace Qt3DRender
+} // Render
+
+} // Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RHI_RHIBUFFER_P_H
+#endif // QT3DRENDER_RENDER_RHI_PIPELINEUBOSET_H

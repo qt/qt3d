@@ -201,7 +201,7 @@ private:
     RendererCache *m_cache;
 };
 
-int locationForAttribute(Attribute *attr, RHIShader *shader) noexcept
+int locationForAttribute(Attribute *attr, const RHIShader *shader) noexcept
 {
     const std::vector<ShaderAttribute> &attribInfo = shader->attributes();
     const auto it = std::find_if(
@@ -675,7 +675,7 @@ void Renderer::render(bool swapBuffers)
                 break;
         }
 
-        // In case we did not draw because e.g. there wase no swapchain,
+        // In case we did not draw because e.g. there was no swapchain,
         // we keep the resource updates from the previous frame.
         if (!m_submissionContext->m_currentUpdates) {
             m_submissionContext->m_currentUpdates =
@@ -864,7 +864,8 @@ std::optional<QRhiVertexInputAttribute::Format> rhiAttributeType(Attribute *attr
 }
 }
 
-void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv, int renderViewIndex)
+void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv,
+                                      int renderViewIndex)
 {
     if (!cmd.m_rhiShader) {
         qDebug() << "Warning: command has no shader";
@@ -877,10 +878,130 @@ void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv, int re
     // - Shader Vertex Attribute Layout
 
     // This means we need to have one GraphicsPipeline per
-    // - geometry
+    // - geometry layout
     // - material
     // - state (RV + RC)
 
+    // Try to retrieve existing pipeline
+    // TO DO: Make RenderState part of the Key
+    // TO DO: Compute Key based on geometry rather than using geometryId
+    // as it is likely many geometrys will have the same layout
+    RHIGraphicsPipelineManager *pipelineManager = m_RHIResourceManagers->rhiGraphicsPipelineManager();
+    const GraphicsPipelineIdentifier pipelineKey { cmd.m_geometry, cmd.m_shaderId, rv->renderTargetId(), renderViewIndex };
+    RHIGraphicsPipeline *graphicsPipeline = pipelineManager->lookupResource(pipelineKey);
+    if (graphicsPipeline == nullptr) {
+        // Init UBOSet the first time we allocate a new pipeline
+        graphicsPipeline = pipelineManager->getOrCreateResource(pipelineKey);
+        graphicsPipeline->setKey(pipelineKey);
+        graphicsPipeline->uboSet()->setResourceManager(m_RHIResourceManagers);
+        graphicsPipeline->uboSet()->initializeLayout(cmd.m_rhiShader);
+    }
+
+    // Increase score so that we know the pipeline was used for this frame and shouldn't be
+    // destroyed
+    graphicsPipeline->increaseScore();
+
+    // Record command reference in UBOSet
+    graphicsPipeline->uboSet()->addRenderCommand(cmd);
+
+    // Store association between RV and pipeline
+    if (auto& pipelines = m_rvToPipelines[rv]; !Qt3DCore::contains(pipelines, graphicsPipeline))
+        pipelines.push_back(graphicsPipeline);
+
+    // TO DO: Record active pipelines in the RenderView
+
+    // Record RHIGraphicsPipeline into command for later use
+    cmd.pipeline = graphicsPipeline;
+
+    // TO DO: Set to true if geometry, shader or render state dirty
+    bool requiresRebuild = false;
+
+    // Build/Rebuild actual RHI pipeline if required
+    // TO DO: Ensure we find a way to know when the state is dirty to trigger a rebuild
+    if (graphicsPipeline->pipeline() == nullptr || requiresRebuild)
+        buildGraphicsPipelines(graphicsPipeline, rv, cmd);
+}
+
+void Renderer::buildGraphicsPipelines(RHIGraphicsPipeline *graphicsPipeline,
+                                      RenderView *rv,
+                                      const RenderCommand &cmd)
+{
+    // Note: This is completely stupid but RHI doesn't allow you to build
+    // a QRhiShaderResourceBindings if you don't already have buffers/textures
+    // at hand (where it should only need to know the type/formats ... of the resources)
+    // For that reason we need to provide a RenderCommand
+
+    // Note: we can rebuild add/remove things from the QRhiShaderResourceBindings after having
+    // created the pipeline and rebuild it. Changes should be picked up automatically
+    const SubmissionContext::SwapChainInfo *swapchain =
+            m_submissionContext->swapChainForSurface(rv->surface());
+    if (!swapchain || !swapchain->swapChain || !swapchain->renderPassDescriptor)
+        return;
+
+    auto onFailure = [&] {
+        qCWarning(Backend) << "Failed to build pipeline";
+    };
+
+    PipelineUBOSet *uboSet = graphicsPipeline->uboSet();
+    RHIShader *shader = cmd.m_rhiShader;
+
+    // Setup shaders
+    const QShader& vertexShader = shader->shaderStage(QShader::VertexStage);
+    if (!vertexShader.isValid()) {
+        return onFailure();
+    }
+
+    const QShader& fragmentShader = shader->shaderStage(QShader::FragmentStage);
+    if (!fragmentShader.isValid()) {
+        return onFailure();
+    }
+
+    // TO DO: Remove once https://codereview.qt-project.org/c/qt/qtbase/+/307472 lands
+    // Allocate UBOs
+    // Note: we have to do this even though we might not use the UBOs simply
+    // because RHI needs actual UBO/Texture to recreate the ResourceBindings
+    if (!uboSet->allocateUBOs(m_submissionContext.data()))
+        return onFailure();
+
+    // Set Resource Bindings
+    const std::vector<QRhiShaderResourceBinding> resourceBindings = uboSet->resourceLayout(cmd);
+    QRhiShaderResourceBindings *shaderResourceBindings =
+            m_submissionContext->rhi()->newShaderResourceBindings();
+    graphicsPipeline->setShaderResourceBindings(shaderResourceBindings);
+
+    shaderResourceBindings->setBindings(resourceBindings.cbegin(), resourceBindings.cend());
+    if (!shaderResourceBindings->create()) {
+        return onFailure();
+    }
+
+    // Setup attributes
+    const Geometry *geom = cmd.m_geometry.data();
+    QVarLengthArray<QRhiVertexInputBinding, 8> inputBindings;
+    QVarLengthArray<QRhiVertexInputAttribute, 8> rhiAttributes;
+    QHash<int, int> attributeNameToBinding;
+
+    if (!prepareGeometryInputBindings(geom, cmd.m_rhiShader,
+                                      inputBindings, rhiAttributes,
+                                      attributeNameToBinding)) {
+        return onFailure();
+    }
+
+    // Create pipeline
+    QRhiGraphicsPipeline *pipeline = m_submissionContext->rhi()->newGraphicsPipeline();
+    graphicsPipeline->setPipeline(pipeline);
+
+    pipeline->setShaderStages({ { QRhiShaderStage::Vertex, vertexShader },
+                                { QRhiShaderStage::Fragment, fragmentShader } });
+
+    pipeline->setShaderResourceBindings(shaderResourceBindings);
+
+    QRhiVertexInputLayout inputLayout;
+    inputLayout.setBindings(inputBindings.begin(), inputBindings.end());
+    inputLayout.setAttributes(rhiAttributes.begin(), rhiAttributes.end());
+    pipeline->setVertexInputLayout(inputLayout);
+    graphicsPipeline->setAttributesToBindingHash(attributeNameToBinding);
+
+    // Render States
     RenderStateSet *renderState = nullptr;
     {
         RenderStateSet *globalState =
@@ -895,253 +1016,15 @@ void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv, int re
             renderState = globalState;
         }
     }
+    m_submissionContext->applyStateSet(renderState, pipeline);
 
-    // Try to retrieve existing pipeline
-    auto &pipelineManager = *m_RHIResourceManagers->rhiGraphicsPipelineManager();
-    const GraphicsPipelineIdentifier pipelineKey { cmd.m_geometry, cmd.m_shaderId, rv->renderTargetId(), renderViewIndex };
-    RHIGraphicsPipeline *graphicsPipeline = pipelineManager.getOrCreateResource(pipelineKey);
-    // TO DO: Ensure we find a way to know when the state is dirty to trigger a rebuild
+    // Setup potential texture render target
+    const bool renderTargetIsSet = setupRenderTarget(rv, graphicsPipeline, swapchain->swapChain);
+    if (!renderTargetIsSet)
+        return onFailure();
 
-    if (!graphicsPipeline) {
-        qDebug() << "Warning : could not create a graphics pipeline";
-        return;
-    }
-
-    // Increase score so that we know the pipeline was used for this frame and shouldn't be
-    // destroyed
-    graphicsPipeline->increaseScore();
-
-    // TO DO: Set to true if geometry, shader or render state dirty
-    bool requiredRebuild = false;
-
-    // Note: we can rebuild add/remove things from the QRhiShaderResourceBindings after having
-    // created the pipeline and rebuild it. Changes should be picked up automatically
-
-    // Create pipeline if it doesn't exist or needs to be updated
-    if (graphicsPipeline->pipeline() == nullptr || requiredRebuild) {
-        bool ok = true;
-
-        const SubmissionContext::SwapChainInfo *swapchain =
-                m_submissionContext->swapChainForSurface(rv->surface());
-        if (!swapchain || !swapchain->swapChain || !swapchain->renderPassDescriptor)
-            return;
-
-        auto onFailure = [&] { graphicsPipeline->cleanup(); };
-
-        // TO DO: Find a way to recycle those
-        // Create Per Command UBO
-        QRhiBuffer *commandUBO = m_submissionContext->rhi()->newBuffer(
-                QRhiBuffer::Dynamic, QRhiBuffer::UniformBuffer, sizeof(CommandUBO));
-        graphicsPipeline->setCommandUBO(commandUBO);
-        if (!commandUBO->create()) {
-            return onFailure();
-        }
-
-        QRhiBuffer *rvUBO = m_submissionContext->rhi()->newBuffer(
-                QRhiBuffer::Dynamic, QRhiBuffer::UniformBuffer, sizeof(RenderViewUBO));
-        graphicsPipeline->setRenderViewUBO(rvUBO);
-        if (!rvUBO->create()) {
-            return onFailure();
-        }
-
-        std::vector<QRhiShaderResourceBinding> uboBindings;
-        uboBindings.push_back(
-                    QRhiShaderResourceBinding::uniformBuffer(
-                        0,
-                        QRhiShaderResourceBinding::VertexStage | QRhiShaderResourceBinding::FragmentStage,
-                        rvUBO));
-
-        uboBindings.push_back(
-                    QRhiShaderResourceBinding::uniformBuffer(
-                        1,
-                        QRhiShaderResourceBinding::VertexStage | QRhiShaderResourceBinding::FragmentStage,
-                        commandUBO));
-
-        // Create additional empty UBO Buffer for UBO with binding point > 1 (since we assume 0 and
-        // 1 and for Qt3D standard values)
-        const std::vector<ShaderUniformBlock> &uniformBlocks = cmd.m_rhiShader->uniformBlocks();
-        QHash<int, RHIGraphicsPipeline::UBOBuffer> uboBuffers;
-        for (const ShaderUniformBlock &block : uniformBlocks) {
-            if (block.m_binding > 1) {
-                auto handle = m_RHIResourceManagers->rhiBufferManager()->allocateResource();
-                RHIBuffer *ubo = m_RHIResourceManagers->rhiBufferManager()->data(handle);
-                Q_ASSERT(ubo);
-                const QByteArray rawData(block.m_size, '\0');
-                ubo->allocate(m_submissionContext.data(), rawData, true);
-                ok = ubo->bind(m_submissionContext.data(), RHIBuffer::UniformBuffer);
-                uboBuffers[block.m_binding] = { handle, ubo };
-                uboBindings.push_back(QRhiShaderResourceBinding::uniformBuffer(
-                        block.m_binding,
-                        QRhiShaderResourceBinding::VertexStage
-                                | QRhiShaderResourceBinding::FragmentStage,
-                        ubo->rhiBuffer()));
-            }
-        }
-        graphicsPipeline->setUBOs(uboBuffers);
-
-        // Samplers
-        for (const auto &textureParameter : cmd.m_parameterPack.textures()) {
-            const auto handle = m_RHIResourceManagers->rhiTextureManager()->getOrAcquireHandle(
-                    textureParameter.nodeId);
-            const auto textureData = m_RHIResourceManagers->rhiTextureManager()->data(handle);
-
-            for (const ShaderAttribute &samplerAttribute : cmd.m_rhiShader->samplers()) {
-                if (samplerAttribute.m_nameId == textureParameter.glslNameId) {
-                    const auto rhiTexture = textureData->getRhiTexture();
-                    const auto rhiSampler = textureData->getRhiSampler();
-                    if (rhiTexture && rhiSampler) {
-                        uboBindings.push_back(QRhiShaderResourceBinding::sampledTexture(
-                                samplerAttribute.m_location,
-                                QRhiShaderResourceBinding::FragmentStage, rhiTexture, rhiSampler));
-                    }
-                }
-            }
-        }
-
-        QRhiShaderResourceBindings *shaderResourceBindings =
-                m_submissionContext->rhi()->newShaderResourceBindings();
-        graphicsPipeline->setShaderResourceBindings(shaderResourceBindings);
-
-        shaderResourceBindings->setBindings(uboBindings.cbegin(), uboBindings.cend());
-        if (!shaderResourceBindings->create()) {
-            return onFailure();
-        }
-
-        // Create pipeline
-        QRhiGraphicsPipeline *pipeline = m_submissionContext->rhi()->newGraphicsPipeline();
-        graphicsPipeline->setPipeline(pipeline);
-
-        // Setup shaders
-        const QShader& vertexShader = cmd.m_rhiShader->shaderStage(QShader::VertexStage);
-        if (!vertexShader.isValid()) {
-            return onFailure();
-        }
-
-        const QShader& fragmentShader = cmd.m_rhiShader->shaderStage(QShader::FragmentStage);
-        if (!fragmentShader.isValid()) {
-            return onFailure();
-        }
-
-        pipeline->setShaderStages({ { QRhiShaderStage::Vertex, vertexShader },
-                                    { QRhiShaderStage::Fragment, fragmentShader } });
-
-        // Setup attributes
-        QVarLengthArray<QRhiVertexInputBinding, 8> inputBindings;
-        QVarLengthArray<QRhiVertexInputAttribute, 8> rhiAttributes;
-
-        const auto geom = cmd.m_geometry;
-        const auto &attributes = geom->attributes();
-
-        struct BufferBinding
-        {
-            Qt3DCore::QNodeId bufferId;
-            uint stride;
-            QRhiVertexInputBinding::Classification classification;
-            uint attributeDivisor;
-        };
-        std::vector<BufferBinding> uniqueBindings;
-
-
-        // QRhiVertexInputBinding -> specifies the stride of an attribute, whether it's per vertex
-        // or per instance and the instance divisor QRhiVertexInputAttribute -> specifies the format
-        // of the attribute (offset, type), the shader location and the index of the binding
-        // QRhiCommandBuffer::VertexInput -> binds a buffer to a binding
-
-        QHash<int, int> attributeNameToBinding;
-
-        for (Qt3DCore::QNodeId attribute_id : attributes) {
-            Attribute *attrib = m_nodesManager->attributeManager()->lookupResource(attribute_id);
-            if (attrib->attributeType() == QAttribute::VertexAttribute) {
-                const bool isPerInstanceAttr = attrib->divisor() != 0;
-                const QRhiVertexInputBinding::Classification classification = isPerInstanceAttr
-                        ? QRhiVertexInputBinding::PerInstance
-                        : QRhiVertexInputBinding::PerVertex;
-                const BufferBinding binding { attrib->bufferId(), attrib->byteStride(),
-                                              classification,
-                                              isPerInstanceAttr ? attrib->divisor() : 1U };
-
-                const int location = locationForAttribute(attrib, cmd.m_rhiShader);
-                if (location == -1) {
-                    qCWarning(Backend) << "An attribute has no location";
-                    return onFailure();
-                }
-
-                const auto it =
-                        std::find_if(uniqueBindings.begin(), uniqueBindings.end(),
-                                     [binding](const BufferBinding &a) {
-                                         return binding.bufferId == a.bufferId
-                                                 && binding.stride == a.stride
-                                                 && binding.classification == a.classification
-                                                 && binding.attributeDivisor == a.attributeDivisor;
-                                     });
-
-                int bindingIndex = uniqueBindings.size();
-                if (it == uniqueBindings.end())
-                    uniqueBindings.push_back(binding);
-                else
-                    bindingIndex = std::distance(uniqueBindings.begin(), it);
-
-                const auto attributeType = rhiAttributeType(attrib);
-                if (!attributeType) {
-                    qCWarning(Backend) << "An attribute type is not supported";
-                    return onFailure();
-                }
-
-                rhiAttributes.push_back({ bindingIndex,
-                                          location,
-                                          *attributeType,
-                                          attrib->byteOffset() });
-
-                attributeNameToBinding.insert(attrib->nameId(), bindingIndex);
-            }
-        }
-
-        if (uniqueBindings.empty() || rhiAttributes.empty()) {
-            return onFailure();
-        }
-
-        inputBindings.resize(uniqueBindings.size());
-        for (int i = 0, m = uniqueBindings.size(); i < m; ++i) {
-            const BufferBinding binding = uniqueBindings.at(i);
-
-            /*
-            qDebug() << "binding"
-                     << binding.bufferId
-                     << binding.stride
-                     << binding.classification
-                     << binding.attributeDivisor;
-            */
-
-            inputBindings[i] = QRhiVertexInputBinding { binding.stride, binding.classification,
-                                                        int(binding.attributeDivisor) };
-        }
-
-        QRhiVertexInputLayout inputLayout;
-        inputLayout.setBindings(inputBindings.begin(), inputBindings.end());
-        inputLayout.setAttributes(rhiAttributes.begin(), rhiAttributes.end());
-
-        pipeline->setVertexInputLayout(inputLayout);
-        pipeline->setShaderResourceBindings(shaderResourceBindings);
-
-        // Setup potential texture render target
-
-        graphicsPipeline->setAttributesToBindingHash(attributeNameToBinding);
-
-        // Render States
-        m_submissionContext->applyStateSet(renderState, pipeline);
-
-        // Render target
-        const bool renderTargetIsSet = setupRenderTarget(rv, graphicsPipeline, swapchain->swapChain);
-        if (!renderTargetIsSet)
-            return onFailure();
-
-        if (!pipeline->create())
-            return onFailure();
-    }
-
-    // Record RHIGraphicsPipeline into command for later use
-    if (graphicsPipeline && graphicsPipeline->pipeline())
-        cmd.pipeline = graphicsPipeline;
+    if (!pipeline->create())
+        return onFailure();
 }
 
 void Renderer::createRenderTarget(RenderView *rv, RHIRenderTarget *target)
@@ -1296,8 +1179,26 @@ bool Renderer::setupRenderTarget(RenderView *rv, RHIGraphicsPipeline *graphicsPi
 std::vector<Renderer::RHIPassInfo>
 Renderer::prepareCommandsSubmission(const std::vector<RenderView *> &renderViews)
 {
-    // TO DO: Find a central place to initialize RHI resources
     const size_t renderViewCount = renderViews.size();
+
+    // Gather all distinct RHIGraphicsPipeline we will use
+    // For each RenderView, we will need to gather
+    // -> The RHIGraphicsPipelines being used
+    // -> The number of RenderCommands used by each pipeline
+
+    // This will allows us to generate UBOs based on the number of commands/rv we have
+    RHIGraphicsPipelineManager *pipelineManager =
+            m_RHIResourceManagers->rhiGraphicsPipelineManager();
+    const std::vector<HRHIGraphicsPipeline> &graphicsPipelinesHandles = pipelineManager->activeHandles();
+    for (HRHIGraphicsPipeline pipelineHandle : graphicsPipelinesHandles) {
+        RHIGraphicsPipeline *pipeline = pipelineManager->data(pipelineHandle);
+        // Reset PipelineUBOSet
+        pipeline->uboSet()->clear();
+    }
+
+    // Clear any reference between RV and Pipelines we had
+    // as we are about to rebuild these
+    m_rvToPipelines.clear();
 
     // We need to have a single RHI RenderPass per RenderTarget
     // as creating the pass clears the buffers
@@ -1327,6 +1228,7 @@ Renderer::prepareCommandsSubmission(const std::vector<RenderView *> &renderViews
         rhiPassesInfo.push_back(bucket);
     }
 
+    // Assign a Graphics Pipeline to each RenderCommand
     for (size_t i = 0; i < renderViewCount; ++i) {
         RenderView *rv = renderViews[i];
         rv->forEachCommand([&] (RenderCommand &command) {
@@ -1338,8 +1240,7 @@ Renderer::prepareCommandsSubmission(const std::vector<RenderView *> &renderViews
                         m_nodesManager->data<GeometryRenderer, GeometryRendererManager>(
                                 command.m_geometryRenderer);
                 // By this time shaders should have been loaded
-                RHIShader *shader = m_RHIResourceManagers->rhiShaderManager()->lookupResource(
-                        command.m_shaderId);
+                RHIShader *shader = command.m_rhiShader;
                 if (!shader) {
                     qDebug() << "Warning: could not find shader";
                     return;
@@ -1366,6 +1267,16 @@ Renderer::prepareCommandsSubmission(const std::vector<RenderView *> &renderViews
                 Q_ASSERT(shader);
             }
         });
+    }
+
+    // Now that we know how many pipelines we have and how many RC each pipeline
+    // has, we can allocate/reallocate UBOs with correct size for each pipelines
+    for (RenderView *rv : renderViews) {
+        // Allocate UBOs for pipelines used in current RV
+        const std::vector<RHIGraphicsPipeline *> &rvPipelines = m_rvToPipelines[rv];
+        for (RHIGraphicsPipeline *pipeline : rvPipelines) {
+            pipeline->uboSet()->allocateUBOs(m_submissionContext.data());
+        }
     }
 
     // Unset dirtiness on Geometry and Attributes
@@ -1595,6 +1506,98 @@ void Renderer::sendDisablesToFrontend(Qt3DCore::QAspectManager *manager)
             c->resetHasReachedFrameCount();
         }
     }
+}
+
+bool Renderer::prepareGeometryInputBindings(const Geometry *geometry, const RHIShader *shader,
+                                            QVarLengthArray<QRhiVertexInputBinding, 8> &inputBindings,
+                                            QVarLengthArray<QRhiVertexInputAttribute, 8> &rhiAttributes,
+                                            QHash<int, int> &attributeNameToBinding)
+{
+    // QRhiVertexInputBinding -> specifies the stride of an attribute,
+    // whether it's per vertex or per instance and the instance divisor
+
+    // QRhiVertexInputAttribute -> specifies the format of the attribute
+    // (offset, type), the shader location and the index of the binding
+    // QRhiCommandBuffer::VertexInput -> binds a buffer to a binding
+    struct BufferBinding
+    {
+        Qt3DCore::QNodeId bufferId;
+        uint stride;
+        QRhiVertexInputBinding::Classification classification;
+        uint attributeDivisor;
+    };
+    std::vector<BufferBinding> uniqueBindings;
+
+    const auto &attributesIds = geometry->attributes();
+
+    for (Qt3DCore::QNodeId attribute_id : attributesIds) {
+        Attribute *attrib = m_nodesManager->attributeManager()->lookupResource(attribute_id);
+        if (attrib->attributeType() != QAttribute::VertexAttribute)
+            continue;
+
+        const bool isPerInstanceAttr = attrib->divisor() != 0;
+        const QRhiVertexInputBinding::Classification classification = isPerInstanceAttr
+                ? QRhiVertexInputBinding::PerInstance
+                : QRhiVertexInputBinding::PerVertex;
+        const BufferBinding binding = { attrib->bufferId(), attrib->byteStride(),
+                                        classification,
+                                        isPerInstanceAttr ? attrib->divisor() : 1U };
+
+        const int location = locationForAttribute(attrib, shader);
+        if (location == -1) {
+            qCWarning(Backend) << "An attribute has no location";
+            return false;
+        }
+
+        const auto it = std::find_if(uniqueBindings.begin(), uniqueBindings.end(),
+                                     [binding](const BufferBinding &a) {
+            return binding.bufferId == a.bufferId
+                    && binding.stride == a.stride
+                    && binding.classification == a.classification
+                    && binding.attributeDivisor == a.attributeDivisor;
+        });
+
+        int bindingIndex = uniqueBindings.size();
+        if (it == uniqueBindings.end())
+            uniqueBindings.push_back(binding);
+        else
+            bindingIndex = std::distance(uniqueBindings.begin(), it);
+
+        const auto attributeType = rhiAttributeType(attrib);
+        if (!attributeType) {
+            qCWarning(Backend) << "An attribute type is not supported";
+            return false;
+        }
+
+        rhiAttributes.push_back({ bindingIndex,
+                                  location,
+                                  *attributeType,
+                                  attrib->byteOffset() });
+
+        attributeNameToBinding.insert(attrib->nameId(), bindingIndex);
+    }
+
+    if (uniqueBindings.empty() || rhiAttributes.empty()) {
+        return false;
+    }
+
+    inputBindings.resize(uniqueBindings.size());
+    for (int i = 0, m = uniqueBindings.size(); i < m; ++i) {
+        const BufferBinding binding = uniqueBindings.at(i);
+
+        /*
+        qDebug() << "binding"
+                 << binding.bufferId
+                 << binding.stride
+                 << binding.classification
+                 << binding.attributeDivisor;
+        */
+
+        inputBindings[i] = QRhiVertexInputBinding { binding.stride, binding.classification,
+                int(binding.attributeDivisor) };
+    }
+
+    return true;
 }
 
 // Render Thread (or QtQuick RenderThread when using Scene3D)
@@ -2342,137 +2345,6 @@ bool Renderer::uploadBuffersForCommand(QRhiCommandBuffer *cb, const RenderView *
     return true;
 }
 
-namespace {
-void printUpload(const UniformValue &value, const QShaderDescription::BlockVariable &member)
-{
-    switch (member.type) {
-    case QShaderDescription::VariableType::Int:
-        qDebug() << "Updating" << member.name << "with int data: " << *value.constData<int>()
-                 << " (offset: " << member.offset << ", size: " << member.size << ")";
-        break;
-    case QShaderDescription::VariableType::Float:
-        qDebug() << "Updating" << member.name << "with float data: " << *value.constData<float>()
-                 << " (offset: " << member.offset << ", size: " << member.size << ")";
-        break;
-    case QShaderDescription::VariableType::Vec2:
-        qDebug() << "Updating" << member.name << "with vec2 data: " << value.constData<float>()[0]
-                 << ", " << value.constData<float>()[1] << " (offset: " << member.offset
-                 << ", size: " << member.size << ")";
-        ;
-        break;
-    case QShaderDescription::VariableType::Vec3:
-        qDebug() << "Updating" << member.name << "with vec3 data: " << value.constData<float>()[0]
-                 << ", " << value.constData<float>()[1] << ", " << value.constData<float>()[2]
-                 << " (offset: " << member.offset << ", size: " << member.size << ")";
-        ;
-        break;
-    case QShaderDescription::VariableType::Vec4:
-        qDebug() << "Updating" << member.name << "with vec4 data: " << value.constData<float>()[0]
-                 << ", " << value.constData<float>()[1] << ", " << value.constData<float>()[2]
-                 << ", " << value.constData<float>()[3] << " (offset: " << member.offset
-                 << ", size: " << member.size << ")";
-        ;
-        break;
-    default:
-        qDebug() << "Updating" << member.name << "with data: " << value.constData<char>();
-        break;
-    }
-}
-
-void uploadUniform(SubmissionContext &submissionContext, const PackUniformHash &uniforms,
-                   const RHIShader::UBO_Member &uboMember,
-                   const QHash<int, RHIGraphicsPipeline::UBOBuffer> &uboBuffers,
-                   const QString &uniformName, const QShaderDescription::BlockVariable &member,
-                   int arrayOffset = 0)
-{
-    const int uniformNameId = StringToInt::lookupId(uniformName);
-
-    if (!uniforms.contains(uniformNameId))
-        return;
-
-    const UniformValue value = uniforms.value(uniformNameId);
-    const ShaderUniformBlock block = uboMember.block;
-
-    // Update UBO with uniform value
-    Q_ASSERT(uboBuffers.contains(block.m_binding));
-    const RHIGraphicsPipeline::UBOBuffer &ubo = uboBuffers[block.m_binding];
-    RHIBuffer *buffer = ubo.buffer;
-
-    // TODO we should maybe have this thread_local to not reallocate memory every time
-    QByteArray rawData;
-    rawData.resize(member.size);
-    memcpy(rawData.data(), value.constData<char>(), std::min(value.byteSize(), member.size));
-    buffer->update(&submissionContext, rawData, member.offset + arrayOffset);
-
-    // printUpload(value, member);
-}
-}
-
-bool Renderer::uploadUBOsForCommand(QRhiCommandBuffer *cb, const RenderView *rv,
-                                    const RenderCommand &command)
-{
-    Q_UNUSED(cb);
-    RHIGraphicsPipeline *pipeline = command.pipeline;
-    if (!pipeline)
-        return true;
-
-    // Upload UBO data for the Command
-    QRhiBuffer *commandUBO = pipeline->commandUBO();
-    m_submissionContext->m_currentUpdates->updateDynamicBuffer(commandUBO, 0, sizeof(CommandUBO),
-                                                               &command.m_commandUBO);
-
-    // We have to update the RV UBO once per graphics pipeline
-    QRhiBuffer *rvUBO = pipeline->renderViewUBO();
-    m_submissionContext->m_currentUpdates->updateDynamicBuffer(rvUBO, 0, sizeof(RenderViewUBO),
-                                                               rv->renderViewUBO());
-
-    // Upload UBO for custom parameters
-    {
-        RHIShader *shader =
-                m_RHIResourceManagers->rhiShaderManager()->lookupResource(command.m_shaderId);
-        if (!shader)
-            return true;
-
-        const std::vector<RHIShader::UBO_Member> &uboMembers = shader->uboMembers();
-        const QHash<int, RHIGraphicsPipeline::UBOBuffer> &uboBuffers = pipeline->ubos();
-        const ShaderParameterPack &parameterPack = command.m_parameterPack;
-        const PackUniformHash &uniforms = parameterPack.uniforms();
-
-        // Update Buffer CPU side data based on uniforms being set
-        for (const RHIShader::UBO_Member &uboMember : uboMembers) {
-            for (const QShaderDescription::BlockVariable &member : qAsConst(uboMember.members)) {
-
-                if (!member.arrayDims.empty()) {
-                    if (!member.structMembers.empty()) {
-                        const int arr0 = member.arrayDims[0];
-                        for (int i = 0; i < arr0; i++) {
-                            for (const QShaderDescription::BlockVariable &structMember :
-                                 member.structMembers) {
-                                const QString processedName = member.name + "[" + QString::number(i)
-                                        + "]." + structMember.name;
-                                uploadUniform(*m_submissionContext, uniforms, uboMember, uboBuffers,
-                                              processedName, structMember, i * member.size / arr0);
-                            }
-                        }
-                    } else {
-                        uploadUniform(*m_submissionContext, uniforms, uboMember, uboBuffers,
-                                      member.name, member);
-                    }
-                } else {
-                    uploadUniform(*m_submissionContext, uniforms, uboMember, uboBuffers,
-                                  member.name, member);
-                }
-            }
-        }
-        // Upload changes to GPU Buffer
-        for (const RHIGraphicsPipeline::UBOBuffer &ubo : uboBuffers) {
-            // Binding triggers the upload
-            ubo.buffer->bind(m_submissionContext.data(), RHIBuffer::UniformBuffer);
-        }
-    }
-    return true;
-}
-
 bool Renderer::performDraw(QRhiCommandBuffer *cb, const QRhiViewport &vp,
                            const QRhiScissor *scissor, const RenderCommand &command)
 {
@@ -2485,7 +2357,24 @@ bool Renderer::performDraw(QRhiCommandBuffer *cb, const QRhiViewport &vp,
     cb->setViewport(vp);
     if (scissor)
         cb->setScissor(*scissor);
-    cb->setShaderResources(pipeline->pipeline()->shaderResourceBindings());
+
+    // We need to create new resource bindings for each RC as each RC might potentially
+    // have different textures or reference custom UBOs (if using Parameters with UBOs directly).
+    // TO DO: We could propably check for texture and use the UBO set default ShaderResourceBindings
+    // if we only have UBOs with offsets
+    const std::vector<QRhiShaderResourceBinding> resourcesBindings = pipeline->uboSet()->resourceBindings(command);
+    const std::vector<QRhiCommandBuffer::DynamicOffset> offsets = pipeline->uboSet()->offsets(command);
+    QRhiShaderResourceBindings *shaderResourceBindings = m_submissionContext->rhi()->newShaderResourceBindings();
+    shaderResourceBindings->setBindings(resourcesBindings.cbegin(), resourcesBindings.cend());
+    if (!shaderResourceBindings->create()) {
+        qCWarning(Backend) << "Failed to create ShaderResourceBindings";
+        return false;
+    }
+
+    // TO DO: Use UBO set shaderResourcesBindings
+    cb->setShaderResources(pipeline->pipeline()->shaderResourceBindings(),
+                           offsets.size(),
+                           offsets.data());
 
     // Send the draw command
     if (Q_UNLIKELY(!command.indexBuffer)) {
@@ -2520,6 +2409,13 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
     for (RenderView *rv : renderViews) {
         // Render drawing commands
 
+        // Upload UBOs for pipelines used in current RV
+        const std::vector<RHIGraphicsPipeline *> &rvPipelines = m_rvToPipelines[rv];
+        for (RHIGraphicsPipeline *pipeline : rvPipelines) {
+            pipeline->uboSet()->uploadUBOs(m_submissionContext.data(), rv);
+        }
+
+        // Upload Buffers for Commands
         rv->forEachCommand([&] (RenderCommand &command) {
             if (Q_UNLIKELY(!command.isValid()))
                 return;
@@ -2532,7 +2428,6 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
                     // Prevents further processing which could be catastrophic
                     command.m_isValid = false;
                 }
-                uploadUBOsForCommand(cb, rv, command);
             }
         });
 
@@ -2575,7 +2470,6 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
     // Draw the commands
 
     // Begin pass
-
     cb->beginPass(rhiRenderTarget, clearColor, clearDepthStencil,
                   m_submissionContext->m_currentUpdates);
 
@@ -2632,16 +2526,26 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
 void Renderer::cleanGraphicsResources()
 {
     // Remove unused GraphicsPipeline
-    RHIGraphicsPipelineManager *pipelineManager =
-            m_RHIResourceManagers->rhiGraphicsPipelineManager();
+    RHIGraphicsPipelineManager *pipelineManager = m_RHIResourceManagers->rhiGraphicsPipelineManager();
+
     const std::vector<HRHIGraphicsPipeline> &graphicsPipelinesHandles = pipelineManager->activeHandles();
-    for (HRHIGraphicsPipeline pipelineHandle : graphicsPipelinesHandles) {
-        RHIGraphicsPipeline *pipeline = pipelineManager->data(pipelineHandle);
+    std::vector<HRHIGraphicsPipeline> pipelinesToCleanup;
+    // Store pipelines to cleanup in a temporary vector so that we can use a
+    // ref on the activeHandles vector. Calling releaseResources modifies the
+    // activeHandles vector which we want to avoid while iterating over it.
+    for (const HRHIGraphicsPipeline &pipelineHandle : graphicsPipelinesHandles) {
+        RHIGraphicsPipeline *pipeline = pipelineHandle.data();
+        Q_ASSERT(pipeline);
         pipeline->decreaseScore();
         // Pipeline wasn't used recently, let's destroy it
         if (pipeline->score() < 0) {
-            pipeline->cleanup();
+            pipelinesToCleanup.push_back(pipelineHandle);
         }
+    }
+
+    // Release Pipelines marked for cleanup
+    for (const HRHIGraphicsPipeline &pipelineHandle : pipelinesToCleanup) {
+        pipelineManager->releaseResource(pipelineHandle->key());
     }
 
     // Clean buffers
