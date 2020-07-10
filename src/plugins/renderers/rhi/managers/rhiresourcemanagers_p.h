@@ -109,6 +109,14 @@ private:
     std::vector<AttributeInfoVec> m_attributesInfo;
 };
 
+class Q_AUTOTEST_EXPORT RHIComputePipelineManager
+        : public Qt3DCore::QResourceManager<RHIComputePipeline, ComputePipelineIdentifier,
+        Qt3DCore::NonLockingPolicy>
+{
+public:
+    RHIComputePipelineManager() { }
+};
+
 class Q_AUTOTEST_EXPORT RHIResourceManagers
 {
 public:
@@ -123,6 +131,10 @@ public:
     {
         return m_rhiGraphicsPipelineManager;
     }
+    inline RHIComputePipelineManager *rhiComputePipelineManager() const noexcept
+    {
+        return m_rhiComputePipelineManager;
+    }
 
     void releaseAllResources();
 
@@ -132,6 +144,7 @@ private:
     RHITextureManager *m_rhiTextureManager;
     RHIRenderTargetManager *m_rhiRenderTargetManager;
     RHIGraphicsPipelineManager *m_rhiGraphicsPipelineManager;
+    RHIComputePipelineManager *m_rhiComputePipelineManager;
 };
 
 inline uint qHash(const GraphicsPipelineIdentifier &key, uint seed = 0)
@@ -152,6 +165,20 @@ inline bool operator==(const GraphicsPipelineIdentifier &a, const GraphicsPipeli
            a.renderViewIndex == b.renderViewIndex;
 }
 
+inline uint qHash(const ComputePipelineIdentifier &key, uint seed = 0)
+{
+    using QT_PREPEND_NAMESPACE(qHash);
+    seed = qHash(key.shader, seed);
+    seed = qHash(key.renderViewIndex, seed);
+    return seed;
+}
+
+inline bool operator==(const ComputePipelineIdentifier &a, const ComputePipelineIdentifier &b)
+{
+    return a.shader == b.shader &&
+           a.renderViewIndex == b.renderViewIndex;
+}
+
 } // Rhi
 
 } // Render
@@ -159,6 +186,7 @@ inline bool operator==(const GraphicsPipelineIdentifier &a, const GraphicsPipeli
 } // Qt3DRender
 
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Rhi::RHIGraphicsPipeline, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Rhi::RHIComputePipeline, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Rhi::RHITexture, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Rhi::RHIBuffer, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Rhi::RHIRenderTarget, Q_REQUIRES_CLEANUP)

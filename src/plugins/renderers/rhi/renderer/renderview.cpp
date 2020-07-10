@@ -922,7 +922,7 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const Entity **entit
                     command.m_drawIndirect = (indirectAttribute != nullptr);
                     command.indexAttribute = nullptr;
                     command.indexBuffer = nullptr;
-                    command.pipeline = nullptr;
+                    command.pipeline = std::monostate{};
 
                     // Update the draw command with all the information required for the drawing
                     if (command.m_drawIndexed) {
@@ -1385,9 +1385,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, ParameterInfoList 
 
         // At this point we know whether the command is a valid draw command or not
         // We still need to process the uniforms as the command could be a compute command
-        command->m_isValid = !command->m_activeAttributes.empty();
-
-
+        command->m_isValid = (!command->m_activeAttributes.empty()) || (command->m_type == RenderCommand::CommandType::Compute);
     }
 
     if (shader->hasActiveVariables()) {

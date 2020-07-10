@@ -49,19 +49,23 @@ namespace Render {
 namespace Rhi {
 
 namespace {
-QRhiBuffer::UsageFlag bufferTypeToRhi(RHIBuffer::Type t)
+QRhiBuffer::UsageFlags bufferTypeToRhi(RHIBuffer::Type t)
 {
-    switch (t) {
-    case RHIBuffer::Type::ArrayBuffer:
-        return QRhiBuffer::VertexBuffer;
-    case RHIBuffer::Type::IndexBuffer:
-        return QRhiBuffer::IndexBuffer;
-    case RHIBuffer::Type::UniformBuffer:
-        return QRhiBuffer::UniformBuffer;
-    default:
-        RHI_UNIMPLEMENTED;
-        return QRhiBuffer::StorageBuffer;
-    }
+    QRhiBuffer::UsageFlags flag{};
+
+    if (t & RHIBuffer::Type::ArrayBuffer)
+        flag |= QRhiBuffer::VertexBuffer;
+
+    if (t & RHIBuffer::Type::IndexBuffer)
+        flag |= QRhiBuffer::IndexBuffer;
+
+    if (t & RHIBuffer::Type::UniformBuffer)
+        flag |= QRhiBuffer::UniformBuffer;
+
+    if (t & RHIBuffer::Type::ShaderStorageBuffer)
+        flag |= QRhiBuffer::StorageBuffer;
+
+    return flag;
 }
 }
 
@@ -90,8 +94,11 @@ bool RHIBuffer::bind(SubmissionContext *ctx, Type t)
         const auto usage = bufferTypeToRhi(t);
 
         m_rhiBuffer = ctx->rhi()->newBuffer(kind, usage, m_allocSize);
+        assert(m_rhiBuffer);
+
         if (!m_rhiBuffer->create())
             return false;
+
 #if defined(QT_DEBUG)
         {
             // for debug: we set the buffer to zero
@@ -99,9 +106,14 @@ bool RHIBuffer::bind(SubmissionContext *ctx, Type t)
             (ctx->m_currentUpdates->*uploadMethod)(m_rhiBuffer, 0, m_allocSize, ptr);
             delete[] ptr;
         }
-#endif
     }
+#endif
     assert(m_rhiBuffer);
+
+#if defined(QT_DEBUG)
+    // RHI does not seem to support using the same buffer with different types
+    assert(m_rhiBuffer->usage() == bufferTypeToRhi(t));
+#endif
 
     for (const std::pair<QByteArray, int> &pair : this->m_datasToUpload) {
         const QByteArray &data = pair.first;

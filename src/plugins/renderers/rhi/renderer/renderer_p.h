@@ -158,6 +158,8 @@ struct RHIRenderTarget;
 class RHIShader;
 class RHIResourceManagers;
 class RenderView;
+class RHIGraphicsPipeline;
+class RHIComputePipeline;
 
 class Q_AUTOTEST_EXPORT Renderer : public AbstractRenderer
 {
@@ -368,8 +370,6 @@ private:
     std::vector<Qt3DCore::QNodeId> m_pendingRenderCaptureSendRequests;
 
     void performDraw(RenderCommand *command);
-    void performCompute(const RenderView *rv, RenderCommand *command);
-
     SynchronizerJobPtr m_bufferGathererJob;
     SynchronizerJobPtr m_textureGathererJob;
     SynchronizerPostFramePtr m_introspectShaderJob;
@@ -410,7 +410,8 @@ private:
     std::vector<FrameGraphNode *> m_frameGraphLeaves;
     QScreen *m_screen = nullptr;
     QSharedPointer<ResourceAccessor> m_scene2DResourceAccessor;
-    QHash<RenderView *, std::vector<RHIGraphicsPipeline *>> m_rvToPipelines;
+    QHash<RenderView *, std::vector<RHIGraphicsPipeline *>> m_rvToGraphicsPipelines;
+    QHash<RenderView *, std::vector<RHIComputePipeline *>> m_rvToComputePipelines;
     RenderDriver m_driver = RenderDriver::Qt3D;
 
     bool m_hasSwapChain = false;
@@ -426,10 +427,16 @@ private:
 
     void updateGraphicsPipeline(RenderCommand &command, RenderView *rv,
                                 int renderViewIndex);
+    void updateComputePipeline(RenderCommand &cmd, RenderView *rv,
+                               int renderViewIndex);
 
     void buildGraphicsPipelines(RHIGraphicsPipeline *graphicsPipeline,
                                 RenderView *rv,
                                 const RenderCommand &command);
+
+    void buildComputePipelines(RHIComputePipeline *computePipeline,
+                               RenderView *rv,
+                               const RenderCommand &command);
 
     void cleanupRenderTarget(const RenderTarget *renderTarget);
 
@@ -438,6 +445,12 @@ private:
 
     bool uploadBuffersForCommand(QRhiCommandBuffer *cb, const RenderView *rv,
                                  RenderCommand &command);
+
+    bool uploadBuffersForCommand(RHIComputePipeline* compute, RenderCommand &command);
+    bool uploadBuffersForCommand(RHIGraphicsPipeline* graphics, RenderCommand &command);
+    bool uploadUBOsForCommand(QRhiCommandBuffer *cb, const RenderView *rv,
+                              const RenderCommand &command);
+    bool performCompute(QRhiCommandBuffer *cb, const RenderCommand &command);
     bool performDraw(QRhiCommandBuffer *cb, const QRhiViewport &vp, const QRhiScissor *scissor,
                      RenderCommand &command);
 };

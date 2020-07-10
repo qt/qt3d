@@ -70,13 +70,13 @@ public:
     RHIBuffer();
 
     enum Type {
-        ArrayBuffer = 0,
-        UniformBuffer,
-        IndexBuffer,
-        ShaderStorageBuffer,
-        PixelPackBuffer,
-        PixelUnpackBuffer,
-        DrawIndirectBuffer
+        ArrayBuffer         = 1 << 0,
+        UniformBuffer       = 1 << 1,
+        IndexBuffer         = 1 << 2,
+        ShaderStorageBuffer = 1 << 3,
+        PixelPackBuffer     = 1 << 4,
+        PixelUnpackBuffer   = 1 << 5,
+        DrawIndirectBuffer  = 1 << 6
     };
 
     bool bind(SubmissionContext *ctx, Type t);

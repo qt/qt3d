@@ -408,37 +408,45 @@ void RHIShader::introspect()
     std::vector<ShaderAttribute> samplers;
     std::vector<ShaderAttribute> images;
 
-    // Introspect shader vertex input
-    if (m_stages[QShader::VertexStage].isValid()) {
-        const QShaderDescription &vtx = m_stages[QShader::VertexStage].description();
+    if (m_stages[QShader::ComputeStage].isValid()) {
+        const QShaderDescription &comp = m_stages[QShader::ComputeStage].description();
 
-        for (const QShaderDescription::InOutVariable &input : vtx.inputVariables()) {
-            attributes.push_back(ShaderAttribute { input.name, StringToInt::lookupId(input.name),
-                                                   input.type, rhiTypeSize(input.type),
-                                                   input.location });
-        }
-
-        Qt3DCore::append(rhiUBO, vtx.uniformBlocks());
-        Qt3DCore::append(rhiSSBO, vtx.storageBlocks());
+        Qt3DCore::append(rhiUBO, comp.uniformBlocks());
+        Qt3DCore::append(rhiSSBO, comp.storageBlocks());
     }
+    else
+    {
+        // Introspect shader vertex input
+        if (m_stages[QShader::VertexStage].isValid()) {
+            const QShaderDescription &vtx = m_stages[QShader::VertexStage].description();
 
-    // Introspect shader uniforms
+            for (const QShaderDescription::InOutVariable &input : vtx.inputVariables()) {
+                attributes.push_back(ShaderAttribute { input.name, StringToInt::lookupId(input.name),
+                                                       input.type, rhiTypeSize(input.type),
+                                                       input.location });
+            }
 
-    if (m_stages[QShader::FragmentStage].isValid()) {
-        const QShaderDescription &frag = m_stages[QShader::FragmentStage].description();
-        for (const QShaderDescription::InOutVariable &sampler : frag.combinedImageSamplers()) {
-            samplers.push_back(ShaderAttribute { sampler.name, StringToInt::lookupId(sampler.name),
-                                                 sampler.type, rhiTypeSize(sampler.type),
-                                                 sampler.binding });
+            Qt3DCore::append(rhiUBO, vtx.uniformBlocks());
+            Qt3DCore::append(rhiSSBO, vtx.storageBlocks());
         }
-        for (const QShaderDescription::InOutVariable &image : frag.storageImages()) {
-            images.push_back(ShaderAttribute { image.name, StringToInt::lookupId(image.name),
-                                               image.type, rhiTypeSize(image.type),
-                                               image.binding });
-        }
 
-        Qt3DCore::append(rhiUBO, frag.uniformBlocks());
-        Qt3DCore::append(rhiSSBO, frag.storageBlocks());
+        // Introspect shader uniforms
+        if (m_stages[QShader::FragmentStage].isValid()) {
+            const QShaderDescription &frag = m_stages[QShader::FragmentStage].description();
+            for (const QShaderDescription::InOutVariable &sampler : frag.combinedImageSamplers()) {
+                samplers.push_back(ShaderAttribute { sampler.name, StringToInt::lookupId(sampler.name),
+                                                     sampler.type, rhiTypeSize(sampler.type),
+                                                     sampler.binding });
+            }
+            for (const QShaderDescription::InOutVariable &image : frag.storageImages()) {
+                images.push_back(ShaderAttribute { image.name, StringToInt::lookupId(image.name),
+                                                   image.type, rhiTypeSize(image.type),
+                                                   image.binding });
+            }
+
+            Qt3DCore::append(rhiUBO, frag.uniformBlocks());
+            Qt3DCore::append(rhiSSBO, frag.storageBlocks());
+        }
     }
 
     rhiUBO = stableRemoveDuplicates(rhiUBO,

@@ -1665,20 +1665,32 @@ SubmissionContext::ShaderCreationInfo SubmissionContext::createShaderProgram(RHI
     // Compile shaders
     const auto &shaderCode = shader->shaderCode();
     QShaderBaker b;
-    b.setGeneratedShaders({
-            { QShader::SpirvShader, 100 },
-#ifndef QT_NO_OPENGL
-            { QShader::GlslShader, glslVersionForFormat(format()) },
-#endif
-            { QShader::HlslShader, QShaderVersion(50) },
-            { QShader::MslShader, QShaderVersion(12) },
-    });
+    QVector<QShaderBaker::GeneratedShader> generatedShaders;
 
-    b.setGeneratedShaderVariants({ QShader::Variant {},
-#ifndef QT_NO_OPENGL
-                                   QShader::Variant {},
+#if QT_FEATURE_vulkan
+    generatedShaders.push_back({ QShader::SpirvShader, 100 });
 #endif
-                                   QShader::Variant {}, QShader::Variant {} });
+
+#ifndef QT_NO_OPENGL
+    // GLES2 RHI backend does not seem to support compute
+    //if (shaderCode.at(QShaderProgram::Compute).isEmpty())
+    {
+      generatedShaders.push_back({ QShader::GlslShader, glslVersionForFormat(format()) });
+    }
+#endif
+
+#if Q_OS_WIN
+    generatedShaders.push_back({ QShader::HlslShader, QShaderVersion(50) });
+#endif
+
+#if Q_OS_MACOS
+    generatedShaders.push_back({ QShader::MslShader, QShaderVersion(12) });
+#endif
+
+    QVector<QShader::Variant> generatedShaderVariants(generatedShaders.size());
+
+    b.setGeneratedShaders(generatedShaders);
+    b.setGeneratedShaderVariants(generatedShaderVariants);
 
     // TODO handle caching as QShader does not have a built-in mechanism for that
     QString logs;

@@ -117,7 +117,6 @@ Entity {
 
     Buffer {
         id: particleBuffer
-        type: Buffer.VertexBuffer
         //        struct ParticleData
         //        {
         //            vec3 position;      // Aligned to 4 floats

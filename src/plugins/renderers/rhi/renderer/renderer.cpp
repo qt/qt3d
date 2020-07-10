@@ -894,7 +894,7 @@ void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv,
     graphicsPipeline->uboSet()->addRenderCommand(cmd);
 
     // Store association between RV and pipeline
-    if (auto& pipelines = m_rvToPipelines[rv]; !Qt3DCore::contains(pipelines, graphicsPipeline))
+    if (auto& pipelines = m_rvToGraphicsPipelines[rv]; !Qt3DCore::contains(pipelines, graphicsPipeline))
         pipelines.push_back(graphicsPipeline);
 
     // Record RHIGraphicsPipeline into command for later use
@@ -1010,6 +1010,95 @@ void Renderer::buildGraphicsPipelines(RHIGraphicsPipeline *graphicsPipeline,
     const bool renderTargetIsSet = setupRenderTarget(rv, graphicsPipeline, rhiSwapChain);
     if (!renderTargetIsSet)
         return onFailure();
+
+    if (!pipeline->create())
+        return onFailure();
+}
+
+void Renderer::updateComputePipeline(RenderCommand &cmd, RenderView *rv, int renderViewIndex)
+{
+    if (!cmd.m_rhiShader) {
+        qDebug() << "Warning: command has no shader";
+        return;
+    }
+
+    // Try to retrieve existing pipeline
+    RHIComputePipelineManager *pipelineManager = m_RHIResourceManagers->rhiComputePipelineManager();
+    const ComputePipelineIdentifier pipelineKey { cmd.m_shaderId, renderViewIndex };
+    RHIComputePipeline *computePipeline = pipelineManager->lookupResource(pipelineKey);
+    if (computePipeline == nullptr) {
+        // Init UBOSet the first time we allocate a new pipeline
+        computePipeline = pipelineManager->getOrCreateResource(pipelineKey);
+        computePipeline->setKey(pipelineKey);
+        computePipeline->uboSet()->setResourceManager(m_RHIResourceManagers);
+        computePipeline->uboSet()->initializeLayout(m_submissionContext.data(), cmd.m_rhiShader);
+    }
+
+    if (!computePipeline) {
+        qDebug() << "Warning : could not create a compute pipeline";
+        return;
+    }
+
+    // Increase score so that we know the pipeline was used for this frame and shouldn't be
+    // destroyed
+    computePipeline->increaseScore();
+
+    // Record command reference in UBOSet
+    computePipeline->uboSet()->addRenderCommand(cmd);
+
+    // Store association between RV and pipeline
+    if (auto& pipelines = m_rvToComputePipelines[rv]; !Qt3DCore::contains(pipelines, computePipeline))
+        pipelines.push_back(computePipeline);
+
+    // Record RHIGraphicsPipeline into command for later use
+    cmd.pipeline = computePipeline;
+
+    // TO DO: Set to true if geometry, shader or render state dirty
+    bool requiredRebuild = false;
+
+    // Note: we can rebuild add/remove things from the QRhiShaderResourceBindings after having
+    // created the pipeline and rebuild it. Changes should be picked up automatically
+
+    // Create pipeline if it doesn't exist or needs to be updated
+    if (computePipeline->pipeline() == nullptr || requiredRebuild)
+        buildComputePipelines(computePipeline, rv, cmd);
+}
+
+void Renderer::buildComputePipelines(RHIComputePipeline *computePipeline,
+                                     RenderView *rv,
+                                     const RenderCommand &cmd)
+{
+    const auto bufManager = m_RHIResourceManagers->rhiBufferManager();
+    auto onFailure = [&] { computePipeline->cleanup(); };
+
+    PipelineUBOSet *uboSet = computePipeline->uboSet();
+    RHIShader *shader = cmd.m_rhiShader;
+
+    // Setup shaders
+    const QShader& computeShader = cmd.m_rhiShader->shaderStage(QShader::ComputeStage);
+    if (!computeShader.isValid()) {
+        return onFailure();
+    }
+
+    // Set Resource Bindings
+    const std::vector<QRhiShaderResourceBinding> resourceBindings = uboSet->resourceLayout(shader);
+    QRhiShaderResourceBindings *shaderResourceBindings =
+            m_submissionContext->rhi()->newShaderResourceBindings();
+    computePipeline->setShaderResourceBindings(shaderResourceBindings);
+
+    shaderResourceBindings->setBindings(resourceBindings.cbegin(), resourceBindings.cend());
+    if (!shaderResourceBindings->create()) {
+        return onFailure();
+    }
+
+    // Create pipeline
+    QRhiComputePipeline *pipeline = m_submissionContext->rhi()->newComputePipeline();
+    computePipeline->setPipeline(pipeline);
+
+    pipeline->setShaderStage(QRhiShaderStage{QRhiShaderStage::Compute, computeShader});
+    pipeline->setShaderResourceBindings(shaderResourceBindings);
+
+    // QRhiComputePiple has no render states
 
     if (!pipeline->create())
         return onFailure();
@@ -1182,18 +1271,25 @@ Renderer::prepareCommandsSubmission(const std::vector<RenderView *> &renderViews
     // -> The number of RenderCommands used by each pipeline
 
     // This will allows us to generate UBOs based on the number of commands/rv we have
-    RHIGraphicsPipelineManager *pipelineManager =
-            m_RHIResourceManagers->rhiGraphicsPipelineManager();
-    const std::vector<HRHIGraphicsPipeline> &graphicsPipelinesHandles = pipelineManager->activeHandles();
+    RHIGraphicsPipelineManager *graphicsPipelineManager = m_RHIResourceManagers->rhiGraphicsPipelineManager();
+    const std::vector<HRHIGraphicsPipeline> &graphicsPipelinesHandles = graphicsPipelineManager->activeHandles();
     for (HRHIGraphicsPipeline pipelineHandle : graphicsPipelinesHandles) {
-        RHIGraphicsPipeline *pipeline = pipelineManager->data(pipelineHandle);
+        RHIGraphicsPipeline *pipeline = graphicsPipelineManager->data(pipelineHandle);
+        // Reset PipelineUBOSet
+        pipeline->uboSet()->clear();
+    }
+    RHIComputePipelineManager *computePipelineManager = m_RHIResourceManagers->rhiComputePipelineManager();
+    const std::vector<HRHIComputePipeline> &computePipelinesHandles = computePipelineManager->activeHandles();
+    for (HRHIComputePipeline pipelineHandle : computePipelinesHandles) {
+        RHIComputePipeline *pipeline = computePipelineManager->data(pipelineHandle);
         // Reset PipelineUBOSet
         pipeline->uboSet()->clear();
     }
 
     // Clear any reference between RV and Pipelines we had
     // as we are about to rebuild these
-    m_rvToPipelines.clear();
+    m_rvToGraphicsPipelines.clear();
+    m_rvToComputePipelines.clear();
 
     // We need to have a single RHI RenderPass per RenderTarget
     // as creating the pass clears the buffers
@@ -1257,6 +1353,8 @@ Renderer::prepareCommandsSubmission(const std::vector<RenderView *> &renderViews
                 // By this time shaders have been loaded
                 RHIShader *shader = command.m_rhiShader;
                 Q_ASSERT(shader);
+
+                updateComputePipeline(command, rv, i);
             }
         });
     }
@@ -1265,10 +1363,13 @@ Renderer::prepareCommandsSubmission(const std::vector<RenderView *> &renderViews
     // has, we can allocate/reallocate UBOs with correct size for each pipelines
     for (RenderView *rv : renderViews) {
         // Allocate UBOs for pipelines used in current RV
-        const std::vector<RHIGraphicsPipeline *> &rvPipelines = m_rvToPipelines[rv];
-        for (RHIGraphicsPipeline *pipeline : rvPipelines) {
+        const std::vector<RHIGraphicsPipeline *> &rvGraphicsPipelines = m_rvToGraphicsPipelines[rv];
+        for (RHIGraphicsPipeline *pipeline : rvGraphicsPipelines)
             pipeline->uboSet()->allocateUBOs(m_submissionContext.data());
-        }
+        // Allocate UBOs for pipelines used in current RV
+        const std::vector<RHIComputePipeline *> &rvComputePipelines = m_rvToComputePipelines[rv];
+        for (RHIComputePipeline *pipeline : rvComputePipelines)
+            pipeline->uboSet()->allocateUBOs(m_submissionContext.data());
     }
 
     // Unset dirtiness on Geometry and Attributes
@@ -2234,9 +2335,17 @@ void Renderer::performDraw(RenderCommand *command)
     //        m_submissionContext->disablePrimitiveRestart();
 }
 
-void Renderer::performCompute(const RenderView *, RenderCommand *command)
+bool Renderer::performCompute(QRhiCommandBuffer *cb, const RenderCommand &command)
 {
-    RHI_UNIMPLEMENTED;
+    RHIComputePipeline *pipeline = command.pipeline.compute();
+    if (!pipeline)
+        return true;
+    cb->setComputePipeline(pipeline->pipeline());
+    cb->setShaderResources();
+
+    cb->dispatch(command.m_workGroups[0], command.m_workGroups[1], command.m_workGroups[2]);
+
+
     Q_UNUSED(command);
     //* {
     //*     RHIShader *shader =
@@ -2251,14 +2360,15 @@ void Renderer::performCompute(const RenderView *, RenderCommand *command)
     //*             command->m_workGroups[1],
     //*             command->m_workGroups[2]);
     //* }
-    //* // HACK: Reset the compute flag to dirty
-    //* m_dirtyBits.marked |= AbstractRenderer::ComputeDirty;
+    // HACK: Reset the compute flag to dirty
+    m_dirtyBits.marked |= AbstractRenderer::ComputeDirty;
 
     //* #if defined(QT3D_RENDER_ASPECT_RHI_DEBUG)
     //*     int err = m_submissionContext->openGLContext()->functions()->glGetError();
     //*     if (err)
     //*         qCWarning(Rendering) << "GL error after drawing mesh:" << QString::number(err, 16);
     //* #endif
+    return true;
 }
 
 static auto rhiIndexFormat(QAttribute::VertexBaseType type)
@@ -2276,12 +2386,48 @@ static auto rhiIndexFormat(QAttribute::VertexBaseType type)
 bool Renderer::uploadBuffersForCommand(QRhiCommandBuffer *cb, const RenderView *rv,
                                        RenderCommand &command)
 {
-    Q_UNUSED(cb);
-    Q_UNUSED(rv);
-    RHIGraphicsPipeline *graphicsPipeline = command.pipeline;
-    if (!graphicsPipeline)
-        return true;
+    struct
+    {
+      Renderer &self;
+      RenderCommand &command;
+       bool operator()(RHIGraphicsPipeline* pipeline) const noexcept {
+           if (!pipeline)
+               return true;
 
+           return self.uploadBuffersForCommand(pipeline, command);
+       }
+       bool operator()(RHIComputePipeline* pipeline) const noexcept {
+           if (!pipeline)
+               return true;
+
+           return self.uploadBuffersForCommand(pipeline, command);
+       }
+       bool operator()(std::monostate) {
+           return false;
+       }
+    } vis{*this, command};
+
+    if (!command.pipeline.visit(vis))
+        return false;
+
+    for (const BlockToUBO &pack : command.m_parameterPack.uniformBuffers()) {
+        Buffer *cpuBuffer = nodeManagers()->bufferManager()->lookupResource(pack.m_bufferID);
+        RHIBuffer *ubo = m_submissionContext->rhiBufferForRenderBuffer(cpuBuffer);
+        if (!ubo->bind(&*m_submissionContext, RHIBuffer::UniformBuffer))
+            return false;
+    }
+    for (const BlockToSSBO &pack : command.m_parameterPack.shaderStorageBuffers()) {
+        Buffer *cpuBuffer = nodeManagers()->bufferManager()->lookupResource(pack.m_bufferID);
+        RHIBuffer *ubo = m_submissionContext->rhiBufferForRenderBuffer(cpuBuffer);
+        if (!ubo->bind(&*m_submissionContext, RHIBuffer::ShaderStorageBuffer))
+            return false;
+    }
+
+    return true;
+}
+
+bool Renderer::uploadBuffersForCommand(RHIGraphicsPipeline* graphicsPipeline, RenderCommand &command)
+{
     // Create the vertex input description
 
     // Note: we have to bind the buffers here -> which will trigger the actual
@@ -2297,11 +2443,10 @@ bool Renderer::uploadBuffersForCommand(QRhiCommandBuffer *cb, const RenderView *
         // TODO isn't there a more efficient way than doing three hash lookups ?
         Attribute *attrib = m_nodesManager->attributeManager()->lookupResource(attribute_id);
         Buffer *buffer = m_nodesManager->bufferManager()->lookupResource(attrib->bufferId());
-        RHIBuffer *hbuf =
-                m_RHIResourceManagers->rhiBufferManager()->lookupResource(buffer->peerId());
+        RHIBuffer *hbuf = m_RHIResourceManagers->rhiBufferManager()->lookupResource(buffer->peerId());
         switch (attrib->attributeType()) {
         case QAttribute::VertexAttribute: {
-            if (!hbuf->bind(&*m_submissionContext, RHIBuffer::Type::ArrayBuffer))
+            if (!hbuf->bind(&*m_submissionContext, RHIBuffer::Type((int)RHIBuffer::Type::ArrayBuffer | (int)RHIBuffer::Type::ShaderStorageBuffer)))
                 return false;
             assert(hbuf->rhiBuffer());
             // Find Binding for Attribute
@@ -2328,20 +2473,18 @@ bool Renderer::uploadBuffersForCommand(QRhiCommandBuffer *cb, const RenderView *
         }
     }
 
-    for (const BlockToUBO &pack : command.m_parameterPack.uniformBuffers()) {
-        Buffer *cpuBuffer = nodeManagers()->bufferManager()->lookupResource(pack.m_bufferID);
-        RHIBuffer *ubo = m_submissionContext->rhiBufferForRenderBuffer(cpuBuffer);
-        if (!ubo->bind(&*m_submissionContext, RHIBuffer::UniformBuffer))
-            return false;
-    }
+    return true;
+}
 
+bool Renderer::uploadBuffersForCommand(RHIComputePipeline* computePipeline, RenderCommand &command)
+{
     return true;
 }
 
 bool Renderer::performDraw(QRhiCommandBuffer *cb, const QRhiViewport &vp,
                            const QRhiScissor *scissor, RenderCommand &command)
 {
-    RHIGraphicsPipeline *pipeline = command.pipeline;
+    RHIGraphicsPipeline *pipeline = command.pipeline.graphics();
     if (!pipeline)
         return true;
 
@@ -2413,15 +2556,26 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
         // Render drawing commands
 
         // Upload UBOs for pipelines used in current RV
-        const std::vector<RHIGraphicsPipeline *> &rvPipelines = m_rvToPipelines[rv];
-        for (RHIGraphicsPipeline *pipeline : rvPipelines) {
+        const std::vector<RHIGraphicsPipeline *> &rvGraphicsPipelines = m_rvToGraphicsPipelines[rv];
+        for (RHIGraphicsPipeline *pipeline : rvGraphicsPipelines)
             pipeline->uboSet()->uploadUBOs(m_submissionContext.data(), rv);
-        }
+
+        const std::vector<RHIComputePipeline *> &rvComputePipelines = m_rvToComputePipelines[rv];
+        for (RHIComputePipeline *pipeline : rvComputePipelines)
+            pipeline->uboSet()->uploadUBOs(m_submissionContext.data(), rv);
 
         // Upload Buffers for Commands
         rv->forEachCommand([&] (RenderCommand &command) {
             if (Q_UNLIKELY(!command.isValid()))
                 return;
+
+            if (!uploadBuffersForCommand(cb, rv, command)) {
+                // Something went wrong trying to upload buffers
+                // -> likely that frontend buffer has no initial data
+                qCWarning(Backend) << "Failed to upload buffers";
+                // Prevents further processing which could be catastrophic
+                command.m_isValid = false;
+            }
 
             if (command.m_type == RenderCommand::Draw) {
                 if (!uploadBuffersForCommand(cb, rv, command)) {
@@ -2459,26 +2613,7 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
             rhiRenderTarget = m_submissionContext->currentSwapChain()->currentFrameRenderTarget();
     }
 
-    // TO DO: should be moved elsewhere
-    // Perform compute actions
-    //        cb->beginComputePass(m_submissionContext->m_currentUpdates);
-    //        for (RenderCommand &command : commands) {
-    //            if (command.m_type == RenderCommand::Compute) {
-    //                performCompute(rv, &command);
-    //            }
-    //        }
-    //        cb->endComputePass();
-    //    m_submissionContext->m_currentUpdates =
-    //    m_submissionContext->rhi()->nextResourceUpdateBatch();
-
-    // Draw the commands
-
-    // Begin pass
-    cb->beginPass(rhiRenderTarget, clearColor, clearDepthStencil,
-                  m_submissionContext->m_currentUpdates);
-
-    // Per Pass Global States
-    for (RenderView *rv : renderViews) {
+    auto executeDrawRenderView = [&] (RenderView* rv) {
         // Viewport
         QRhiViewport vp;
         QRhiScissor scissor;
@@ -2514,13 +2649,64 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
             if (Q_UNLIKELY(!command.isValid()))
                 return;
 
-            if (command.m_type == RenderCommand::Draw) {
-                performDraw(cb, vp, hasScissor ? &scissor : nullptr, command);
-            }
+            Q_ASSERT (command.m_type == RenderCommand::Draw);
+            performDraw(cb, vp, hasScissor ? &scissor : nullptr, command);
         });
+    };
+
+    auto executeComputeRenderView = [&] (RenderView* rv) {
+        rv->forEachCommand([&] (const RenderCommand &command) {
+            if (Q_UNLIKELY(!command.isValid()))
+                return;
+
+            Q_ASSERT (command.m_type == RenderCommand::Compute);
+            performCompute(cb, command);
+        });
+    };
+
+    bool inCompute = false;
+    bool inDraw = false;
+
+    // Per Pass Global States
+    for (RenderView *rv : renderViews) {
+        if (rv->isCompute()) {
+            // If we were running draw calls we stop the draw pass
+            if (inDraw) {
+                cb->endPass();
+                m_submissionContext->m_currentUpdates = m_submissionContext->rhi()->nextResourceUpdateBatch();
+                inDraw = false;
+            }
+
+            // There is also the possibility where we weren't either in a compute or draw pass (for the first RV)
+            // hence why these conditions are like this
+            if (!inCompute) {
+                cb->beginComputePass(m_submissionContext->m_currentUpdates);
+                inCompute = true;
+            }
+
+            executeComputeRenderView(rv);
+        } else {
+            // Same logic than above but reversed
+            if (inCompute) {
+                cb->endComputePass();
+                m_submissionContext->m_currentUpdates = m_submissionContext->rhi()->nextResourceUpdateBatch();
+                inCompute = false;
+            }
+
+            if (!inDraw) {
+                cb->beginPass(rhiRenderTarget, clearColor, clearDepthStencil, m_submissionContext->m_currentUpdates);
+                inDraw = true;
+            }
+
+            executeDrawRenderView(rv);
+        }
     }
 
-    cb->endPass();
+    if (Q_LIKELY(inDraw))
+        cb->endPass();
+    else if (inCompute)
+        cb->endComputePass();
+
     m_submissionContext->m_currentUpdates = m_submissionContext->rhi()->nextResourceUpdateBatch();
 
     return allCommandsIssued;

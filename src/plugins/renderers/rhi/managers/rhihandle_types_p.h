@@ -64,11 +64,13 @@ namespace Rhi {
 class RHIBuffer;
 class RHITexture;
 class RHIGraphicsPipeline;
+class RHIComputePipeline;
 struct RHIRenderTarget;
 
 typedef Qt3DCore::QHandle<RHIBuffer> HRHIBuffer;
 typedef Qt3DCore::QHandle<RHITexture> HRHITexture;
 typedef Qt3DCore::QHandle<RHIGraphicsPipeline> HRHIGraphicsPipeline;
+typedef Qt3DCore::QHandle<RHIComputePipeline> HRHIComputePipeline;
 typedef Qt3DCore::QHandle<RHIRenderTarget> HRHIRenderTarget;
 
 } // namespace Rhi

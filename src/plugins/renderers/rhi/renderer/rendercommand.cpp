@@ -46,6 +46,22 @@ namespace Qt3DRender {
 namespace Render {
 namespace Rhi {
 
+bool RenderCommand::Pipeline::isValid() const noexcept
+{
+    struct {
+        bool operator()(RHIGraphicsPipeline* pipeline) const noexcept {
+            return pipeline && pipeline->pipeline();
+        }
+        bool operator()(RHIComputePipeline* pipeline) const noexcept {
+            return pipeline && pipeline->pipeline();
+        }
+        bool operator()(std::monostate) const noexcept {
+            return false;
+        }
+    } visitor;
+    return this->visit(visitor);
+}
+
 RenderCommand::RenderCommand()
     : m_rhiShader(nullptr),
       m_stateSet(nullptr),
@@ -71,7 +87,7 @@ RenderCommand::RenderCommand()
       indexAttribute(nullptr),
       indexBuffer(nullptr),
       m_commandUBO(),
-      pipeline(nullptr)
+      pipeline()
 
 {
     m_workGroups[0] = 0;
@@ -81,7 +97,7 @@ RenderCommand::RenderCommand()
 
 bool RenderCommand::isValid() const noexcept
 {
-    return m_isValid && m_rhiShader && pipeline && pipeline->pipeline();
+    return m_isValid && m_rhiShader && pipeline.isValid();
 }
 
 bool operator==(const RenderCommand &a, const RenderCommand &b) noexcept

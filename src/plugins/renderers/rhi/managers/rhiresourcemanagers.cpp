@@ -52,7 +52,8 @@ RHIResourceManagers::RHIResourceManagers()
       m_rhiShaderManager(new RHIShaderManager()),
       m_rhiTextureManager(new RHITextureManager()),
       m_rhiRenderTargetManager(new RHIRenderTargetManager()),
-      m_rhiGraphicsPipelineManager(new RHIGraphicsPipelineManager())
+      m_rhiGraphicsPipelineManager(new RHIGraphicsPipelineManager()),
+      m_rhiComputePipelineManager(new RHIComputePipelineManager())
 {
 }
 
@@ -63,6 +64,7 @@ RHIResourceManagers::~RHIResourceManagers()
     delete m_rhiBufferManager;
     delete m_rhiRenderTargetManager;
     delete m_rhiGraphicsPipelineManager;
+    delete m_rhiComputePipelineManager;
 }
 
 void RHIResourceManagers::releaseAllResources()
@@ -82,6 +84,7 @@ void RHIResourceManagers::releaseAllResources()
     // releaseAll(m_rhiShaderManager);
     releaseAll(m_rhiRenderTargetManager);
     releaseAll(m_rhiGraphicsPipelineManager);
+    releaseAll(m_rhiComputePipelineManager);
 }
 
 int RHIGraphicsPipelineManager::getIdForAttributeVec(const std::vector<AttributeInfo> &attributesInfo)

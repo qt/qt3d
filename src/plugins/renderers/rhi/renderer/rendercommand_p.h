@@ -64,6 +64,7 @@
 #include <QMatrix4x4>
 #include <QtGui/private/qrhi_p.h>
 #include <Qt3DCore/qattribute.h>
+#include <variant>
 
 QT_BEGIN_NAMESPACE
 class QRhiGraphicsPipeline;
@@ -89,6 +90,7 @@ namespace Rhi {
 
 class RHIShader;
 class RHIGraphicsPipeline;
+class RHIComputePipeline;
 
 struct CommandUBO
 {
@@ -125,7 +127,7 @@ public:
 
     HMaterial m_material; // Purely used to ease sorting (minimize stage changes, binding changes
                           // ....)
-    RHIShader *m_rhiShader; // GL Shader to be used at render time
+    RHIShader *m_rhiShader; // Shader to be used at render time
     Qt3DCore::QNodeId m_shaderId; // Shader for given pass and mesh
     ShaderParameterPack m_parameterPack; // Might need to be reworked so as to be able to destroy
                                          // the Texture while submission is happening.
@@ -174,9 +176,35 @@ public:
     QRhiBuffer *indexBuffer {};
 
     CommandUBO m_commandUBO;
-    RHIGraphicsPipeline *pipeline {};
     QRhiShaderResourceBindings *shaderResourceBindings = nullptr;
     std::vector<QRhiShaderResourceBinding> resourcesBindings;
+
+    struct Pipeline : std::variant<std::monostate, RHIGraphicsPipeline *, RHIComputePipeline*>
+    {
+        using variant::variant;
+
+        bool isValid() const noexcept;
+
+        RHIGraphicsPipeline* graphics() const noexcept
+        {
+            auto ptr = std::get_if<RHIGraphicsPipeline*>(this);
+            return ptr ? *ptr : nullptr;
+        }
+
+        RHIComputePipeline* compute() const noexcept
+        {
+            auto ptr = std::get_if<RHIComputePipeline*>(this);
+            return ptr ? *ptr : nullptr;
+        }
+
+        template<typename F>
+        auto visit(F&& f) const noexcept(noexcept(std::visit(f, (const variant&) *this)))
+        {
+            return std::visit(f, (const variant&) *this);
+        }
+    };
+
+    Pipeline pipeline {};
 };
 
 Q_AUTOTEST_EXPORT bool operator==(const RenderCommand &a, const RenderCommand &b) noexcept;

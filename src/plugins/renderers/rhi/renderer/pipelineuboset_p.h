@@ -110,7 +110,8 @@ private:
     std::vector<const RenderCommand *> m_renderCommands;
     RHIResourceManagers *m_resourceManagers = nullptr;
 
-    friend class RHIGraphicsPipeline;
+    template<typename Pipeline, typename Key>
+    friend class RHIPipelineBase;
 };
 
 

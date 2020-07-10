@@ -50,7 +50,7 @@
 
 import QtQuick 2.0
 import QtQuick.Scene3D 2.0
-import QtQuick.Controls 1.4
+import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.1
 
 Item {
@@ -84,8 +84,8 @@ Item {
                 height: 35
                 id: stepSlider
                 Layout.fillWidth: true
-                minimumValue: 0.0
-                maximumValue: 2
+                from: 0.0
+                to: 2
                 value: 0.4
             }
         }
@@ -98,8 +98,8 @@ Item {
                 height: 35
                 id: collisionSlider
                 Layout.fillWidth: true
-                minimumValue: 0.0
-                maximumValue: 2
+                from: 0.0
+                to: 2
                 value: 0.2
             }
         }
@@ -114,31 +114,32 @@ Item {
                 text: "Particles Shape:"
                 color: "white"
             }
-            ExclusiveGroup {
+            ButtonGroup {
+                exclusive: true
                 id: particlesTypeGroup
             }
             CheckBox {
                 text: "Sphere"
                 checked: true
-                exclusiveGroup: particlesTypeGroup
+                ButtonGroup.group: particlesTypeGroup
                 onClicked: scene.particlesShape = scene._SPHERE
             }
             CheckBox
             { text: "Cube"
                 checked: false
-                exclusiveGroup: particlesTypeGroup
+                ButtonGroup.group: particlesTypeGroup
                 onClicked: scene.particlesShape = scene._CUBE
             }
             CheckBox {
                 text: "Cylinder"
                 checked: false
-                exclusiveGroup: particlesTypeGroup
+                ButtonGroup.group: particlesTypeGroup
                 onClicked: scene.particlesShape = scene._CYLINDER
             }
             CheckBox {
                 text: "Torus"
                 checked: false
-                exclusiveGroup: particlesTypeGroup
+                ButtonGroup.group: particlesTypeGroup
                 onClicked: scene.particlesShape = scene._TORUS
             }
         }
