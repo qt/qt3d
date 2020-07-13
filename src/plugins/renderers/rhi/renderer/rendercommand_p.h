@@ -104,6 +104,18 @@ struct CommandUBO
 static_assert(sizeof(CommandUBO) == 6 * (16 * sizeof(float)) + 2 * (12 * sizeof(float)),
               "UBO doesn't match std140");
 
+struct Q_AUTOTEST_EXPORT AttributeInfo
+{
+    int nameId = -1;
+    QRhiVertexInputBinding::Classification classification = QRhiVertexInputBinding::PerVertex;
+    size_t stride = 0;
+    size_t offset = 0;
+    size_t divisor = 0;
+};
+
+Q_AUTOTEST_EXPORT bool operator==(const AttributeInfo &a, const AttributeInfo &b);
+Q_AUTOTEST_EXPORT bool operator!=(const AttributeInfo &a, const AttributeInfo &b);
+
 class Q_AUTOTEST_EXPORT RenderCommand
 {
 public:
@@ -155,6 +167,7 @@ public:
     bool m_primitiveRestartEnabled;
     bool m_isValid;
 
+    std::vector<AttributeInfo> m_attributeInfo;
     QVarLengthArray<QRhiCommandBuffer::VertexInput, 8> vertex_input;
 
     const Attribute *indexAttribute {};

@@ -875,6 +875,11 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const Entity **entit
 
                 { // Scoped to show extent
 
+                    // Build of list of Attribute Layout information which
+                    // allows use to compare the layout of geometries against
+                    // one another.
+                    // { name, classification, stride, offset, divisor }
+
                     // Update the draw command with what's going to be needed for the drawing
                     int primitiveCount = geometryRenderer->vertexCount();
                     int estimatedCount = 0;
@@ -882,6 +887,8 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const Entity **entit
                     Attribute *indirectAttribute = nullptr;
 
                     const QList<Qt3DCore::QNodeId> attributeIds = geometry->attributes();
+                    command.m_attributeInfo.clear();
+                    command.m_attributeInfo.reserve(attributeIds.size());
                     for (Qt3DCore::QNodeId attributeId : attributeIds) {
                         using namespace Qt3DCore;
 
@@ -900,6 +907,14 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const Entity **entit
                         default:
                             Q_UNREACHABLE();
                             break;
+                        }
+
+                        if (attribute->attributeType() == QAttribute::VertexAttribute) {
+                            command.m_attributeInfo.push_back({ attribute->nameId(),
+                                                                attribute->divisor() == 0 ? QRhiVertexInputBinding::PerVertex : QRhiVertexInputBinding::PerInstance,
+                                                                size_t(attribute->byteStride()),
+                                                                size_t(attribute->byteOffset()),
+                                                                size_t(attribute->divisor()) });
                         }
                     }
 

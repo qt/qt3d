@@ -81,6 +81,19 @@ void RHIResourceManagers::releaseAllResources()
     releaseAll(m_rhiGraphicsPipelineManager);
 }
 
+int RHIGraphicsPipelineManager::getIdForAttributeVec(const std::vector<AttributeInfo> &attributesInfo)
+{
+    auto it = std::find(m_attributesInfo.begin(),
+                        m_attributesInfo.end(),
+                        attributesInfo);
+    if (it == m_attributesInfo.end()) {
+        m_attributesInfo.emplace_back(attributesInfo);
+        return m_attributesInfo.size() - 1;
+    }
+    return std::distance(m_attributesInfo.begin(), it);
+}
+
+
 } // Rhi
 
 } // Render

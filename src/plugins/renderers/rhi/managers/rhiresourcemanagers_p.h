@@ -58,6 +58,7 @@
 #include <rhishader_p.h>
 #include <rhigraphicspipeline_p.h>
 #include <rhirendertarget_p.h>
+#include <rendercommand_p.h>
 #include <Qt3DRender/private/apishadermanager_p.h>
 #include <Qt3DRender/private/renderstateset_p.h>
 
@@ -100,6 +101,12 @@ class Q_AUTOTEST_EXPORT RHIGraphicsPipelineManager
 {
 public:
     RHIGraphicsPipelineManager() { }
+
+    int getIdForAttributeVec(const std::vector<AttributeInfo> &attributesInfo);
+
+private:
+    using AttributeInfoVec= std::vector<AttributeInfo>;
+    std::vector<AttributeInfoVec> m_attributesInfo;
 };
 
 class Q_AUTOTEST_EXPORT RHIResourceManagers

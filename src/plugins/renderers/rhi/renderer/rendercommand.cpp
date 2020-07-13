@@ -38,7 +38,7 @@
 ****************************************************************************/
 
 #include "rendercommand_p.h"
-#include "renderer/rhigraphicspipeline_p.h"
+#include "rhigraphicspipeline_p.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -103,6 +103,20 @@ bool operator==(const RenderCommand &a, const RenderCommand &b) noexcept
             && a.m_drawIndexed == b.m_drawIndexed && a.m_drawIndirect == b.m_drawIndirect
             && a.m_primitiveRestartEnabled == b.m_primitiveRestartEnabled
             && a.m_isValid == b.m_isValid && a.m_computeCommand == b.m_computeCommand);
+}
+
+bool operator==(const AttributeInfo &a, const AttributeInfo &b)
+{
+    return a.nameId == b.nameId &&
+            a.classification == b.classification &&
+            a.stride == b.stride &&
+            a.offset == b.offset &&
+            a.divisor == b.divisor;
+}
+
+bool operator!=(const AttributeInfo &a, const AttributeInfo &b)
+{
+    return !(a == b);
 }
 
 } // namespace Rhi
