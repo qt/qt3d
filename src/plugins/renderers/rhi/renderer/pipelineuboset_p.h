@@ -76,6 +76,7 @@ public:
     {
         int binding = -1;
         int blockSize = -1;
+        size_t alignedBlockSize = 0;
         HRHIBuffer buffer;
     };
 
@@ -93,7 +94,7 @@ public:
     bool allocateUBOs(SubmissionContext *ctx);
     void uploadUBOs(SubmissionContext *ctx, RenderView *rv);
     void setResourceManager(RHIResourceManagers *manager);
-    void initializeLayout(RHIShader *shader);
+    void initializeLayout(SubmissionContext *ctx, RHIShader *shader);
 
 private:
     void releaseResources();

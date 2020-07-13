@@ -83,7 +83,7 @@ void PipelineUBOSet::setResourceManager(RHIResourceManagers *manager)
     m_resourceManagers = manager;
 }
 
-void PipelineUBOSet::initializeLayout(RHIShader *shader)
+void PipelineUBOSet::initializeLayout(SubmissionContext *ctx, RHIShader *shader)
 {
     // We should only be called with a clean Pipeline
     Q_ASSERT(m_rvUBO.buffer.isNull());
@@ -95,6 +95,7 @@ void PipelineUBOSet::initializeLayout(RHIShader *shader)
 
     m_commandsUBO.binding = 1;
     m_commandsUBO.blockSize = sizeof(CommandUBO);
+    m_commandsUBO.alignedBlockSize = ctx->rhi()->ubufAligned((m_commandsUBO.blockSize));
     m_commandsUBO.buffer = bufferManager->allocateResource();
 
     const std::vector<ShaderUniformBlock> &uniformBlocks = shader->uniformBlocks();
@@ -103,6 +104,7 @@ void PipelineUBOSet::initializeLayout(RHIShader *shader)
             m_materialsUBOs.push_back(
                         { block.m_binding,
                           block.m_size,
+                          size_t(ctx->rhi()->ubufAligned(block.m_size)),
                           bufferManager->allocateResource()});
         }
     }
@@ -136,8 +138,10 @@ bool PipelineUBOSet::allocateUBOs(SubmissionContext *ctx)
     const size_t commandCount = std::max(m_renderCommands.size(), size_t(1));
 
     // RHIBuffer only reallocates if size is < than required
-    m_rvUBO.buffer->allocate(QByteArray(m_rvUBO.blockSize, '\0'), dynamic);
-    m_commandsUBO.buffer->allocate(QByteArray(m_commandsUBO.blockSize * commandCount, '\0'), dynamic);
+    m_rvUBO.buffer->allocate(QByteArray(m_rvUBO.blockSize, '\0'), dynamic);\
+
+    // We need to take into account any minimum alignment requirement for dynamic offsets
+    m_commandsUBO.buffer->allocate(QByteArray(m_commandsUBO.alignedBlockSize * commandCount, '\0'), dynamic);
 
     // Binding buffer ensure underlying RHI resource is created
     m_rvUBO.buffer->bind(ctx, RHIBuffer::UniformBuffer);
@@ -145,7 +149,7 @@ bool PipelineUBOSet::allocateUBOs(SubmissionContext *ctx)
 
     for (const UBOBufferWithBindingAndBlockSize &ubo : m_materialsUBOs) {
         if (ubo.binding > 1) { // Binding 0 and 1 are for RV and Command UBOs
-            ubo.buffer->allocate(QByteArray(ubo.blockSize * commandCount, '\0'), dynamic);
+            ubo.buffer->allocate(QByteArray(ubo.alignedBlockSize * commandCount, '\0'), dynamic);
             ubo.buffer->bind(ctx, RHIBuffer::UniformBuffer);
         }
     }
@@ -172,10 +176,10 @@ std::vector<QRhiCommandBuffer::DynamicOffset> PipelineUBOSet::offsets(const Rend
     // RenderCommand offset
     // binding, offset
     const size_t dToCmd = distanceToCommand(cmd);
-    offsets.push_back({1, dToCmd * sizeof(CommandUBO)});
+    offsets.push_back({1, dToCmd * m_commandsUBO.alignedBlockSize});
 
     for (const UBOBufferWithBindingAndBlockSize &buffer : m_materialsUBOs)
-        offsets.push_back({buffer.binding, dToCmd * buffer.blockSize});
+        offsets.push_back({buffer.binding, dToCmd * buffer.alignedBlockSize});
 
     return offsets;
 }
@@ -359,7 +363,7 @@ void uploadUniform(const PackUniformHash &uniforms,
     QByteArray rawData;
     rawData.resize(member.size);
     memcpy(rawData.data(), value.constData<char>(), std::min(value.byteSize(), member.size));
-    ubo.buffer->update(rawData, ubo.blockSize * distanceToCommand + member.offset + arrayOffset);
+    ubo.buffer->update(rawData, ubo.alignedBlockSize * distanceToCommand + member.offset + arrayOffset);
 
 //    printUpload(value, member);
 }
@@ -376,7 +380,7 @@ void PipelineUBOSet::uploadUBOsForCommand(const RenderCommand &command,
     m_commandsUBO.buffer->update(QByteArray::fromRawData(
                                      reinterpret_cast<const char *>(&command.m_commandUBO),
                                      sizeof(CommandUBO)),
-                                 distanceToCommand * sizeof(CommandUBO));
+                                 distanceToCommand * m_commandsUBO.alignedBlockSize);
 
     const std::vector<RHIShader::UBO_Member> &uboMembers = shader->uboMembers();
     const ShaderParameterPack &parameterPack = command.m_parameterPack;

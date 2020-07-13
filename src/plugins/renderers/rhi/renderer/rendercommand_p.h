@@ -175,6 +175,8 @@ public:
 
     CommandUBO m_commandUBO;
     RHIGraphicsPipeline *pipeline {};
+    QRhiShaderResourceBindings *shaderResourceBindings = nullptr;
+    std::vector<QRhiShaderResourceBinding> resourcesBindings;
 };
 
 Q_AUTOTEST_EXPORT bool operator==(const RenderCommand &a, const RenderCommand &b) noexcept;

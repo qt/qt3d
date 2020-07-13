@@ -70,7 +70,7 @@ class RHIBuffer;
 // Geometry | Shader | RenderStateMask
 struct GraphicsPipelineIdentifier
 {
-    HGeometry geometry;
+    int geometryLayoutKey;
     Qt3DCore::QNodeId shader;
     Qt3DCore::QNodeId renderTarget;
     int renderViewIndex = 0;

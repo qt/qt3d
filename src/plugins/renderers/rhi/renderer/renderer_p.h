@@ -432,7 +432,7 @@ private:
     bool uploadBuffersForCommand(QRhiCommandBuffer *cb, const RenderView *rv,
                                  RenderCommand &command);
     bool performDraw(QRhiCommandBuffer *cb, const QRhiViewport &vp, const QRhiScissor *scissor,
-                     const RenderCommand &command);
+                     RenderCommand &command);
 };
 
 } // namespace Rhi

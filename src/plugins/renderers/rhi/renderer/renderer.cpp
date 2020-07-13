@@ -884,17 +884,17 @@ void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv,
 
     // Try to retrieve existing pipeline
     // TO DO: Make RenderState part of the Key
-    // TO DO: Compute Key based on geometry rather than using geometryId
     // as it is likely many geometrys will have the same layout
     RHIGraphicsPipelineManager *pipelineManager = m_RHIResourceManagers->rhiGraphicsPipelineManager();
-    const GraphicsPipelineIdentifier pipelineKey { cmd.m_geometry, cmd.m_shaderId, rv->renderTargetId(), renderViewIndex };
+    const int geometryLayoutId = pipelineManager->getIdForAttributeVec(cmd.m_attributeInfo);
+    const GraphicsPipelineIdentifier pipelineKey { geometryLayoutId, cmd.m_shaderId, rv->renderTargetId(), renderViewIndex };
     RHIGraphicsPipeline *graphicsPipeline = pipelineManager->lookupResource(pipelineKey);
     if (graphicsPipeline == nullptr) {
         // Init UBOSet the first time we allocate a new pipeline
         graphicsPipeline = pipelineManager->getOrCreateResource(pipelineKey);
         graphicsPipeline->setKey(pipelineKey);
         graphicsPipeline->uboSet()->setResourceManager(m_RHIResourceManagers);
-        graphicsPipeline->uboSet()->initializeLayout(cmd.m_rhiShader);
+        graphicsPipeline->uboSet()->initializeLayout(m_submissionContext.data(), cmd.m_rhiShader);
     }
 
     // Increase score so that we know the pipeline was used for this frame and shouldn't be
@@ -2346,7 +2346,7 @@ bool Renderer::uploadBuffersForCommand(QRhiCommandBuffer *cb, const RenderView *
 }
 
 bool Renderer::performDraw(QRhiCommandBuffer *cb, const QRhiViewport &vp,
-                           const QRhiScissor *scissor, const RenderCommand &command)
+                           const QRhiScissor *scissor, RenderCommand &command)
 {
     RHIGraphicsPipeline *pipeline = command.pipeline;
     if (!pipeline)
@@ -2362,17 +2362,27 @@ bool Renderer::performDraw(QRhiCommandBuffer *cb, const QRhiViewport &vp,
     // have different textures or reference custom UBOs (if using Parameters with UBOs directly).
     // TO DO: We could propably check for texture and use the UBO set default ShaderResourceBindings
     // if we only have UBOs with offsets
-    const std::vector<QRhiShaderResourceBinding> resourcesBindings = pipeline->uboSet()->resourceBindings(command);
-    const std::vector<QRhiCommandBuffer::DynamicOffset> offsets = pipeline->uboSet()->offsets(command);
-    QRhiShaderResourceBindings *shaderResourceBindings = m_submissionContext->rhi()->newShaderResourceBindings();
-    shaderResourceBindings->setBindings(resourcesBindings.cbegin(), resourcesBindings.cend());
-    if (!shaderResourceBindings->create()) {
+    bool needsRecreate = false;
+    if (command.shaderResourceBindings == nullptr) {
+        command.shaderResourceBindings = m_submissionContext->rhi()->newShaderResourceBindings();
+        needsRecreate = true;
+    }
+
+    // TO DO: Improve this to only perform when required
+    const std::vector<QRhiShaderResourceBinding> &resourcesBindings = pipeline->uboSet()->resourceBindings(command);
+    if (command.resourcesBindings != resourcesBindings) {
+        command.resourcesBindings = std::move(resourcesBindings);
+        command.shaderResourceBindings->setBindings(command.resourcesBindings.cbegin(), command.resourcesBindings.cend());
+        needsRecreate = true;
+    }
+
+    if (needsRecreate && !command.shaderResourceBindings->create()) {
         qCWarning(Backend) << "Failed to create ShaderResourceBindings";
         return false;
     }
+    const std::vector<QRhiCommandBuffer::DynamicOffset> offsets = pipeline->uboSet()->offsets(command);
 
-    // TO DO: Use UBO set shaderResourcesBindings
-    cb->setShaderResources(pipeline->pipeline()->shaderResourceBindings(),
+    cb->setShaderResources(command.shaderResourceBindings,
                            offsets.size(),
                            offsets.data());
 
@@ -2506,7 +2516,7 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
         }
 
         // Render drawing commands
-        rv->forEachCommand([&] (const RenderCommand &command) {
+        rv->forEachCommand([&] (RenderCommand &command) {
             if (Q_UNLIKELY(!command.isValid()))
                 return;
 

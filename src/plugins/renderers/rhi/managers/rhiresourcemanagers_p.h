@@ -136,7 +136,7 @@ private:
 
 inline uint qHash(const GraphicsPipelineIdentifier &key, uint seed = 0)
 {
-    const QPair<HGeometry, Qt3DCore::QNodeId> p = { key.geometry, key.shader };
+    const QPair<int, Qt3DCore::QNodeId> p = { key.geometryLayoutKey, key.shader };
     using QT_PREPEND_NAMESPACE(qHash);
     seed = qHash(p, seed);
     seed = qHash(key.renderTarget, seed);
@@ -146,7 +146,7 @@ inline uint qHash(const GraphicsPipelineIdentifier &key, uint seed = 0)
 
 inline bool operator==(const GraphicsPipelineIdentifier &a, const GraphicsPipelineIdentifier &b)
 {
-    return a.geometry == b.geometry &&
+    return a.geometryLayoutKey == b.geometryLayoutKey &&
            a.shader == b.shader &&
            a.renderTarget == b.renderTarget &&
            a.renderViewIndex == b.renderViewIndex;
