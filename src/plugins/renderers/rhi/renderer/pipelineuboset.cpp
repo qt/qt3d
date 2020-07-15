@@ -336,34 +336,19 @@ void printUpload(const UniformValue &value, const QShaderDescription::BlockVaria
 }
 
 void uploadUniform(const PackUniformHash &uniforms,
-                   const RHIShader::UBO_Member &uboMember,
-                   const std::vector<PipelineUBOSet::UBOBufferWithBindingAndBlockSize> &uboBuffers,
-                   const QString &uniformName, const QShaderDescription::BlockVariable &member,
+                   const PipelineUBOSet::UBOBufferWithBindingAndBlockSize &ubo,
+                   const RHIShader::UBO_Member &member,
                    size_t distanceToCommand, int arrayOffset = 0)
 {
-    const int uniformNameId = StringToInt::lookupId(uniformName);
-
-    if (!uniforms.contains(uniformNameId))
+    if (!uniforms.contains(member.nameId))
         return;
 
-    const UniformValue value = uniforms.value(uniformNameId);
-    const ShaderUniformBlock block = uboMember.block;
-
-    // Update UBO with uniform value
-    auto it = std::find_if(uboBuffers.begin(), uboBuffers.end(), [&block] (const PipelineUBOSet::UBOBufferWithBindingAndBlockSize &buffer) {
-        return buffer.binding == block.m_binding;
-    });
-
-    if (it == uboBuffers.end()) {
-        return;
-    }
-
-    const PipelineUBOSet::UBOBufferWithBindingAndBlockSize &ubo = *it;
+    const UniformValue value = uniforms.value(member.nameId);
 
     QByteArray rawData;
-    rawData.resize(member.size);
-    memcpy(rawData.data(), value.constData<char>(), std::min(value.byteSize(), member.size));
-    ubo.buffer->update(rawData, ubo.alignedBlockSize * distanceToCommand + member.offset + arrayOffset);
+    rawData.resize(member.blockVariable.size);
+    memcpy(rawData.data(), value.constData<char>(), std::min(value.byteSize(), member.blockVariable.size));
+    ubo.buffer->update(rawData, ubo.alignedBlockSize * distanceToCommand + member.blockVariable.offset + arrayOffset);
 
 //    printUpload(value, member);
 }
@@ -382,40 +367,49 @@ void PipelineUBOSet::uploadUBOsForCommand(const RenderCommand &command,
                                      sizeof(CommandUBO)),
                                  distanceToCommand * m_commandsUBO.alignedBlockSize);
 
-    const std::vector<RHIShader::UBO_Member> &uboMembers = shader->uboMembers();
+    const std::vector<RHIShader::UBO_Block> &uboBlocks = shader->uboBlocks();
     const ShaderParameterPack &parameterPack = command.m_parameterPack;
     const PackUniformHash &uniforms = parameterPack.uniforms();
 
     // Update Buffer CPU side data based on uniforms being set
-    for (const RHIShader::UBO_Member &uboMember : uboMembers) {
+    for (const RHIShader::UBO_Block &uboBlock : uboBlocks) {
 
         // No point in trying to update Bindings 0 or 1 which are reserved
         // for Qt3D default uniforms
-        if (uboMember.block.m_binding <= 1)
+        const ShaderUniformBlock &block = uboBlock.block;
+        if (block.m_binding <= 1)
             continue;
 
-        for (const QShaderDescription::BlockVariable &member : qAsConst(uboMember.members)) {
-            if (!member.arrayDims.empty()) {
-                if (!member.structMembers.empty()) {
-                    const int arr0 = member.arrayDims[0];
+        // Update UBO with uniform value
+        auto it = std::find_if(m_materialsUBOs.begin(), m_materialsUBOs.end(), [&block] (const PipelineUBOSet::UBOBufferWithBindingAndBlockSize &buffer) {
+            return buffer.binding == block.m_binding;
+        });
+
+        if (it == m_materialsUBOs.end())
+            continue;
+
+        const PipelineUBOSet::UBOBufferWithBindingAndBlockSize &ubo = *it;
+
+        for (const RHIShader::UBO_Member &member : qAsConst(uboBlock.members)) {
+            const QShaderDescription::BlockVariable &blockVariable = member.blockVariable;
+            if (!blockVariable.arrayDims.empty()) {
+                if (!blockVariable.structMembers.empty()) {
+                    const int arr0 = blockVariable.arrayDims[0];
                     for (int i = 0; i < arr0; i++) {
-                        for (const QShaderDescription::BlockVariable &structMember :
-                             member.structMembers) {
-                            const QString processedName = member.name + "[" + QString::number(i)
-                                    + "]." + structMember.name;
-                            uploadUniform(uniforms, uboMember, m_materialsUBOs,
-                                          processedName, structMember,
+                        for (const RHIShader::UBO_Member &structMember : member.structMembers) {
+                            uploadUniform(uniforms, ubo,
+                                          structMember,
                                           distanceToCommand,
-                                          i * member.size / arr0);
+                                          i * blockVariable.size / arr0);
                         }
                     }
                 } else {
-                    uploadUniform(uniforms, uboMember, m_materialsUBOs,
-                                  member.name, member, distanceToCommand);
+                    uploadUniform(uniforms, ubo,
+                                  member, distanceToCommand);
                 }
             } else {
-                uploadUniform(uniforms, uboMember, m_materialsUBOs,
-                              member.name, member, distanceToCommand);
+                uploadUniform(uniforms, ubo,
+                              member, distanceToCommand);
             }
         }
     }

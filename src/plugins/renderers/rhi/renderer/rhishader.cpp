@@ -325,9 +325,10 @@ void forEachArrayAccessor(const QList<int> &maxs, F f)
 }
 }
 
-void RHIShader::recordAllUniforms(const QShaderDescription::BlockVariable &member,
+void RHIShader::recordAllUniforms(UBO_Member &uboMember,
                                   QString parentName)
 {
+    const QShaderDescription::BlockVariable &member = uboMember.blockVariable;
     const bool isStruct = !member.structMembers.empty();
     const bool isArray = !member.arrayDims.empty();
 
@@ -340,8 +341,11 @@ void RHIShader::recordAllUniforms(const QShaderDescription::BlockVariable &membe
         m_structNamesIds.push_back(StringToInt::lookupId(fullMemberName));
 
         for (const QShaderDescription::BlockVariable& bv : member.structMembers) {
+            UBO_Member innerMember {StringToInt::lookupId(fullMemberName), bv, {}};
             // recordAllUniforms("baz", "foo.bar.")
-            recordAllUniforms(bv, fullMemberName + QLatin1Char('.'));
+            const QString structMemberNamePrefix = fullMemberName + QLatin1Char('.');
+            recordAllUniforms(innerMember, structMemberNamePrefix);
+            uboMember.structMembers.push_back(innerMember);
         }
     } else if (!isStruct && isArray) {
         // We iterate through all the [l][n][m] by building [0][0][0] and incrementing
@@ -363,9 +367,16 @@ void RHIShader::recordAllUniforms(const QShaderDescription::BlockVariable &membe
         for (const QShaderDescription::BlockVariable& bv : member.structMembers) {
             forEachArrayAccessor(member.arrayDims, [&] (const QString& str) {
                 //recordAllUniforms("baz", "foo.bar[1][2].")
-                recordAllUniforms(bv, fullMemberName + str + QLatin1Char('.'));
+                const QString structMemberNamePrefix = fullMemberName + str + QLatin1Char('.');
+                UBO_Member innerMember {StringToInt::lookupId(structMemberNamePrefix), bv, {}};
+                recordAllUniforms(innerMember, structMemberNamePrefix);
+                uboMember.structMembers.push_back(innerMember);
             });
         }
+    } else {
+        // Final member (not array or struct)
+        // Replace nameId with final nameId name
+        uboMember.nameId = StringToInt::lookupId(fullMemberName);
     }
 }
 
@@ -451,13 +462,20 @@ void RHIShader::introspect()
         // member
         m_uniformsNamesIds.reserve(m_uniformsNamesIds.size() + ubo.members.size());
 
+        std::vector<UBO_Member> uboMembers;
+        uboMembers.reserve(ubo.members.size());
+
         for (const QShaderDescription::BlockVariable &member : qAsConst(ubo.members)) {
-            m_uniformsNamesIds.push_back(StringToInt::lookupId(member.name));
-            if (addUnqualifiedUniforms) {
-                recordAllUniforms(member, QStringLiteral(""));
-            }
+            const int nameId = StringToInt::lookupId(member.name);
+            m_uniformsNamesIds.push_back(nameId);
+
+            UBO_Member uboMember {nameId, member, {}};
+            if (addUnqualifiedUniforms)
+                recordAllUniforms(uboMember, QStringLiteral(""));
+            uboMembers.push_back(uboMember);
         }
-        m_uboMembers.push_back(UBO_Member{ uniformBlocks.back(), ubo.members });
+
+        m_uboBlocks.push_back(UBO_Block{ uniformBlocks.back(), uboMembers });
     }
 
     for (const QShaderDescription::StorageBlock &ssbo : rhiSSBO) {
@@ -561,32 +579,6 @@ void RHIShader::setShaderCode(const std::vector<QByteArray> &shaderCode)
 {
     m_shaderCode.clear();
     Qt3DCore::append(m_shaderCode, shaderCode);
-}
-
-void RHIShader::prepareUniforms(ShaderParameterPack &pack)
-{
-
-    const PackUniformHash &values = pack.uniforms();
-
-    auto it = values.keys.cbegin();
-    const auto end = values.keys.cend();
-
-    const int shaderUniformsCount = m_uniforms.size();
-    const auto uIt = m_uniforms.cbegin();
-
-    while (it != end) {
-        // Find if there's a uniform with the same name id
-
-        int i = 0;
-        const int targetNameId = *it;
-        while (i < shaderUniformsCount && (uIt + i)->m_nameId < targetNameId)
-            ++i;
-
-        if (i < shaderUniformsCount && (uIt + i)->m_nameId == targetNameId)
-            pack.setSubmissionUniformIndex(i);
-
-        ++it;
-    }
 }
 
 void RHIShader::setFragOutputs(const QHash<QString, int> &fragOutputs)

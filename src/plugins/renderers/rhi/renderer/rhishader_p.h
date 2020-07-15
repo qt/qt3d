@@ -69,18 +69,24 @@ namespace Rhi {
 class Q_AUTOTEST_EXPORT RHIShader
 {
 public:
+
     struct UBO_Member
     {
+        int nameId;
+        QShaderDescription::BlockVariable blockVariable;
+        std::vector<UBO_Member> structMembers;
+    };
+
+    struct UBO_Block
+    {
         ShaderUniformBlock block;
-        QList<QShaderDescription::BlockVariable> members;
+        std::vector<UBO_Member> members;
     };
 
     RHIShader();
 
     bool isLoaded() const { return m_isLoaded; }
     void setLoaded(bool loaded) { m_isLoaded = loaded; }
-
-    void prepareUniforms(ShaderParameterPack &pack);
 
     void setFragOutputs(const QHash<QString, int> &fragOutputs);
     const QHash<QString, int> fragOutputs() const;
@@ -125,7 +131,7 @@ public:
     const std::vector<QByteArray> &shaderCode() const;
 
     const QShader &shaderStage(QShader::Stage stage) const noexcept { return m_stages[stage]; }
-    std::vector<UBO_Member> uboMembers() const { return m_uboMembers; }
+    const std::vector<UBO_Block> &uboBlocks() const { return m_uboBlocks; }
 
     const QSet<QString> &unqualifiedUniformNames() const noexcept
     {
@@ -179,9 +185,9 @@ private:
     initializeShaderStorageBlocks(const std::vector<ShaderStorageBlock> &shaderStorageBlockDescription);
     void initializeSamplers(const std::vector<ShaderAttribute> &samplerDescription);
     void initializeImages(const std::vector<ShaderAttribute> &imageDescription);
-    void recordAllUniforms(const QShaderDescription::BlockVariable &ubo, QString parentName);
+    void recordAllUniforms(UBO_Member &uboMember, QString parentName);
 
-    std::vector<UBO_Member> m_uboMembers;
+    std::vector<UBO_Block> m_uboBlocks;
 
     mutable QMutex m_mutex;
     QMetaObject::Connection m_contextConnection;

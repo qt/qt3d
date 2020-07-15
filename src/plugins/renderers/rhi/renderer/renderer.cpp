@@ -1256,9 +1256,6 @@ Renderer::prepareCommandsSubmission(const std::vector<RenderView *> &renderViews
                 if (rGeometryRenderer->isDirty())
                     rGeometryRenderer->unsetDirty();
 
-                // Prepare the ShaderParameterPack based on the active uniforms of the shader
-                //  shader->prepareUniforms(command.m_parameterPack);
-
                 updateGraphicsPipeline(command, rv, i);
 
             } else if (command.m_type == RenderCommand::Compute) {
