@@ -441,6 +441,19 @@ public:
             Allocator::releaseResource(handle);
     }
 
+    // Releases all resources referenced by a key
+    // Resources allocated manually with just a handle aren't releases
+    void releaseAllResources()
+    {
+        typename LockingPolicy<QResourceManager>::WriteLocker lock(this);
+        // Make a copy as releaseResource removes the entry in m_activeHanldes
+        const std::vector<Handle> activeHandles = Allocator::activeHandles();
+        for (const Handle &h : activeHandles)
+            Allocator::releaseResource(h);
+        // Clear Key to Handle Map
+        m_keyToHandleMap.clear();
+    }
+
 protected:
     QHash<KeyType, Handle > m_keyToHandleMap;
 

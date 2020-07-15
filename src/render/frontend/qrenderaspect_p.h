@@ -71,7 +71,7 @@ QT_BEGIN_NAMESPACE
 
 class QSurface;
 class QScreen;
-
+class QRhi;
 namespace Qt3DRender {
 
 class QSceneImporter;
@@ -113,9 +113,6 @@ public:
     void unregisterBackendTypes();
     void loadSceneParsers();
     void loadRenderPlugin(const QString &pluginName);
-    void renderInitialize(QOpenGLContext *context);
-    void render(bool swapBuffers = true);
-    void renderShutdown();
     void registerBackendType(const QMetaObject &, const Qt3DCore::QBackendNodeMapperPtr &functor);
     std::vector<Qt3DCore::QAspectJobPtr> createGeometryRendererJobs() const;
     std::vector<Qt3DCore::QAspectJobPtr> createPreRendererJobs() const;

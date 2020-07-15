@@ -51,6 +51,7 @@ enum class API {
     Vulkan,
     DirectX,
     Metal,
+    RHI,
     Null
 };
 

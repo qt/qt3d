@@ -499,7 +499,8 @@ static QShader::Stage rhiShaderStage(QShaderProgram::ShaderType type) noexcept
 } // anonymous
 
 SubmissionContext::SubmissionContext()
-    : m_ownCurrent(true),
+    : m_ownsRhiCtx(false),
+      m_drivenExternally(false),
       m_id(nextFreeContextId()),
       m_surface(nullptr),
       m_renderTargetFormat(QAbstractTexture::NoFormat),
@@ -509,7 +510,9 @@ SubmissionContext::SubmissionContext()
       m_initialized(false),
       m_rhi(nullptr),
       m_currentSwapChain(nullptr),
-      m_currentRenderPassDescriptor(nullptr)
+      m_currentRenderPassDescriptor(nullptr),
+      m_defaultRenderTarget(nullptr),
+      m_defaultCommandBuffer(nullptr)
 #ifndef QT_NO_OPENGL
       ,
       m_fallbackSurface(nullptr)
@@ -534,9 +537,15 @@ SubmissionContext::~SubmissionContext()
 void SubmissionContext::initialize()
 {
     m_initialized = true;
-    // m_textureContext.initialize(this);
 
-    Qt3DRender::API requestedApi = Qt3DRender::API::OpenGL;
+    // If the RHI instance was already set (Scene3D)
+    // no point in continuing below;
+    if (m_rhi)
+        return;
+
+    m_ownsRhiCtx = true;
+
+    Qt3DRender::API requestedApi = Qt3DRender::API::RHI;
     const auto userRequestedApi = qgetenv("QT3D_RHI_DEFAULT_API").toLower();
     if (!userRequestedApi.isEmpty()) {
         if (userRequestedApi == QByteArrayLiteral("opengl")) {
@@ -550,6 +559,19 @@ void SubmissionContext::initialize()
         } else if (userRequestedApi == QByteArrayLiteral("null")) {
             requestedApi = Qt3DRender::API::Null;
         }
+    }
+
+    // If nothing specified, deduce best backend API based on platform
+    if (requestedApi == Qt3DRender::API::RHI) {
+#if defined(Q_OS_WIN)
+        requestedApi = Qt3DRender::API::DirectX;
+#elif defined(Q_OS_MACOS) || defined(Q_OS_IOS)
+        requestedApi = Qt3DRender::API::Metal;
+#elif QT_CONFIG(opengl)
+        requestedApi = Qt3DRender::API::OpenGL;
+#else
+        requestedApi = Qt3DRender::API::Vulkan;
+#endif
     }
 
     QRhi::Flags rhiFlags = QRhi::EnableDebugMarkers;
@@ -601,31 +623,15 @@ void SubmissionContext::initialize()
     Q_ASSERT(m_rhi != nullptr);
 }
 
-void SubmissionContext::resolveRenderTargetFormat()
+void SubmissionContext::setDrivenExternally(bool drivenExternally)
 {
-    RHI_UNIMPLEMENTED;
+    Q_ASSERT(!m_initialized);
+    m_drivenExternally = drivenExternally;
+}
 
-    //*     const QSurfaceFormat format = m_gl->format();
-    //*     const uint a = (format.alphaBufferSize() == -1) ? 0 : format.alphaBufferSize();
-    //*     const uint r = format.redBufferSize();
-    //*     const uint g = format.greenBufferSize();
-    //*     const uint b = format.blueBufferSize();
-    //*
-    //* #define RGBA_BITS(r,g,b,a) (r | (g << 6) | (b << 12) | (a << 18))
-    //*
-    //*     const uint bits = RGBA_BITS(r,g,b,a);
-    //*     switch (bits) {
-    //*     case RGBA_BITS(8,8,8,8):
-    //*         m_renderTargetFormat = QAbstractTexture::RGBA8_UNorm;
-    //*         break;
-    //*     case RGBA_BITS(8,8,8,0):
-    //*         m_renderTargetFormat = QAbstractTexture::RGB8_UNorm;
-    //*         break;
-    //*     case RGBA_BITS(5,6,5,0):
-    //*         m_renderTargetFormat = QAbstractTexture::R5G6B5;
-    //*         break;
-    //*     }
-    //* #undef RGBA_BITS
+bool SubmissionContext::drivenExternally() const
+{
+    return m_drivenExternally;
 }
 
 bool SubmissionContext::beginDrawing(QSurface *surface)
@@ -634,10 +640,14 @@ bool SubmissionContext::beginDrawing(QSurface *surface)
 
     m_surface = surface;
 
-    // TODO: cache surface format somewhere rather than doing this every time render surface changes
-    resolveRenderTargetFormat();
-
     Q_ASSERT(isInitialized());
+
+    // In the Scene3D case it does not make sense to create SwapChains as we
+    // can only record commands that will be used against QtQuick default's
+    // swap chain. Also when rendering through Scene3D, QtQuick takes care of
+    // beginning the frame
+    if (m_drivenExternally)
+        return true;
 
     // Check if we have a swapchain for the Window, if not create one
     SwapChainInfo *swapChainInfo = swapChainForSurface(surface);
@@ -653,16 +663,17 @@ bool SubmissionContext::beginDrawing(QSurface *surface)
     m_currentSwapChain = swapChain;
     m_currentRenderPassDescriptor = swapChainInfo->renderPassDescriptor;
 
-    // Begin Frame
     const auto success = m_rhi->beginFrame(m_currentSwapChain);
-
     return success == QRhi::FrameOpSuccess;
 }
 
 void SubmissionContext::endDrawing(bool swapBuffers)
 {
     Q_UNUSED(swapBuffers);
-    m_rhi->endFrame(m_currentSwapChain, {});
+    const bool shouldEndFrame = !m_drivenExternally;
+    // When rendering through Scene3D, QtQuick takes care of ending the frame
+    if (shouldEndFrame)
+        m_rhi->endFrame(m_currentSwapChain, {});
 }
 
 QImage SubmissionContext::readFramebuffer(const QRect &rect)
@@ -836,7 +847,9 @@ void SubmissionContext::releaseResources()
             it = m_swapChains.erase(it);
         }
 
-        delete m_rhi;
+        // Only destroy RHI context if we created it
+        if (m_ownsRhiCtx)
+            delete m_rhi;
         m_rhi = nullptr;
 
 #ifndef QT_NO_OPENGL
@@ -850,6 +863,24 @@ void SubmissionContext::releaseResources()
     //*        m_debugLogger->stopLogging();
     //*        m_debugLogger.reset(nullptr);
     //*    }
+}
+
+// Called when Scene3D is used
+void SubmissionContext::setRHIContext(QRhi *ctx)
+{
+    m_rhi = ctx;
+}
+
+// Scene3D
+void SubmissionContext::setDefaultRenderTarget(QRhiRenderTarget *target)
+{
+    m_defaultRenderTarget = target;
+}
+
+// Scene3D
+void SubmissionContext::setCommandBuffer(QRhiCommandBuffer *commandBuffer)
+{
+    m_defaultCommandBuffer = commandBuffer;
 }
 
 void SubmissionContext::bindFrameBufferAttachmentHelper(GLuint fboId,
@@ -1149,12 +1180,22 @@ SubmissionContext::SwapChainInfo *SubmissionContext::swapChainForSurface(QSurfac
 
 QRhiCommandBuffer *SubmissionContext::currentFrameCommandBuffer() const
 {
+    // When rendering with Scene3D, we have to use the Command Buffer provided by QtQuick
+    // When Qt3D renders on its own, we use our own Command Buffer which we can
+    // retrieve from the current Swap Chain
+    if (m_defaultCommandBuffer)
+        return m_defaultCommandBuffer;
     return m_currentSwapChain->currentFrameCommandBuffer();
 }
 
 QRhiRenderTarget *SubmissionContext::currentFrameRenderTarget() const
 {
     return m_currentSwapChain->currentFrameRenderTarget();
+}
+
+QRhiRenderTarget *SubmissionContext::defaultRenderTarget() const
+{
+    return m_defaultRenderTarget;
 }
 
 QRhiSwapChain *SubmissionContext::currentSwapChain() const

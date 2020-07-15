@@ -247,6 +247,7 @@ Renderer::Renderer()
       m_exposed(0),
       m_lastFrameCorrect(0),
       m_glContext(nullptr),
+      m_rhiContext(nullptr),
       m_time(0),
       m_settings(nullptr),
       m_updateShaderDataTransformJob(Render::UpdateShaderDataTransformJobPtr::create()),
@@ -265,7 +266,6 @@ Renderer::Renderer()
               [this](Qt3DCore::QAspectManager *m) { sendShaderChangesToFrontend(m); },
               JobTypes::DirtyShaderGathering)),
       m_ownedContext(false),
-      m_offscreenHelper(nullptr),
       m_RHIResourceManagers(nullptr),
       m_commandExecuter(new Qt3DRender::Debug::CommandExecuter(this)),
       m_shouldSwapBuffers(true)
@@ -316,7 +316,24 @@ void Renderer::dumpInfo() const
 
 API Renderer::api() const
 {
-    return API::OpenGL;
+    return API::RHI;
+}
+
+// When Scene3D is driving rendering:
+// - Don't create SwapChains
+// - Use the defaultRenderTarget if no renderTarget specified instead of the
+//   swapChain
+// - Use the provided commandBuffer
+void Renderer::setRenderDriver(AbstractRenderer::RenderDriver driver)
+{
+    // This must be called before initialize which creates the submission context
+    Q_ASSERT(!m_submissionContext);
+    m_driver = driver;
+}
+
+AbstractRenderer::RenderDriver Renderer::renderDriver() const
+{
+    return m_driver;
 }
 
 qint64 Renderer::time() const
@@ -397,6 +414,30 @@ void Renderer::setOpenGLContext(QOpenGLContext *context)
     m_glContext = context;
 }
 
+void Renderer::setRHIContext(QRhi *ctx)
+{
+    m_rhiContext = ctx;
+}
+
+// Called by Scene3D
+void Renderer::setDefaultRHIRenderTarget(QRhiRenderTarget *defaultTarget)
+{
+    Q_ASSERT(m_submissionContext);
+    m_submissionContext->setDefaultRenderTarget(defaultTarget);
+
+    // When the defaultTarget changes, we have to recreate all QRhiGraphicsPipelines
+    // to ensure they match new DefaultRenderTargetLayout. This is potentially expensive
+    RHIGraphicsPipelineManager *pipelineManager = m_RHIResourceManagers->rhiGraphicsPipelineManager();
+    pipelineManager->releaseAllResources();
+}
+
+// Called by Scene3D
+void Renderer::setRHICommandBuffer(QRhiCommandBuffer *commandBuffer)
+{
+    Q_ASSERT(m_submissionContext);
+    m_submissionContext->setCommandBuffer(commandBuffer);
+}
+
 void Renderer::setScreen(QScreen *scr)
 {
     m_screen = scr;
@@ -449,6 +490,11 @@ void Renderer::initialize()
     QMutexLocker lock(&m_hasBeenInitializedMutex);
     m_submissionContext.reset(new SubmissionContext);
     m_submissionContext->setRenderer(this);
+
+    if (m_driver == AbstractRenderer::Scene3D) {
+        m_submissionContext->setRHIContext(m_rhiContext);
+        m_submissionContext->setDrivenExternally(true);
+    }
 
     // RHI initialization
     {
@@ -534,53 +580,6 @@ void Renderer::releaseGraphicsResources()
     // check that we haven't already cleaned up before going any further.
     if (!m_submissionContext)
         return;
-
-    // Try to temporarily make the context current so we can free up any resources
-    QMutexLocker locker(&m_offscreenSurfaceMutex);
-    QOffscreenSurface *offscreenSurface = m_offscreenHelper->offscreenSurface();
-    if (!offscreenSurface) {
-        qCWarning(Backend) << "Failed to make context current: OpenGL resources will not be destroyed";
-        // We still need to delete the submission context
-        m_submissionContext.reset(nullptr);
-        return;
-    }
-
-    //* QOpenGLContext *context = m_submissionContext->openGLContext();
-    //* Q_ASSERT(context);
-    //*
-    //* if (context->thread() == QThread::currentThread() && context->makeCurrent(offscreenSurface))
-    //{
-    //*
-    //*     // Clean up the graphics context and any resources
-    //*     const std::vector<HRHITexture> activeTexturesHandles =
-    //m_RHIResourceManagers->rhiTextureManager()->activeHandles();
-    //*     for (const HRHITexture &textureHandle : activeTexturesHandles) {
-    //*         RHITexture *tex = m_RHIResourceManagers->rhiTextureManager()->data(textureHandle);
-    //*         tex->destroy();
-    //*     }
-    //*
-    //*     // Do the same thing with buffers
-    //*     const std::vector<HRHIBuffer> activeBuffers =
-    //m_RHIResourceManagers->rhiBufferManager()->activeHandles();
-    //*     for (const HRHIBuffer &bufferHandle : activeBuffers) {
-    //*         RHIBuffer *buffer = m_RHIResourceManagers->rhiBufferManager()->data(bufferHandle);
-    //*         buffer->destroy(m_submissionContext.data());
-    //*     }
-    //*
-    //*     // Do the same thing with shaders
-    //*     const std::vector<RHIShader *> shaders =
-    //m_RHIResourceManagers->rhiShaderManager()->takeActiveResources();
-    //*     qDeleteAll(shaders);
-    //*
-    //*
-    //*     context->doneCurrent();
-    //* } else {
-    //*     qCWarning(Backend) << "Failed to make context current: OpenGL resources will not be destroyed";
-    //* }
-    //*
-    //* if (m_ownedContext)
-    //*     delete context;
-
     m_submissionContext.reset(nullptr);
 
     qCDebug(Backend) << Q_FUNC_INFO << "Renderer properly shutdown";
@@ -807,16 +806,6 @@ QVariant Renderer::executeCommand(const QStringList &args)
     return m_commandExecuter->executeCommand(args);
 }
 
-/*!
-    \internal
-    Called in the context of the aspect thread from QRenderAspect::onRegistered
-*/
-void Renderer::setOffscreenSurfaceHelper(OffscreenSurfaceHelper *helper)
-{
-    QMutexLocker locker(&m_offscreenSurfaceMutex);
-    m_offscreenHelper = helper;
-}
-
 QSurfaceFormat Renderer::format()
 {
     return m_submissionContext->format();
@@ -908,8 +897,6 @@ void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv,
     if (auto& pipelines = m_rvToPipelines[rv]; !Qt3DCore::contains(pipelines, graphicsPipeline))
         pipelines.push_back(graphicsPipeline);
 
-    // TO DO: Record active pipelines in the RenderView
-
     // Record RHIGraphicsPipeline into command for later use
     cmd.pipeline = graphicsPipeline;
 
@@ -933,10 +920,18 @@ void Renderer::buildGraphicsPipelines(RHIGraphicsPipeline *graphicsPipeline,
 
     // Note: we can rebuild add/remove things from the QRhiShaderResourceBindings after having
     // created the pipeline and rebuild it. Changes should be picked up automatically
-    const SubmissionContext::SwapChainInfo *swapchain =
-            m_submissionContext->swapChainForSurface(rv->surface());
-    if (!swapchain || !swapchain->swapChain || !swapchain->renderPassDescriptor)
-        return;
+
+    // If a defaultRenderTarget was set (Scene3D) we don't bother retrieving the swapchain
+    // as we have to use the one provided by Scene3D
+    QRhiSwapChain *rhiSwapChain = nullptr;
+    if (!m_submissionContext->defaultRenderTarget()) {
+        const SubmissionContext::SwapChainInfo *swapchain = m_submissionContext->swapChainForSurface(rv->surface());
+        if (!swapchain || !swapchain->swapChain || !swapchain->renderPassDescriptor) {
+            qCWarning(Backend) << "Can't create pipeline, incomplete SwapChain and no default Render Target";
+            return;
+        }
+        rhiSwapChain = swapchain->swapChain;
+    }
 
     auto onFailure = [&] {
         qCWarning(Backend) << "Failed to build pipeline";
@@ -1019,7 +1014,7 @@ void Renderer::buildGraphicsPipelines(RHIGraphicsPipeline *graphicsPipeline,
     m_submissionContext->applyStateSet(renderState, pipeline);
 
     // Setup potential texture render target
-    const bool renderTargetIsSet = setupRenderTarget(rv, graphicsPipeline, swapchain->swapChain);
+    const bool renderTargetIsSet = setupRenderTarget(rv, graphicsPipeline, rhiSwapChain);
     if (!renderTargetIsSet)
         return onFailure();
 
@@ -1133,7 +1128,9 @@ void Renderer::createRenderTarget(RenderView *rv, RHIRenderTarget *target)
     target->depthStencilBuffer = ds;
 }
 
-bool Renderer::setupRenderTarget(RenderView *rv, RHIGraphicsPipeline *graphicsPipeline, QRhiSwapChain *swapchain)
+bool Renderer::setupRenderTarget(RenderView *rv,
+                                 RHIGraphicsPipeline *graphicsPipeline,
+                                 QRhiSwapChain *swapchain)
 {
     QRhiGraphicsPipeline *rhiPipeline = graphicsPipeline->pipeline();
 
@@ -1163,13 +1160,18 @@ bool Renderer::setupRenderTarget(RenderView *rv, RHIGraphicsPipeline *graphicsPi
                 rhiRenderTargetManager->nodeIdForRHIRenderTarget.insert(rhiTarget, renderTargetId);
             }
         }
-
         rhiPipeline->setRenderPassDescriptor(rhiTarget->renderPassDescriptor);
         rhiPipeline->setSampleCount(rhiTarget->renderTarget->sampleCount());
-
+        return true;
+    } else if (m_submissionContext->defaultRenderTarget()) {
+        // Use default RenderTarget if set Default FBO set by Scene3D
+        QRhiRenderTarget *defaultTarget = m_submissionContext->defaultRenderTarget();;
+        rhiPipeline->setRenderPassDescriptor(defaultTarget->renderPassDescriptor());
+        rhiPipeline->setSampleCount(defaultTarget->sampleCount());
         return true;
     } else {
-        // Render to the default framebuffer
+        Q_ASSERT(swapchain);
+        // Render to the default framebuffer on our swapchain
         rhiPipeline->setRenderPassDescriptor(swapchain->renderPassDescriptor());
         rhiPipeline->setSampleCount(swapchain->sampleCount());
         return true;
@@ -1871,6 +1873,8 @@ Renderer::submitRenderViews(const std::vector<RHIPassInfo> &rhiPassesInfo)
         const bool surfaceHasChanged = surface != previousSurface;
 
         if (surfaceHasChanged && previousSurface) {
+            // TO DO: Warn that this likely won't work with Scene3D
+
             // TODO what should be the swapBuffers condition for RHI ?
             // lastRenderTarget == swapChain->renderTarget or something like that ?
             const bool swapBuffers = surfaceLock.isSurfaceValid() && m_shouldSwapBuffers;
@@ -1879,6 +1883,8 @@ Renderer::submitRenderViews(const std::vector<RHIPassInfo> &rhiPassesInfo)
         }
 
         if (surfaceHasChanged) {
+            // TO DO: Warn that this likely won't work with Scene3D
+
             // If we can't make the context current on the surface, skip to the
             // next RenderView. We won't get the full frame but we may get something
             if (!m_submissionContext->beginDrawing(surface)) {
@@ -2455,11 +2461,12 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
         auto &renderTargetManager = *managers.rhiRenderTargetManager();
         auto *renderTarget = renderTargetManager.lookupResource(passInfo.renderTargetId);
 
-        if (renderTarget) {
+        if (renderTarget)
             rhiRenderTarget = renderTarget->renderTarget;
-        } else {
+        else if (m_submissionContext->defaultRenderTarget())
+            rhiRenderTarget = m_submissionContext->defaultRenderTarget();
+        else
             rhiRenderTarget = m_submissionContext->currentSwapChain()->currentFrameRenderTarget();
-        }
     }
 
     // TO DO: should be moved elsewhere

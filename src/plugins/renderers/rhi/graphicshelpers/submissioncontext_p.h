@@ -124,10 +124,16 @@ public:
     int id() const; // unique, small integer ID of this context
     void setRenderer(Renderer *renderer) { m_renderer = renderer; }
 
+    void setDrivenExternally(bool drivenExternally);
+    bool drivenExternally() const;
+
     bool beginDrawing(QSurface *surface);
     void endDrawing(bool swapBuffers);
     void releaseResources();
     void setOpenGLContext(QOpenGLContext *ctx);
+    void setRHIContext(QRhi *ctx);
+    void setDefaultRenderTarget(QRhiRenderTarget *target);
+    void setCommandBuffer(QRhiCommandBuffer *commandBuffer);
     bool isInitialized() const { return m_initialized; }
     const GraphicsApiFilterData *contextInfo() const;
 
@@ -186,6 +192,7 @@ public:
     QRhi *rhi() const { return m_rhi; }
     QRhiCommandBuffer *currentFrameCommandBuffer() const;
     QRhiRenderTarget *currentFrameRenderTarget() const;
+    QRhiRenderTarget *defaultRenderTarget() const;
     QRhiRenderPassDescriptor *currentRenderPassDescriptor() const;
     QRhiSwapChain *currentSwapChain() const;
     QSurfaceFormat format() const noexcept;
@@ -194,7 +201,6 @@ private:
     // FBO
     void bindFrameBufferAttachmentHelper(GLuint fboId, const AttachmentPack &attachments);
     void activateDrawBuffers(const AttachmentPack &attachments);
-    void resolveRenderTargetFormat();
     // Buffers
     HRHIBuffer createRHIBufferFor(Buffer *buffer);
     void uploadDataToRHIBuffer(Buffer *buffer, RHIBuffer *b);
@@ -204,7 +210,8 @@ private:
     // States
     void applyState(const StateVariant &state, QRhiGraphicsPipeline *graphicsPipeline);
 
-    bool m_ownCurrent;
+    bool m_ownsRhiCtx;
+    bool m_drivenExternally;
     const unsigned int m_id;
     QSurface *m_surface;
     QSize m_surfaceSize;
@@ -227,6 +234,8 @@ private:
     QHash<QSurface *, SwapChainInfo> m_swapChains;
     QRhiSwapChain *m_currentSwapChain;
     QRhiRenderPassDescriptor *m_currentRenderPassDescriptor;
+    QRhiRenderTarget *m_defaultRenderTarget;
+    QRhiCommandBuffer *m_defaultCommandBuffer;
 
 #ifndef QT_NO_OPENGL
     QOffscreenSurface *m_fallbackSurface;

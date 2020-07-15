@@ -315,6 +315,16 @@ void Renderer::dumpInfo() const
     qDebug() << *textureImageManager;
 }
 
+void Renderer::setRenderDriver(AbstractRenderer::RenderDriver driver)
+{
+    m_driver = driver;
+}
+
+AbstractRenderer::RenderDriver Renderer::renderDriver() const
+{
+    return  m_driver;
+}
+
 qint64 Renderer::time() const
 {
     return m_time;

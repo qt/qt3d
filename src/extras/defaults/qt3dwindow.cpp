@@ -262,7 +262,11 @@ void setupWindowSurface(QWindow *window, Qt3DRender::API api) noexcept
             api = Qt3DRender::API::DirectX;
         } else if (userRequestedApi == QByteArrayLiteral("null")) {
             api = Qt3DRender::API::Null;
+        } else if (userRequestedApi == QByteArrayLiteral("auto")) {
+            api = Qt3DRender::API::RHI;
         }
+    } else {
+        api = Qt3DRender::API::RHI;
     }
 
     // We have to set the environment so that the backend is able to read it.
@@ -294,6 +298,7 @@ void setupWindowSurface(QWindow *window, Qt3DRender::API api) noexcept
         break;
     }
 #endif
+    case Qt3DRender::API::RHI:
     default:
         break;
     }

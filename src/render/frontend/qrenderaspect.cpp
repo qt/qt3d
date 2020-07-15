@@ -630,29 +630,6 @@ QRenderAspect::~QRenderAspect()
 {
 }
 
-// Called by Scene3DRenderer only
-void QRenderAspectPrivate::renderInitialize(QOpenGLContext *context)
-{
-    if (m_renderer->api() == API::OpenGL)
-        m_renderer->setOpenGLContext(context);
-    m_renderer->initialize();
-}
-
-/*! \internal */
-void QRenderAspectPrivate::render(bool swapBuffers)
-{
-    m_renderer->render(swapBuffers);
-}
-
-/*
- * \internal
- * Only called when rendering with QtQuick 2 and a Scene3D item
- */
-void QRenderAspectPrivate::renderShutdown()
-{
-    m_renderer->shutdown();
-}
-
 std::vector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
 {
     using namespace Render;

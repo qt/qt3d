@@ -172,6 +172,9 @@ public:
     void dumpInfo() const override;
     API api() const override { return Qt3DRender::API::OpenGL; }
 
+    void setRenderDriver(RenderDriver driver) override;
+    RenderDriver renderDriver() const override;
+
     qint64 time() const override;
     void setTime(qint64 time) override;
     void setJobsInLastFrame(int jobsInLastFrame) override;
@@ -258,8 +261,11 @@ public:
     bool requiresVAOAttributeUpdate(Geometry *geometry,
                                     const RenderCommand *command) const;
 
-    // For Scene2D rendering
+    // For Scene3D/Scene2D rendering
     void setOpenGLContext(QOpenGLContext *context) override;
+    void setRHIContext(QRhi *) override {};
+    void setDefaultRHIRenderTarget(QRhiRenderTarget *) override {};
+    void setRHICommandBuffer(QRhiCommandBuffer *) override {};
     bool accessOpenGLTexture(Qt3DCore::QNodeId nodeId,
                              QOpenGLTexture **texture,
                              QMutex **lock,
@@ -410,6 +416,7 @@ private:
     QMetaObject::Connection m_contextConnection;
     RendererCache<RenderCommand> m_cache;
     bool m_shouldSwapBuffers;
+    RenderDriver m_driver = RenderDriver::Qt3D;
 
     std::vector<FrameGraphNode *> m_frameGraphLeaves;
     QScreen *m_screen = nullptr;

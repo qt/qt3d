@@ -168,6 +168,9 @@ public:
     void dumpInfo() const override;
     API api() const override;
 
+    void setRenderDriver(AbstractRenderer::RenderDriver driver) override;
+    AbstractRenderer::RenderDriver renderDriver() const override;
+
     qint64 time() const override;
     void setTime(qint64 time) override;
     void setJobsInLastFrame(int jobsInLastFrame) override;
@@ -265,8 +268,11 @@ public:
     std::vector<RHIPassInfo> prepareCommandsSubmission(const std::vector<RenderView *> &renderViews);
     bool executeCommandsSubmission(const RHIPassInfo &passInfo);
 
-    // For Scene2D rendering
+    // For Scene3D/Scene2D rendering
     void setOpenGLContext(QOpenGLContext *context) override;
+    void setRHIContext(QRhi *ctx) override;
+    void setDefaultRHIRenderTarget(QRhiRenderTarget *defaultTarget) override;
+    void setRHICommandBuffer(QRhiCommandBuffer *commandBuffer) override;
     bool accessOpenGLTexture(Qt3DCore::QNodeId nodeId, QOpenGLTexture **texture, QMutex **lock,
                              bool readonly) override;
     QSharedPointer<RenderBackendResourceAccessor> resourceAccessor() const override;
@@ -282,8 +288,8 @@ public:
     void enqueueRenderView(RenderView *renderView, int submitOrder);
     bool waitUntilReadyToSubmit();
 
-    QVariant executeCommand(const QStringList &args) override;
-    void setOffscreenSurfaceHelper(OffscreenSurfaceHelper *helper) override;
+    QVariant executeCommand(const QStringList &args);
+    void setOffscreenSurfaceHelper(OffscreenSurfaceHelper *) override {};
     QSurfaceFormat format() override;
 
     struct ViewSubmissionResultData
@@ -345,6 +351,7 @@ private:
 
     QAtomicInt m_lastFrameCorrect;
     QOpenGLContext *m_glContext;
+    QRhi *m_rhiContext;
 
     qint64 m_time;
 
@@ -387,7 +394,6 @@ private:
 
     bool m_ownedContext;
 
-    OffscreenSurfaceHelper *m_offscreenHelper;
     RHIResourceManagers *m_RHIResourceManagers;
     QMutex m_offscreenSurfaceMutex;
 
@@ -405,6 +411,7 @@ private:
     QScreen *m_screen = nullptr;
     QSharedPointer<ResourceAccessor> m_scene2DResourceAccessor;
     QHash<RenderView *, std::vector<RHIGraphicsPipeline *>> m_rvToPipelines;
+    RenderDriver m_driver = RenderDriver::Qt3D;
 
     bool m_hasSwapChain = false;
 

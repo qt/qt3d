@@ -68,6 +68,9 @@ RHIResourceManagers::~RHIResourceManagers()
 void RHIResourceManagers::releaseAllResources()
 {
     auto releaseAll = [](auto *manager) noexcept {
+        // Release all resources reference by a key
+        manager->releaseAllResources();
+        // Release remaining resources which were allocated manually but had no key
         const auto handles = manager->activeHandles();
         for (const auto &handle : handles) {
             manager->release(handle);

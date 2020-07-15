@@ -747,7 +747,7 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
     const bool hasScene3DViews = !m_views.empty();
     Scene3DSGNode *fboNode = static_cast<Scene3DSGNode *>(node);
 
-    // When usin Scene3DViews or Scene3D in Underlay mode
+    // When using Scene3DViews or Scene3D in Underlay mode
     // we shouldn't be managing a Scene3DSGNode
     if (!usesFBO || hasScene3DViews) {
         if (fboNode != nullptr) {

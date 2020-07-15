@@ -61,6 +61,7 @@
 #include <Qt3DRender/QRenderSettings>
 #include <Qt3DRender/QRenderSurfaceSelector>
 #include <Qt3DRender/private/qrenderaspect_p.h>
+#include <Qt3DRender/private/abstractrenderer_p.h>
 
 
 class ManualRenderer
@@ -69,6 +70,7 @@ public:
     ManualRenderer()
         : m_aspectEngine(new Qt3DCore::QAspectEngine())
         , m_renderAspect(new Qt3DRender::QRenderAspect(Qt3DRender::QRenderAspect::Manual))
+        , m_renderer(nullptr)
     {
     }
 
@@ -86,7 +88,9 @@ public:
 
         Qt3DRender::QRenderAspectPrivate *dRenderAspect = static_cast<decltype(dRenderAspect)>
                 (Qt3DRender::QRenderAspectPrivate::get(m_renderAspect));
-        dRenderAspect->renderInitialize(glCtx);
+        m_renderer = dRenderAspect->m_renderer;
+        m_renderer->setOpenGLContext(glCtx);
+        m_renderer->initialize();
 
         m_rootEntity.reset(createSceneTree(window));
         m_aspectEngine->setRootEntity(m_rootEntity);
@@ -100,9 +104,7 @@ public:
         m_aspectEngine->processFrame();
         qDebug() << Q_FUNC_INFO << "Rendering Frame";
         // Submit Render Queues
-        Qt3DRender::QRenderAspectPrivate *dRenderAspect = static_cast<decltype(dRenderAspect)>
-                (Qt3DRender::QRenderAspectPrivate::get(m_renderAspect));
-        dRenderAspect->render(true);
+        m_renderer->render(true);
     }
 
 private:
@@ -167,6 +169,7 @@ private:
     Qt3DCore::QEntityPtr m_rootEntity;
     Qt3DCore::QAspectEngine *m_aspectEngine;
     Qt3DRender::QRenderAspect *m_renderAspect;
+    Qt3DRender::Render::AbstractRenderer *m_renderer;
 };
 
 int main(int ac, char **av)

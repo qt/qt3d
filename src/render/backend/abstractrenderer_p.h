@@ -69,6 +69,9 @@ class QScreen;
 class QOpenGLTexture;
 class QMouseEvent;
 class QKeyEvent;
+class QRhi;
+class QRhiRenderTarget;
+class QRhiCommandBuffer;
 
 namespace Qt3DCore {
 class QAbstractFrameAdvanceService;
@@ -118,9 +121,16 @@ public:
     };
     Q_DECLARE_FLAGS(BackendNodeDirtySet, BackendNodeDirtyFlag)
 
+    enum RenderDriver {
+        Qt3D,
+        Scene3D,
+    };
+
     virtual void dumpInfo() const = 0;
 
     virtual API api() const = 0;
+    virtual void setRenderDriver(RenderDriver driver) = 0;
+    virtual RenderDriver renderDriver() const = 0;
 
     virtual qint64 time() const = 0;
     virtual void setTime(qint64 time) = 0;
@@ -172,8 +182,11 @@ public:
 
     virtual QVariant executeCommand(const QStringList &args) = 0;
 
-    // For QtQuick rendering (Scene2D)
+    // For QtQuick rendering (Scene3D/2D)
     virtual void setOpenGLContext(QOpenGLContext *ctx) = 0;
+    virtual void setRHIContext(QRhi *ctx) = 0;
+    virtual void setDefaultRHIRenderTarget(QRhiRenderTarget *defaultTarget) = 0;
+    virtual void setRHICommandBuffer(QRhiCommandBuffer *commandBuffer) = 0;
     virtual void setScreen(QScreen *) {}
     virtual QScreen *screen() const { return nullptr; }
     virtual bool accessOpenGLTexture(Qt3DCore::QNodeId nodeId, QOpenGLTexture **texture, QMutex **lock, bool readonly) = 0;

@@ -59,6 +59,11 @@
 
 QT_BEGIN_NAMESPACE
 
+class QRhi;
+class QRhiTextureRenderTarget;
+class QRhiRenderBuffer;
+class QRhiTexture;
+class QRhiRenderPassDescriptor;
 class QQuickWindow;
 class QSGTexture;
 class QOpenGLFramebufferObject;
@@ -73,6 +78,10 @@ class QRenderAspect;
 class Scene3DCleaner;
 class Scene3DSGNode;
 class Scene3DViews;
+
+namespace Render {
+class AbstractRenderer;
+}
 
 class Scene3DRenderer : public QObject
 {
@@ -94,31 +103,83 @@ public:
         return m_renderAspect;
     }
 public Q_SLOTS:
-    void render();
     void shutdown();
     void onSceneGraphInvalidated();
     void onWindowChanged(QQuickWindow *w);
 
 private:
-    QOpenGLFramebufferObject *createMultisampledFramebufferObject(const QSize &size);
-    QOpenGLFramebufferObject *createFramebufferObject(const QSize &size);
-    void beforeSynchronize();
     void scheduleRootEntityChange();
+
+    class QuickRenderer
+    {
+    public:
+        // ctor/dtor cannot be inlined because of QScopedPointer with forward
+        // declared class
+        QuickRenderer();
+        virtual ~QuickRenderer();
+        virtual void initialize(Scene3DRenderer *scene3DRenderer,
+                                Qt3DRender::Render::AbstractRenderer *renderer) = 0;
+        virtual void beforeSynchronize(Scene3DRenderer *scene3DRenderer) = 0;
+        virtual void beforeRendering(Scene3DRenderer *scene3DRenderer) = 0;
+        virtual void beforeRenderPassRecording(Scene3DRenderer *scene3DRenderer) = 0;
+        virtual void shutdown(Scene3DRenderer *sceneRenderer) = 0;
+
+    protected:
+        bool m_lastMultisample = false;
+        QSize m_lastSize;
+        QScopedPointer<QSGTexture> m_texture;
+        Qt3DRender::Render::AbstractRenderer *m_renderer = nullptr;
+    };
+
+    class GLRenderer : public QuickRenderer
+    {
+    public:
+        QOpenGLFramebufferObject *createMultisampledFramebufferObject(const QSize &size);
+        QOpenGLFramebufferObject *createFramebufferObject(const QSize &size);
+
+        void initialize(Scene3DRenderer *scene3DRenderer,
+                        Qt3DRender::Render::AbstractRenderer *renderer) override;
+        void beforeSynchronize(Scene3DRenderer *scene3DRenderer) override;
+        void beforeRendering(Scene3DRenderer *scene3DRenderer) override;
+        void beforeRenderPassRecording(Scene3DRenderer *scene3DRenderer) override;
+        void shutdown(Scene3DRenderer *sceneRenderer) override;
+
+    private:
+        QScopedPointer<QOpenGLFramebufferObject> m_multisampledFBO;
+        QScopedPointer<QOpenGLFramebufferObject> m_finalFBO;
+        bool m_multisample = false;
+        quint32 m_textureId = 0;
+    };
+
+    class RHIRenderer : public QuickRenderer
+    {
+    public:
+        void initialize(Scene3DRenderer *scene3DRenderer,
+                        Qt3DRender::Render::AbstractRenderer *renderer) override;
+        void beforeSynchronize(Scene3DRenderer *scene3DRenderer) override;
+        void beforeRendering(Scene3DRenderer *scene3DRenderer) override;
+        void beforeRenderPassRecording(Scene3DRenderer *scene3DRenderer) override;
+        void shutdown(Scene3DRenderer *sceneRenderer) override;
+
+    private:
+        void releaseRHIResources();
+
+        QRhiTexture *m_rhiTexture = nullptr;
+        QRhiRenderBuffer *m_rhiColorRenderBuffer = nullptr;
+        QRhiRenderBuffer *m_rhiMSAARenderBuffer = nullptr;
+        QRhiRenderBuffer *m_rhiDepthRenderBuffer = nullptr;
+        QRhiTextureRenderTarget *m_rhiRenderTarget = nullptr;
+        QRhiRenderPassDescriptor *m_rhiRenderTargetPassDescriptor = nullptr;
+        QRhi *m_rhi = nullptr;
+    };
 
     Scene3DItem *m_item; // Will be released by the QQuickWindow/QML Engine
     Qt3DCore::QAspectEngine *m_aspectEngine; // Will be released by the Scene3DItem
     QRenderAspect *m_renderAspect; // Will be released by the aspectEngine
-    QScopedPointer<QOpenGLFramebufferObject> m_multisampledFBO;
-    QScopedPointer<QOpenGLFramebufferObject> m_finalFBO;
-    QScopedPointer<QSGTexture> m_texture;
     Scene3DSGNode *m_node; // Will be released by the QtQuick SceneGraph
     QQuickWindow *m_window;
     QMutex m_windowMutex;
-    QSize m_lastSize;
-    bool m_multisample;
-    bool m_lastMultisample;
     bool m_needsShutdown;
-    bool m_forceRecreate;
     bool m_shouldRender;
     bool m_dirtyViews;
     bool m_skipFrame;
@@ -126,7 +187,7 @@ private:
     Scene3DItem::CompositingMode m_compositingMode;
     QList<Scene3DView *> m_views;
     bool m_resetRequested = false;
-    quint32 m_textureId;
+    QuickRenderer *m_quickRenderer = nullptr;
 
     friend class Scene3DItem;
 };
