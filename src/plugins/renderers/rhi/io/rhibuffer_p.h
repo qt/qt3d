@@ -81,6 +81,7 @@ public:
 
     bool bind(SubmissionContext *ctx, Type t);
     void destroy();
+    void destroyOrphaned();
     void allocate(const QByteArray &data, bool dynamic = true);
     void update(const QByteArray &data, int offset = 0);
     QByteArray download(SubmissionContext *ctx, uint size);
@@ -97,6 +98,8 @@ private:
     int m_allocSize {};
 
     QRhiBuffer *m_rhiBuffer {};
+
+    std::vector<QRhiBuffer *> m_buffersToCleanup;
 
     std::vector<std::pair<QByteArray /*data*/, int /*offset*/>> m_datasToUpload;
 };

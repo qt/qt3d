@@ -2561,6 +2561,12 @@ void Renderer::cleanGraphicsResources()
     for (Qt3DCore::QNodeId bufferId : buffersToRelease)
         m_submissionContext->releaseBuffer(bufferId);
 
+    const RHIBufferManager *bufferManager = m_RHIResourceManagers->rhiBufferManager();
+    const std::vector<HRHIBuffer> &activeBufferHandles = bufferManager->activeHandles();
+    // Release internal QRhiBuffer that might have been orphaned
+    for (const HRHIBuffer &bufferH : activeBufferHandles)
+        bufferH->destroyOrphaned();
+
     // When Textures are cleaned up, their id is saved so that they can be
     // cleaned up in the render thread
     const QList<Qt3DCore::QNodeId> cleanedUpTextureIds = std::move(m_textureIdsToCleanup);

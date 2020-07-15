@@ -116,17 +116,32 @@ bool RHIBuffer::bind(SubmissionContext *ctx, Type t)
 void RHIBuffer::destroy()
 {
     if (m_rhiBuffer) {
-        m_rhiBuffer->destroy();
         delete m_rhiBuffer;
         m_rhiBuffer = nullptr;
     }
+    destroyOrphaned();
     m_allocSize = 0;
 }
 
+void RHIBuffer::destroyOrphaned()
+{
+    for (QRhiBuffer *oldBuffer : m_buffersToCleanup)
+        delete oldBuffer;
+    m_buffersToCleanup.clear();
+}
+
+// Note: when we orphan, we have to keep the previous QRhiBuffer alive until
+// after frame has been submitted. This is because we might have already stored
+// updates in the RHI Command Buffers for the buffer that is about to be
+// destroyed. We therefore have to wait until command buffer has been submitted
+// until we can destroy the buffer.
 void RHIBuffer::orphan()
 {
     m_datasToUpload.clear();
-    destroy();
+    if (m_rhiBuffer) {
+        m_buffersToCleanup.push_back(m_rhiBuffer);
+        m_rhiBuffer = nullptr;
+    }
 }
 
 void RHIBuffer::allocate(const QByteArray &data, bool dynamic)
