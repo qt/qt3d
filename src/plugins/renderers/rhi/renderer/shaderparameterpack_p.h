@@ -138,12 +138,10 @@ struct PackUniformHash
         }
     }
 
-    UniformValue value(int key) const noexcept
+    const UniformValue &value(int key) const
     {
         const int idx = indexForKey(key);
-        if (idx != -1)
-            return values.at(idx);
-        return UniformValue();
+        return values[idx];
     }
 
     UniformValue &value(int key)

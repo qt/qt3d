@@ -343,11 +343,9 @@ void uploadUniform(const PackUniformHash &uniforms,
     if (!uniforms.contains(member.nameId))
         return;
 
-    const UniformValue value = uniforms.value(member.nameId);
+    const UniformValue &value = uniforms.value(member.nameId);
 
-    QByteArray rawData;
-    rawData.resize(member.blockVariable.size);
-    memcpy(rawData.data(), value.constData<char>(), std::min(value.byteSize(), member.blockVariable.size));
+    const QByteArray rawData = QByteArray::fromRawData(value.constData<char>(), std::min(value.byteSize(), member.blockVariable.size));
     ubo.buffer->update(rawData, ubo.alignedBlockSize * distanceToCommand + member.blockVariable.offset + arrayOffset);
 
 //    printUpload(value, member);
