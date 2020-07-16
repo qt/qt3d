@@ -71,11 +71,6 @@ class Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DScreenRayCasterPrivate : publi
 public:
     explicit Quick3DScreenRayCasterPrivate() : QAbstractRayCasterPrivate() { }
 
-    QJSValue m_jsHits;
-    QQmlEngine *m_engine = nullptr;
-
-    void dispatchHits(const QAbstractRayCaster::Hits &hits) override;
-
     Q_DECLARE_PUBLIC(Quick3DScreenRayCaster)
 };
 

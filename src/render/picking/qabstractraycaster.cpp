@@ -39,10 +39,14 @@
 
 #include "qabstractraycaster.h"
 #include "qabstractraycaster_p.h"
+#include <Qt3DCore/qaspectengine.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/private/qcomponent_p.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qaspectengine_p.h>
 #include <Qt3DRender/qlayer.h>
+#include <Qt3DRender/qrenderaspect.h>
+#include <Qt3DRender/private/qrenderaspect_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -69,6 +73,24 @@ void QAbstractRayCasterPrivate::updateHitEntites(QAbstractRayCaster::Hits &hits,
 {
     for (int i = 0; i < hits.size(); i++)
         hits[i].setEntity(qobject_cast<Qt3DCore::QEntity *>(scene->lookupNode(hits[i].entityId())));
+}
+
+QAbstractRayCaster::Hits QAbstractRayCasterPrivate::pick()
+{
+    Qt3DRender::QRenderAspect *renderAspect = nullptr;
+    const auto aspects = m_scene->engine()->aspects();
+    for (auto a: aspects) {
+        renderAspect = qobject_cast<Qt3DRender::QRenderAspect *>(a);
+        if (renderAspect)
+            break;
+    }
+    if (!renderAspect)
+        return {};
+
+    Q_Q(QAbstractRayCaster);
+    auto dRenderAspect = Qt3DRender::QRenderAspectPrivate::get(renderAspect);
+    dispatchHits(dRenderAspect->m_rayCastingJob->pick(q));
+    return m_hits;
 }
 
 void QAbstractRayCasterPrivate::dispatchHits(const QAbstractRayCaster::Hits &hits)

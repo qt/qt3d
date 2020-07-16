@@ -83,7 +83,6 @@ Entity {
 
     Buffer {
         id: vertexBuffer
-        type: Buffer.VertexBuffer
         data: buildVertexBufferData(root.origin, root.direction, root.length)
     }
 

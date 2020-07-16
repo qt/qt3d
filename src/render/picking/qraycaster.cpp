@@ -203,6 +203,16 @@ void QRayCaster::trigger(const QVector3D &origin, const QVector3D &direction, fl
     setEnabled(true);
 }
 
+QAbstractRayCaster::Hits QRayCaster::pick(const QVector3D &origin, const QVector3D &direction, float length)
+{
+    setOrigin(origin);
+    setDirection(direction);
+    setLength(length);
+
+    auto d = QAbstractRayCasterPrivate::get(this);
+    return d->pick();
+}
+
 } // Qt3DRender
 
 QT_END_NAMESPACE

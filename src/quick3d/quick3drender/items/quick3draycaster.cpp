@@ -43,77 +43,11 @@
 
 #include <Qt3DCore/QEntity>
 
-#include <QQmlEngine>
-#include <QJSValue>
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
 namespace Quick {
-
-void Quick3DRayCasterPrivate::dispatchHits(const QAbstractRayCaster::Hits &hits)
-{
-    m_hits = hits;
-    updateHitEntites(m_hits, m_scene);
-
-    Q_Q(Quick3DRayCaster);
-    if (!m_engine)
-        m_engine = qmlEngine(q->parent());
-
-    m_jsHits = convertHits(m_hits, m_engine);
-
-    bool v = q->blockNotifications(true);
-    emit q->hitsChanged(m_jsHits);
-    q->blockNotifications(v);
-}
-
-QJSValue Quick3DRayCasterPrivate::convertHits(const QAbstractRayCaster::Hits &hits, QQmlEngine *engine)
-{
-    auto jsHits = engine->newArray(hits.length());
-    for (int i=0; i<hits.size(); i++) {
-        QJSValue v = engine->newObject();
-        v.setProperty(QLatin1String("type"), hits[i].type());
-        v.setProperty(QLatin1String("entity"), engine->newQObject(hits[i].entity()));
-        v.setProperty(QLatin1String("distance"), hits[i].distance());
-        {
-            QJSValue p = engine->newObject();
-            p.setProperty(QLatin1String("x"), hits[i].localIntersection().x());
-            p.setProperty(QLatin1String("y"), hits[i].localIntersection().y());
-            p.setProperty(QLatin1String("z"), hits[i].localIntersection().z());
-            v.setProperty(QLatin1String("localIntersection"), p);
-        }
-        {
-            QJSValue p = engine->newObject();
-            p.setProperty(QLatin1String("x"), hits[i].worldIntersection().x());
-            p.setProperty(QLatin1String("y"), hits[i].worldIntersection().y());
-            p.setProperty(QLatin1String("z"), hits[i].worldIntersection().z());
-            v.setProperty(QLatin1String("worldIntersection"), p);
-        }
-
-        switch (hits[i].type()) {
-        case Qt3DRender::QRayCasterHit::TriangleHit:
-            v.setProperty(QLatin1String("primitiveIndex"), hits[i].primitiveIndex());
-            v.setProperty(QLatin1String("vertex1Index"), hits[i].vertex1Index());
-            v.setProperty(QLatin1String("vertex2Index"), hits[i].vertex2Index());
-            v.setProperty(QLatin1String("vertex3Index"), hits[i].vertex3Index());
-            break;
-        case Qt3DRender::QRayCasterHit::LineHit:
-            v.setProperty(QLatin1String("primitiveIndex"), hits[i].primitiveIndex());
-            v.setProperty(QLatin1String("vertex1Index"), hits[i].vertex1Index());
-            v.setProperty(QLatin1String("vertex2Index"), hits[i].vertex2Index());
-            break;
-        case Qt3DRender::QRayCasterHit::PointHit:
-            v.setProperty(QLatin1String("primitiveIndex"), hits[i].primitiveIndex());
-            break;
-        default: break;
-        }
-
-        jsHits.setProperty(i, v);
-    }
-
-    return jsHits;
-}
 
 void Quick3DRayCasterPrivate::appendLayer(QQmlListProperty<QLayer> *list, QLayer *layer)
 {
@@ -134,7 +68,7 @@ int Quick3DRayCasterPrivate::layerCount(QQmlListProperty<QLayer> *list)
 {
     QAbstractRayCaster *filter = qobject_cast<QAbstractRayCaster *>(list->object);
     if (filter)
-        return filter->layers().count();
+        return int(filter->layers().size());
     return 0;
 }
 
@@ -153,15 +87,9 @@ Quick3DRayCaster::Quick3DRayCaster(QObject *parent)
 {
 }
 
-QJSValue Quick3DRayCaster::hits() const
-{
-    Q_D(const Quick3DRayCaster);
-    return d->m_jsHits;
-}
-
 QQmlListProperty<Qt3DRender::QLayer> Qt3DRender::Render::Quick::Quick3DRayCaster::qmlLayers()
 {
-    return QQmlListProperty<QLayer>(this, 0,
+    return QQmlListProperty<QLayer>(this, nullptr,
                                     &Quick3DRayCasterPrivate::appendLayer,
                                     &Quick3DRayCasterPrivate::layerCount,
                                     &Quick3DRayCasterPrivate::layerAt,

@@ -69,16 +69,11 @@ class Quick3DRayCasterPrivate;
 class Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DRayCaster : public QRayCaster
 {
     Q_OBJECT
-    Q_PROPERTY(QJSValue hits READ hits NOTIFY hitsChanged)
     Q_PROPERTY(QQmlListProperty<Qt3DRender::QLayer> layers READ qmlLayers)
 public:
-    explicit Quick3DRayCaster(QObject *parent = 0);
+    explicit Quick3DRayCaster(QObject *parent = nullptr);
 
-    QJSValue hits() const;
     QQmlListProperty<QLayer> qmlLayers();
-
-Q_SIGNALS:
-    void hitsChanged(const QJSValue &hits);
 
 private:
     Q_DECLARE_PRIVATE(Quick3DRayCaster)

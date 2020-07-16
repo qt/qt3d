@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "qraycasterhit.h"
+#include <Qt3DCore/qentity.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -50,6 +51,10 @@ public:
     QRayCasterHitData(QRayCasterHit::HitType type, Qt3DCore::QNodeId id, float distance,
                       const QVector3D &localIntersect, const QVector3D &worldIntersect,
                       uint primitiveIndex, uint v1 = 0, uint v2 = 0, uint v3 = 0);
+    QRayCasterHitData(const QRayCasterHitData& other) : m_type(other.m_type), m_entityId(other.m_entityId), m_entity(other.m_entity),
+                                                        m_distance(other.m_distance), m_localIntersection(other.m_localIntersection),
+                                                        m_worldIntersection(other.m_worldIntersection), m_primitiveIndex(other.m_primitiveIndex),
+                                                        m_vertex1Index(other.m_vertex1Index), m_vertex2Index(other.m_vertex2Index), m_vertex3Index(other.m_vertex3Index) { }
 
     QRayCasterHit::HitType m_type = QRayCasterHit::EntityHit;
     Qt3DCore::QNodeId m_entityId;
@@ -121,7 +126,6 @@ QRayCasterHit::QRayCasterHit(QRayCasterHit::HitType type, Qt3DCore::QNodeId id, 
                              uint primitiveIndex, uint v1, uint v2, uint v3)
     : d(new QRayCasterHitData(type, id, distance, localIntersect, worldIntersect, primitiveIndex, v1, v2, v3))
 {
-
 }
 
 QRayCasterHit::QRayCasterHit(const QRayCasterHit &other)
@@ -219,6 +223,38 @@ uint QRayCasterHit::vertex2Index() const
 uint QRayCasterHit::vertex3Index() const
 {
     return d->m_vertex3Index;
+}
+
+QString QRayCasterHit::toString()
+{
+    QString res;
+    if (!d->m_entity)
+        return QLatin1String("{}");
+    if (d->m_entity->objectName().length())
+        res = d->m_entity->objectName();
+    else
+        res = QLatin1String("Entity");
+
+    res += QString(QLatin1String(" (%1)  Distance: %2  Local: (%3, %4, %5)  World: (%6, %7, %8)"))
+               .arg(d->m_entity->id().id()).arg(double(d->m_distance))
+               .arg(double(d->m_localIntersection.x())).arg(double(d->m_localIntersection.y())).arg(double(d->m_localIntersection.z()))
+               .arg(double(d->m_worldIntersection.x())).arg(double(d->m_worldIntersection.y())).arg(double(d->m_worldIntersection.z()));
+
+    switch (d->m_type) {
+    case TriangleHit:
+        res += QString(QLatin1String("  Type: Triangle  Index: %1  Vertices: %2 / %3 / %4")).arg(d->m_primitiveIndex).arg(d->m_vertex1Index).arg(d->m_vertex2Index).arg(d->m_vertex3Index);
+        break;
+    case LineHit:
+        res += QString(QLatin1String("  Type: Line  Index: %1  Vertices: %2 / %3")).arg(d->m_primitiveIndex).arg(d->m_vertex1Index).arg(d->m_vertex2Index);
+        break;
+    case PointHit:
+        res += QString(QLatin1String("  Type: Point  Index: %1")).arg(d->m_primitiveIndex);
+        break;
+    case EntityHit:
+        res += QLatin1String("  Type: Entity");
+        break;
+    }
+    return res;
 }
 
 /*! \internal */

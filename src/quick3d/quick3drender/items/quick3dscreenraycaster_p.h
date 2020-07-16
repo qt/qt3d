@@ -56,8 +56,6 @@
 #include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
 #include <Qt3DQuick/private/quick3dnode_p.h>
 
-#include <QtQml/QJSValue>
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
@@ -69,16 +67,11 @@ class Quick3DScreenRayCasterPrivate;
 class Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DScreenRayCaster : public QScreenRayCaster
 {
     Q_OBJECT
-    Q_PROPERTY(QJSValue hits READ hits NOTIFY hitsChanged)
     Q_PROPERTY(QQmlListProperty<Qt3DRender::QLayer> layers READ qmlLayers)
 public:
-    explicit Quick3DScreenRayCaster(QObject *parent = 0);
+    explicit Quick3DScreenRayCaster(QObject *parent = nullptr);
 
-    QJSValue hits() const;
     QQmlListProperty<QLayer> qmlLayers();
-
-Q_SIGNALS:
-    void hitsChanged(const QJSValue &hits);
 
 private:
     Q_DECLARE_PRIVATE(Quick3DScreenRayCaster)

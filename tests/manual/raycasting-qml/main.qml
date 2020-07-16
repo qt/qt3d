@@ -121,6 +121,10 @@ Entity {
             if (event.text.toLowerCase() == "s") { raycaster.origin.y += .1; raycaster.trigger() }
             if (event.text.toLowerCase() == "d") { raycaster.origin.y -= .1; raycaster.trigger() }
         }
+        onSpacePressed: {
+            var syncHits = raycaster.pick(raycaster.origin, raycaster.direction, raycaster.length)
+            printHits("Synchronous hits", syncHits)
+        }
     }
 
     components: [ external_forward_renderer, inputSettings, headLight, raycaster, screenRayCaster, mouseHandler, kbHandler ]

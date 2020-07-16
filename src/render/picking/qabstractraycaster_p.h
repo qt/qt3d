@@ -88,6 +88,7 @@ public:
     QAbstractRayCaster::FilterMode m_filterMode = QAbstractRayCaster::AcceptAnyMatchingLayers;
     QList<QLayer *> m_layers;
 
+    QAbstractRayCaster::Hits pick();
     virtual void dispatchHits(const QAbstractRayCaster::Hits &hits);
 
     Q_DECLARE_PUBLIC(QAbstractRayCaster)

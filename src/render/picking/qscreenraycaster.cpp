@@ -140,6 +140,14 @@ void QScreenRayCaster::trigger(const QPoint &position)
     setEnabled(true);
 }
 
+QAbstractRayCaster::Hits QScreenRayCaster::pick(const QPoint &position)
+{
+    setPosition(position);
+
+    auto d = QAbstractRayCasterPrivate::get(this);
+    return d->pick();
+}
+
 } // Qt3DRender
 
 QT_END_NAMESPACE

@@ -52,7 +52,6 @@ namespace Qt3DRender {
 class Q_3DRENDERSHARED_EXPORT QScreenRayCaster : public QAbstractRayCaster
 {
     Q_OBJECT
-
     Q_PROPERTY(QPoint position READ position WRITE setPosition NOTIFY positionChanged)
 public:
     explicit QScreenRayCaster(QNode *parent = nullptr);
@@ -65,6 +64,7 @@ public Q_SLOTS:
 
     void trigger();
     void trigger(const QPoint &position);
+    Hits pick(const QPoint &position);
 
 Q_SIGNALS:
     void positionChanged(const QPoint &position);

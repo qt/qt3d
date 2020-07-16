@@ -56,6 +56,16 @@ class QAbstractRayCasterPrivate;
 class Q_3DRENDERSHARED_EXPORT QRayCasterHit
 {
     Q_GADGET
+    Q_PROPERTY(QRayCasterHit::HitType type READ type CONSTANT)
+    Q_PROPERTY(Qt3DCore::QNodeId entityId READ entityId CONSTANT)
+    Q_PROPERTY(Qt3DCore::QEntity *entity READ entity CONSTANT)
+    Q_PROPERTY(float distance READ distance CONSTANT)
+    Q_PROPERTY(QVector3D localIntersection READ localIntersection CONSTANT)
+    Q_PROPERTY(QVector3D worldIntersection READ worldIntersection CONSTANT)
+    Q_PROPERTY(uint primitiveIndex READ primitiveIndex CONSTANT)
+    Q_PROPERTY(uint vertex1Index READ vertex1Index CONSTANT)
+    Q_PROPERTY(uint vertex2Index READ vertex2Index CONSTANT)
+    Q_PROPERTY(uint vertex3Index READ vertex3Index CONSTANT)
 public:
     enum HitType {
         TriangleHit,
@@ -84,6 +94,8 @@ public:
     uint vertex1Index() const;
     uint vertex2Index() const;
     uint vertex3Index() const;
+
+    Q_INVOKABLE QString toString();
 
 private:
     friend class QAbstractRayCasterPrivate;

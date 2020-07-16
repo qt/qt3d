@@ -53,33 +53,14 @@ namespace Qt3DRender {
 namespace Render {
 namespace Quick {
 
-void Quick3DScreenRayCasterPrivate::dispatchHits(const QAbstractRayCaster::Hits &hits)
-{
-    m_hits = hits;
-    updateHitEntites(m_hits, m_scene);
-
-    Q_Q(Quick3DScreenRayCaster);
-    if (!m_engine)
-        m_engine = qmlEngine(q->parent());
-
-    m_jsHits = Quick3DRayCasterPrivate::convertHits(m_hits, m_engine);
-    emit q->hitsChanged(m_jsHits);
-}
-
 Quick3DScreenRayCaster::Quick3DScreenRayCaster(QObject *parent)
     : QScreenRayCaster(*new Quick3DScreenRayCasterPrivate(), qobject_cast<Qt3DCore::QNode *>(parent))
 {
 }
 
-QJSValue Quick3DScreenRayCaster::hits() const
-{
-    Q_D(const Quick3DScreenRayCaster);
-    return d->m_jsHits;
-}
-
 QQmlListProperty<Qt3DRender::QLayer> Qt3DRender::Render::Quick::Quick3DScreenRayCaster::qmlLayers()
 {
-    return QQmlListProperty<QLayer>(this, 0,
+    return QQmlListProperty<QLayer>(this, nullptr,
                                     &Quick3DRayCasterPrivate::appendLayer,
                                     &Quick3DRayCasterPrivate::layerCount,
                                     &Quick3DRayCasterPrivate::layerAt,
