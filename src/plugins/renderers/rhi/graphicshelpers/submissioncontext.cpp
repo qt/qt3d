@@ -1679,7 +1679,7 @@ void preprocessRHIShader(QVector<QByteArray> &shaderCodes)
                            "\\s*,\\s*std140.*)\\)\\s*uniform\\s*([a-zA-Z0-9_]+)"));
 
     auto replaceBinding = [&bindings, &assignedBindings](
-                                  int &offset, QRegularExpressionMatch &match, QByteArray &code,
+                                  int &offset, QRegularExpressionMatch &match, QString &code,
                                   int indexCapture, int variableCapture) noexcept {
         int index = match.captured(indexCapture).toInt();
         QByteArray variable = match.captured(variableCapture).toUtf8();
@@ -1714,27 +1714,32 @@ void preprocessRHIShader(QVector<QByteArray> &shaderCodes)
     };
 
     for (QByteArray &shaderCode : shaderCodes) {
+        // Since QRegularExpression::match takes a QString anyway, convert once beforehand
+        QString shaderString = shaderCode;
+
         // Regex for the sampler variables
         int offset = 0;
-        auto match = samplerRegex.match(shaderCode, offset);
+        auto match = samplerRegex.match(shaderString, offset);
         while (match.hasMatch()) {
             const int indexCapture = 1;
             const int variableCapture = 2;
-            replaceBinding(offset, match, shaderCode, indexCapture, variableCapture);
+            replaceBinding(offset, match, shaderString, indexCapture, variableCapture);
 
-            match = samplerRegex.match(shaderCode, offset);
+            match = samplerRegex.match(shaderString, offset);
         }
 
         // Regex for the UBOs
         offset = 0;
-        match = uboRegex.match(shaderCode, offset);
+        match = uboRegex.match(shaderString, offset);
         while (match.hasMatch()) {
             const int indexCapture = !match.capturedView(1).isEmpty() ? 1 : 2;
             const int variableCapture = 3;
-            replaceBinding(offset, match, shaderCode, indexCapture, variableCapture);
+            replaceBinding(offset, match, shaderString, indexCapture, variableCapture);
 
-            match = uboRegex.match(shaderCode, offset);
+            match = uboRegex.match(shaderString, offset);
         }
+
+        shaderCode = shaderString.toUtf8();
     }
 }
 
