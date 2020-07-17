@@ -1471,10 +1471,14 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, ParameterInfoList 
         // Environment Light
         int envLightCount = 0;
         if (environmentLight && environmentLight->isEnabled()) {
-            static const int irradianceId =
+            static const int irradianceStructId =
                     StringToInt::lookupId(QLatin1String("envLight_irradiance"));
-            static const int specularId =
+            static const int specularStructId =
                     StringToInt::lookupId(QLatin1String("envLight_specular"));
+            static const int irradianceId =
+                    StringToInt::lookupId(QLatin1String("envLightIrradiance"));
+            static const int specularId =
+                    StringToInt::lookupId(QLatin1String("envLightSpecular"));
             ShaderData *shaderData = m_manager->shaderDataManager()->lookupResource(
                         environmentLight->shaderData());
             if (shaderData) {
@@ -1487,7 +1491,9 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, ParameterInfoList 
                         shaderData->properties()["specular"].value.value<Qt3DCore::QNodeId>();
 
                 setUniformValue(command->m_parameterPack, irradianceId, irr);
+                setUniformValue(command->m_parameterPack, irradianceStructId, irr);
                 setUniformValue(command->m_parameterPack, specularId, spec);
+                setUniformValue(command->m_parameterPack, specularStructId, spec);
             }
         }
         setUniformValue(command->m_parameterPack,
