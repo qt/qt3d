@@ -104,7 +104,7 @@ int FunctionRangeFinder::locate(float x) const
     m_correlated = std::abs(jLower - m_previousLowerBound) <= m_correlationThreshold;
     m_previousLowerBound = jLower;
 
-    return std::max(0, std::min(m_x.size() - m_rangeSize, jLower - ((m_rangeSize - 2) >> 1)));
+    return qMax(0, qMin(m_x.size() - m_rangeSize, jLower - ((m_rangeSize - 2) >> 1)));
 }
 
 /*!
@@ -165,7 +165,7 @@ int FunctionRangeFinder::hunt(float x) const
     m_correlated = std::abs(jLower - m_previousLowerBound) <= m_correlationThreshold;
     m_previousLowerBound = jLower;
 
-    return std::max(0, std::min(m_x.size() - m_rangeSize, jLower - ((m_rangeSize - 2) >> 1)));
+    return qMax(0, qMin(m_x.size() - m_rangeSize, jLower - ((m_rangeSize - 2) >> 1)));
 }
 
 } // namespace Animation

@@ -331,7 +331,7 @@ private Q_SLOTS:
         const std::vector<Qt3DRender::Render::Entity *> &filterEntities = filterJob.filteredEntities();
         QCOMPARE(filterEntities.size(), expectedSelectedEntities.size());
 
-        for (auto i = 0, m = expectedSelectedEntities.size(); i < m; ++i)
+        for (int i = 0, m = expectedSelectedEntities.size(); i < m; ++i)
             QCOMPARE(filterEntities.at(i)->peerId(), expectedSelectedEntities.at(i));
     }
 };

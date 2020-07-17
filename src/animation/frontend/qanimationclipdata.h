@@ -50,6 +50,10 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DAnimation {
 
 class QAnimationClipDataPrivate;
+class QAnimationClipData;
+
+bool Q_3DANIMATIONSHARED_EXPORT operator==(const QAnimationClipData &lhs, const QAnimationClipData &rhs) Q_DECL_NOTHROW;
+bool Q_3DANIMATIONSHARED_EXPORT operator!=(const QAnimationClipData &lhs, const QAnimationClipData &rhs) Q_DECL_NOTHROW;
 
 class Q_3DANIMATIONSHARED_EXPORT QAnimationClipData
 {

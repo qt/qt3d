@@ -455,7 +455,7 @@ void RHIShader::introspect()
     for (const QShaderDescription::UniformBlock &ubo : rhiUBO) {
         uniformBlocks.push_back(ShaderUniformBlock { ubo.blockName,
                                                      StringToInt::lookupId(ubo.blockName), -1,
-                                                     ubo.binding, ubo.members.size(), ubo.size });
+                                                     ubo.binding, int(ubo.members.size()), ubo.size });
         const bool addUnqualifiedUniforms = isGeneratedUBOName(ubo.structName);
 
         // Parse Uniform Block members so that we can later on map a Parameter name to an actual
