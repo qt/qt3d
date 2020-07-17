@@ -1194,19 +1194,29 @@ void RenderView::updateLightUniforms(RenderCommand *command, const Entity *entit
 
     // Environment Light
     int envLightCount = 0;
+    static const int irradianceStructId = StringToInt::lookupId(QLatin1String("envLight.irradiance"));
+    static const int specularStructId = StringToInt::lookupId(QLatin1String("envLight.specular"));
+    static const int irradianceId = StringToInt::lookupId(QLatin1String("envLightIrradiance"));
+    static const int specularId = StringToInt::lookupId(QLatin1String("envLightSpecular"));
     if (m_environmentLight && m_environmentLight->isEnabled()) {
         ShaderData *shaderData = m_manager->shaderDataManager()->lookupResource(m_environmentLight->shaderData());
         if (shaderData) {
             setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, shaderData, QStringLiteral("envLight"));
+            auto irr =
+                    shaderData->properties()["irradiance"].value.value<Qt3DCore::QNodeId>();
+            auto spec =
+                    shaderData->properties()["specular"].value.value<Qt3DCore::QNodeId>();
+            setUniformValue(command->m_parameterPack, irradianceId, irr);
+            setUniformValue(command->m_parameterPack, specularId, spec);
             envLightCount = 1;
         }
     } else {
         // with some drivers, samplers (like the envbox sampler) need to be bound even though
         // they may not be actually used, otherwise draw calls can fail
-        static const int irradianceId = StringToInt::lookupId(QLatin1String("envLight.irradiance"));
-        static const int specularId = StringToInt::lookupId(QLatin1String("envLight.specular"));
         setUniformValue(command->m_parameterPack, irradianceId, m_renderer->submissionContext()->maxTextureUnitsCount());
+        setUniformValue(command->m_parameterPack, irradianceStructId, m_renderer->submissionContext()->maxTextureUnitsCount());
         setUniformValue(command->m_parameterPack, specularId, m_renderer->submissionContext()->maxTextureUnitsCount());
+        setUniformValue(command->m_parameterPack, specularStructId, m_renderer->submissionContext()->maxTextureUnitsCount());
     }
     setUniformValue(command->m_parameterPack, StringToInt::lookupId(QStringLiteral("envLightCount")), envLightCount);
 }
