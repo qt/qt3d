@@ -1543,10 +1543,11 @@ bool Renderer::prepareGeometryInputBindings(const Geometry *geometry, const RHIS
                                         isPerInstanceAttr ? attrib->divisor() : 1U };
 
         const int location = locationForAttribute(attrib, shader);
-        if (location == -1) {
-            qCWarning(Backend) << "An attribute has no location";
-            return false;
-        }
+        // In case the shader doesn't use the attribute, we would get no
+        // location. This is not a failure, just that we provide more attributes
+        // than required.
+        if (location == -1)
+            continue;
 
         const auto it = std::find_if(uniqueBindings.begin(), uniqueBindings.end(),
                                      [binding](const BufferBinding &a) {
@@ -2315,12 +2316,8 @@ bool Renderer::uploadBuffersForCommand(QRhiCommandBuffer *cb, const RenderView *
             // We need to reference a binding, a buffer and an offset which is always = 0
             // as Qt3D only assumes interleaved or continuous data but not
             // buffer where first half of it is attribute1 and second half attribute2
-            if (bindingIndex != -1) {
+            if (bindingIndex != -1)
                 command.vertex_input[bindingIndex] = { hbuf->rhiBuffer(), 0 };
-            } else {
-                qCWarning(Backend) << "Binding with an index of -1";
-                return false;
-            }
             break;
         }
         case QAttribute::IndexAttribute: {
