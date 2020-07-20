@@ -271,7 +271,7 @@ public:
         }
     }
 
-    int count() const { return m_activeHandles.size(); }
+    int count() const { return int(m_activeHandles.size()); }
     const std::vector<Handle> &activeHandles() const { return m_activeHandles; }
 
 private:

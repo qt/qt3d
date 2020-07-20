@@ -111,11 +111,6 @@ public:
 
     std::unique_ptr<InternalEventListener> m_eventDispatcher;
     std::vector<FilterPriorityPair> m_eventFilters;
-    std::vector<std::pair<QObject*, QMouseEvent>> m_pendingMouseEvents;
-    std::vector<std::pair<QObject*, QKeyEvent>> m_pendingKeyEvents;
-#if QT_CONFIG(wheelevent)
-    std::vector<std::pair<QObject*, QWheelEvent>> m_pendingWheelEvents;
-#endif
 };
 
 /* !\internal

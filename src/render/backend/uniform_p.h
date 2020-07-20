@@ -203,7 +203,7 @@ public:
 
     static UniformValue fromVariant(const QVariant &variant);
 
-    int byteSize() const { return m_data.size() * sizeof(float); }
+    int byteSize() const { return int(m_data.size()) * sizeof(float); }
 
     template<typename T>
     const T *constData() const

@@ -88,6 +88,8 @@
 #include <QAtomicInt>
 #include <QScopedPointer>
 #include <QSemaphore>
+#include <QMouseEvent>
+#include <QKeyEvent>
 
 #include <functional>
 
@@ -98,7 +100,6 @@ class tst_Renderer;
 QT_BEGIN_NAMESPACE
 
 class QSurface;
-class QMouseEvent;
 class QScreen;
 
 namespace Qt3DCore {

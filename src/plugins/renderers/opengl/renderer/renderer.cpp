@@ -120,8 +120,6 @@
 #include <QOffscreenSurface>
 #include <QWindow>
 #include <QThread>
-#include <QKeyEvent>
-#include <QMouseEvent>
 
 #include <QtGui/private/qopenglcontext_p.h>
 #include "frameprofiler_p.h"
