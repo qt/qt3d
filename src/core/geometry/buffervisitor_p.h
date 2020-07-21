@@ -178,8 +178,15 @@ protected:
                                      int primitiveRestartIndex)
     {
         const uint stride = byteStride / sizeof(Coordinate);
-        for (uint i = 0; i < count; ++i) {
-            if (!primitiveRestartEnabled || static_cast<int>(indices[i]) != primitiveRestartIndex) {
+        if (primitiveRestartEnabled) {
+            for (uint i = 0; i < count; ++i) {
+                if (static_cast<int>(indices[i]) != primitiveRestartIndex) {
+                    const uint n = stride * indices[i];
+                    visit(i, coordinates[n]);
+                }
+            }
+        } else {
+            for (uint i = 0; i < count; ++i) {
                 const uint n = stride * indices[i];
                 visit(i, coordinates[n]);
             }
@@ -198,7 +205,6 @@ protected:
         }
     }
 
-
     template <typename Coordinate, typename IndexElem>
     void traverseCoordinates2Indexed(Coordinate *coordinates,
                                      const uint byteStride,
@@ -208,8 +214,15 @@ protected:
                                      int primitiveRestartIndex)
     {
         const uint stride = byteStride ? byteStride / sizeof(Coordinate) : 2;
-        for (uint i = 0; i < count; ++i) {
-            if (!primitiveRestartEnabled || static_cast<int>(indices[i]) != primitiveRestartIndex) {
+        if (primitiveRestartEnabled) {
+            for (uint i = 0; i < count; ++i) {
+                if (static_cast<int>(indices[i]) != primitiveRestartIndex) {
+                    const uint n = stride * indices[i];
+                    visit(i, coordinates[n], coordinates[n + 1]);
+                }
+            }
+        } else {
+            for (uint i = 0; i < count; ++i) {
                 const uint n = stride * indices[i];
                 visit(i, coordinates[n], coordinates[n + 1]);
             }
@@ -237,8 +250,15 @@ protected:
                                      int primitiveRestartIndex)
     {
         const uint stride = byteStride ? byteStride / sizeof(Coordinate) : 3;
-        for (uint i = 0; i < count; ++i) {
-            if (!primitiveRestartEnabled || static_cast<int>(indices[i]) != primitiveRestartIndex) {
+        if (primitiveRestartEnabled) {
+            for (uint i = 0; i < count; ++i) {
+                if (static_cast<int>(indices[i]) != primitiveRestartIndex) {
+                    const uint n = stride * indices[i];
+                    visit(i, coordinates[n], coordinates[n + 1], coordinates[n + 2]);
+                }
+            }
+        } else {
+            for (uint i = 0; i < count; ++i) {
                 const uint n = stride * indices[i];
                 visit(i, coordinates[n], coordinates[n + 1], coordinates[n + 2]);
             }
@@ -266,8 +286,15 @@ protected:
                                      int primitiveRestartIndex)
     {
         const uint stride = byteStride ? byteStride / sizeof(Coordinate) : 4;
-        for (uint i = 0; i < count; ++i) {
-            if (!primitiveRestartEnabled || static_cast<int>(indices[i]) != primitiveRestartIndex) {
+        if (primitiveRestartEnabled) {
+            for (uint i = 0; i < count; ++i) {
+                if (static_cast<int>(indices[i]) != primitiveRestartIndex) {
+                    const uint n = stride * indices[i];
+                    visit(i, coordinates[n], coordinates[n + 1], coordinates[n + 2], coordinates[n + 3]);
+                }
+            }
+        } else {
+            for (uint i = 0; i < count; ++i) {
                 const uint n = stride * indices[i];
                 visit(i, coordinates[n], coordinates[n + 1], coordinates[n + 2], coordinates[n + 3]);
             }
