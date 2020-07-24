@@ -49,7 +49,7 @@
 ****************************************************************************/
 
 #include "touchsettings.h"
-#include <QtGui/QTouchDevice>
+#include <QtGui/QInputDevice>
 #include <QDebug>
 
 TouchSettings::TouchSettings(QObject *parent)
@@ -62,10 +62,10 @@ bool TouchSettings::isHoverEnabled() const
 #if defined(Q_OS_IOS) || defined(Q_OS_ANDROID) || defined(Q_OS_QNX) || defined(Q_OS_WINRT)
     return false;
 #else
-    const auto devices = QTouchDevice::devices();
+    const auto devices = QInputDevice::devices();
     bool isTouch = false;
-    for (const QTouchDevice *dev : devices)
-        if (dev->type() == QTouchDevice::TouchScreen) {
+    for (const QInputDevice *dev : devices)
+        if (dev->type() == QInputDevice::DeviceType::TouchScreen) {
             isTouch = true;
             break;
         }
