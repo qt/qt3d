@@ -81,6 +81,7 @@ public:
 
         // Rebuild RenderCommands for all entities in RV (ignoring filtering)
         RendererCache *cache = m_renderer->cache();
+        QMutexLocker lock(cache->mutex());
 
         Q_ASSERT(cache->leafNodeCache.contains(m_leafNode));
         // The cache leaf should already have been created so we don't need to protect the access
@@ -257,6 +258,7 @@ public:
             ///////// CACHE LOCKED ////////////
             // Retrieve Data from Cache
             RendererCache *cache = m_renderer->cache();
+            QMutexLocker lock(cache->mutex());
             Q_ASSERT(cache->leafNodeCache.contains(m_leafNode));
 
             // We don't need to protect the cache access as
@@ -474,6 +476,7 @@ public:
 
     void operator()()
     {
+        QMutexLocker lock(m_renderer->cache()->mutex());
         Q_ASSERT(m_renderer->cache()->leafNodeCache.contains(m_leafNode));
         // The cache leaf should already have been created so we don't need to protect the access
         RendererCache::LeafNodeData &dataCacheForLeaf = m_renderer->cache()->leafNodeCache[m_leafNode];
@@ -503,7 +506,7 @@ public:
     {
         // The cache leaf was created by SyncRenderViewPostInitialization on which we depend
         // so we don't need to protect the access
-
+        QMutexLocker lock(m_renderer->cache()->mutex());
         RendererCache::LeafNodeData &dataCacheForLeaf = m_renderer->cache()->leafNodeCache[m_leafNode];
         dataCacheForLeaf.materialParameterGatherer.clear();
 
