@@ -53,6 +53,7 @@ bool operator<(const QVector3D &a, const QVector3D &b) {
 QBoundingVolumePrivate::QBoundingVolumePrivate()
     : QComponentPrivate()
     , m_view(nullptr)
+    , m_implicitRadius(0.0f)
     , m_implicitPointsValid(false)
     , m_explicitPointsValid(false)
     , m_primaryProvider(true)
