@@ -88,7 +88,7 @@ public:
 
     size_t distanceToCommand(const RenderCommand &command) const;
     std::vector<QRhiCommandBuffer::DynamicOffset> offsets(const RenderCommand &command) const;
-    std::vector<QRhiShaderResourceBinding> resourceLayout(const RenderCommand &command);
+    std::vector<QRhiShaderResourceBinding> resourceLayout(const RHIShader *shader);
     std::vector<QRhiShaderResourceBinding> resourceBindings(const RenderCommand &command);
 
     bool allocateUBOs(SubmissionContext *ctx);

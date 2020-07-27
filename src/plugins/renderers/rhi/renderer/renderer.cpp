@@ -951,15 +951,8 @@ void Renderer::buildGraphicsPipelines(RHIGraphicsPipeline *graphicsPipeline,
         return onFailure();
     }
 
-    // TO DO: Remove once https://codereview.qt-project.org/c/qt/qtbase/+/307472 lands
-    // Allocate UBOs
-    // Note: we have to do this even though we might not use the UBOs simply
-    // because RHI needs actual UBO/Texture to recreate the ResourceBindings
-    if (!uboSet->allocateUBOs(m_submissionContext.data()))
-        return onFailure();
-
     // Set Resource Bindings
-    const std::vector<QRhiShaderResourceBinding> resourceBindings = uboSet->resourceLayout(cmd);
+    const std::vector<QRhiShaderResourceBinding> resourceBindings = uboSet->resourceLayout(shader);
     QRhiShaderResourceBindings *shaderResourceBindings =
             m_submissionContext->rhi()->newShaderResourceBindings();
     graphicsPipeline->setShaderResourceBindings(shaderResourceBindings);

@@ -190,14 +190,12 @@ std::vector<QRhiCommandBuffer::DynamicOffset> PipelineUBOSet::offsets(const Rend
 // Resources in that function which means that one will be about providing the
 // Pipeline resourceLayout only and resourceBindings will be about providing
 // the actual resources for a RenderCommand
-std::vector<QRhiShaderResourceBinding> PipelineUBOSet::resourceLayout(const RenderCommand &command)
+std::vector<QRhiShaderResourceBinding> PipelineUBOSet::resourceLayout(const RHIShader *shader)
 {
-    RHITextureManager *textureManager = m_resourceManagers->rhiTextureManager();
-    RHIShader *shader = command.m_rhiShader;
     const QRhiShaderResourceBinding::StageFlags stages = QRhiShaderResourceBinding::VertexStage|QRhiShaderResourceBinding::FragmentStage;
     std::vector<QRhiShaderResourceBinding> bindings = {
-        QRhiShaderResourceBinding::uniformBuffer(0, stages, m_rvUBO.buffer->rhiBuffer()),
-        QRhiShaderResourceBinding::uniformBufferWithDynamicOffset(1, stages, m_commandsUBO.buffer->rhiBuffer(), m_commandsUBO.buffer->size())
+        QRhiShaderResourceBinding::uniformBuffer(0, stages, nullptr),
+        QRhiShaderResourceBinding::uniformBufferWithDynamicOffset(1, stages, nullptr, sizeof(CommandUBO))
     };
 
     // TO DO: Handle Parameters that directly define a UBO or SSBO
@@ -206,29 +204,16 @@ std::vector<QRhiShaderResourceBinding> PipelineUBOSet::resourceLayout(const Rend
 
     // Create additional empty UBO Buffer for UBO with binding point > 1 (since
     // we assume 0 and 1 and for Qt3D standard values)
-    // TO DO: Only bind buffer if we haven't already bound a user defined UBO to
-    // the binding point
     for (const UBOBufferWithBindingAndBlockSize &ubo : m_materialsUBOs)
         bindings.push_back(
                     QRhiShaderResourceBinding::uniformBufferWithDynamicOffset(
-                        ubo.binding, stages, ubo.buffer->rhiBuffer(), ubo.buffer->size()));
+                        ubo.binding, stages, nullptr, ubo.blockSize));
 
     // Samplers
-    for (const ShaderParameterPack::NamedResource &textureParameter : command.m_parameterPack.textures()) {
-        const HRHITexture &handle = textureManager->getOrAcquireHandle(textureParameter.nodeId);
-        const RHITexture *textureData = handle.data();
-
-        for (const ShaderAttribute &samplerAttribute : shader->samplers()) {
-            if (samplerAttribute.m_nameId == textureParameter.glslNameId) {
-                const auto rhiTexture = textureData->getRhiTexture();
-                const auto rhiSampler = textureData->getRhiSampler();
-                if (rhiTexture && rhiSampler) {
-                    bindings.push_back(QRhiShaderResourceBinding::sampledTexture(
-                                           samplerAttribute.m_location,
-                                           stages, rhiTexture, rhiSampler));
-                }
-            }
-        }
+    for (const ShaderAttribute &samplerAttribute : shader->samplers()) {
+        bindings.push_back(QRhiShaderResourceBinding::sampledTexture(
+                               samplerAttribute.m_location,
+                               stages, nullptr, nullptr));
     }
 
     return bindings;
@@ -250,8 +235,6 @@ std::vector<QRhiShaderResourceBinding> PipelineUBOSet::resourceBindings(const Re
 
     // Create additional empty UBO Buffer for UBO with binding point > 1 (since
     // we assume 0 and 1 and for Qt3D standard values)
-    // TO DO: Only bind buffer if we haven't already bound a user defined UBO to
-    // the binding point
     for (const UBOBufferWithBindingAndBlockSize &ubo : m_materialsUBOs)
         bindings.push_back(
                     QRhiShaderResourceBinding::uniformBufferWithDynamicOffset(
