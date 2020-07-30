@@ -12,9 +12,13 @@ SUBDIRS += \
     raster-cpp \
     qtbug-72236 \
     manual-renderloop \
-    rhi \
     boundingvolumes
 
+QT_FOR_CONFIG += 3drender-private
+qtConfig(qt3d-rhi-renderer): {
+    SUBDIRS += \
+        rhi
+}
 
 qtHaveModule(multimedia): {
     SUBDIRS += \

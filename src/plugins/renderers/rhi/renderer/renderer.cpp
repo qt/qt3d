@@ -883,6 +883,7 @@ void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv,
         graphicsPipeline = pipelineManager->getOrCreateResource(pipelineKey);
         graphicsPipeline->setKey(pipelineKey);
         graphicsPipeline->uboSet()->setResourceManager(m_RHIResourceManagers);
+        graphicsPipeline->uboSet()->setNodeManagers(m_nodesManager);
         graphicsPipeline->uboSet()->initializeLayout(m_submissionContext.data(), cmd.m_rhiShader);
     }
 
@@ -1031,6 +1032,7 @@ void Renderer::updateComputePipeline(RenderCommand &cmd, RenderView *rv, int ren
         computePipeline = pipelineManager->getOrCreateResource(pipelineKey);
         computePipeline->setKey(pipelineKey);
         computePipeline->uboSet()->setResourceManager(m_RHIResourceManagers);
+        computePipeline->uboSet()->setNodeManagers(m_nodesManager);
         computePipeline->uboSet()->initializeLayout(m_submissionContext.data(), cmd.m_rhiShader);
     }
 
@@ -1983,7 +1985,7 @@ Renderer::submitRenderViews(const std::vector<RHIPassInfo> &rhiPassesInfo)
             // If we can't make the context current on the surface, skip to the
             // next RenderView. We won't get the full frame but we may get something
             if (!m_submissionContext->beginDrawing(surface)) {
-                qCWarning(Backend) << "Failed to make OpenGL context current on surface";
+                qCWarning(Backend) << "Failed to make RHI context current on surface";
                 m_lastFrameCorrect.storeRelaxed(0);
                 continue;
             }
@@ -2666,6 +2668,9 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
 
     bool inCompute = false;
     bool inDraw = false;
+
+    // All the RVs in the current passinfo target the same RenderTarget
+    // A single beginPass should take place, unless Computes RVs are intermingled
 
     // Per Pass Global States
     for (RenderView *rv : renderViews) {

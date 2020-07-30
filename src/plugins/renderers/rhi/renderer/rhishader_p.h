@@ -117,6 +117,9 @@ public:
     ShaderUniformBlock uniformBlockForBlockNameId(int blockIndex) const noexcept;
     ShaderUniformBlock uniformBlockForBlockName(const QString &blockName) const noexcept;
 
+    ShaderUniformBlock uniformBlockForInstanceName(const QString &instanceName) const noexcept;
+    ShaderUniformBlock uniformBlockForInstanceNameId(int instanceNameId) const noexcept;
+
     ShaderStorageBlock storageBlockForBlockIndex(int blockIndex) const noexcept;
     ShaderStorageBlock storageBlockForBlockNameId(int blockNameId) const noexcept;
     ShaderStorageBlock storageBlockForBlockName(const QString &blockName) const noexcept;

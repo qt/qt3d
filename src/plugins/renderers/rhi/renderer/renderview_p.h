@@ -363,6 +363,9 @@ private:
                               const ShaderUniformBlock &block, const UniformValue &value) const;
     void setShaderStorageValue(ShaderParameterPack &uniformPack, const RHIShader *shader,
                                const ShaderStorageBlock &block, const UniformValue &value) const;
+    void setShaderDataValue(ShaderParameterPack &uniformPack,
+                            const ShaderUniformBlock &block,
+                            const Qt3DCore::QNodeId &shaderDataId) const;
     void setDefaultUniformBlockShaderDataValue(ShaderParameterPack &uniformPack,
                                                const RHIShader *shader,
                                                ShaderData *shaderData,

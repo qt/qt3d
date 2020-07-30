@@ -43,6 +43,7 @@
 #include <Qt3DRender/private/texture_p.h>
 
 #include <Qt3DCore/private/qframeallocator_p.h>
+#include <Qt3DCore/private/vector_helper_p.h>
 
 #include <QOpenGLShaderProgram>
 #include <QDebug>
@@ -108,9 +109,20 @@ void ShaderParameterPack::setShaderStorageBuffer(BlockToSSBO blockToSSBO)
     m_shaderStorageBuffers.push_back(std::move(blockToSSBO));
 }
 
+void ShaderParameterPack::setShaderDataForUBO(ShaderDataForUBO shaderDataForUBO)
+{
+    if (!Qt3DCore::contains(m_shaderDatasForUBOs, shaderDataForUBO))
+        m_shaderDatasForUBOs.push_back(std::move(shaderDataForUBO));
+}
+
 void ShaderParameterPack::setSubmissionUniformIndex(const int uniformIdx)
 {
     m_submissionUniformIndices.push_back(uniformIdx);
+}
+
+bool operator==(const ShaderDataForUBO &a, const ShaderDataForUBO &b)
+{
+    return a.m_bindingIndex == b.m_bindingIndex && a.m_shaderDataID == b.m_shaderDataID;
 }
 
 } // namespace Rhi

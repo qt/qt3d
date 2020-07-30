@@ -1,0 +1,33 @@
+# Generated from simple-rhi-cpp.pro.
+
+#####################################################################
+## simple-rhi-cpp Binary:
+#####################################################################
+
+qt_add_manual_test(simple-rhi-cpp
+    GUI
+    SOURCES
+        main.cpp
+    PUBLIC_LIBRARIES
+        Qt::3DCore
+        Qt::3DExtras
+        Qt::3DInput
+        Qt::3DRender
+        Qt::Gui
+)
+
+# Resources:
+set(qmake_immediate_resource_files
+    "qtlogo.png"
+)
+
+qt_add_resource(simple-rhi-cpp "qmake_immediate"
+    PREFIX
+        "/"
+    FILES
+        ${qmake_immediate_resource_files}
+)
+
+
+## Scopes:
+#####################################################################

@@ -88,7 +88,7 @@ public:
     ShaderData();
     ~ShaderData();
 
-    QHash<QString, PropertyValue> properties() const { return m_originalProperties; }
+    const QHash<QString, PropertyValue> &properties() const { return m_originalProperties; }
 
     // Called by FramePreparationJob
     void updateWorldTransform(const Matrix4x4 &worldMatrix);

@@ -467,13 +467,14 @@ void RHIShader::introspect()
         const bool addUnqualifiedUniforms = isGeneratedUBOName(ubo.structName);
 
         // Parse Uniform Block members so that we can later on map a Parameter name to an actual
-        // member
-        m_uniformsNamesIds.reserve(m_uniformsNamesIds.size() + ubo.members.size());
+        m_uniformsNames.reserve(m_uniformsNames.size() + ubo.members.size());
+        m_uniformsNamesIds.reserve(m_uniformsNames.size());
 
         std::vector<UBO_Member> uboMembers;
         uboMembers.reserve(ubo.members.size());
 
         for (const QShaderDescription::BlockVariable &member : qAsConst(ubo.members)) {
+            m_uniformsNames.push_back(member.name);
             const int nameId = StringToInt::lookupId(member.name);
             m_uniformsNamesIds.push_back(nameId);
 
@@ -495,6 +496,12 @@ void RHIShader::introspect()
     initializeShaderStorageBlocks(storageBlocks);
     initializeSamplers(samplers);
     initializeImages(images);
+
+    qCDebug(Shaders) << "Block Names" << m_uniformBlockNames;
+    qCDebug(Shaders) << "Uniform Names" << m_uniformsNames;
+    qCDebug(Shaders) << "SSBO Names" << m_shaderStorageBlockNames;
+    qCDebug(Shaders) << "Attribute Names" << m_attributesNames;
+
 }
 
 QHash<QString, ShaderUniform> RHIShader::activeUniformsForUniformBlock(int blockIndex) const
@@ -532,6 +539,23 @@ ShaderUniformBlock RHIShader::uniformBlockForBlockName(const QString &blockName)
     return ShaderUniformBlock();
 }
 
+ShaderUniformBlock RHIShader::uniformBlockForInstanceName(const QString &instanceName) const noexcept
+{
+    return uniformBlockForInstanceNameId(StringToInt::lookupId(instanceName));
+}
+
+ShaderUniformBlock RHIShader::uniformBlockForInstanceNameId(int instanceNameId) const noexcept
+{
+    for (size_t i = 0, m = m_uboBlocks.size(); i < m; ++i) {
+        const UBO_Block &b = m_uboBlocks[i];
+        for (const UBO_Member &member : b.members) {
+            if (member.nameId == instanceNameId)
+                return b.block;
+        }
+    }
+    return ShaderUniformBlock();
+}
+
 ShaderStorageBlock RHIShader::storageBlockForBlockIndex(int blockIndex) const noexcept
 {
     for (int i = 0, m = m_shaderStorageBlockNames.size(); i < m; ++i) {
@@ -561,9 +585,7 @@ ShaderStorageBlock RHIShader::storageBlockForBlockName(const QString &blockName)
 
 RHIShader::ParameterKind RHIShader::categorizeVariable(int nameId) const noexcept
 {
-    if (Qt3DCore::contains(m_uniformsNamesIds, nameId))
-        return ParameterKind::Uniform;
-    else if (Qt3DCore::contains(m_uniformBlockNamesIds, nameId))
+    if (Qt3DCore::contains(m_uniformBlockNamesIds, nameId))
         return ParameterKind::UBO;
     else if (Qt3DCore::contains(m_shaderStorageBlockNamesIds, nameId))
         return ParameterKind::SSBO;

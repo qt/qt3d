@@ -40,7 +40,6 @@
 #include "pipelineuboset_p.h"
 #include <rendercommand_p.h>
 #include <renderview_p.h>
-#include <rhishader_p.h>
 #include <rhibuffer_p.h>
 #include <shaderparameterpack_p.h>
 #include <shadervariables_p.h>
@@ -48,7 +47,10 @@
 #include <rhiresourcemanagers_p.h>
 #include <submissioncontext_p.h>
 #include <QtGui/private/qrhi_p.h>
+#include <Qt3DRender/private/nodemanagers_p.h>
+#include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
+#include <Qt3DRender/private/buffer_p.h>
 #include <Qt3DCore/private/vector_helper_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -83,6 +85,11 @@ void PipelineUBOSet::setResourceManager(RHIResourceManagers *manager)
     m_resourceManagers = manager;
 }
 
+void PipelineUBOSet::setNodeManagers(NodeManagers *managers)
+{
+    m_nodeManagers = managers;
+}
+
 void PipelineUBOSet::initializeLayout(SubmissionContext *ctx, RHIShader *shader)
 {
     // We should only be called with a clean Pipeline
@@ -98,6 +105,8 @@ void PipelineUBOSet::initializeLayout(SubmissionContext *ctx, RHIShader *shader)
     m_commandsUBO.alignedBlockSize = ctx->rhi()->ubufAligned((m_commandsUBO.blockSize));
     m_commandsUBO.buffer = bufferManager->allocateResource();
 
+    // For UBO, we try to create a single large UBO that will contain frontend
+    // Qt3D UBO data at various offsets
     const std::vector<ShaderUniformBlock> &uniformBlocks = shader->uniformBlocks();
     for (const ShaderUniformBlock &block : uniformBlocks) {
         if (block.m_binding > 1) { // Binding 0 and 1 are for RV and Command UBOs
@@ -108,6 +117,9 @@ void PipelineUBOSet::initializeLayout(SubmissionContext *ctx, RHIShader *shader)
                           bufferManager->allocateResource()});
         }
     }
+
+    // For SSBO, we have one SSBO per frontend Qt3D SSBO
+    m_storageBlocks =  shader->storageBlocks();
 }
 
 void PipelineUBOSet::releaseResources()
@@ -153,6 +165,8 @@ bool PipelineUBOSet::allocateUBOs(SubmissionContext *ctx)
             ubo.buffer->bind(ctx, RHIBuffer::UniformBuffer);
         }
     }
+
+    // SSBO are using RHIBuffer directly, nothing we need to handle ourselves
 
     return true;
 }
@@ -216,6 +230,13 @@ std::vector<QRhiShaderResourceBinding> PipelineUBOSet::resourceLayout(const RHIS
                                stages, nullptr, nullptr));
     }
 
+    // SSBO
+    for (const ShaderStorageBlock &b : m_storageBlocks) {
+        bindings.push_back(QRhiShaderResourceBinding::bufferLoadStore(b.m_binding,
+                                                                      stages|QRhiShaderResourceBinding::ComputeStage,
+                                                                      nullptr));
+    }
+
     return bindings;
 }
 
@@ -229,12 +250,10 @@ std::vector<QRhiShaderResourceBinding> PipelineUBOSet::resourceBindings(const Re
         QRhiShaderResourceBinding::uniformBufferWithDynamicOffset(1, stages, m_commandsUBO.buffer->rhiBuffer(), m_commandsUBO.buffer->size())
     };
 
-    // TO DO: Handle Parameters that directly define a UBO or SSBO
-    //    const auto &blockToUBOs = parameterPack.uniformBuffers();
-    //    const auto &blockToSSBOs = parameterPack.shaderStorageBuffers();
-
     // Create additional empty UBO Buffer for UBO with binding point > 1 (since
     // we assume 0 and 1 and for Qt3D standard values)
+    // Note: if a Parameter provides a UBO Buffer, its content will have been
+    // copied at right offset into the matching materials UBO
     for (const UBOBufferWithBindingAndBlockSize &ubo : m_materialsUBOs)
         bindings.push_back(
                     QRhiShaderResourceBinding::uniformBufferWithDynamicOffset(
@@ -255,6 +274,17 @@ std::vector<QRhiShaderResourceBinding> PipelineUBOSet::resourceBindings(const Re
                                            stages, rhiTexture, rhiSampler));
                 }
             }
+        }
+    }
+
+    // SSBO
+    for (const BlockToSSBO &ssbo : command.m_parameterPack.shaderStorageBuffers()) {
+        RHIBuffer *buffer = m_resourceManagers->rhiBufferManager()->lookupResource(ssbo.m_bufferID);
+        if (buffer) {
+            bindings.push_back(QRhiShaderResourceBinding::bufferLoadStore(
+                                   ssbo.m_bindingIndex,
+                                   stages|QRhiShaderResourceBinding::ComputeStage,
+                                   buffer->rhiBuffer()));
         }
     }
 
@@ -282,33 +312,33 @@ void PipelineUBOSet::uploadUBOs(SubmissionContext *ctx, RenderView *rv)
 }
 
 namespace {
-void printUpload(const UniformValue &value, const QShaderDescription::BlockVariable &member)
+void printUpload(const UniformValue &value, const QShaderDescription::BlockVariable &member, int arrayOffset)
 {
     switch (member.type) {
     case QShaderDescription::VariableType::Int:
         qDebug() << "Updating" << member.name << "with int data: " << *value.constData<int>()
-                 << " (offset: " << member.offset << ", size: " << member.size << ")";
+                 << " (offset: " << member.offset + arrayOffset << ", size: " << member.size << ")";
         break;
     case QShaderDescription::VariableType::Float:
         qDebug() << "Updating" << member.name << "with float data: " << *value.constData<float>()
-                 << " (offset: " << member.offset << ", size: " << member.size << ")";
+                 << " (offset: " << member.offset + arrayOffset << ", size: " << member.size << ")";
         break;
     case QShaderDescription::VariableType::Vec2:
         qDebug() << "Updating" << member.name << "with vec2 data: " << value.constData<float>()[0]
                  << ", " << value.constData<float>()[1] << " (offset: " << member.offset
-                 << ", size: " << member.size << ")";
+                 << ", size: " << member.size + arrayOffset << ")";
         ;
         break;
     case QShaderDescription::VariableType::Vec3:
         qDebug() << "Updating" << member.name << "with vec3 data: " << value.constData<float>()[0]
                  << ", " << value.constData<float>()[1] << ", " << value.constData<float>()[2]
-                 << " (offset: " << member.offset << ", size: " << member.size << ")";
+                 << " (offset: " << member.offset + arrayOffset << ", size: " << member.size << ")";
         ;
         break;
     case QShaderDescription::VariableType::Vec4:
         qDebug() << "Updating" << member.name << "with vec4 data: " << value.constData<float>()[0]
                  << ", " << value.constData<float>()[1] << ", " << value.constData<float>()[2]
-                 << ", " << value.constData<float>()[3] << " (offset: " << member.offset
+                 << ", " << value.constData<float>()[3] << " (offset: " << member.offset + arrayOffset
                  << ", size: " << member.size << ")";
         ;
         break;
@@ -318,8 +348,40 @@ void printUpload(const UniformValue &value, const QShaderDescription::BlockVaria
     }
 }
 
+inline void uploadDataToUBO(const QByteArray rawData,
+                            const PipelineUBOSet::UBOBufferWithBindingAndBlockSize *ubo,
+                            const RHIShader::UBO_Member &member,
+                            size_t distanceToCommand, int arrayOffset = 0)
+{
+    ubo->buffer->update(rawData, ubo->alignedBlockSize * distanceToCommand + member.blockVariable.offset + arrayOffset);
+}
+
+QByteArray rawDataForUniformValue(const QShaderDescription::BlockVariable &blockVariable,
+                                  const UniformValue &value,
+                                  bool requiresCopy)
+{
+    const QByteArray rawData = requiresCopy
+              ? QByteArray(value.constData<char>(), std::min(value.byteSize(), blockVariable.size))
+              : QByteArray::fromRawData(value.constData<char>(), std::min(value.byteSize(), blockVariable.size));
+    const int matrixStride = blockVariable.matrixStride;
+
+    // Special cases for matrices which might have to be aligned to a vec4 stride
+    if (matrixStride != 0 && value.byteSize() % matrixStride != 0) {
+        // Find number of rows
+        const int rows = blockVariable.size / matrixStride;
+        QByteArray newRawData = QByteArray(rows * matrixStride, '\0');
+        const int dataSizePerRow = value.byteSize() / rows;
+        for (int i = 0; i < rows; ++i) {
+            std::memcpy(newRawData.data() + i * matrixStride,
+                        rawData.constData() + i * dataSizePerRow, dataSizePerRow);
+        }
+        return newRawData;
+    }
+    return rawData;
+}
+
 void uploadUniform(const PackUniformHash &uniforms,
-                   const PipelineUBOSet::UBOBufferWithBindingAndBlockSize &ubo,
+                   const PipelineUBOSet::UBOBufferWithBindingAndBlockSize *ubo,
                    const RHIShader::UBO_Member &member,
                    size_t distanceToCommand, int arrayOffset = 0)
 {
@@ -327,18 +389,71 @@ void uploadUniform(const PackUniformHash &uniforms,
         return;
 
     const UniformValue &value = uniforms.value(member.nameId);
+    // Textures / Images / Buffers can't be UBO members
+    if (value.valueType() != UniformValue::ScalarValue)
+        return;
 
-    const QByteArray rawData = QByteArray::fromRawData(value.constData<char>(), std::min(value.byteSize(), member.blockVariable.size));
-    ubo.buffer->update(rawData, ubo.alignedBlockSize * distanceToCommand + member.blockVariable.offset + arrayOffset);
+    // We can avoid the copies since the raw data copes from the UniformValue
+    // which remain alive until the frame has been submitted
+    const bool requiresCopy = false;
+    const QByteArray rawData = rawDataForUniformValue(member.blockVariable,
+                                                      value,
+                                                      requiresCopy);
+    uploadDataToUBO(rawData, ubo, member, distanceToCommand, arrayOffset);
 
-//    printUpload(value, member);
+    // printUpload(value, member.blockVariable, arrayOffset);
 }
 
 } // anonymous
 
+void PipelineUBOSet::uploadShaderDataProperty(const ShaderData *shaderData,
+                              const PipelineUBOSet::UBOBufferWithBindingAndBlockSize *ubo,
+                              const RHIShader::UBO_Member &uboMemberInstance,
+                              size_t distanceToCommand, int arrayOffset)
+{
+    const std::vector<RHIShader::UBO_Member> &structMembers = uboMemberInstance.structMembers;
+    const QHash<QString, ShaderData::PropertyValue> &properties = shaderData->properties();
+    const int structBaseOffset = uboMemberInstance.blockVariable.offset;
+    for (const RHIShader::UBO_Member &member : structMembers) {
+        // TO DO: Use nameIds instead
+        const auto it = properties.find(member.blockVariable.name);
+        if (it != properties.end()) {
+            const ShaderData::PropertyValue &value = *it;
+            if (value.isNode) {
+                // Nested ShaderData
+                const ShaderData *child = m_nodeManagers->shaderDataManager()->lookupResource(value.value.value<Qt3DCore::QNodeId>());
+                if (child)
+                    uploadShaderDataProperty(child, ubo, member,
+                                             distanceToCommand,
+                                             structBaseOffset + arrayOffset);
+                continue;
+            }
+            if (value.isTransformed) {
+                // TO DO: Handle this
+                qWarning() << "ShaderData transformed properties not handled yet";
+                // QVariant transformedValue = shaderData->getTransformedProperty(&value, viewMatrix);
+            }
+
+            // Value is a Scalar or a Scalar Array
+            const UniformValue v = UniformValue::fromVariant(value.value);
+            Q_ASSERT(v.valueType() == UniformValue::ScalarValue);
+
+            // We have to make a copy here
+            const bool requiresCopy = true;
+            const QByteArray rawData = rawDataForUniformValue(member.blockVariable,
+                                                              v,
+                                                              requiresCopy);
+            uploadDataToUBO(rawData, ubo, member, distanceToCommand, structBaseOffset + arrayOffset);
+
+            // printUpload(v, member.blockVariable, structBaseOffset + arrayOffset);
+        }
+    }
+}
+
 void PipelineUBOSet::uploadUBOsForCommand(const RenderCommand &command,
                                           const size_t distanceToCommand)
 {
+    Q_ASSERT(m_nodeManagers);
     RHIShader *shader = command.m_rhiShader;
     if (!shader)
         return;
@@ -353,6 +468,29 @@ void PipelineUBOSet::uploadUBOsForCommand(const RenderCommand &command,
     const PackUniformHash &uniforms = parameterPack.uniforms();
 
     // Update Buffer CPU side data based on uniforms being set
+
+    auto findMaterialUBOForBlock = [this] (const RHIShader::UBO_Block &uboBlock)
+            -> PipelineUBOSet::UBOBufferWithBindingAndBlockSize* {
+        auto it = std::find_if(m_materialsUBOs.begin(), m_materialsUBOs.end(),
+                               [&uboBlock] (const PipelineUBOSet::UBOBufferWithBindingAndBlockSize &buffer) {
+            return buffer.binding == uboBlock.block.m_binding;
+        });
+
+        if (it == m_materialsUBOs.end())
+            return nullptr;
+        return &*it;
+    };
+
+    auto findUboBlockForBinding = [&uboBlocks] (int blockBinding) -> const RHIShader::UBO_Block * {
+        auto it = std::find_if(uboBlocks.begin(), uboBlocks.end(), [&blockBinding] (const RHIShader::UBO_Block &block) {
+                return block.block.m_binding == blockBinding;
+        });
+        if (it == uboBlocks.end())
+            return nullptr;
+        return &*it;
+    };
+
+    // Scalar / Texture Parameter to UBO
     for (const RHIShader::UBO_Block &uboBlock : uboBlocks) {
 
         // No point in trying to update Bindings 0 or 1 which are reserved
@@ -362,14 +500,9 @@ void PipelineUBOSet::uploadUBOsForCommand(const RenderCommand &command,
             continue;
 
         // Update UBO with uniform value
-        auto it = std::find_if(m_materialsUBOs.begin(), m_materialsUBOs.end(), [&block] (const PipelineUBOSet::UBOBufferWithBindingAndBlockSize &buffer) {
-            return buffer.binding == block.m_binding;
-        });
-
-        if (it == m_materialsUBOs.end())
+        const PipelineUBOSet::UBOBufferWithBindingAndBlockSize *ubo = findMaterialUBOForBlock(uboBlock);
+        if (ubo == nullptr)
             continue;
-
-        const PipelineUBOSet::UBOBufferWithBindingAndBlockSize &ubo = *it;
 
         for (const RHIShader::UBO_Member &member : qAsConst(uboBlock.members)) {
             const QShaderDescription::BlockVariable &blockVariable = member.blockVariable;
@@ -394,6 +527,55 @@ void PipelineUBOSet::uploadUBOsForCommand(const RenderCommand &command,
             }
         }
     }
+
+    // User provided UBO
+    // Since we create per Material UBO, if we directly provide a UBO as a parameter
+    // we will have to copy content of the parameter's UBO into the Material UBO at the
+    // property offset
+    for (const BlockToUBO &ubo : parameterPack.uniformBuffers()) {
+        // Find RHIShader::UBO_Block for UBO
+        const RHIShader::UBO_Block *block = findUboBlockForBinding(ubo.m_bindingIndex);
+        if (block == nullptr)
+            continue;
+        // Find Material UBO for Block
+        PipelineUBOSet::UBOBufferWithBindingAndBlockSize *materialsUBO = findMaterialUBOForBlock(*block);
+        if (materialsUBO == nullptr)
+            continue;
+
+        // Copy content of UBO buffer to materialUBO at offset
+        Buffer *uboBuffer = m_nodeManagers->bufferManager()->lookupResource(ubo.m_bufferID);
+        if (!uboBuffer)
+            continue;
+
+        materialsUBO->buffer->update(uboBuffer->data(), distanceToCommand * materialsUBO->alignedBlockSize);
+    }
+
+    // ShaderData -> convenience for filling a struct member of a UBO
+    // Note: we could use setDefaultUniformBlockShaderDataValue to unpack all values as individual uniforms
+    // but setting the whole ShaderData properties at once is a lot more efficient
+    for (const ShaderDataForUBO &shaderDataForUbo : parameterPack.shaderDatasForUBOs()) {
+        // Find ShaderData backend
+        const ShaderData *shaderData = m_nodeManagers->shaderDataManager()->lookupResource(shaderDataForUbo.m_shaderDataID);
+        if (shaderData == nullptr)
+            continue;
+        // Find RHIShader::UBO_Block for ShaderData
+        const RHIShader::UBO_Block *block = findUboBlockForBinding(shaderDataForUbo.m_bindingIndex);
+        if (block == nullptr)
+            continue;
+        // Find Material UBO for Block
+        PipelineUBOSet::UBOBufferWithBindingAndBlockSize *materialsUBO = findMaterialUBOForBlock(*block);
+        if (materialsUBO == nullptr)
+            continue;
+
+        // Upload ShaderData property that match members of each UBO block instance
+        for (const RHIShader::UBO_Member &uboInstance : qAsConst(block->members)) {
+            uploadShaderDataProperty(shaderData, materialsUBO,
+                                     uboInstance, distanceToCommand);
+        }
+    }
+
+    // Note: There's nothing to do for SSBO as those are directly uploaded to the GPU, no extracting
+    // required
 }
 
 } // Rhi

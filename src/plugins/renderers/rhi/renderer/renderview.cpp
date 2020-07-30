@@ -1244,6 +1244,7 @@ void RenderView::setUniformBlockValue(ShaderParameterPack &uniformPack, const RH
             != nullptr) {
             BlockToUBO uniformBlockUBO;
             uniformBlockUBO.m_blockIndex = block.m_index;
+            uniformBlockUBO.m_bindingIndex = block.m_binding;
             uniformBlockUBO.m_bufferID = buffer->peerId();
             uniformBlockUBO.m_needsUpdate = false;
             uniformPack.setUniformBuffer(std::move(uniformBlockUBO));
@@ -1267,8 +1268,20 @@ void RenderView::setShaderStorageValue(ShaderParameterPack &uniformPack, const R
             shaderStorageBlock.m_bufferID = buffer->peerId();
             shaderStorageBlock.m_bindingIndex = block.m_binding;
             uniformPack.setShaderStorageBuffer(shaderStorageBlock);
-            // Buffer update to GL buffer will be done at render time
+            // Buffer update to RHI buffer will be done at render time
         }
+    }
+}
+
+void RenderView::setShaderDataValue(ShaderParameterPack &uniformPack,
+                                    const ShaderUniformBlock &block,
+                                    const Qt3DCore::QNodeId &shaderDataId) const
+{
+    if (block.m_binding >= 0) {
+        ShaderDataForUBO shaderDataForUBO;
+        shaderDataForUBO.m_shaderDataID = shaderDataId;
+        shaderDataForUBO.m_bindingIndex = block.m_binding;
+        uniformPack.setShaderDataForUBO(shaderDataForUBO);
     }
 }
 
@@ -1303,7 +1316,9 @@ void RenderView::applyParameter(const Parameter *param, RenderCommand *command,
 {
     const int nameId = param->nameId();
     const UniformValue &uniformValue = param->uniformValue();
-    switch (shader->categorizeVariable(nameId)) {
+    const RHIShader::ParameterKind parameterKind = shader->categorizeVariable(nameId);
+
+    switch (parameterKind) {
     case RHIShader::Uniform: {
         setUniformValue(command->m_parameterPack, nameId, uniformValue);
         break;
@@ -1319,14 +1334,16 @@ void RenderView::applyParameter(const Parameter *param, RenderCommand *command,
         break;
     }
     case RHIShader::Struct: {
+        // Structs will have to be converted to UBOs later on
         ShaderData *shaderData = nullptr;
+
         if (uniformValue.valueType() == UniformValue::NodeId
             && (shaderData = m_manager->shaderDataManager()->lookupResource(
                         *uniformValue.constData<Qt3DCore::QNodeId>()))
                     != nullptr) {
-            // Try to check if we have a struct or array matching a QShaderData parameter
-            setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, shaderData,
-                                                  StringToInt::lookupString(nameId));
+            // We need to find the Block associated with the uniform name
+            setShaderDataValue(command->m_parameterPack,
+                               shader->uniformBlockForInstanceNameId(nameId), shaderData->peerId());
         }
         break;
     }

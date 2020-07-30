@@ -77,6 +77,7 @@ class GraphicsContext;
 struct BlockToUBO
 {
     int m_blockIndex;
+    int m_bindingIndex;
     Qt3DCore::QNodeId m_bufferID;
     bool m_needsUpdate;
     QHash<QString, QVariant> m_updatedProperties;
@@ -90,6 +91,15 @@ struct BlockToSSBO
     Qt3DCore::QNodeId m_bufferID;
 };
 QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, Rhi, BlockToSSBO, Q_PRIMITIVE_TYPE)
+
+struct ShaderDataForUBO
+{
+    int m_bindingIndex;
+    Qt3DCore::QNodeId m_shaderDataID;
+};
+QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, Rhi, ShaderDataForUBO, Q_PRIMITIVE_TYPE)
+
+bool operator==(const ShaderDataForUBO &a, const ShaderDataForUBO &b);
 
 struct PackUniformHash
 {
@@ -187,6 +197,7 @@ public:
 
     void setUniformBuffer(BlockToUBO blockToUBO);
     void setShaderStorageBuffer(BlockToSSBO blockToSSBO);
+    void setShaderDataForUBO(ShaderDataForUBO shaderDataForUBO);
     void setSubmissionUniformIndex(const int shaderUniformIndex);
 
     inline PackUniformHash &uniforms() { return m_uniforms; }
@@ -234,6 +245,7 @@ public:
     inline const std::vector<BlockToUBO> &uniformBuffers() const { return m_uniformBuffers; }
     inline const std::vector<BlockToSSBO> &shaderStorageBuffers() const { return m_shaderStorageBuffers; }
     inline const std::vector<int> &submissionUniformIndices() const { return m_submissionUniformIndices; }
+    inline const std::vector<ShaderDataForUBO> &shaderDatasForUBOs() const { return m_shaderDatasForUBOs; }
 private:
     PackUniformHash m_uniforms;
 
@@ -242,6 +254,7 @@ private:
     std::vector<BlockToUBO> m_uniformBuffers;
     std::vector<BlockToSSBO> m_shaderStorageBuffers;
     std::vector<int> m_submissionUniformIndices;
+    std::vector<ShaderDataForUBO> m_shaderDatasForUBOs;
 
     friend class RenderView;
 };

@@ -53,12 +53,17 @@
 
 #include <rhihandle_types_p.h>
 #include <private/qrhi_p.h>
+#include <shadervariables_p.h>
+#include <rhishader_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
 namespace Render {
+
+class ShaderData;
+class NodeManagers;
 
 namespace Rhi {
 
@@ -93,22 +98,29 @@ public:
 
     bool allocateUBOs(SubmissionContext *ctx);
     void uploadUBOs(SubmissionContext *ctx, RenderView *rv);
-    void setResourceManager(RHIResourceManagers *manager);
+    void setResourceManager(RHIResourceManagers *managers);
+    void setNodeManagers(NodeManagers *manager);
     void initializeLayout(SubmissionContext *ctx, RHIShader *shader);
 
 private:
     void releaseResources();
     void uploadUBOsForCommand(const RenderCommand &command,
                               size_t distanceToCommand);
+    void uploadShaderDataProperty(const ShaderData *shaderData,
+                                  const PipelineUBOSet::UBOBufferWithBindingAndBlockSize *ubo,
+                                  const RHIShader::UBO_Member &uboMemberInstance,
+                                  size_t distanceToCommand, int arrayOffset = 0);
 
     UBOBufferWithBindingAndBlockSize m_rvUBO; // Fixed size
     UBOBufferWithBindingAndBlockSize m_commandsUBO; // Variable size
     std::vector<UBOBufferWithBindingAndBlockSize> m_materialsUBOs; // Variable size
+    std::vector<ShaderStorageBlock> m_storageBlocks; // Fixed size
 
     // TO DO: We also need to handle cases where UBO was directly provided by the frontend
     // API and is not built up from Parameters
     std::vector<const RenderCommand *> m_renderCommands;
     RHIResourceManagers *m_resourceManagers = nullptr;
+    NodeManagers *m_nodeManagers = nullptr;
 
     template<typename Pipeline, typename Key>
     friend class RHIPipelineBase;
