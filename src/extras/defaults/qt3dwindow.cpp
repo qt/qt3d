@@ -265,8 +265,6 @@ void setupWindowSurface(QWindow *window, Qt3DRender::API api) noexcept
         } else if (userRequestedApi == QByteArrayLiteral("auto")) {
             api = Qt3DRender::API::RHI;
         }
-    } else {
-        api = Qt3DRender::API::RHI;
     }
 
     // We have to set the environment so that the backend is able to read it.
