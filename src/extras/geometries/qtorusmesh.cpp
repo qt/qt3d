@@ -43,6 +43,7 @@
 #endif
 
 #include "qtorusmesh.h"
+#include "qtorusgeometryview.h"
 
 #include <Qt3DExtras/qtorusgeometry.h>
 
@@ -96,15 +97,15 @@ namespace  Qt3DExtras {
  * Constructs a new QTorusMesh with \a parent.
  */
 QTorusMesh::QTorusMesh(QNode *parent)
-    : Qt3DCore::QGeometryView(parent)
+    : Qt3DRender::QGeometryRenderer(parent)
 {
-    QTorusGeometry *geometry = new QTorusGeometry(this);
-    QObject::connect(geometry, &QTorusGeometry::radiusChanged, this, &QTorusMesh::radiusChanged);
-    QObject::connect(geometry, &QTorusGeometry::ringsChanged, this, &QTorusMesh::ringsChanged);
-    QObject::connect(geometry, &QTorusGeometry::slicesChanged, this, &QTorusMesh::slicesChanged);
-    QObject::connect(geometry, &QTorusGeometry::minorRadiusChanged, this, &QTorusMesh::minorRadiusChanged);
+    QTorusGeometryView *geometry = new QTorusGeometryView(this);
+    QObject::connect(geometry, &QTorusGeometryView::radiusChanged, this, &QTorusMesh::radiusChanged);
+    QObject::connect(geometry, &QTorusGeometryView::ringsChanged, this, &QTorusMesh::ringsChanged);
+    QObject::connect(geometry, &QTorusGeometryView::slicesChanged, this, &QTorusMesh::slicesChanged);
+    QObject::connect(geometry, &QTorusGeometryView::minorRadiusChanged, this, &QTorusMesh::minorRadiusChanged);
 
-    QGeometryView::setGeometry(geometry);
+    setView(geometry);
 }
 
 /*! \internal */
@@ -114,22 +115,22 @@ QTorusMesh::~QTorusMesh()
 
 void QTorusMesh::setRings(int rings)
 {
-    static_cast<QTorusGeometry *>(geometry())->setRings(rings);
+    static_cast<QTorusGeometryView *>(view())->setRings(rings);
 }
 
 void QTorusMesh::setSlices(int slices)
 {
-    static_cast<QTorusGeometry *>(geometry())->setSlices(slices);
+    static_cast<QTorusGeometryView *>(view())->setSlices(slices);
 }
 
 void QTorusMesh::setRadius(float radius)
 {
-    static_cast<QTorusGeometry *>(geometry())->setRadius(radius);
+    static_cast<QTorusGeometryView *>(view())->setRadius(radius);
 }
 
 void QTorusMesh::setMinorRadius(float minorRadius)
 {
-    static_cast<QTorusGeometry *>(geometry())->setMinorRadius(minorRadius);
+    static_cast<QTorusGeometryView *>(view())->setMinorRadius(minorRadius);
 }
 
 /*!
@@ -139,7 +140,7 @@ void QTorusMesh::setMinorRadius(float minorRadius)
  */
 int QTorusMesh::rings() const
 {
-    return static_cast<QTorusGeometry *>(geometry())->rings();
+    return static_cast<QTorusGeometryView *>(view())->rings();
 }
 
 /*!
@@ -149,7 +150,7 @@ int QTorusMesh::rings() const
  */
 int QTorusMesh::slices() const
 {
-    return static_cast<QTorusGeometry *>(geometry())->slices();
+    return static_cast<QTorusGeometryView *>(view())->slices();
 }
 
 /*!
@@ -159,7 +160,7 @@ int QTorusMesh::slices() const
  */
 float QTorusMesh::radius() const
 {
-    return static_cast<QTorusGeometry *>(geometry())->radius();
+    return static_cast<QTorusGeometryView *>(view())->radius();
 }
 
 /*!
@@ -169,7 +170,7 @@ float QTorusMesh::radius() const
  */
 float QTorusMesh::minorRadius() const
 {
-    return static_cast<QTorusGeometry *>(geometry())->minorRadius();
+    return static_cast<QTorusGeometryView *>(view())->minorRadius();
 }
 
 } // namespace  Qt3DExtras

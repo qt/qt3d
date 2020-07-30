@@ -67,12 +67,10 @@ Entity {
         rotationX: 45
     }
 
-    GeometryRenderer {
+    PlaneMesh {
         id: mesh
-        view: PlaneMesh {
-            width: 1.0
-            height: 1.0
-            meshResolution: Qt.size(2, 2)
-        }
+        width: 1.0
+        height: 1.0
+        meshResolution: Qt.size(2, 2)
     }
 }

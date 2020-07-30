@@ -51,7 +51,7 @@
 import Qt3D.Render 2.0
 import Qt3D.Extras 2.0
 
-GeometryRenderer {
+SphereMesh {
     property real r: 0
     property real x: 0
     property real y: 0
@@ -59,10 +59,8 @@ GeometryRenderer {
     property real roll: 0
     property real tilt: 0
 
-    view: SphereMesh {
-        radius: 1.0
-        generateTangents: true
-        rings: 64
-        slices: 64
-    }
+    radius: 1.0
+    generateTangents: true
+    rings: 64
+    slices: 64
 }

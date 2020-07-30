@@ -130,9 +130,7 @@ private:
         torusTransform->setScale3D(QVector3D(1.5, 1, 0.5));
         torusTransform->setRotation(QQuaternion::fromAxisAndAngle(QVector3D(1, 0, 0), 45.0f));
 
-        auto renderer = new Qt3DRender::QGeometryRenderer;
-        renderer->setView(torusMesh);
-        torusEntity->addComponent(renderer);
+        torusEntity->addComponent(torusMesh);
         torusEntity->addComponent(material);
         torusEntity->addComponent(torusTransform);
 

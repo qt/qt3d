@@ -61,14 +61,12 @@ Entity {
 
     components: [ mesh, material, transform ]
 
-    GeometryRenderer {
+    CylinderMesh {
         id: mesh
-        view: CylinderMesh {
-            radius: 1
-            length: 3
-            rings: 100
-            slices: 20
-        }
+        radius: 1
+        length: 3
+        rings: 100
+        slices: 20
     }
 
     Transform {

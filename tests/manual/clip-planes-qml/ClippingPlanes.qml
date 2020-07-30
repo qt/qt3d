@@ -83,12 +83,10 @@ Entity {
             }
         }
 
-        property GeometryRenderer mesh: GeometryRenderer {
-            view: PlaneMesh {
-                width: 20.0
-                height: 20.0
-                meshResolution: Qt.size(2, 2)
-            }
+        property GeometryRenderer mesh: PlaneMesh {
+            width: 20.0
+            height: 20.0
+            meshResolution: Qt.size(2, 2)
         }
 
         components: [cappingMaterial, mesh, root.capsLayer]

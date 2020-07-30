@@ -135,9 +135,8 @@ Entity {
             rotation: fromAxisAndAngle(Qt.vector3d(0,1,0), cube.rotationAngle)
         }
 
-        GeometryRenderer {
+        CuboidMesh {
             id: cubeMesh
-            view: CuboidMesh { }
         }
 
         ObjectPicker {

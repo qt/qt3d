@@ -152,7 +152,7 @@ Entity {
         InputSettings {}
     ]
 
-    GeometryRenderer { id: cubeMesh; view: CuboidMesh { } }
+    CuboidMesh { id: cubeMesh }
 
     PickableEntity {
         id: cube1
@@ -260,7 +260,7 @@ Entity {
         }
         readonly property PhongMaterial material: PhongMaterial { diffuse: "yellow" }
 
-        readonly property GeometryRenderer sphereMesh: GeometryRenderer { view: SphereMesh { } }
+        readonly property GeometryRenderer sphereMesh: SphereMesh {  }
 
         components: [sphereMesh, transform, material, sceneRoot.contentLayer, objectPicker]
     }
@@ -288,7 +288,7 @@ Entity {
         }
         readonly property PhongMaterial material: PhongMaterial { diffuse: "green" }
 
-        readonly property GeometryRenderer sphereMesh: GeometryRenderer { view: SphereMesh { } }
+        readonly property GeometryRenderer sphereMesh: SphereMesh {  }
 
         components: [sphereMesh, transform, material, sceneRoot.contentLayer, objectPicker, pickingProxy]
     }

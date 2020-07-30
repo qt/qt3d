@@ -185,9 +185,7 @@ void QSkyboxEntityPrivate::init()
     m_skyboxTexture->addTextureImage(m_negYImage);
     m_skyboxTexture->addTextureImage(m_negZImage);
 
-    QGeometryRenderer *renderer = new QGeometryRenderer;
-    renderer->setView(m_mesh);
-    q_func()->addComponent(renderer);
+    q_func()->addComponent(m_mesh);
     q_func()->addComponent(m_material);
 }
 

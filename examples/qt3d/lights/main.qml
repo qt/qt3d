@@ -95,10 +95,8 @@ Entity
     Entity {
         id: redLight
         components: [
-            GeometryRenderer {
-                view: SphereMesh {
-                    radius: 2
-                }
+            SphereMesh {
+                radius: 2
             },
             Transform {
                 translation: Qt.vector3d(2.0, 8.0, -2.0)
@@ -120,10 +118,8 @@ Entity
     Entity {
         id: greenLight
         components: [
-            GeometryRenderer {
-                view: SphereMesh {
-                    radius: 2
-                }
+            SphereMesh {
+                radius: 2
             },
             Transform {
                 translation: Qt.vector3d(0.0, 3.0, 4.0)
@@ -145,10 +141,8 @@ Entity
     Entity {
         id: spotLight
         components: [
-            GeometryRenderer {
-                view: SphereMesh {
-                    radius: 2
-                }
+            SphereMesh {
+                radius: 2
             },
             Transform {
                 translation: Qt.vector3d(-20.0, 40.0, 0.0)

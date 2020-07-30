@@ -64,13 +64,10 @@ ScreenQuadEntity::ScreenQuadEntity(Qt3DCore::QNode *parent)
     planeMesh->setWidth(2.0f);
     planeMesh->setHeight(2.0f);
 
-    auto renderer = new Qt3DRender::QGeometryRenderer;
-    renderer->setView(planeMesh);
-
     addComponent(m_layer);
     addComponent(screenPlaneTransform);
     addComponent(screenQuadMaterial);
-    addComponent(renderer);
+    addComponent(planeMesh);
 }
 
 Qt3DRender::QLayer *ScreenQuadEntity::layer() const

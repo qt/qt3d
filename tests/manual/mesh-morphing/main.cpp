@@ -120,11 +120,8 @@ int main(int argc, char **argv)
     Qt3DAnimation::QVertexBlendAnimation *animation = new Qt3DAnimation::QVertexBlendAnimation;
     const QList<float> times = { 0.0f, 5.0f, 8.0f, 12.0f };
 
-    auto renderer = new Qt3DRender::QGeometryRenderer;
-    renderer->setView(mesh);
-
     animation->setTargetPositions(times);
-    animation->setTarget(renderer);
+    animation->setTarget(mesh);
     animation->setMorphTargets(morphTargets);
 
     // Material
@@ -136,7 +133,7 @@ int main(int argc, char **argv)
 
     // Cylinder
     Qt3DCore::QEntity *morphingEntity = new Qt3DCore::QEntity(rootEntity);
-    morphingEntity->addComponent(renderer);
+    morphingEntity->addComponent(mesh);
     morphingEntity->addComponent(transform);
     morphingEntity->addComponent(material);
 
@@ -157,11 +154,8 @@ int main(int argc, char **argv)
     cylinderMaterial->setDiffuse(Qt::red);
 
     // Cylinder
-    renderer = new Qt3DRender::QGeometryRenderer;
-    renderer->setView(cylinderMesh);
-
     Qt3DCore::QEntity *cylinder = new Qt3DCore::QEntity(rootEntity);
-    cylinder->addComponent(renderer);
+    cylinder->addComponent(cylinderMesh);
     cylinder->addComponent(cylinderTransform);
     cylinder->addComponent(cylinderMaterial);
 

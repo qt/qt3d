@@ -40,7 +40,7 @@
 
 #include "qspheremesh.h"
 
-#include <Qt3DExtras/qspheregeometry.h>
+#include <Qt3DExtras/qspheregeometryview.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -93,14 +93,14 @@ namespace  Qt3DExtras {
  * Constructs a new QSphereMesh with \a parent.
  */
 QSphereMesh::QSphereMesh(QNode *parent)
-    : Qt3DCore::QGeometryView(parent)
+    : Qt3DRender::QGeometryRenderer(parent)
 {
-    QSphereGeometry *geometry = new QSphereGeometry(this);
-    QObject::connect(geometry, &QSphereGeometry::radiusChanged, this, &QSphereMesh::radiusChanged);
-    QObject::connect(geometry, &QSphereGeometry::ringsChanged, this, &QSphereMesh::ringsChanged);
-    QObject::connect(geometry, &QSphereGeometry::slicesChanged, this, &QSphereMesh::slicesChanged);
-    QObject::connect(geometry, &QSphereGeometry::generateTangentsChanged, this, &QSphereMesh::generateTangentsChanged);
-    QGeometryView::setGeometry(geometry);
+    QSphereGeometryView *geometry = new QSphereGeometryView(this);
+    QObject::connect(geometry, &QSphereGeometryView::radiusChanged, this, &QSphereMesh::radiusChanged);
+    QObject::connect(geometry, &QSphereGeometryView::ringsChanged, this, &QSphereMesh::ringsChanged);
+    QObject::connect(geometry, &QSphereGeometryView::slicesChanged, this, &QSphereMesh::slicesChanged);
+    QObject::connect(geometry, &QSphereGeometryView::generateTangentsChanged, this, &QSphereMesh::generateTangentsChanged);
+    setView(geometry);
 }
 
 /*! \internal */
@@ -110,22 +110,22 @@ QSphereMesh::~QSphereMesh()
 
 void QSphereMesh::setRings(int rings)
 {
-    static_cast<QSphereGeometry *>(geometry())->setRings(rings);
+    static_cast<QSphereGeometryView *>(view())->setRings(rings);
 }
 
 void QSphereMesh::setSlices(int slices)
 {
-    static_cast<QSphereGeometry *>(geometry())->setSlices(slices);
+    static_cast<QSphereGeometryView *>(view())->setSlices(slices);
 }
 
 void QSphereMesh::setRadius(float radius)
 {
-    static_cast<QSphereGeometry *>(geometry())->setRadius(radius);
+    static_cast<QSphereGeometryView *>(view())->setRadius(radius);
 }
 
 void QSphereMesh::setGenerateTangents(bool gen)
 {
-    static_cast<QSphereGeometry *>(geometry())->setGenerateTangents(gen);
+    static_cast<QSphereGeometryView *>(view())->setGenerateTangents(gen);
 }
 
 /*!
@@ -136,7 +136,7 @@ void QSphereMesh::setGenerateTangents(bool gen)
  */
 bool QSphereMesh::generateTangents() const
 {
-    return static_cast<QSphereGeometry *>(geometry())->generateTangents();
+    return static_cast<QSphereGeometryView *>(view())->generateTangents();
 }
 
 /*!
@@ -146,7 +146,7 @@ bool QSphereMesh::generateTangents() const
  */
 int QSphereMesh::rings() const
 {
-    return static_cast<QSphereGeometry *>(geometry())->rings();
+    return static_cast<QSphereGeometryView *>(view())->rings();
 }
 
 /*!
@@ -156,7 +156,7 @@ int QSphereMesh::rings() const
  */
 int QSphereMesh::slices() const
 {
-    return static_cast<QSphereGeometry *>(geometry())->slices();
+    return static_cast<QSphereGeometryView *>(view())->slices();
 }
 
 /*!
@@ -166,7 +166,7 @@ int QSphereMesh::slices() const
  */
 float QSphereMesh::radius() const
 {
-    return static_cast<QSphereGeometry *>(geometry())->radius();
+    return static_cast<QSphereGeometryView *>(view())->radius();
 }
 
 } // Qt3DExtras

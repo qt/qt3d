@@ -41,13 +41,13 @@
 #define QT3DEXTRAS_QCONEMESH_H
 
 #include <Qt3DExtras/qt3dextras_global.h>
-#include <Qt3DCore/qgeometryview.h>
+#include <Qt3DRender/qgeometryrenderer.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DExtras {
 
-class Q_3DEXTRASSHARED_EXPORT QConeMesh : public Qt3DCore::QGeometryView
+class Q_3DEXTRASSHARED_EXPORT QConeMesh : public Qt3DRender::QGeometryRenderer
 {
     Q_OBJECT
     Q_PROPERTY(int rings READ rings WRITE setRings NOTIFY ringsChanged)

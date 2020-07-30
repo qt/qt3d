@@ -113,9 +113,7 @@ int main(int argc, char *argv[])
     Qt3DExtras::QPlaneMesh* planeMesh = new Qt3DExtras::QPlaneMesh(planeEntity);
     planeMesh->setWidth(4);
     planeMesh->setHeight(4);
-    auto renderer = new Qt3DRender::QGeometryRenderer;
-    renderer->setView(planeMesh);
-    planeEntity->addComponent(renderer);
+    planeEntity->addComponent(planeMesh);
 
     PlaneMaterial* material = new PlaneMaterial(offscreenTexture, planeEntity);
     planeEntity->addComponent(material);

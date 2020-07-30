@@ -99,9 +99,8 @@ Entity {
         InputSettings { }
     ]
 
-    GeometryRenderer {
+    SphereMesh {
         id: sphereMesh
-        view: SphereMesh { }
     }
 
     PhongMaterial {

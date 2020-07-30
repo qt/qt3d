@@ -111,7 +111,7 @@ Entity {
                 Material1 {
                     color: "red"
                 },
-                GeometryRenderer { view: SphereMesh { } }
+                SphereMesh { }
             ]
         }
 
@@ -124,7 +124,7 @@ Entity {
                 Material2 {
                     color: "green"
                 },
-                GeometryRenderer { view: SphereMesh { } }
+                SphereMesh { }
             ]
         }
     }
@@ -147,7 +147,7 @@ Entity {
                         loops: Animation.Infinite
                     }
                 },
-                GeometryRenderer { view: SphereMesh { } }
+                SphereMesh { }
             ]
         }
 
@@ -161,7 +161,7 @@ Entity {
                 Material2 {
                     color: "orange"
                 },
-                GeometryRenderer { view: SphereMesh { } }
+                SphereMesh { }
             ]
         }
     }

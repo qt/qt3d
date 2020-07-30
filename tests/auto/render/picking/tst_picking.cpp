@@ -71,18 +71,15 @@ public:
         , clickedCalled(0)
     {
         mesh->setRadius(radius);
-        QSphereGeometry *g = static_cast<QSphereGeometry *>(mesh->geometry());
+        QSphereGeometry *g = static_cast<QSphereGeometry *>(mesh->view()->geometry());
         QAttribute *positionAttr = static_cast<QAttribute *>(g->attributes().first());
         Qt3DCore::QBuffer *vertexBuffer = static_cast<Qt3DCore::QBuffer *>(positionAttr->buffer());
         Q_UNUSED(vertexBuffer);
 
         transform->setTranslation(position);
 
-        auto renderer = new Qt3DRender::QGeometryRenderer;
-        renderer->setView(mesh);
-
         addComponent(picker);
-        addComponent(renderer);
+        addComponent(mesh);
         addComponent(transform);
 
         QObject::connect(picker, &QObjectPicker::pressed, this, &PickableEntity::onPressed);

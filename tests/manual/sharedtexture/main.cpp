@@ -98,10 +98,7 @@ Qt3DCore::QEntity *createScene(Qt3DExtras::Qt3DWindow *view, Qt3DRender::QAbstra
     cubeRotateTransformAnimation->setLoopCount(-1);
     cubeRotateTransformAnimation->start();
 
-    auto renderer = new Qt3DRender::QGeometryRenderer;
-    renderer->setView(cuboidMesh);
-
-    sphereEntity->addComponent(renderer);
+    sphereEntity->addComponent(cuboidMesh);
     sphereEntity->addComponent(transform);
     sphereEntity->addComponent(material);
 

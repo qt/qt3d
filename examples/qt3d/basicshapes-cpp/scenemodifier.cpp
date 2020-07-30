@@ -82,9 +82,7 @@ SceneModifier::SceneModifier(Qt3DCore::QEntity *rootEntity)
         // Torus
         //! [3]
         m_torusEntity = new Qt3DCore::QEntity(m_rootEntity);
-        auto renderer = new Qt3DRender::QGeometryRenderer;
-        renderer->setView(m_torus);
-        m_torusEntity->addComponent(renderer);
+        m_torusEntity->addComponent(m_torus);
         m_torusEntity->addComponent(torusMaterial);
         m_torusEntity->addComponent(torusTransform);
         //! [3]
@@ -110,9 +108,7 @@ SceneModifier::SceneModifier(Qt3DCore::QEntity *rootEntity)
     // Cone
     {
         m_coneEntity = new Qt3DCore::QEntity(m_rootEntity);
-        auto renderer = new Qt3DRender::QGeometryRenderer;
-        renderer->setView(cone);
-        m_coneEntity->addComponent(renderer);
+        m_coneEntity->addComponent(cone);
         m_coneEntity->addComponent(coneMaterial);
         m_coneEntity->addComponent(coneTransform);
     }
@@ -136,9 +132,7 @@ SceneModifier::SceneModifier(Qt3DCore::QEntity *rootEntity)
     // Cylinder
     {
         m_cylinderEntity = new Qt3DCore::QEntity(m_rootEntity);
-        auto renderer = new Qt3DRender::QGeometryRenderer;
-        renderer->setView(cylinder);
-        m_cylinderEntity->addComponent(renderer);
+        m_cylinderEntity->addComponent(cylinder);
         m_cylinderEntity->addComponent(cylinderMaterial);
         m_cylinderEntity->addComponent(cylinderTransform);
     }
@@ -157,9 +151,7 @@ SceneModifier::SceneModifier(Qt3DCore::QEntity *rootEntity)
     //Cuboid
     {
         m_cuboidEntity = new Qt3DCore::QEntity(m_rootEntity);
-        auto renderer = new Qt3DRender::QGeometryRenderer;
-        renderer->setView(cuboid);
-        m_cuboidEntity->addComponent(renderer);
+        m_cuboidEntity->addComponent(cuboid);
         m_cuboidEntity->addComponent(cuboidMaterial);
         m_cuboidEntity->addComponent(cuboidTransform);
     }
@@ -181,9 +173,7 @@ SceneModifier::SceneModifier(Qt3DCore::QEntity *rootEntity)
     // Plane
     {
         m_planeEntity = new Qt3DCore::QEntity(m_rootEntity);
-        auto renderer = new Qt3DRender::QGeometryRenderer;
-        renderer->setView(planeMesh);
-        m_planeEntity->addComponent(renderer);
+        m_planeEntity->addComponent(planeMesh);
         m_planeEntity->addComponent(planeMaterial);
         m_planeEntity->addComponent(planeTransform);
     }
@@ -203,12 +193,9 @@ SceneModifier::SceneModifier(Qt3DCore::QEntity *rootEntity)
     Qt3DExtras::QPhongMaterial *sphereMaterial = new Qt3DExtras::QPhongMaterial();
     sphereMaterial->setDiffuse(QColor(QRgb(0xa69929)));
 
-    auto renderer = new Qt3DRender::QGeometryRenderer;
-    renderer->setView(sphereMesh);
-
     // Sphere
     m_sphereEntity = new Qt3DCore::QEntity(m_rootEntity);
-    m_sphereEntity->addComponent(renderer);
+    m_sphereEntity->addComponent(sphereMesh);
     m_sphereEntity->addComponent(sphereMaterial);
     m_sphereEntity->addComponent(sphereTransform);
 }

@@ -109,9 +109,8 @@ Entity {
         InputSettings {}
     ]
 
-    GeometryRenderer {
+    CuboidMesh {
         id: mesh
-        view: CuboidMesh { }
     }
 
     Entity {

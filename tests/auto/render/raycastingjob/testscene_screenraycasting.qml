@@ -112,14 +112,12 @@ Entity {
         onReleased: { caster.trigger(Qt.point(mouse.x, mouse.y)); }
     }
 
-    GeometryRenderer {
+    CylinderMesh {
         id: mesh
-        view: CylinderMesh {
-            radius: 1
-            length: 3
-            rings: 100
-            slices: 20
-        }
+        radius: 1
+        length: 3
+        rings: 100
+        slices: 20
     }
     PhongMaterial { id: material }
 

@@ -200,9 +200,8 @@ Entity {
 
     // Preview Texture Scene
     Entity {
-        GeometryRenderer {
+        PlaneMesh {
             id: planeMesh
-            view: PlaneMesh {  }
         }
 
         components: Transform {

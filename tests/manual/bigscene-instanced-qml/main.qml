@@ -109,19 +109,16 @@ Entity {
                 }
             }
         }
-        parameters: Parameter { name: "instanceCount"; value: cylinderMeshInstanced.instanceCount }
+        parameters: Parameter { name: "instanceCount"; value: cylinderMeshRenderer.instanceCount }
     }
 
-    GeometryRenderer {
+    CylinderMesh {
         id: cylinderMeshRenderer
-        view: CylinderMesh {
-            id: cylinderMeshInstanced
-            instanceCount: 2000
-            rings: 50
-            slices: 30
-            radius: 2.5
-            length: 5.0
-        }
+        view.instanceCount: 2000
+        rings: 50
+        slices: 30
+        radius: 2.5
+        length: 5.0
     }
 
     Entity {

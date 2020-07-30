@@ -133,9 +133,6 @@ int main(int ac, char **av)
     mesh->setRadius(2.5f);
     mesh->setLength(5.0f);
 
-    auto renderer = new Qt3DRender::QGeometryRenderer;
-    renderer->setView(mesh);
-
     // Material
     auto phongMaterial = new Qt3DExtras::QPhongMaterial(root);
     auto effect = phongMaterial->effect();
@@ -158,7 +155,7 @@ int main(int ac, char **av)
     // Scene
     for (int i = 0; i < max; i++) {
         Entity *e = new Entity(effect, root);
-        e->addComponent(renderer);
+        e->addComponent(mesh);
         const double angle = M_PI * 2.0 * double(i) * det * 10.;
 
         e->setDiffuseColor(QColor(int(qFabs(qCos(angle)) * 255.0), 204, 75));

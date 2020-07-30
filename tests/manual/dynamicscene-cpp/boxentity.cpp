@@ -67,11 +67,8 @@ BoxEntity::BoxEntity(QNode *parent)
     m_material->setSpecular(Qt::white);
     m_material->setShininess(150.0f);
 
-    auto renderer = new Qt3DRender::QGeometryRenderer;
-    renderer->setView(m_mesh);
-
     addComponent(m_transform);
-    addComponent(renderer);
+    addComponent(m_mesh);
     addComponent(m_material);
 }
 

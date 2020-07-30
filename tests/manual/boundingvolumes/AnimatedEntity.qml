@@ -87,7 +87,7 @@ Entity {
     Entity {
         id: sphereEntity1
         components: [
-            GeometryRenderer { view: SphereMesh { radius: 4 } },
+            SphereMesh { radius: 4 },
             PhongMaterial { diffuse: "blue" },
             Transform { translation: Qt.vector3d(mainAnimation.x, 9, 0) }
         ]
@@ -97,7 +97,7 @@ Entity {
     Entity {
         id: sphereEntity2
         components: [
-            GeometryRenderer { view: SphereMesh { radius: 4 } },
+            SphereMesh { radius: 4 },
             PhongMaterial { diffuse: "red" },
             Transform { translation: Qt.vector3d(mainAnimation.x, -9, 0) },
             BoundingVolume { view: SphereMesh { radius: 2 } }
@@ -108,10 +108,10 @@ Entity {
     Entity {
         id: sphereEntity3
         components: [
-            GeometryRenderer {
-                view: SphereMesh { radius: 4 }
-                minPoint: Qt.vector3d(-.5, -.5, -.5)
-                maxPoint: Qt.vector3d(.5, .5, .5)
+            SphereMesh {
+                radius: 4
+                view.minPoint: Qt.vector3d(-.5, -.5, -.5)
+                view.maxPoint: Qt.vector3d(.5, .5, .5)
             },
             PhongMaterial { diffuse: "green" },
             Transform { translation: Qt.vector3d(mainAnimation.x, 0 , 0) }

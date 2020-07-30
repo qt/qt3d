@@ -99,7 +99,7 @@ QQ2.Item {
             ]
 
             Entity {
-                readonly property GeometryRenderer mesh: GeometryRenderer { view: CuboidMesh { } }
+                readonly property GeometryRenderer mesh: CuboidMesh { }
                 readonly property DiffuseMapMaterial material: DiffuseMapMaterial {
                     diffuse: TextureLoader {
                         source: textureSource

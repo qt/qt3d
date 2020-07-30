@@ -90,14 +90,12 @@ Entity {
         diffuse: sceneColor
     }
 
-    GeometryRenderer {
+    TorusMesh {
         id: torusMesh
-        view: TorusMesh {
-            radius: 5
-            minorRadius: 1
-            rings: 100
-            slices: 20
-        }
+        radius: 5
+        minorRadius: 1
+        rings: 100
+        slices: 20
     }
 
     Transform {
@@ -111,11 +109,9 @@ Entity {
         components: [ torusMesh, material, torusTransform ]
     }
 
-    GeometryRenderer {
+    SphereMesh {
         id: sphereMesh
-        view: SphereMesh {
-            radius: 3
-        }
+        radius: 3
     }
 
     Transform {

@@ -82,14 +82,12 @@ Entity {
         InputSettings { }
     ]
 
-    GeometryRenderer {
+    TorusMesh {
         id: torusMesh
-        view: TorusMesh {
-            radius: 5
-            minorRadius: 1
-            rings: 100
-            slices: 20
-        }
+        radius: 5
+        minorRadius: 1
+        rings: 100
+        slices: 20
     }
 
     Entity {

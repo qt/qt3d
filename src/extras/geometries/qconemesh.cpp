@@ -37,13 +37,9 @@
 **
 ****************************************************************************/
 
-#ifndef _USE_MATH_DEFINES
-# define _USE_MATH_DEFINES // For MSVC
-#endif
+#include "qconemesh.h"
 
-#include "qconegeometry.h"
-
-#include <Qt3DExtras/qconemesh.h>
+#include <Qt3DExtras/qconegeometryview.h>
 #include <Qt3DCore/qbuffer.h>
 #include <Qt3DCore/qattribute.h>
 #include <QtGui/QVector3D>
@@ -115,18 +111,18 @@ namespace Qt3DExtras {
  */
 
 QConeMesh::QConeMesh(QNode *parent)
-    : Qt3DCore::QGeometryView(parent)
+    : Qt3DRender::QGeometryRenderer(parent)
 {
-    QConeGeometry *geometry = new QConeGeometry(this);
-    QObject::connect(geometry, &QConeGeometry::hasTopEndcapChanged, this, &QConeMesh::hasTopEndcapChanged);
-    QObject::connect(geometry, &QConeGeometry::hasBottomEndcapChanged, this, &QConeMesh::hasBottomEndcapChanged);
-    QObject::connect(geometry, &QConeGeometry::topRadiusChanged, this, &QConeMesh::topRadiusChanged);
-    QObject::connect(geometry, &QConeGeometry::bottomRadiusChanged, this, &QConeMesh::bottomRadiusChanged);
-    QObject::connect(geometry, &QConeGeometry::ringsChanged, this, &QConeMesh::ringsChanged);
-    QObject::connect(geometry, &QConeGeometry::slicesChanged, this, &QConeMesh::slicesChanged);
-    QObject::connect(geometry, &QConeGeometry::lengthChanged, this, &QConeMesh::lengthChanged);
+    QConeGeometryView *geometry = new QConeGeometryView(this);
+    QObject::connect(geometry, &QConeGeometryView::hasTopEndcapChanged, this, &QConeMesh::hasTopEndcapChanged);
+    QObject::connect(geometry, &QConeGeometryView::hasBottomEndcapChanged, this, &QConeMesh::hasBottomEndcapChanged);
+    QObject::connect(geometry, &QConeGeometryView::topRadiusChanged, this, &QConeMesh::topRadiusChanged);
+    QObject::connect(geometry, &QConeGeometryView::bottomRadiusChanged, this, &QConeMesh::bottomRadiusChanged);
+    QObject::connect(geometry, &QConeGeometryView::ringsChanged, this, &QConeMesh::ringsChanged);
+    QObject::connect(geometry, &QConeGeometryView::slicesChanged, this, &QConeMesh::slicesChanged);
+    QObject::connect(geometry, &QConeGeometryView::lengthChanged, this, &QConeMesh::lengthChanged);
 
-    QGeometryView::setGeometry(geometry);
+    setView(geometry);
 }
 
 /*! \internal */
@@ -136,37 +132,37 @@ QConeMesh::~QConeMesh()
 
 void QConeMesh::setHasTopEndcap(bool hasTopEndcap)
 {
-    static_cast<QConeGeometry *>(geometry())->setHasTopEndcap(hasTopEndcap);
+    static_cast<QConeGeometryView *>(view())->setHasTopEndcap(hasTopEndcap);
 }
 
 void QConeMesh::setHasBottomEndcap(bool hasBottomEndcap)
 {
-    static_cast<QConeGeometry *>(geometry())->setHasBottomEndcap(hasBottomEndcap);
+    static_cast<QConeGeometryView *>(view())->setHasBottomEndcap(hasBottomEndcap);
 }
 
 void QConeMesh::setTopRadius(float topRadius)
 {
-    static_cast<QConeGeometry *>(geometry())->setTopRadius(topRadius);
+    static_cast<QConeGeometryView *>(view())->setTopRadius(topRadius);
 }
 
 void QConeMesh::setBottomRadius(float bottomRadius)
 {
-    static_cast<QConeGeometry *>(geometry())->setBottomRadius(bottomRadius);
+    static_cast<QConeGeometryView *>(view())->setBottomRadius(bottomRadius);
 }
 
 void QConeMesh::setRings(int rings)
 {
-    static_cast<QConeGeometry *>(geometry())->setRings(rings);
+    static_cast<QConeGeometryView *>(view())->setRings(rings);
 }
 
 void QConeMesh::setSlices(int slices)
 {
-    static_cast<QConeGeometry *>(geometry())->setSlices(slices);
+    static_cast<QConeGeometryView *>(view())->setSlices(slices);
 }
 
 void QConeMesh::setLength(float length)
 {
-    static_cast<QConeGeometry *>(geometry())->setLength(length);
+    static_cast<QConeGeometryView *>(view())->setLength(length);
 }
 
 /*!
@@ -176,7 +172,7 @@ void QConeMesh::setLength(float length)
  */
 bool QConeMesh::hasTopEndcap() const
 {
-    return static_cast<QConeGeometry *>(geometry())->hasTopEndcap();
+    return static_cast<QConeGeometryView *>(view())->hasTopEndcap();
 }
 
 /*!
@@ -186,7 +182,7 @@ bool QConeMesh::hasTopEndcap() const
  */
 bool QConeMesh::hasBottomEndcap() const
 {
-    return static_cast<QConeGeometry *>(geometry())->hasBottomEndcap();
+    return static_cast<QConeGeometryView *>(view())->hasBottomEndcap();
 }
 
 /*!
@@ -196,7 +192,7 @@ bool QConeMesh::hasBottomEndcap() const
  */
 float QConeMesh::topRadius() const
 {
-    return static_cast<QConeGeometry *>(geometry())->topRadius();
+    return static_cast<QConeGeometryView *>(view())->topRadius();
 }
 
 /*!
@@ -206,7 +202,7 @@ float QConeMesh::topRadius() const
  */
 float QConeMesh::bottomRadius() const
 {
-    return static_cast<QConeGeometry *>(geometry())->bottomRadius();
+    return static_cast<QConeGeometryView *>(view())->bottomRadius();
 }
 
 /*!
@@ -216,7 +212,7 @@ float QConeMesh::bottomRadius() const
  */
 int QConeMesh::rings() const
 {
-    return static_cast<QConeGeometry *>(geometry())->rings();
+    return static_cast<QConeGeometryView *>(view())->rings();
 }
 
 /*!
@@ -226,7 +222,7 @@ int QConeMesh::rings() const
  */
 int QConeMesh::slices() const
 {
-    return static_cast<QConeGeometry *>(geometry())->slices();
+    return static_cast<QConeGeometryView *>(view())->slices();
 }
 
 /*!
@@ -236,7 +232,7 @@ int QConeMesh::slices() const
  */
 float QConeMesh::length() const
 {
-    return static_cast<QConeGeometry *>(geometry())->length();
+    return static_cast<QConeGeometryView *>(view())->length();
 }
 
 } // namespace Qt3DExtras

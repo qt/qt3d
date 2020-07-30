@@ -56,11 +56,9 @@ import Qt3D.Extras 2.0
 Entity {
     components: [ mesh, material, transform ]
 
-    GeometryRenderer {
+    SphereMesh {
         id: mesh
-        view: SphereMesh {
-            radius: 3
-        }
+        radius: 3
     }
 
     Transform {

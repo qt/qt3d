@@ -1817,23 +1817,17 @@ void GLTFImporter::processJSONMesh(const QString &id, const QJsonObject &json)
     } else {
         QGeometryRenderer *mesh = nullptr;
         if (meshType == QStringLiteral("cone")) {
-            mesh = new QGeometryRenderer;
-            mesh->setView(new QConeMesh);
+            mesh = new QConeMesh;
         } else if (meshType == QStringLiteral("cuboid")) {
-            mesh = new QGeometryRenderer;
-            mesh->setView(new QCuboidMesh);
+            mesh = new QCuboidMesh;
         } else if (meshType == QStringLiteral("cylinder")) {
-            mesh = new QGeometryRenderer;
-            mesh->setView(new QCylinderMesh);
+            mesh = new QCylinderMesh;
         } else if (meshType == QStringLiteral("plane")) {
-            mesh = new QGeometryRenderer;
-            mesh->setView(new QPlaneMesh);
+            mesh = new QPlaneMesh;
         } else if (meshType == QStringLiteral("sphere")) {
-            mesh = new QGeometryRenderer;
-            mesh->setView(new QSphereMesh);
+            mesh = new QSphereMesh;
         } else if (meshType == QStringLiteral("torus")) {
-            mesh = new QGeometryRenderer;
-            mesh->setView(new QTorusMesh);
+            mesh = new QTorusMesh;
         } else {
             qCWarning(GLTFImporterLog,
                       "Invalid mesh type: %ls for mesh: %ls",

@@ -122,13 +122,11 @@ QardboardRootEntity {
 
     // Cylinder
     Entity {
-        property GeometryRenderer cylinder: GeometryRenderer {
-            view: CylinderMesh {
-                radius: 1
-                length: 3
-                rings: 100
-                slices: 20
-            }
+        property GeometryRenderer cylinder: CylinderMesh {
+            radius: 1
+            length: 3
+            rings: 100
+            slices: 20
         }
         property Transform transform: Transform {
             id: cylinderTransform
@@ -182,13 +180,11 @@ QardboardRootEntity {
         readonly property real det: 1.0 / model
         delegate: Entity {
             components: [
-                GeometryRenderer {
-                    view: TorusMesh {
-                        radius: 35
-                        minorRadius: 5
-                        rings: 100
-                        slices: 20
-                    }
+                TorusMesh {
+                    radius: 35
+                    minorRadius: 5
+                    rings: 100
+                    slices: 20
                 },
                 Transform {
                     id: transform

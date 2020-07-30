@@ -81,12 +81,10 @@ Entity {
         diffuse: Qt.rgba( root.intensity, root.intensity, root.intensity, 1.0 ) // Set how bright the wave is
     }
 
-    GeometryRenderer {
+    PlaneMesh {
         id: mesh
-        view: PlaneMesh {
-            width: 25.0
-            height: 5.0
-            meshResolution: Qt.size( 125, 50 )
-        }
+        width: 25.0
+        height: 5.0
+        meshResolution: Qt.size( 125, 50 )
     }
 }

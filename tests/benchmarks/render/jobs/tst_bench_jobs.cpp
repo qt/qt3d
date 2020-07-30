@@ -223,11 +223,8 @@ Qt3DCore::QEntity *buildBigScene()
         m.rotate(45.0f * i, QVector3D(0.0f, 0.0f, 1.0f));
         transform->setMatrix(m);
 
-        auto renderer = new Qt3DRender::QGeometryRenderer;
-        renderer->setView(mesh);
-
         e->addComponent(transform);
-        e->addComponent(renderer);
+        e->addComponent(mesh);
         e->addComponent(material);
         e->setParent(root);
     }

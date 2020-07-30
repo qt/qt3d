@@ -327,9 +327,7 @@ void tst_gltfPlugins::createTestScene()
         mesh->setYZMeshResolution(QSize(2, 2));
         mesh->setYZMeshResolution(QSize(2, 3));
         mesh->setYZMeshResolution(QSize(3, 2));
-        Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
-        renderer->setView(mesh);
-        createAndAddEntity(QStringLiteral("Cube with DiffuseMap"), renderer, material, transform);
+        createAndAddEntity(QStringLiteral("Cube with DiffuseMap"), mesh, material, transform);
     }
     // Cone with PhongAlpha
     {
@@ -353,9 +351,7 @@ void tst_gltfPlugins::createTestScene()
         mesh->setTopRadius(0.5f);
         mesh->setBottomRadius(1.5f);
         mesh->setLength(0.9f);
-        auto renderer = new Qt3DRender::QGeometryRenderer;
-        renderer->setView(mesh);
-        createAndAddEntity(QStringLiteral("Cone with PhongAlpha"), renderer, material, transform);
+        createAndAddEntity(QStringLiteral("Cone with PhongAlpha"), mesh, material, transform);
     }
     // Cylinder with Phong
     {
@@ -372,9 +368,7 @@ void tst_gltfPlugins::createTestScene()
         mesh->setRings(3);
         mesh->setLength(1.2f);
         mesh->setSlices(16);
-        auto renderer = new Qt3DRender::QGeometryRenderer;
-        renderer->setView(mesh);
-        createAndAddEntity(QStringLiteral("Cylinder with Phong"), renderer, material, transform);
+        createAndAddEntity(QStringLiteral("Cylinder with Phong"), mesh, material, transform);
     }
     // Plane with DiffuseSpecularMap
     {
@@ -399,10 +393,8 @@ void tst_gltfPlugins::createTestScene()
         mesh->setMeshResolution(QSize(3, 3));
         mesh->setHeight(1.5f);
         mesh->setWidth(1.2f);
-        auto renderer = new Qt3DRender::QGeometryRenderer;
-        renderer->setView(mesh);
         createAndAddEntity(QStringLiteral("Plane with DiffuseSpecularMap"),
-                           renderer, material, transform);
+                           mesh, material, transform);
     }
     // Sphere with NormalDiffuseMap
     {
@@ -430,10 +422,8 @@ void tst_gltfPlugins::createTestScene()
         mesh->setRings(16);
         mesh->setSlices(16);
         mesh->setGenerateTangents(true);
-        auto renderer = new Qt3DRender::QGeometryRenderer;
-        renderer->setView(mesh);
         createAndAddEntity(QStringLiteral("Sphere with NormalDiffuseMap"),
-                           renderer, material, transform);
+                           mesh, material, transform);
     }
     // Sphere with NormalDiffuseMapAlpha
     {
@@ -461,10 +451,8 @@ void tst_gltfPlugins::createTestScene()
         mesh->setRings(16);
         mesh->setSlices(16);
         mesh->setGenerateTangents(true);
-        auto renderer = new Qt3DRender::QGeometryRenderer;
-        renderer->setView(mesh);
         createAndAddEntity(QStringLiteral("Sphere with NormalDiffuseMapAlpha"),
-                           renderer, material, transform);
+                           mesh, material, transform);
     }
     // Sphere with NormalDiffuseSpecularMap
     {
@@ -495,10 +483,8 @@ void tst_gltfPlugins::createTestScene()
         mesh->setRings(16);
         mesh->setSlices(16);
         mesh->setGenerateTangents(true);
-        auto renderer = new Qt3DRender::QGeometryRenderer;
-        renderer->setView(mesh);
         createAndAddEntity(QStringLiteral("Sphere with NormalDiffuseSpecularMap"),
-                           renderer, material, transform);
+                           mesh, material, transform);
     }
     // Torus with Gooch
     {
@@ -520,9 +506,7 @@ void tst_gltfPlugins::createTestScene()
         mesh->setMinorRadius(0.5f);
         mesh->setRings(16);
         mesh->setSlices(16);
-        auto renderer = new Qt3DRender::QGeometryRenderer;
-        renderer->setView(mesh);
-        createAndAddEntity(QStringLiteral("Torus with Gooch"), renderer, material, transform);
+        createAndAddEntity(QStringLiteral("Torus with Gooch"), mesh, material, transform);
     }
     // Custom cube with per-vertex colors
     {
@@ -533,7 +517,7 @@ void tst_gltfPlugins::createTestScene()
 
         Qt3DRender::QGeometryRenderer *boxMesh = createCustomCube();
         Qt3DCore::QBuffer *colorDataBuffer =
-            new Qt3DCore::QBuffer(boxMesh->view()->geometry());
+            new Qt3DCore::QBuffer(boxMesh->geometry());
         QByteArray colorBufferData;
         colorBufferData.resize(8 * 4 * sizeof(float));
 
@@ -547,7 +531,7 @@ void tst_gltfPlugins::createTestScene()
 
         colorDataBuffer->setData(colorBufferData);
 
-        addColorAttributeToGeometry(boxMesh->view()->geometry(), colorDataBuffer, 8);
+        addColorAttributeToGeometry(boxMesh->geometry(), colorDataBuffer, 8);
 
         createAndAddEntity(QStringLiteral("Custom cube with per-vertex colors"),
                            boxMesh, material, transform);
@@ -568,10 +552,8 @@ void tst_gltfPlugins::createTestScene()
         mesh->setRings(3);
         mesh->setLength(1.5f);
         mesh->setSlices(16);
-        auto renderer = new Qt3DRender::QGeometryRenderer;
-        renderer->setView(mesh);
         createAndAddEntity(QStringLiteral("Child with Phong"),
-                           renderer, material, transform, parentEntity);
+                           mesh, material, transform, parentEntity);
     }
     // Cube with custom material
     {
@@ -590,7 +572,7 @@ void tst_gltfPlugins::createTestScene()
         transform->setRotation(Qt3DCore::QTransform::fromAxisAndAngle(1.0f, 2.0f, 3.0f, 90.0f));
         Qt3DRender::QGeometryRenderer *boxMesh = createCustomCube();
         Qt3DCore::QBuffer *offsetBuffer =
-            new Qt3DCore::QBuffer(boxMesh->view()->geometry());
+            new Qt3DCore::QBuffer(boxMesh->geometry());
         QByteArray offsetBufferData;
         offsetBufferData.resize(8 * 3 * sizeof(float));
 
@@ -613,7 +595,7 @@ void tst_gltfPlugins::createTestScene()
         customAttribute->setCount(8);
         customAttribute->setName(QStringLiteral("vertexOffset"));
 
-        boxMesh->view()->geometry()->addAttribute(customAttribute);
+        boxMesh->geometry()->addAttribute(customAttribute);
 
         createAndAddEntity(QStringLiteral("Custom cube with on-top material"),
                            boxMesh, material, transform);
@@ -751,8 +733,12 @@ void tst_gltfPlugins::compareComponents(Qt3DCore::QComponent *c1, Qt3DCore::QCom
         if (auto mesh1 = qobject_cast<Qt3DRender::QGeometryRenderer *>(c1)) {
             auto mesh2 = qobject_cast<Qt3DRender::QGeometryRenderer *>(c2);
             QVERIFY(mesh2 != nullptr);
-            auto geometry1 = mesh1->view()->geometry();
-            auto geometry2 = mesh2->view()->geometry();
+            auto geometry1 = mesh1->geometry();
+            if (!geometry1 && mesh1->view())
+                geometry1 = mesh1->view()->geometry();
+            auto geometry2 = mesh2->geometry();
+            if (!geometry2 && mesh2->view())
+                geometry2 = mesh2->view()->geometry();
             // Check that attributes match.
             compareAttributes(
                         findAttribute(Qt3DCore::QAttribute::defaultPositionAttributeName(),
@@ -980,8 +966,8 @@ QUrl tst_gltfPlugins::getTextureUrl(Qt3DRender::QAbstractTexture *tex)
 
 Qt3DRender::QGeometryRenderer *tst_gltfPlugins::createCustomCube()
 {
-    Qt3DCore::QGeometryView *boxView = new Qt3DCore::QGeometryView();
-    Qt3DCore::QGeometry *boxGeometry = new Qt3DCore::QGeometry(boxView);
+    Qt3DRender::QGeometryRenderer *boxMesh = new Qt3DRender::QGeometryRenderer;
+    Qt3DCore::QGeometry *boxGeometry = new Qt3DCore::QGeometry(boxMesh);
     Qt3DCore::QBuffer *boxDataBuffer =
             new Qt3DCore::QBuffer(boxGeometry);
     Qt3DCore::QBuffer *indexDataBuffer =
@@ -1024,15 +1010,13 @@ Qt3DRender::QGeometryRenderer *tst_gltfPlugins::createCustomCube()
     addPositionAttributeToGeometry(boxGeometry, boxDataBuffer, 8);
     addIndexAttributeToGeometry(boxGeometry, indexDataBuffer, 36);
 
-    boxView->setInstanceCount(1);
-    boxView->setIndexOffset(0);
-    boxView->setFirstInstance(0);
-    boxView->setVertexCount(36);
-    boxView->setPrimitiveType(Qt3DCore::QGeometryView::Triangles);
-    boxView->setGeometry(boxGeometry);
+    boxMesh->setInstanceCount(1);
+    boxMesh->setIndexOffset(0);
+    boxMesh->setFirstInstance(0);
+    boxMesh->setVertexCount(36);
+    boxMesh->setPrimitiveType(Qt3DRender::QGeometryRenderer::Triangles);
+    boxMesh->setGeometry(boxGeometry);
 
-    Qt3DRender::QGeometryRenderer *boxMesh = new Qt3DRender::QGeometryRenderer;
-    boxMesh->setView(boxView);
     return boxMesh;
 }
 
@@ -1218,6 +1202,7 @@ void tst_gltfPlugins::exportAndImport()
         Qt3DCore::QEntity *importedEntity = findChildEntity(importedScene, name);
         QVERIFY(importedEntity != nullptr);
         if (importedEntity) {
+            qDebug() << importedEntity->objectName();
             compareComponents(transformComponent(exportedEntity),
                               transformComponent(importedEntity));
             compareComponents(lightComponent(exportedEntity),

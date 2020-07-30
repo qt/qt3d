@@ -58,9 +58,6 @@ SceneEntity::SceneEntity(Qt3DCore::QNode *parent)
     sphereMesh->setRings(50);
     sphereMesh->setSlices(100);
 
-    auto renderer = new Qt3DRender::QGeometryRenderer;
-    renderer->setView(sphereMesh);
-
     {
         Qt3DRender::QPointLight *light1 = new Qt3DRender::QPointLight(this);
         light1->setColor(Qt::white);
@@ -85,7 +82,7 @@ SceneEntity::SceneEntity(Qt3DCore::QNode *parent)
 
         sphereOne->addComponent(sphereOneTransform);
         sphereOne->addComponent(sphereOneMaterial);
-        sphereOne->addComponent(renderer);
+        sphereOne->addComponent(sphereMesh);
         sphereOne->addComponent(m_layer);
         sphereOne->addComponent(light2);
     }
@@ -100,7 +97,7 @@ SceneEntity::SceneEntity(Qt3DCore::QNode *parent)
         light3->setColor(Qt::blue);
         light3->setIntensity(0.5f);
 
-        sphereTwo->addComponent(renderer);
+        sphereTwo->addComponent(sphereMesh);
         sphereTwo->addComponent(m_layer);
         sphereTwo->addComponent(sphereTwoMaterial);
         sphereTwo->addComponent(light3);

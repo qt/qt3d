@@ -115,7 +115,7 @@ Item {
 
             Entity {
                 id: cubeEntity
-                readonly property GeometryRenderer cuboid: GeometryRenderer { view: CuboidMesh {} }
+                readonly property GeometryRenderer cuboid: CuboidMesh { }
                 readonly property DiffuseMapMaterial material: DiffuseMapMaterial {
                     diffuse: shaderGLTexture
                 }

@@ -56,13 +56,11 @@ Entity {
     id: root
     property Material material
 
-    GeometryRenderer {
+    PlaneMesh {
         id: groundMesh
-        view: PlaneMesh {
-            width: 50
-            height: width
-            meshResolution: Qt.size(2, 2)
-        }
+        width: 50
+        height: width
+        meshResolution: Qt.size(2, 2)
     }
 
     Transform {

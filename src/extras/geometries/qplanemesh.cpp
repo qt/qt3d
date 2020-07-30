@@ -39,7 +39,7 @@
 
 #include "qplanemesh.h"
 
-#include <Qt3DExtras/qplanegeometry.h>
+#include <Qt3DExtras/qplanegeometryview.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -94,14 +94,14 @@ namespace  Qt3DExtras {
  * Constructs a new QPlaneMesh with \a parent.
  */
 QPlaneMesh::QPlaneMesh(QNode *parent)
-    : Qt3DCore::QGeometryView(parent)
+    : Qt3DRender::QGeometryRenderer(parent)
 {
-    QPlaneGeometry *geometry = new QPlaneGeometry(this);
-    QObject::connect(geometry, &QPlaneGeometry::widthChanged, this, &QPlaneMesh::widthChanged);
-    QObject::connect(geometry, &QPlaneGeometry::heightChanged, this, &QPlaneMesh::heightChanged);
-    QObject::connect(geometry, &QPlaneGeometry::resolutionChanged, this, &QPlaneMesh::meshResolutionChanged);
-    QObject::connect(geometry, &QPlaneGeometry::mirroredChanged, this, &QPlaneMesh::mirroredChanged);
-    QGeometryView::setGeometry(geometry);
+    QPlaneGeometryView *geometry = new QPlaneGeometryView(this);
+    QObject::connect(geometry, &QPlaneGeometryView::widthChanged, this, &QPlaneMesh::widthChanged);
+    QObject::connect(geometry, &QPlaneGeometryView::heightChanged, this, &QPlaneMesh::heightChanged);
+    QObject::connect(geometry, &QPlaneGeometryView::meshResolutionChanged, this, &QPlaneMesh::meshResolutionChanged);
+    QObject::connect(geometry, &QPlaneGeometryView::mirroredChanged, this, &QPlaneMesh::mirroredChanged);
+    setView(geometry);
 }
 
 /*! \internal */
@@ -111,7 +111,7 @@ QPlaneMesh::~QPlaneMesh()
 
 void QPlaneMesh::setWidth(float width)
 {
-    static_cast<QPlaneGeometry *>(geometry())->setWidth(width);
+    static_cast<QPlaneGeometryView *>(view())->setWidth(width);
 }
 
 /*!
@@ -121,12 +121,12 @@ void QPlaneMesh::setWidth(float width)
  */
 float QPlaneMesh::width() const
 {
-    return static_cast<QPlaneGeometry *>(geometry())->width();
+    return static_cast<QPlaneGeometryView *>(view())->width();
 }
 
 void QPlaneMesh::setHeight(float height)
 {
-    static_cast<QPlaneGeometry *>(geometry())->setHeight(height);
+    static_cast<QPlaneGeometryView *>(view())->setHeight(height);
 }
 
 /*!
@@ -136,12 +136,12 @@ void QPlaneMesh::setHeight(float height)
  */
 float QPlaneMesh::height() const
 {
-    return static_cast<QPlaneGeometry *>(geometry())->height();
+    return static_cast<QPlaneGeometryView *>(view())->height();
 }
 
 void QPlaneMesh::setMeshResolution(const QSize &resolution)
 {
-    static_cast<QPlaneGeometry *>(geometry())->setResolution(resolution);
+    static_cast<QPlaneGeometryView *>(view())->setMeshResolution(resolution);
 }
 
 /*!
@@ -153,12 +153,12 @@ void QPlaneMesh::setMeshResolution(const QSize &resolution)
  */
 QSize QPlaneMesh::meshResolution() const
 {
-    return static_cast<QPlaneGeometry *>(geometry())->resolution();
+    return static_cast<QPlaneGeometryView *>(view())->meshResolution();
 }
 
 void QPlaneMesh::setMirrored(bool mirrored)
 {
-    static_cast<QPlaneGeometry *>(geometry())->setMirrored(mirrored);
+    static_cast<QPlaneGeometryView *>(view())->setMirrored(mirrored);
 }
 
 /*!
@@ -169,7 +169,7 @@ void QPlaneMesh::setMirrored(bool mirrored)
  */
 bool QPlaneMesh::mirrored() const
 {
-    return static_cast<QPlaneGeometry *>(geometry())->mirrored();
+    return static_cast<QPlaneGeometryView *>(view())->mirrored();
 }
 
 } // namespace  Qt3DExtras

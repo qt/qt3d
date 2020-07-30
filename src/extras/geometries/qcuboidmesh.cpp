@@ -39,7 +39,7 @@
 
 #include "qcuboidmesh.h"
 
-#include <Qt3DExtras/qcuboidgeometry.h>
+#include <Qt3DExtras/qcuboidgeometryview.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -109,16 +109,16 @@ namespace  Qt3DExtras {
  * Constructs a new QCuboidMesh with \a parent.
  */
 QCuboidMesh::QCuboidMesh(QNode *parent)
-    : Qt3DCore::QGeometryView(parent)
+    : Qt3DRender::QGeometryRenderer(parent)
 {
-    QCuboidGeometry *geometry = new QCuboidGeometry(this);
-    QObject::connect(geometry, &QCuboidGeometry::xExtentChanged, this, &QCuboidMesh::xExtentChanged);
-    QObject::connect(geometry, &QCuboidGeometry::yExtentChanged, this, &QCuboidMesh::yExtentChanged);
-    QObject::connect(geometry, &QCuboidGeometry::zExtentChanged, this, &QCuboidMesh::zExtentChanged);
-    QObject::connect(geometry, &QCuboidGeometry::xyMeshResolutionChanged, this, &QCuboidMesh::xyMeshResolutionChanged);
-    QObject::connect(geometry, &QCuboidGeometry::xzMeshResolutionChanged, this, &QCuboidMesh::xzMeshResolutionChanged);
-    QObject::connect(geometry, &QCuboidGeometry::yzMeshResolutionChanged, this, &QCuboidMesh::yzMeshResolutionChanged);
-    QGeometryView::setGeometry(geometry);
+    QCuboidGeometryView *geometry = new QCuboidGeometryView(this);
+    QObject::connect(geometry, &QCuboidGeometryView::xExtentChanged, this, &QCuboidMesh::xExtentChanged);
+    QObject::connect(geometry, &QCuboidGeometryView::yExtentChanged, this, &QCuboidMesh::yExtentChanged);
+    QObject::connect(geometry, &QCuboidGeometryView::zExtentChanged, this, &QCuboidMesh::zExtentChanged);
+    QObject::connect(geometry, &QCuboidGeometryView::xyMeshResolutionChanged, this, &QCuboidMesh::xyMeshResolutionChanged);
+    QObject::connect(geometry, &QCuboidGeometryView::xzMeshResolutionChanged, this, &QCuboidMesh::xzMeshResolutionChanged);
+    QObject::connect(geometry, &QCuboidGeometryView::yzMeshResolutionChanged, this, &QCuboidMesh::yzMeshResolutionChanged);
+    setView(geometry);
 }
 
 /*! \internal */
@@ -128,7 +128,7 @@ QCuboidMesh::~QCuboidMesh()
 
 void QCuboidMesh::setXExtent(float xExtent)
 {
-    static_cast<QCuboidGeometry *>(geometry())->setXExtent(xExtent);
+    static_cast<QCuboidGeometryView *>(view())->setXExtent(xExtent);
 }
 
 /*!
@@ -138,12 +138,12 @@ void QCuboidMesh::setXExtent(float xExtent)
  */
 float QCuboidMesh::xExtent() const
 {
-    return static_cast<QCuboidGeometry *>(geometry())->xExtent();
+    return static_cast<QCuboidGeometryView *>(view())->xExtent();
 }
 
 void QCuboidMesh::setYExtent(float yExtent)
 {
-    static_cast<QCuboidGeometry *>(geometry())->setYExtent(yExtent);
+    static_cast<QCuboidGeometryView *>(view())->setYExtent(yExtent);
 }
 
 /*!
@@ -153,12 +153,12 @@ void QCuboidMesh::setYExtent(float yExtent)
  */
 float QCuboidMesh::yExtent() const
 {
-    return static_cast<QCuboidGeometry *>(geometry())->yExtent();
+    return static_cast<QCuboidGeometryView *>(view())->yExtent();
 }
 
 void QCuboidMesh::setZExtent(float zExtent)
 {
-    static_cast<QCuboidGeometry *>(geometry())->setZExtent(zExtent);
+    static_cast<QCuboidGeometryView *>(view())->setZExtent(zExtent);
 }
 
 /*!
@@ -168,12 +168,12 @@ void QCuboidMesh::setZExtent(float zExtent)
  */
 float QCuboidMesh::zExtent() const
 {
-    return static_cast<QCuboidGeometry *>(geometry())->zExtent();
+    return static_cast<QCuboidGeometryView *>(view())->zExtent();
 }
 
 void QCuboidMesh::setYZMeshResolution(const QSize &resolution)
 {
-    static_cast<QCuboidGeometry *>(geometry())->setYZMeshResolution(resolution);
+    static_cast<QCuboidGeometryView *>(view())->setYZMeshResolution(resolution);
 }
 
 /*!
@@ -185,12 +185,12 @@ void QCuboidMesh::setYZMeshResolution(const QSize &resolution)
  */
 QSize QCuboidMesh::yzMeshResolution() const
 {
-    return static_cast<QCuboidGeometry *>(geometry())->yzMeshResolution();
+    return static_cast<QCuboidGeometryView *>(view())->yzMeshResolution();
 }
 
 void QCuboidMesh::setXZMeshResolution(const QSize &resolution)
 {
-    static_cast<QCuboidGeometry *>(geometry())->setXZMeshResolution(resolution);
+    static_cast<QCuboidGeometryView *>(view())->setXZMeshResolution(resolution);
 }
 
 /*!
@@ -202,12 +202,12 @@ void QCuboidMesh::setXZMeshResolution(const QSize &resolution)
  */
 QSize QCuboidMesh::xzMeshResolution() const
 {
-    return static_cast<QCuboidGeometry *>(geometry())->xzMeshResolution();
+    return static_cast<QCuboidGeometryView *>(view())->xzMeshResolution();
 }
 
 void QCuboidMesh::setXYMeshResolution(const QSize &resolution)
 {
-    static_cast<QCuboidGeometry *>(geometry())->setXYMeshResolution(resolution);
+    static_cast<QCuboidGeometryView *>(view())->setXYMeshResolution(resolution);
 }
 
 /*!
@@ -219,7 +219,7 @@ void QCuboidMesh::setXYMeshResolution(const QSize &resolution)
  */
 QSize QCuboidMesh::xyMeshResolution() const
 {
-    return static_cast<QCuboidGeometry *>(geometry())->xyMeshResolution();
+    return static_cast<QCuboidGeometryView *>(view())->xyMeshResolution();
 }
 
 } // namespace  Qt3DExtras

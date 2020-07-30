@@ -127,7 +127,7 @@ Entity {
         }
     ]
 
-    GeometryRenderer { id: cubeMesh; view: CuboidMesh { } }
+    CuboidMesh { id: cubeMesh }
 
     Entity {
         readonly property ObjectPicker objectPicker: ObjectPicker {

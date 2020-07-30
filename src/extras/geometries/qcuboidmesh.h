@@ -41,14 +41,14 @@
 #define QT3DEXTRAS_CUBOIDMESH_H
 
 #include <Qt3DExtras/qt3dextras_global.h>
-#include <Qt3DCore/qgeometryview.h>
+#include <Qt3DRender/qgeometryrenderer.h>
 #include <QtCore/QSize>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DExtras {
 
-class Q_3DEXTRASSHARED_EXPORT QCuboidMesh : public Qt3DCore::QGeometryView
+class Q_3DEXTRASSHARED_EXPORT QCuboidMesh : public Qt3DRender::QGeometryRenderer
 {
     Q_OBJECT
 

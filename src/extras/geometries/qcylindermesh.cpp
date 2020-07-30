@@ -43,8 +43,8 @@
 #endif
 
 #include "qcylindermesh.h"
+#include "qcylindergeometryview.h"
 
-#include <Qt3DExtras/qcylindergeometry.h>
 #include <Qt3DCore/qbuffer.h>
 #include <Qt3DCore/qattribute.h>
 #include <QtGui/QVector3D>
@@ -103,15 +103,15 @@ namespace Qt3DExtras {
  * Constructs a new QCylinderMesh with \a parent.
  */
 QCylinderMesh::QCylinderMesh(QNode *parent)
-    : Qt3DCore::QGeometryView(parent)
+    : Qt3DRender::QGeometryRenderer(parent)
 {
-    QCylinderGeometry *geometry = new QCylinderGeometry(this);
-    QObject::connect(geometry, &QCylinderGeometry::radiusChanged, this, &QCylinderMesh::radiusChanged);
-    QObject::connect(geometry, &QCylinderGeometry::ringsChanged, this, &QCylinderMesh::ringsChanged);
-    QObject::connect(geometry, &QCylinderGeometry::slicesChanged, this, &QCylinderMesh::slicesChanged);
-    QObject::connect(geometry, &QCylinderGeometry::lengthChanged, this, &QCylinderMesh::lengthChanged);
+    QCylinderGeometryView *geometry = new QCylinderGeometryView(this);
+    QObject::connect(geometry, &QCylinderGeometryView::radiusChanged, this, &QCylinderMesh::radiusChanged);
+    QObject::connect(geometry, &QCylinderGeometryView::ringsChanged, this, &QCylinderMesh::ringsChanged);
+    QObject::connect(geometry, &QCylinderGeometryView::slicesChanged, this, &QCylinderMesh::slicesChanged);
+    QObject::connect(geometry, &QCylinderGeometryView::lengthChanged, this, &QCylinderMesh::lengthChanged);
 
-    QGeometryView::setGeometry(geometry);
+    setView(geometry);
 }
 
 /*! \internal */
@@ -121,22 +121,22 @@ QCylinderMesh::~QCylinderMesh()
 
 void QCylinderMesh::setRings(int rings)
 {
-    static_cast<QCylinderGeometry *>(geometry())->setRings(rings);
+    static_cast<QCylinderGeometryView *>(view())->setRings(rings);
 }
 
 void QCylinderMesh::setSlices(int slices)
 {
-    static_cast<QCylinderGeometry *>(geometry())->setSlices(slices);
+    static_cast<QCylinderGeometryView *>(view())->setSlices(slices);
 }
 
 void QCylinderMesh::setRadius(float radius)
 {
-    static_cast<QCylinderGeometry *>(geometry())->setRadius(radius);
+    static_cast<QCylinderGeometryView *>(view())->setRadius(radius);
 }
 
 void QCylinderMesh::setLength(float length)
 {
-    static_cast<QCylinderGeometry *>(geometry())->setLength(length);
+    static_cast<QCylinderGeometryView *>(view())->setLength(length);
 }
 
 /*!
@@ -146,7 +146,7 @@ void QCylinderMesh::setLength(float length)
  */
 int QCylinderMesh::rings() const
 {
-    return static_cast<QCylinderGeometry *>(geometry())->rings();
+    return static_cast<QCylinderGeometryView *>(view())->rings();
 }
 
 /*!
@@ -156,7 +156,7 @@ int QCylinderMesh::rings() const
  */
 int QCylinderMesh::slices() const
 {
-    return static_cast<QCylinderGeometry *>(geometry())->slices();
+    return static_cast<QCylinderGeometryView *>(view())->slices();
 }
 
 /*!
@@ -166,7 +166,7 @@ int QCylinderMesh::slices() const
  */
 float QCylinderMesh::radius() const
 {
-    return static_cast<QCylinderGeometry *>(geometry())->radius();
+    return static_cast<QCylinderGeometryView *>(view())->radius();
 }
 
 /*!
@@ -176,7 +176,7 @@ float QCylinderMesh::radius() const
  */
 float QCylinderMesh::length() const
 {
-    return static_cast<QCylinderGeometry *>(geometry())->length();
+    return static_cast<QCylinderGeometryView *>(view())->length();
 }
 
 } // namespace Qt3DExtras

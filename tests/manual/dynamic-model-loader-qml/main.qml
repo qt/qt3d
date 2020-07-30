@@ -128,9 +128,8 @@ Entity {
     QQ2.Component {
         id: cylEntityCmp
         Entity {
-            GeometryRenderer {
+            CylinderMesh {
                 id: cylMesh
-                view: CylinderMesh { }
             }
             PhongMaterial {
                 id: phong
@@ -143,14 +142,12 @@ Entity {
     QQ2.Component {
         id: torusEntityCmp
         Entity {
-            GeometryRenderer {
+            TorusMesh {
                 id: torusMesh
-                view: TorusMesh {
-                    radius: 5
-                    minorRadius: 1
-                    rings: 100
-                    slices: 20
-                }
+                radius: 5
+                minorRadius: 1
+                rings: 100
+                slices: 20
             }
 
             Transform {

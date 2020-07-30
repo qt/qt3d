@@ -32,16 +32,22 @@ qt_add_module(3DExtras
         defaults/qt3dwindow.cpp defaults/qt3dwindow.h defaults/qt3dwindow_p.h
         defaults/qtexturematerial.cpp defaults/qtexturematerial.h defaults/qtexturematerial_p.h
         geometries/qconegeometry.cpp geometries/qconegeometry.h geometries/qconegeometry_p.h
+        geometries/qconegeometryview.cpp geometries/qconegeometryview.h
         geometries/qconemesh.cpp geometries/qconemesh.h
         geometries/qcuboidgeometry.cpp geometries/qcuboidgeometry.h geometries/qcuboidgeometry_p.h
+        geometries/qcuboidgeometryview.cpp geometries/qcuboidgeometryview.h
         geometries/qcuboidmesh.cpp geometries/qcuboidmesh.h
         geometries/qcylindergeometry.cpp geometries/qcylindergeometry.h geometries/qcylindergeometry_p.h
+        geometries/qcylindergeometryview.cpp geometries/qcylindergeometryview.h
         geometries/qcylindermesh.cpp geometries/qcylindermesh.h
         geometries/qplanegeometry.cpp geometries/qplanegeometry.h geometries/qplanegeometry_p.h
+        geometries/qplanegeometryview.cpp geometries/qplanegeometryview.h
         geometries/qplanemesh.cpp geometries/qplanemesh.h
         geometries/qspheregeometry.cpp geometries/qspheregeometry.h geometries/qspheregeometry_p.h
+        geometries/qspheregeometryview.cpp geometries/qspheregeometryview.h
         geometries/qspheremesh.cpp geometries/qspheremesh.h
         geometries/qtorusgeometry.cpp geometries/qtorusgeometry.h geometries/qtorusgeometry_p.h
+        geometries/qtorusgeometryview.cpp geometries/qtorusgeometryview.h
         geometries/qtorusmesh.cpp geometries/qtorusmesh.h
         qt3dextras_global.h
         text/areaallocator.cpp text/areaallocator_p.h

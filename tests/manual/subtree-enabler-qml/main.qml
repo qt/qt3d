@@ -102,8 +102,8 @@ Entity {
                 Transform {
                     rotation: fromAxisAndAngle(Qt.vector3d(0, 0, 1), -sceneRoot.rotationAngle)
                 },
-                GeometryRenderer { view: CylinderMesh {} },
-                MetalRoughMaterial {}
+                CylinderMesh { },
+                MetalRoughMaterial { }
             ]
         }
     } // sceneRoot

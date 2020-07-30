@@ -224,9 +224,7 @@ Qt3DCore::QEntity *createScene(const Renderer& renderer)
         torusTransform->setScale3D(QVector3D(1.5, 1, 0.5));
         torusTransform->setRotation(QQuaternion::fromAxisAndAngle(QVector3D(1, 0, 0), 45.0f));
 
-        auto renderer = new Qt3DRender::QGeometryRenderer;
-        renderer->setView(torusMesh);
-        torusEntity->addComponent(renderer);
+        torusEntity->addComponent(torusMesh);
         torusEntity->addComponent(torusTransform);
         torusEntity->addComponent(childMaterial);
 
@@ -250,10 +248,7 @@ Qt3DCore::QEntity *createScene(const Renderer& renderer)
         sphereRotateTransformAnimation->setLoopCount(-1);
         sphereRotateTransformAnimation->start();
 
-        renderer = new Qt3DRender::QGeometryRenderer;
-        renderer->setView(sphereMesh);
-
-        sphereEntity->addComponent(renderer);
+        sphereEntity->addComponent(sphereMesh);
         sphereEntity->addComponent(sphereTransform);
         sphereEntity->addComponent(childMaterial);
     }
@@ -266,14 +261,12 @@ Qt3DCore::QEntity *createScene(const Renderer& renderer)
         auto cubeMesh = new Qt3DExtras::QCuboidMesh;
         auto sphereTransform = new Qt3DCore::QTransform;
         sphereTransform->setRotationY(100);
-        auto renderer = new Qt3DRender::QGeometryRenderer;
-        renderer->setView(cubeMesh);
 
         cubeMesh->setXExtent(10);
         cubeMesh->setYExtent(10);
         cubeMesh->setZExtent(10);
 
-        sphereEntity->addComponent(renderer);
+        sphereEntity->addComponent(cubeMesh);
         sphereEntity->addComponent(sphereTransform);
         sphereEntity->addComponent(mainMaterial);
     }
