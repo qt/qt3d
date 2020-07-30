@@ -233,32 +233,36 @@ void tst_QShaderGenerator::shouldGenerateShaderCode_data()
     const auto versionGL32 = QByteArrayList() << "#version 150 core" << "";
     const auto versionGL4 = QByteArrayList() << "#version 400 core" << "";
 
-    const auto es2Code = QByteArrayList() << "varying highp vec3 worldPosition;"
-                                          << "uniform sampler2D texture;"
-                                          << "varying highp vec2 texCoord;"
-                                          << "uniform highp float lightIntensity;"
-                                          << "uniform highp float exposure;"
-                                          << "#pragma include es2/lightmodel.frag.inc"
-                                          << ""
-                                          << "void main()"
-                                          << "{"
-                                          << "    gl_fragColor = (((((lightModel(((texture2D(texture, texCoord))), worldPosition, lightIntensity)))) * pow(2.0, exposure)));"
-                                          << "}"
-                                          << "";
+    const auto es2Code = QByteArrayList()
+            << "varying highp vec2 texCoord;"
+            << "uniform sampler2D texture;"
+            << "uniform highp float lightIntensity;"
+            << "varying highp vec3 worldPosition;"
+            << "uniform highp float exposure;"
+            << "#pragma include es2/lightmodel.frag.inc"
+            << ""
+            << "void main()"
+            << "{"
+            << "    gl_fragColor = (((((lightModel(((texture2D(texture, texCoord))), "
+               "worldPosition, lightIntensity)))) * pow(2.0, exposure)));"
+            << "}"
+            << "";
 
-    const auto gl3Code = QByteArrayList() << "in vec3 worldPosition;"
-                                          << "uniform sampler2D texture;"
-                                          << "in vec2 texCoord;"
-                                          << "uniform float lightIntensity;"
-                                          << "uniform float exposure;"
-                                          << "out vec4 fragColor;"
-                                          << "#pragma include gl3/lightmodel.frag.inc"
-                                          << ""
-                                          << "void main()"
-                                          << "{"
-                                          << "    fragColor = (((((lightModel(((texture(texture, texCoord))), worldPosition, lightIntensity)))) * pow(2.0, exposure)));"
-                                          << "}"
-                                          << "";
+    const auto gl3Code = QByteArrayList()
+            << "in vec2 texCoord;"
+            << "uniform sampler2D texture;"
+            << "uniform float lightIntensity;"
+            << "in vec3 worldPosition;"
+            << "uniform float exposure;"
+            << "#pragma include gl3/lightmodel.frag.inc"
+            << "out vec4 fragColor;"
+            << ""
+            << "void main()"
+            << "{"
+            << "    fragColor = (((((lightModel(((texture(texture, texCoord))), worldPosition, "
+               "lightIntensity)))) * pow(2.0, exposure)));"
+            << "}"
+            << "";
 
     QTest::newRow("EmptyGraphAndFormat") << QShaderGraph() << QShaderFormat() << QByteArrayLiteral("\n\n\nvoid main()\n{\n}\n");
     QTest::newRow("LightExposureGraphAndES2") << graph << openGLES2 << (versionGLES2 + es2Code).join('\n');
@@ -712,7 +716,6 @@ void tst_QShaderGenerator::shouldProcessLanguageQualifierAndTypeEnums_data()
 
             const auto gl2Code = (QByteArrayList() << "#version 110"
                                                    << ""
-                                                   << "attribute vec4 vertexPosition;"
                                                    << ""
                                                    << "void main()"
                                                    << "{"
@@ -720,7 +723,6 @@ void tst_QShaderGenerator::shouldProcessLanguageQualifierAndTypeEnums_data()
                                                    << "").join("\n");
             const auto gl3Code = (QByteArrayList() << "#version 130"
                                                    << ""
-                                                   << "in vec4 vertexPosition;"
                                                    << ""
                                                    << "void main()"
                                                    << "{"
@@ -728,7 +730,6 @@ void tst_QShaderGenerator::shouldProcessLanguageQualifierAndTypeEnums_data()
                                                    << "").join("\n");
             const auto gl4Code = (QByteArrayList() << "#version 400 core"
                                                    << ""
-                                                   << "in vec4 vertexPosition;"
                                                    << ""
                                                    << "void main()"
                                                    << "{"
@@ -736,7 +737,6 @@ void tst_QShaderGenerator::shouldProcessLanguageQualifierAndTypeEnums_data()
                                                    << "").join("\n");
             const auto es2Code = (QByteArrayList() << "#version 100"
                                                    << ""
-                                                   << "attribute highp vec4 vertexPosition;"
                                                    << ""
                                                    << "void main()"
                                                    << "{"
@@ -744,7 +744,6 @@ void tst_QShaderGenerator::shouldProcessLanguageQualifierAndTypeEnums_data()
                                                    << "").join("\n");
             const auto es3Code = (QByteArrayList() << "#version 300 es"
                                                    << ""
-                                                   << "in highp vec4 vertexPosition;"
                                                    << ""
                                                    << "void main()"
                                                    << "{"
@@ -861,8 +860,8 @@ void tst_QShaderGenerator::shouldGenerateDifferentCodeDependingOnActiveLayers()
         const auto expected = QByteArrayList()
                 << "#version 400 core"
                 << ""
-                << "uniform vec4 diffuseUniform;"
                 << "uniform vec3 normalUniform;"
+                << "uniform vec4 diffuseUniform;"
                 << "#pragma include gl4/lightmodel.frag.inc"
                 << "out vec4 fragColor;"
                 << ""
@@ -879,20 +878,20 @@ void tst_QShaderGenerator::shouldGenerateDifferentCodeDependingOnActiveLayers()
         const auto code = generator.createShaderCode({"diffuseUniform", "normalTexture"});
 
         // THEN
-        const auto expected = QByteArrayList()
-                << "#version 400 core"
-                << ""
-                << "in vec2 texCoord;"
-                << "uniform vec4 diffuseUniform;"
-                << "uniform sampler2D normalTexture;"
-                << "#pragma include gl4/lightmodel.frag.inc"
-                << "out vec4 fragColor;"
-                << ""
-                << "void main()"
-                << "{"
-                << "    fragColor = ((lightModel(diffuseUniform, texture2D(normalTexture, texCoord).rgb)));"
-                << "}"
-                << "";
+        const auto expected = QByteArrayList() << "#version 400 core"
+                                               << ""
+                                               << "in vec2 texCoord;"
+                                               << "uniform sampler2D normalTexture;"
+                                               << "uniform vec4 diffuseUniform;"
+                                               << "#pragma include gl4/lightmodel.frag.inc"
+                                               << "out vec4 fragColor;"
+                                               << ""
+                                               << "void main()"
+                                               << "{"
+                                               << "    fragColor = ((lightModel(diffuseUniform, "
+                                                  "texture2D(normalTexture, texCoord).rgb)));"
+                                               << "}"
+                                               << "";
         QCOMPARE(code, expected.join("\n"));
     }
 
@@ -905,14 +904,15 @@ void tst_QShaderGenerator::shouldGenerateDifferentCodeDependingOnActiveLayers()
                 << "#version 400 core"
                 << ""
                 << "in vec2 texCoord;"
-                << "uniform sampler2D diffuseTexture;"
                 << "uniform vec3 normalUniform;"
+                << "uniform sampler2D diffuseTexture;"
                 << "#pragma include gl4/lightmodel.frag.inc"
                 << "out vec4 fragColor;"
                 << ""
                 << "void main()"
                 << "{"
-                << "    fragColor = ((lightModel(texture2D(diffuseTexture, texCoord), normalUniform)));"
+                << "    fragColor = ((lightModel(texture2D(diffuseTexture, texCoord), "
+                   "normalUniform)));"
                 << "}"
                 << "";
         QCOMPARE(code, expected.join("\n"));
@@ -927,14 +927,15 @@ void tst_QShaderGenerator::shouldGenerateDifferentCodeDependingOnActiveLayers()
                 << "#version 400 core"
                 << ""
                 << "in vec2 texCoord;"
-                << "uniform sampler2D diffuseTexture;"
                 << "uniform sampler2D normalTexture;"
+                << "uniform sampler2D diffuseTexture;"
                 << "#pragma include gl4/lightmodel.frag.inc"
                 << "out vec4 fragColor;"
                 << ""
                 << "void main()"
                 << "{"
-                << "    fragColor = ((lightModel(texture2D(diffuseTexture, texCoord), texture2D(normalTexture, texCoord).rgb)));"
+                << "    fragColor = ((lightModel(texture2D(diffuseTexture, texCoord), "
+                   "texture2D(normalTexture, texCoord).rgb)));"
                 << "}"
                 << "";
         QCOMPARE(code, expected.join("\n"));
@@ -1166,20 +1167,19 @@ void tst_QShaderGenerator::shouldGenerateTemporariesWisely()
             const auto code = generator.createShaderCode();
 
             // THEN
-            const auto expected = QByteArrayList()
-                    << "#version 400 core"
-                    << ""
-                    << "in vec4 vertexPosition;"
-                    << "out vec4 shaderOutput1;"
-                    << "out vec4 shaderOutput2;"
-                    << ""
-                    << "void main()"
-                    << "{"
-                    << "    vec4 v1 = vertexPosition * 2.0;"
-                    << "    shaderOutput2 = v1;"
-                    << "    shaderOutput1 = v1;"
-                    << "}"
-                    << "";
+            const auto expected = QByteArrayList() << "#version 400 core"
+                                                   << ""
+                                                   << "in vec4 vertexPosition;"
+                                                   << "out vec4 shaderOutput2;"
+                                                   << "out vec4 shaderOutput1;"
+                                                   << ""
+                                                   << "void main()"
+                                                   << "{"
+                                                   << "    vec4 v1 = vertexPosition * 2.0;"
+                                                   << "    shaderOutput2 = v1;"
+                                                   << "    shaderOutput1 = v1;"
+                                                   << "}"
+                                                   << "";
             QCOMPARE(code, expected.join("\n"));
         }
 
@@ -1218,8 +1218,8 @@ void tst_QShaderGenerator::shouldGenerateTemporariesWisely()
                     << "#version 400 core"
                     << ""
                     << "in vec4 vertexPosition;"
-                    << "out vec4 shaderOutput1;"
                     << "out vec4 shaderOutput2;"
+                    << "out vec4 shaderOutput1;"
                     << ""
                     << "void main()"
                     << "{"
@@ -1287,18 +1287,17 @@ void tst_QShaderGenerator::shouldHandlePortNamesPrefixingOneAnother()
     const auto code = generator.createShaderCode();
 
     // THEN
-    const auto expected = QByteArrayList()
-            << "#version 400 core"
-            << ""
-            << "in vec4 color1;"
-            << "in vec4 color2;"
-            << "out vec4 shaderOutput;"
-            << ""
-            << "void main()"
-            << "{"
-            << "    shaderOutput = ((color1 + color2));"
-            << "}"
-            << "";
+    const auto expected = QByteArrayList() << "#version 400 core"
+                                           << ""
+                                           << "in vec4 color2;"
+                                           << "in vec4 color1;"
+                                           << "out vec4 shaderOutput;"
+                                           << ""
+                                           << "void main()"
+                                           << "{"
+                                           << "    shaderOutput = ((color1 + color2));"
+                                           << "}"
+                                           << "";
     QCOMPARE(code, expected.join("\n"));
 }
 
