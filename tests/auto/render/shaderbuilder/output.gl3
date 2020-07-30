@@ -1,27 +1,27 @@
 #version 150 core
 
-in vec3 worldPosition;
-uniform sampler2D texture;
 in vec2 texCoord;
+uniform sampler2D texture;
 uniform float lightIntensity;
+in vec3 worldPosition;
 uniform float exposure;
+vec4 lightModel(const in vec3 baseColor,
+                const in vec3 pos,
+                const in float intensity)
+{
+    ...
+}
+
+#line 9
+vec4 lightModel(const in vec3 baseColor,
+                const in vec3 pos,
+                const in float intensity)
+{
+    ...
+}
+
+#line 11
 out vec4 fragColor;
-vec4 lightModel(const in vec3 baseColor,
-                const in vec3 pos,
-                const in float intensity)
-{
-    ...
-}
-
-#line 10
-vec4 lightModel(const in vec3 baseColor,
-                const in vec3 pos,
-                const in float intensity)
-{
-    ...
-}
-
-#line 12
 
 void main()
 {

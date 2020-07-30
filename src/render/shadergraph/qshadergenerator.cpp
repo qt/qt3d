@@ -295,30 +295,18 @@ namespace
         return result;
     }
 
-    bool intersectsEnabledLayers(const QStringList &enabledLayers, const QStringList &layers) noexcept
-    {
-        return layers.isEmpty()
-                || std::any_of(layers.cbegin(), layers.cend(),
-                               [enabledLayers](const QString &s) { return enabledLayers.contains(s); });
-    }
-
     struct ShaderGenerationState
     {
-        ShaderGenerationState(const QShaderGenerator & gen, QStringList layers, QVector<QShaderNode> nodes)
-          : generator{gen}
-          , enabledLayers{layers}
-          , nodes{nodes}
+        ShaderGenerationState(const QShaderGenerator &gen,
+                              QVector<QShaderGraph::Statement> statements)
+            : generator { gen }, statements { statements }
         {
 
         }
 
         const QShaderGenerator &generator;
-        QStringList enabledLayers;
-        QVector<QShaderNode> nodes;
+        QVector<QShaderGraph::Statement> statements;
         QByteArrayList code;
-
-        QVector<QString> globalInputVariables;
-        const QRegularExpression globalInputExtractRegExp { QStringLiteral("^.*\\s+(\\w+).*;$") };
     };
 
     class GLSL45HeaderWriter
@@ -328,31 +316,22 @@ namespace
         {
             const auto &format = state.generator.format;
             auto &code = state.code;
-            for (const QShaderNode &node : state.nodes) {
-                if (intersectsEnabledLayers(state.enabledLayers, node.layers())) {
-                    const QByteArrayList& headerSnippets = node.rule(format).headerSnippets;
-                    for (const QByteArray &snippet : headerSnippets) {
-                        auto replacedSnippet = replaceParameters(snippet, node, format).trimmed();
+            for (const QShaderGraph::Statement &statement : state.statements) {
+                const QShaderNode &node = statement.node;
+                const QByteArrayList &headerSnippets = node.rule(format).headerSnippets;
+                for (const QByteArray &snippet : headerSnippets) {
+                    auto replacedSnippet = replaceParameters(snippet, node, format).trimmed();
 
-                        if (replacedSnippet.startsWith(QByteArrayLiteral("add-input"))) {
-                            onInOut(code, replacedSnippet);
-                        } else if (replacedSnippet.startsWith(QByteArrayLiteral("add-uniform"))) {
-                            onNamedUniform(ubo, replacedSnippet);
-                        } else if (replacedSnippet.startsWith(QByteArrayLiteral("add-sampler"))) {
-                            onNamedSampler(code, replacedSnippet);
-                        } else if (replacedSnippet.startsWith(QByteArrayLiteral("#pragma include "))) {
-                            onInclude(code, replacedSnippet);
-                        } else {
-                            code << replacedSnippet;
-                        }
-                        // If node is an input, record the variable name into the globalInputVariables
-                        // vector
-                        if (node.type() == QShaderNode::Input) {
-                            const QRegularExpressionMatch match = state.globalInputExtractRegExp.match(
-                                    QString::fromUtf8(code.last()));
-                            if (match.hasMatch())
-                                state.globalInputVariables.push_back(match.captured(1));
-                        }
+                    if (replacedSnippet.startsWith(QByteArrayLiteral("add-input"))) {
+                        onInOut(code, replacedSnippet);
+                    } else if (replacedSnippet.startsWith(QByteArrayLiteral("add-uniform"))) {
+                        onNamedUniform(ubo, replacedSnippet);
+                    } else if (replacedSnippet.startsWith(QByteArrayLiteral("add-sampler"))) {
+                        onNamedSampler(code, replacedSnippet);
+                    } else if (replacedSnippet.startsWith(QByteArrayLiteral("#pragma include "))) {
+                        onInclude(code, replacedSnippet);
+                    } else {
+                        code << replacedSnippet;
                     }
                 }
             }
@@ -483,21 +462,11 @@ namespace
         {
             const auto &format = state.generator.format;
             auto &code = state.code;
-            for (const QShaderNode &node : state.nodes) {
-                if (intersectsEnabledLayers(state.enabledLayers, node.layers())) {
-                    const QByteArrayList& headerSnippets = node.rule(format).headerSnippets;
-                    for (const QByteArray &snippet : headerSnippets) {
-                        code << replaceParameters(snippet, node, format);
-
-                        // If node is an input, record the variable name into the globalInputVariables
-                        // vector
-                        if (node.type() == QShaderNode::Input) {
-                            const QRegularExpressionMatch match = state.globalInputExtractRegExp.match(
-                                    QString::fromUtf8(code.last()));
-                            if (match.hasMatch())
-                                state.globalInputVariables.push_back(match.captured(1));
-                        }
-                    }
+            for (const QShaderGraph::Statement &statement : state.statements) {
+                const QShaderNode &node = statement.node;
+                const QByteArrayList &headerSnippets = node.rule(format).headerSnippets;
+                for (const QByteArray &snippet : headerSnippets) {
+                    code << replaceParameters(snippet, node, format);
                 }
             }
         }
@@ -543,7 +512,8 @@ namespace
 QByteArray QShaderGenerator::createShaderCode(const QStringList &enabledLayers) const
 {
     const QVector<QShaderNode> nodes = graph.nodes();
-    ShaderGenerationState state(*this, enabledLayers, nodes);
+    const auto statements = graph.createStatements(enabledLayers);
+    ShaderGenerationState state(*this, statements);
     QByteArrayList &code = state.code;
 
     code << versionString(format);
@@ -670,7 +640,7 @@ QByteArray QShaderGenerator::createShaderCode(const QStringList &enabledLayers) 
         }
     };
 
-    for (const QShaderGraph::Statement &statement : graph.createStatements(enabledLayers)) {
+    for (const QShaderGraph::Statement &statement : statements) {
         const QShaderNode node = statement.node;
         QByteArray line = node.rule(format).substitution;
         const QVector<QShaderNodePort> ports = node.ports();

@@ -1,9 +1,9 @@
 #version 100
 
-varying highp vec3 worldPosition;
-uniform sampler2D texture;
 varying highp vec2 texCoord;
+uniform sampler2D texture;
 uniform highp float lightIntensity;
+varying highp vec3 worldPosition;
 uniform highp float exposure;
 highp vec4 lightModel(const in highp vec3 baseColor,
                       const in highp vec3 pos,
