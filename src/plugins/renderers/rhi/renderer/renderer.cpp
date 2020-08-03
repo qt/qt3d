@@ -2726,19 +2726,18 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
     return allCommandsIssued;
 }
 
-// Erase graphics related resources that may become unused after a frame
-void Renderer::cleanGraphicsResources()
-{
-    // Remove unused GraphicsPipeline
-    RHIGraphicsPipelineManager *pipelineManager = m_RHIResourceManagers->rhiGraphicsPipelineManager();
+namespace {
 
-    const std::vector<HRHIGraphicsPipeline> &graphicsPipelinesHandles = pipelineManager->activeHandles();
-    std::vector<HRHIGraphicsPipeline> pipelinesToCleanup;
+template<typename Manager>
+void removeUnusedPipelines(Manager *manager)
+{
+    const auto &pipelinesHandles = manager->activeHandles();
+    std::vector<typename Manager::Handle> pipelinesToCleanup;
     // Store pipelines to cleanup in a temporary vector so that we can use a
     // ref on the activeHandles vector. Calling releaseResources modifies the
     // activeHandles vector which we want to avoid while iterating over it.
-    for (const HRHIGraphicsPipeline &pipelineHandle : graphicsPipelinesHandles) {
-        RHIGraphicsPipeline *pipeline = pipelineHandle.data();
+    for (const auto &pipelineHandle : pipelinesHandles) {
+        auto *pipeline = pipelineHandle.data();
         Q_ASSERT(pipeline);
         pipeline->decreaseScore();
         // Pipeline wasn't used recently, let's destroy it
@@ -2748,9 +2747,22 @@ void Renderer::cleanGraphicsResources()
     }
 
     // Release Pipelines marked for cleanup
-    for (const HRHIGraphicsPipeline &pipelineHandle : pipelinesToCleanup) {
-        pipelineManager->releaseResource(pipelineHandle->key());
+    for (const auto &pipelineHandle : pipelinesToCleanup) {
+        manager->releaseResource(pipelineHandle->key());
     }
+}
+
+} // anonymous
+
+// Erase graphics related resources that may become unused after a frame
+void Renderer::cleanGraphicsResources()
+{
+    // Remove unused Pipeline
+    RHIGraphicsPipelineManager *graphicsPipelineManager = m_RHIResourceManagers->rhiGraphicsPipelineManager();
+    RHIComputePipelineManager *computePipelineManager = m_RHIResourceManagers->rhiComputePipelineManager();
+
+    removeUnusedPipelines(graphicsPipelineManager);
+    removeUnusedPipelines(computePipelineManager);
 
     // Clean buffers
     const QList<Qt3DCore::QNodeId> buffersToRelease =
@@ -2779,6 +2791,10 @@ void Renderer::cleanGraphicsResources()
         cleanupShader(m_nodesManager->shaderManager()->lookupResource(shaderCleanedUpId));
         // We can really release the texture at this point
         m_nodesManager->shaderManager()->releaseResource(shaderCleanedUpId);
+
+        // Release pipelines that were referencing shader
+        graphicsPipelineManager->releasePipelinesReferencingShader(shaderCleanedUpId);
+        computePipelineManager->releasePipelinesReferencingShader(shaderCleanedUpId);
     }
 
     const QList<Qt3DCore::QNodeId> cleanedUpRenderTargetIds =
