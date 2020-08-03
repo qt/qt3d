@@ -139,7 +139,7 @@ public:
         return m_attributeNameIdToBindingIndex.value(attributeNameId, -1);
     }
 
-    virtual void cleanup()
+    virtual void cleanup() override
     {
         RHIPipelineBase<QRhiGraphicsPipeline, GraphicsPipelineIdentifier>::cleanup();
         m_attributeNameIdToBindingIndex.clear();
