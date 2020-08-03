@@ -1511,7 +1511,7 @@ void Renderer::reloadDirtyShaders()
     }
 }
 
-// Executed in job (in main thread when jobs are done)
+// Executed in job postFrame (in main thread when jobs are done)
 void Renderer::sendShaderChangesToFrontend(Qt3DCore::QAspectManager *manager)
 {
     Q_ASSERT(isRunning());
@@ -1542,7 +1542,7 @@ void Renderer::sendShaderChangesToFrontend(Qt3DCore::QAspectManager *manager)
     m_shaderBuilderUpdates.clear();
 }
 
-// Executed in a job (in main thread when jobs are done)
+// Executed in a job postFrame (in main thread when jobs are done)
 void Renderer::sendTextureChangesToFrontend(Qt3DCore::QAspectManager *manager)
 {
     const std::vector<QPair<Texture::TextureUpdateInfo, Qt3DCore::QNodeIdVector>>
@@ -1581,7 +1581,7 @@ void Renderer::sendTextureChangesToFrontend(Qt3DCore::QAspectManager *manager)
     }
 }
 
-// Executed in a job (in main thread when jobs done)
+// Executed in a job postFrame (in main thread when jobs done)
 void Renderer::sendDisablesToFrontend(Qt3DCore::QAspectManager *manager)
 {
     // SubtreeEnabled
