@@ -104,6 +104,9 @@ public:
 
     int getIdForAttributeVec(const std::vector<AttributeInfo> &attributesInfo);
 
+    void releasePipelinesReferencingShader(const Qt3DCore::QNodeId &shaderId);
+
+
 private:
     using AttributeInfoVec= std::vector<AttributeInfo>;
     std::vector<AttributeInfoVec> m_attributesInfo;
@@ -115,6 +118,8 @@ class Q_AUTOTEST_EXPORT RHIComputePipelineManager
 {
 public:
     RHIComputePipelineManager() { }
+
+    void releasePipelinesReferencingShader(const Qt3DCore::QNodeId &shaderId);
 };
 
 class Q_AUTOTEST_EXPORT RHIResourceManagers

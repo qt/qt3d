@@ -99,6 +99,31 @@ int RHIGraphicsPipelineManager::getIdForAttributeVec(const std::vector<Attribute
     return std::distance(m_attributesInfo.begin(), it);
 }
 
+namespace {
+
+template<typename Manager>
+void erasePipelinesReferencingShader(Manager *manager, const Qt3DCore::QNodeId &shaderId)
+{
+    const auto handles = manager->activeHandles(); // copy
+    for (const auto &handle : handles) {
+        const auto &key = handle->key();
+        if (key.shader == shaderId)
+            manager->releaseResource(key);
+    }
+}
+
+} // anonymous
+
+void RHIGraphicsPipelineManager::releasePipelinesReferencingShader(const Qt3DCore::QNodeId &shaderId)
+{
+    erasePipelinesReferencingShader(this, shaderId);
+}
+
+void RHIComputePipelineManager::releasePipelinesReferencingShader(const Qt3DCore::QNodeId &shaderId)
+{
+    erasePipelinesReferencingShader(this, shaderId);
+}
+
 
 } // Rhi
 

@@ -1727,7 +1727,9 @@ void Renderer::updateResources()
         }
     }
 
-#ifndef SHADER_LOADING_IN_COMMAND_THREAD
+    RHIGraphicsPipelineManager *graphicsPipelineManager = m_RHIResourceManagers->rhiGraphicsPipelineManager();
+    RHIComputePipelineManager *computePipelineManager = m_RHIResourceManagers->rhiComputePipelineManager();
+
     {
         const std::vector<HShader> dirtyShaderHandles = std::move(m_dirtyShaders);
         ShaderManager *shaderManager = m_nodesManager->shaderManager();
@@ -1741,9 +1743,13 @@ void Renderer::updateResources()
             // Compile shader
             m_submissionContext->loadShader(shader, shaderManager,
                                             m_RHIResourceManagers->rhiShaderManager());
+
+            // Release pipelines that reference the shaderId
+            // to ensure they get rebuilt with updated shader
+            graphicsPipelineManager->releasePipelinesReferencingShader(shader->peerId());
+            computePipelineManager->releasePipelinesReferencingShader(shader->peerId());
         }
     }
-#endif
 
     {
         const std::vector<HTexture> activeTextureHandles = std::move(m_dirtyTextures);
