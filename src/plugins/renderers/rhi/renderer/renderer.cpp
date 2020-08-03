@@ -1014,6 +1014,8 @@ void Renderer::buildGraphicsPipelines(RHIGraphicsPipeline *graphicsPipeline,
 
     if (!pipeline->create())
         return onFailure();
+
+    graphicsPipeline->markComplete();
 }
 
 void Renderer::updateComputePipeline(RenderCommand &cmd, RenderView *rv, int renderViewIndex)
@@ -2494,7 +2496,7 @@ bool Renderer::performDraw(QRhiCommandBuffer *cb, const QRhiViewport &vp,
                            const QRhiScissor *scissor, RenderCommand &command)
 {
     RHIGraphicsPipeline *pipeline = command.pipeline.graphics();
-    if (!pipeline)
+    if (!pipeline || !pipeline->isComplete())
         return true;
 
     // Setup the rendering pass

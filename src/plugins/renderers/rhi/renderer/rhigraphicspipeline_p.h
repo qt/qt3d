@@ -103,6 +103,9 @@ public:
     void increaseScore() { m_score += 2; }
     void decreaseScore() { --m_score; }
 
+    bool isComplete() { return m_complete; }
+    void markComplete() { m_complete = true; }
+
     virtual void cleanup()
     {
         delete m_shaderResourceBindings;
@@ -124,6 +127,7 @@ protected:
     PipelineUBOSet m_uboSet;
     Key m_key = {};
     int m_score = 5;
+    int m_complete = false;
 };
 
 class RHIGraphicsPipeline : public RHIPipelineBase<QRhiGraphicsPipeline, GraphicsPipelineIdentifier>
