@@ -717,6 +717,10 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
     // If the render aspect wasn't created yet, do so now
     if (m_renderAspect == nullptr) {
         m_renderAspect = new QRenderAspect(QRenderAspect::Manual);
+        QSGRendererInterface::GraphicsApi windowApi = window()->rendererInterface()->graphicsApi();
+        // Requested API of OpenGLRhi implies OpenGL renderer
+        if (windowApi != QSGRendererInterface::OpenGLRhi && qgetenv("QT3D_RENDERER").isEmpty())
+            qputenv("QT3D_RENDERER", "rhi"); // else Qt3D still defaults to OpenGL
         auto *rw = QQuickRenderControl::renderWindowFor(window());
         static_cast<Qt3DRender::QRenderAspectPrivate *>(Qt3DRender::QRenderAspectPrivate::get(m_renderAspect))->m_screen =
                 (rw ? rw->screen() : window()->screen());

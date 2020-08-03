@@ -40,6 +40,7 @@ qt6_add_resources(scene3d "scene3d"
     FILES
         ${scene3d_resource_files}
 )
+target_sources(scene3d PRIVATE ${scene3d_resource_files})
 
 install(TARGETS scene3d
     RUNTIME DESTINATION "${INSTALL_EXAMPLEDIR}"

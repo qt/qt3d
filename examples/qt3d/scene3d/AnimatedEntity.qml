@@ -115,6 +115,7 @@ Entity {
     SphereMesh {
         id: sphereMesh
         radius: 3
+        generateTangents: true
     }
 
     Transform {
