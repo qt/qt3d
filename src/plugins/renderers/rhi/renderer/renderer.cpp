@@ -2256,6 +2256,7 @@ std::vector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
             builder.setMaterialGathererCacheNeedsToBeRebuilt(materialCacheNeedsToBeRebuilt
                                                              || isNewRV);
             builder.setRenderCommandCacheNeedsToBeRebuilt(renderCommandsDirty || isNewRV);
+            builder.setLightCacheNeedsToBeRebuilt(lightsDirty);
 
             // Insert leaf into cache
             if (isNewRV) {

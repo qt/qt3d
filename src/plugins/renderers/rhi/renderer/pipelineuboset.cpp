@@ -522,8 +522,16 @@ void PipelineUBOSet::uploadUBOsForCommand(const RenderCommand &command,
                                   member, distanceToCommand);
                 }
             } else {
-                uploadUniform(uniforms, ubo,
-                              member, distanceToCommand);
+                if (!blockVariable.structMembers.empty()) {
+                    for (const RHIShader::UBO_Member &structMember : member.structMembers) {
+                        uploadUniform(uniforms, ubo,
+                                      structMember,
+                                      distanceToCommand);
+                    }
+                } else {
+                    uploadUniform(uniforms, ubo,
+                                  member, distanceToCommand);
+                }
             }
         }
     }
