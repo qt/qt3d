@@ -330,10 +330,13 @@ qt_add_resource(3DRender "materialsystem"
 #####################################################################
 
 # special case begin
-set(THREADS_PREFER_PTHREAD_FLAG 1)
-find_package(Threads)
-if(TARGET Threads::Threads)
-    target_link_libraries(3DRender PRIVATE Threads::Threads)
+# TODO: Prepare for removal, once Platform brings in Threads.
+if(NOT TARGET Threads::Threads)
+    set(THREADS_PREFER_PTHREAD_FLAG 1)
+    find_package(Threads)
+    if(TARGET Threads::Threads)
+        target_link_libraries(3DRender PRIVATE Threads::Threads)
+    endif()
 endif()
 # special case end
 
