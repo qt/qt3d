@@ -122,6 +122,7 @@
 
 #include <QtGui/private/qopenglcontext_p.h>
 #include <QGuiApplication>
+#include <Qt3DCore/private/qthreadpooler_p.h>
 
 #include <optional>
 
@@ -2289,10 +2290,24 @@ std::vector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
                 m_updatedDisableSubtreeEnablers.push_back(node->peerId());
         }
 
-        const int fgBranchCount = m_frameGraphLeaves.size();
-        for (int i = 0; i < fgBranchCount; ++i) {
+        int idealThreadCount = QThreadPooler::maxThreadCount();
+
+        const size_t fgBranchCount = m_frameGraphLeaves.size();
+        if (fgBranchCount > 1) {
+            int workBranches = fgBranchCount;
+            for (auto leaf: m_frameGraphLeaves)
+                if (leaf->nodeType() == FrameGraphNode::NoDraw)
+                    --workBranches;
+
+            if (idealThreadCount > 4 && workBranches)
+                idealThreadCount = qMax(4, idealThreadCount / workBranches);
+        }
+
+        for (size_t i = 0; i < fgBranchCount; ++i) {
             FrameGraphNode *leaf = m_frameGraphLeaves.at(i);
             RenderViewBuilder builder(leaf, i, this);
+            builder.setOptimalJobCount(leaf->nodeType() == FrameGraphNode::NoDraw ? 1 : idealThreadCount);
+
             // If we have a new RV (wasn't in the cache before, then it contains no cached data)
             const bool isNewRV = !m_cache.leafNodeCache.contains(leaf);
             builder.setLayerCacheNeedsToBeRebuilt(layersCacheNeedsToBeRebuilt || isNewRV);
