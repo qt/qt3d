@@ -105,7 +105,7 @@ public:
     int getIdForAttributeVec(const std::vector<AttributeInfo> &attributesInfo);
 
     void releasePipelinesReferencingShader(const Qt3DCore::QNodeId &shaderId);
-
+    void releasePipelinesReferencingRenderTarget(const Qt3DCore::QNodeId &renderTargetId);
 
 private:
     using AttributeInfoVec= std::vector<AttributeInfo>;

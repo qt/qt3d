@@ -112,6 +112,17 @@ void erasePipelinesReferencingShader(Manager *manager, const Qt3DCore::QNodeId &
     }
 }
 
+template<typename Manager>
+void erasePipelinesReferencingRenderTargetId(Manager *manager, const Qt3DCore::QNodeId &renderTargetId)
+{
+    const auto handles = manager->activeHandles(); // copy
+    for (const auto &handle : handles) {
+        const auto &key = handle->key();
+        if (key.renderTarget == renderTargetId)
+            manager->releaseResource(key);
+    }
+}
+
 } // anonymous
 
 void RHIGraphicsPipelineManager::releasePipelinesReferencingShader(const Qt3DCore::QNodeId &shaderId)
@@ -119,11 +130,15 @@ void RHIGraphicsPipelineManager::releasePipelinesReferencingShader(const Qt3DCor
     erasePipelinesReferencingShader(this, shaderId);
 }
 
+void RHIGraphicsPipelineManager::releasePipelinesReferencingRenderTarget(const Qt3DCore::QNodeId &renderTargetId)
+{
+    erasePipelinesReferencingRenderTargetId(this, renderTargetId);
+}
+
 void RHIComputePipelineManager::releasePipelinesReferencingShader(const Qt3DCore::QNodeId &shaderId)
 {
     erasePipelinesReferencingShader(this, shaderId);
 }
-
 
 } // Rhi
 

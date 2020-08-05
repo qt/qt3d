@@ -1804,6 +1804,39 @@ void Renderer::updateResources()
         m_textureIdsToCleanup += m_nodesManager->textureManager()->takeTexturesIdsToCleanup();
     }
 
+
+    // Find dirty renderTargets
+    // -> attachments added/removed
+    // -> attachments textures updated (new dimensions, format ...)
+    // -> destroy pipelines associated with dirty renderTargets
+    {
+        RHIRenderTargetManager *rhiRenderTargetManager = m_RHIResourceManagers->rhiRenderTargetManager();
+        RenderTargetManager *renderTargetManager = m_nodesManager->renderTargetManager();
+        AttachmentManager *attachmentManager = m_nodesManager->attachmentManager();
+        const std::vector<HTarget> &activeHandles = renderTargetManager->activeHandles();
+        for (const HTarget &hTarget : activeHandles) {
+            const Qt3DCore::QNodeId renderTargetId = hTarget->peerId();
+            const Qt3DCore::QNodeIdVector &attachmentIds = hTarget->renderOutputs();
+            for (const Qt3DCore::QNodeId &attachmentId : attachmentIds) {
+                RenderTargetOutput *output = attachmentManager->lookupResource(attachmentId);
+
+                auto it = std::find_if(m_updatedTextureProperties.begin(),
+                                       m_updatedTextureProperties.end(),
+                                       [&output] (const QPair<Texture::TextureUpdateInfo, Qt3DCore::QNodeIdVector> &updateData) {
+                    const Qt3DCore::QNodeIdVector &referencedTextureIds = updateData.second;
+                    return referencedTextureIds.contains(output->textureUuid());
+                });
+                // Attachment references a texture which was update
+                // We need to destroy the render target and the pipelines associated with it
+                // so that they can be recreated
+                if (it != m_updatedTextureProperties.end()) {
+                    graphicsPipelineManager->releasePipelinesReferencingRenderTarget(renderTargetId);
+                    rhiRenderTargetManager->releaseResource(renderTargetId);
+                }
+            }
+        }
+    }
+
     // Record list of buffer that might need uploading
     lookForDownloadableBuffers();
 }
@@ -2802,6 +2835,8 @@ void Renderer::cleanGraphicsResources()
     for (const Qt3DCore::QNodeId renderTargetCleanedUpId : cleanedUpRenderTargetIds) {
         cleanupRenderTarget(m_nodesManager->renderTargetManager()->lookupResource(renderTargetCleanedUpId));
         m_nodesManager->renderTargetManager()->releaseResource(renderTargetCleanedUpId);
+        // Release pipelines that were referencing renderTarget
+        graphicsPipelineManager->releasePipelinesReferencingRenderTarget(renderTargetCleanedUpId);
     }
 }
 
