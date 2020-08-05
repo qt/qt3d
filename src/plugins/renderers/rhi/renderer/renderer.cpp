@@ -944,11 +944,13 @@ void Renderer::buildGraphicsPipelines(RHIGraphicsPipeline *graphicsPipeline,
     // Setup shaders
     const QShader& vertexShader = shader->shaderStage(QShader::VertexStage);
     if (!vertexShader.isValid()) {
+        qCWarning(Backend) << "Invalid vertex shader";
         return onFailure();
     }
 
     const QShader& fragmentShader = shader->shaderStage(QShader::FragmentStage);
     if (!fragmentShader.isValid()) {
+        qCWarning(Backend) << "Invalid fragment shader";
         return onFailure();
     }
 
@@ -960,6 +962,7 @@ void Renderer::buildGraphicsPipelines(RHIGraphicsPipeline *graphicsPipeline,
 
     shaderResourceBindings->setBindings(resourceBindings.cbegin(), resourceBindings.cend());
     if (!shaderResourceBindings->create()) {
+        qCWarning(Backend) << "Unable to create resource bindings";
         return onFailure();
     }
 
@@ -972,6 +975,7 @@ void Renderer::buildGraphicsPipelines(RHIGraphicsPipeline *graphicsPipeline,
     if (!prepareGeometryInputBindings(geom, cmd.m_rhiShader,
                                       inputBindings, rhiAttributes,
                                       attributeNameToBinding)) {
+        qCWarning(Backend) << "Geometry doesn't match expected layout";
         return onFailure();
     }
 
