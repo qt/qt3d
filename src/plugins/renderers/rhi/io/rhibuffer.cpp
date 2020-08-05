@@ -106,8 +106,8 @@ bool RHIBuffer::bind(SubmissionContext *ctx, Type t)
             (ctx->m_currentUpdates->*uploadMethod)(m_rhiBuffer, 0, m_allocSize, ptr);
             delete[] ptr;
         }
-    }
 #endif
+    }
     assert(m_rhiBuffer);
 
 #if defined(QT_DEBUG)
