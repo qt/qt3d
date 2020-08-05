@@ -1340,10 +1340,8 @@ Renderer::prepareCommandsSubmission(const std::vector<RenderView *> &renderViews
                                 command.m_geometryRenderer);
                 // By this time shaders should have been loaded
                 RHIShader *shader = command.m_rhiShader;
-                if (!shader) {
-                    qDebug() << "Warning: could not find shader";
+                if (!shader)
                     return;
-                }
 
                 // We should never have inserted a command for which these are null
                 // in the first place
