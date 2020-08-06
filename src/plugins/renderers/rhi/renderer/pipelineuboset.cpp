@@ -327,20 +327,17 @@ void printUpload(const UniformValue &value, const QShaderDescription::BlockVaria
         qDebug() << "Updating" << member.name << "with vec2 data: " << value.constData<float>()[0]
                  << ", " << value.constData<float>()[1] << " (offset: " << member.offset
                  << ", size: " << member.size + arrayOffset << ")";
-        ;
         break;
     case QShaderDescription::VariableType::Vec3:
         qDebug() << "Updating" << member.name << "with vec3 data: " << value.constData<float>()[0]
                  << ", " << value.constData<float>()[1] << ", " << value.constData<float>()[2]
                  << " (offset: " << member.offset + arrayOffset << ", size: " << member.size << ")";
-        ;
         break;
     case QShaderDescription::VariableType::Vec4:
         qDebug() << "Updating" << member.name << "with vec4 data: " << value.constData<float>()[0]
                  << ", " << value.constData<float>()[1] << ", " << value.constData<float>()[2]
                  << ", " << value.constData<float>()[3] << " (offset: " << member.offset + arrayOffset
                  << ", size: " << member.size << ")";
-        ;
         break;
     default:
         qDebug() << "Updating" << member.name << "with data: " << value.constData<char>();

@@ -290,7 +290,7 @@ public:
     void enqueueRenderView(RenderView *renderView, int submitOrder);
     bool waitUntilReadyToSubmit();
 
-    QVariant executeCommand(const QStringList &args);
+    QVariant executeCommand(const QStringList &args) override;
     void setOffscreenSurfaceHelper(OffscreenSurfaceHelper *) override {};
     QSurfaceFormat format() override;
 

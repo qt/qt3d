@@ -1679,11 +1679,11 @@ SubmissionContext::ShaderCreationInfo SubmissionContext::createShaderProgram(RHI
     }
 #endif
 
-#if Q_OS_WIN
+#ifdef Q_OS_WIN
     generatedShaders.push_back({ QShader::HlslShader, QShaderVersion(50) });
 #endif
 
-#if Q_OS_MACOS
+#ifdef Q_OS_MACOS
     generatedShaders.push_back({ QShader::MslShader, QShaderVersion(12) });
 #endif
 

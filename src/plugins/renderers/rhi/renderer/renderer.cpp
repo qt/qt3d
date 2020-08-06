@@ -1077,7 +1077,7 @@ void Renderer::buildComputePipelines(RHIComputePipeline *computePipeline,
                                      RenderView *rv,
                                      const RenderCommand &cmd)
 {
-    const auto bufManager = m_RHIResourceManagers->rhiBufferManager();
+    Q_UNUSED(rv);
     auto onFailure = [&] { computePipeline->cleanup(); };
 
     PipelineUBOSet *uboSet = computePipeline->uboSet();
@@ -2447,6 +2447,9 @@ static auto rhiIndexFormat(QAttribute::VertexBaseType type)
 bool Renderer::uploadBuffersForCommand(QRhiCommandBuffer *cb, const RenderView *rv,
                                        RenderCommand &command)
 {
+    Q_UNUSED(cb);
+    Q_UNUSED(rv);
+
     struct
     {
       Renderer &self;
