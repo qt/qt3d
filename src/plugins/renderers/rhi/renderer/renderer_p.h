@@ -438,7 +438,7 @@ private:
                                RenderView *rv,
                                const RenderCommand &command);
 
-    void cleanupRenderTarget(const RenderTarget *renderTarget);
+    void cleanupRenderTarget(const Qt3DCore::QNodeId &renderTarget);
 
     void createRenderTarget(RenderView* rv, RHIRenderTarget *);
     bool setupRenderTarget(RenderView* rv, RHIGraphicsPipeline* graphicsPipeline, QRhiSwapChain* swapchain);

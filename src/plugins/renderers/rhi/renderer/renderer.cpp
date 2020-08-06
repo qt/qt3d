@@ -1934,11 +1934,11 @@ void Renderer::cleanupShader(const Shader *shader)
         rhiShaderManager->abandon(glShader, shader);
 }
 
-void Renderer::cleanupRenderTarget(const RenderTarget *renderTarget)
+void Renderer::cleanupRenderTarget(const Qt3DCore::QNodeId &renderTargetId)
 {
     RHIRenderTargetManager *rhiRenderTargetManager = m_RHIResourceManagers->rhiRenderTargetManager();
 
-    rhiRenderTargetManager->releaseResource(renderTarget->peerId());
+    rhiRenderTargetManager->releaseResource(renderTargetId);
 }
 
 // Called by SubmitRenderView
@@ -2850,7 +2850,7 @@ void Renderer::cleanGraphicsResources()
     const QList<Qt3DCore::QNodeId> cleanedUpRenderTargetIds =
             m_nodesManager->renderTargetManager()->takeRenderTargetIdsToCleanup();
     for (const Qt3DCore::QNodeId renderTargetCleanedUpId : cleanedUpRenderTargetIds) {
-        cleanupRenderTarget(m_nodesManager->renderTargetManager()->lookupResource(renderTargetCleanedUpId));
+        cleanupRenderTarget(renderTargetCleanedUpId);
         m_nodesManager->renderTargetManager()->releaseResource(renderTargetCleanedUpId);
         // Release pipelines that were referencing renderTarget
         graphicsPipelineManager->releasePipelinesReferencingRenderTarget(renderTargetCleanedUpId);
