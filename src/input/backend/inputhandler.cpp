@@ -71,7 +71,17 @@ protected:
     bool eventFilter(QObject *obj, QEvent *e) override {
         switch (e->type()) {
         case QEvent::MouseMove:
+        case QEvent::MouseButtonPress:
+        case QEvent::MouseButtonRelease:
+        case QEvent::MouseButtonDblClick:
             return processMouseEvent(obj, static_cast<QT_PREPEND_NAMESPACE(QMouseEvent) *>(e));
+        case QEvent::HoverMove: {
+            const QHoverEvent *he = static_cast<QHoverEvent *>(e);
+            auto mouseEvent = QT_PREPEND_NAMESPACE(QMouseEvent)(QEvent::MouseMove,
+                                                                he->position(), Qt::NoButton, Qt::NoButton,
+                                                                he->modifiers());
+            return processMouseEvent(obj, static_cast<QT_PREPEND_NAMESPACE(QMouseEvent) *>(&mouseEvent));
+        }
 #if QT_CONFIG(wheelevent)
         case QEvent::Wheel:
             return processWheelEvent(obj, static_cast<QT_PREPEND_NAMESPACE(QWheelEvent) *>(e));
