@@ -391,8 +391,7 @@ void Scene3DRenderer::GLRenderer::beforeSynchronize(Scene3DRenderer *scene3DRend
         if (generateNewTexture) {
             m_finalFBO.reset(createFramebufferObject(m_lastSize));
             m_textureId = m_finalFBO->texture();
-            m_texture.reset(window->createTextureFromNativeObject(QQuickWindow::NativeObjectTexture, m_textureId,
-                                                                    0, m_finalFBO->size(), QQuickWindow::TextureHasAlphaChannel));
+            m_texture.reset(QPlatformInterface::QSGOpenGLTexture::fromNative(m_textureId, window, m_finalFBO->size(), QQuickWindow::TextureHasAlphaChannel));
         }
 
         // We can render either the Scene3D or the Scene3DView but not both
@@ -606,9 +605,9 @@ void Scene3DRenderer::RHIRenderer::beforeSynchronize(Scene3DRenderer *scene3DRen
         m_rhiRenderTarget->create();
 
         // Create QSGTexture from QRhiTexture
-        m_texture.reset(window->createTextureFromNativeObject(QQuickWindow::NativeObjectTexture,
-                                                              m_rhiTexture->nativeTexture().object,
-                                                              0, m_lastSize, QQuickWindow::TextureHasAlphaChannel));
+        auto *windowPriv = QQuickWindowPrivate::get(window);
+        m_texture.reset(windowPriv->createTextureFromNativeTexture(m_rhiTexture->nativeTexture().object,
+                                                                   0, m_lastSize, QQuickWindow::TextureHasAlphaChannel));
 
         // Set the Default RenderTarget to use on the RHI Renderer
         // Note: this will release all pipelines using previousRenderTarget
