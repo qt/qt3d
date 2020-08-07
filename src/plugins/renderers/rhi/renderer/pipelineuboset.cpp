@@ -150,7 +150,7 @@ bool PipelineUBOSet::allocateUBOs(SubmissionContext *ctx)
     const size_t commandCount = std::max(m_renderCommands.size(), size_t(1));
 
     // RHIBuffer only reallocates if size is < than required
-    m_rvUBO.buffer->allocate(QByteArray(m_rvUBO.blockSize, '\0'), dynamic);\
+    m_rvUBO.buffer->allocate(QByteArray(m_rvUBO.blockSize, '\0'), dynamic);
 
     // We need to take into account any minimum alignment requirement for dynamic offsets
     m_commandsUBO.buffer->allocate(QByteArray(m_commandsUBO.alignedBlockSize * commandCount, '\0'), dynamic);
