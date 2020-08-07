@@ -211,6 +211,11 @@ Scene3DRenderer::~Scene3DRenderer()
     qCDebug(Scene3D) << Q_FUNC_INFO << QThread::currentThread();
 }
 
+Scene3DSGNode *Scene3DRenderer::sgNode() const
+{
+    return m_node;
+}
+
 void Scene3DRenderer::scheduleRootEntityChange()
 {
     QMetaObject::invokeMethod(m_item, "applyRootEntityChange", Qt::QueuedConnection);
@@ -285,11 +290,6 @@ void Scene3DRenderer::setScene3DViews(const QList<Scene3DView *> &views)
 {
     m_views = views;
     m_dirtyViews = true;
-}
-
-void Scene3DRenderer::setSGNode(Scene3DSGNode *node)
-{
-    m_node = node;
 }
 
 QOpenGLFramebufferObject *Scene3DRenderer::GLRenderer::createMultisampledFramebufferObject(const QSize &size)
@@ -373,6 +373,10 @@ void Scene3DRenderer::GLRenderer::beforeSynchronize(Scene3DRenderer *scene3DRend
     // Rebuild FBO if size/multisampling has changed
     const bool usesFBO = scene3DRenderer->m_compositingMode == Scene3DItem::FBO;
     auto node = scene3DRenderer->m_node;
+    if (node == nullptr) {
+        node = new Scene3DSGNode();
+        scene3DRenderer->m_node = node;
+    }
     if (usesFBO) {
         // Rebuild FBO and textures if never created or a resize has occurred
         if ((m_multisampledFBO.isNull() || forceRecreate) && m_multisample) {
@@ -398,8 +402,10 @@ void Scene3DRenderer::GLRenderer::beforeSynchronize(Scene3DRenderer *scene3DRend
                  (node != nullptr && views.empty()) ||
                  (node == nullptr && !views.empty()));
 
+
+
         // Set texture on node
-        if (node && (!node->texture() || generateNewTexture))
+        if (!node->texture() || generateNewTexture)
             node->setTexture(m_texture.data());
 
         // Set textures on Scene3DView
@@ -566,7 +572,6 @@ void Scene3DRenderer::RHIRenderer::beforeSynchronize(Scene3DRenderer *scene3DRen
     // Not sure how we could support underlay rendering properly given Qt3D RHI will render into its own
     // RHI RenderPasses prior to QtQuick and beginning a new RenderPass clears the screen
     Q_ASSERT(usesFBO);
-    auto node = scene3DRenderer->m_node;
     const bool generateNewTexture = m_texture.isNull() || forceRecreate;
     const int samples = item->multisample() ? 4 : 1;
 
@@ -610,13 +615,18 @@ void Scene3DRenderer::RHIRenderer::beforeSynchronize(Scene3DRenderer *scene3DRen
         m_renderer->setDefaultRHIRenderTarget(m_rhiRenderTarget);
     }
 
+    Scene3DSGNode *node = scene3DRenderer->m_node;
+    if (node == nullptr) {
+        node = new Scene3DSGNode();
+        scene3DRenderer->m_node = node;
+    }
+
     // Set texture on node
-    if (node && (!node->texture() || generateNewTexture))
+    if (!node->texture() || generateNewTexture)
         node->setTexture(m_texture.data());
 
     // Mark SGNodes as dirty so that QQuick will trigger some rendering
-    if (node)
-        node->markDirty(QSGNode::DirtyMaterial);
+    node->markDirty(QSGNode::DirtyMaterial);
 
     if (scene3DRenderer->m_aspectEngine->rootEntity() != item->entity())
         scene3DRenderer->scheduleRootEntityChange();

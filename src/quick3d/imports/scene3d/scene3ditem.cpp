@@ -757,16 +757,13 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
         if (fboNode != nullptr) {
             delete fboNode;
             fboNode = nullptr;
-            m_renderer->setSGNode(fboNode);
         }
     } else {
         // Regular Scene3D only case
-        // Create SGNode if using FBO and no Scene3DViews
-        if (fboNode == nullptr) {
-            fboNode = new Scene3DSGNode();
-            m_renderer->setSGNode(fboNode);
-        }
-        fboNode->setRect(boundingRect());
+        // SGNode != nullptr if using FBO and no Scene3DViews
+        fboNode = m_renderer->sgNode();
+        if (fboNode)
+            fboNode->setRect(boundingRect());
     }
 
     // Request update for next frame so that we can check whether we need to

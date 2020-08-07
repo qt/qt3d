@@ -90,7 +90,7 @@ public:
     Scene3DRenderer();
     ~Scene3DRenderer();
 
-    void setSGNode(Scene3DSGNode *node);
+    Scene3DSGNode *sgNode() const;
     void setCleanerHelper(Scene3DCleaner *cleaner);
     void allowRender();
     void setCompositingMode(Scene3DItem::CompositingMode mode);
