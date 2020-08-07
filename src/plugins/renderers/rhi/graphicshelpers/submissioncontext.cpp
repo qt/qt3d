@@ -581,6 +581,7 @@ void SubmissionContext::initialize()
         QRhiVulkanInitParams params;
         params.inst = &Qt3DRender::staticVulkanInstance();
         m_rhi = QRhi::create(QRhi::Vulkan, &params, rhiFlags);
+        qCWarning(Backend) << "Initializing RHI with Vulkan backend";
     }
 #endif
 
@@ -589,6 +590,7 @@ void SubmissionContext::initialize()
         QRhiD3D11InitParams params;
         params.enableDebugLayer = true;
         m_rhi = QRhi::create(QRhi::D3D11, &params, rhiFlags);
+        qCWarning(Backend) << "Initializing RHI with DirectX backend";
     }
 #endif
 
@@ -596,11 +598,13 @@ void SubmissionContext::initialize()
     if (requestedApi == Qt3DRender::API::Metal) {
         QRhiMetalInitParams params;
         m_rhi = QRhi::create(QRhi::Metal, &params, rhiFlags);
+        qCWarning(Backend) << "Initializing RHI with Metal backend";
     }
 #endif
     if (requestedApi == Qt3DRender::API::Null) {
         QRhiInitParams params;
         m_rhi = QRhi::create(QRhi::Null, &params, rhiFlags);
+        qCWarning(Backend) << "Initializing RHI with Null backend";
     }
 
     if (requestedApi != Qt3DRender::API::OpenGL && m_rhi == nullptr) {
@@ -615,6 +619,7 @@ void SubmissionContext::initialize()
         params.format = QSurfaceFormat::defaultFormat();
         params.fallbackSurface = m_fallbackSurface;
         m_rhi = QRhi::create(QRhi::OpenGLES2, &params, rhiFlags);
+        qCWarning(Backend) << "Initializing RHI with OpenGL backend";
 #else
         qWarning() << "RHI: OpenGL not supported";
 #endif
