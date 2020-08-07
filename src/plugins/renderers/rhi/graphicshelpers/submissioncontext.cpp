@@ -546,7 +546,7 @@ void SubmissionContext::initialize()
     m_ownsRhiCtx = true;
 
     Qt3DRender::API requestedApi = Qt3DRender::API::RHI;
-    const auto userRequestedApi = qgetenv("QT3D_RHI_DEFAULT_API").toLower();
+    const auto userRequestedApi = qgetenv("QSG_RHI_BACKEND").toLower();
     if (!userRequestedApi.isEmpty()) {
         if (userRequestedApi == QByteArrayLiteral("opengl")) {
             requestedApi = Qt3DRender::API::OpenGL;

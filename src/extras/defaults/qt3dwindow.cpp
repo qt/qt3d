@@ -250,7 +250,7 @@ bool Qt3DWindow::event(QEvent *e)
 void setupWindowSurface(QWindow *window, Qt3DRender::API api) noexcept
 {
     // If the user pass an API through the environment, we use that over the one passed as argument.
-    const auto userRequestedApi = qgetenv("QT3D_RHI_DEFAULT_API").toLower();
+    const auto userRequestedApi = qgetenv("QSG_RHI_BACKEND").toLower();
     if (!userRequestedApi.isEmpty()) {
         if (userRequestedApi == QByteArrayLiteral("opengl")) {
             api = Qt3DRender::API::OpenGL;
@@ -272,25 +272,25 @@ void setupWindowSurface(QWindow *window, Qt3DRender::API api) noexcept
     switch (api)
     {
     case Qt3DRender::API::OpenGL:
-        qputenv("QT3D_RHI_DEFAULT_API", "opengl");
+        qputenv("QSG_RHI_BACKEND", "opengl");
         window->setSurfaceType(QSurface::OpenGLSurface);
         break;
     case Qt3DRender::API::DirectX:
-        qputenv("QT3D_RHI_DEFAULT_API", "d3d11");
+        qputenv("QSG_RHI_BACKEND", "d3d11");
         window->setSurfaceType(QSurface::OpenGLSurface);
         break;
     case Qt3DRender::API::Null:
-        qputenv("QT3D_RHI_DEFAULT_API", "null");
+        qputenv("QSG_RHI_BACKEND", "null");
         window->setSurfaceType(QSurface::OpenGLSurface);
         break;
     case Qt3DRender::API::Metal:
-        qputenv("QT3D_RHI_DEFAULT_API", "metal");
+        qputenv("QSG_RHI_BACKEND", "metal");
         window->setSurfaceType(QSurface::MetalSurface);
         break;
 #if QT_CONFIG(vulkan)
     case Qt3DRender::API::Vulkan:
     {
-        qputenv("QT3D_RHI_DEFAULT_API", "vulkan");
+        qputenv("QSG_RHI_BACKEND", "vulkan");
         window->setSurfaceType(QSurface::VulkanSurface);
         window->setVulkanInstance(&Qt3DRender::staticVulkanInstance());
         break;
