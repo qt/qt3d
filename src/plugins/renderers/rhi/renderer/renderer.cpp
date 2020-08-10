@@ -1639,7 +1639,32 @@ bool Renderer::prepareGeometryInputBindings(const Geometry *geometry, const RHIS
         const QRhiVertexInputBinding::Classification classification = isPerInstanceAttr
                 ? QRhiVertexInputBinding::PerInstance
                 : QRhiVertexInputBinding::PerVertex;
-        const BufferBinding binding = { attrib->bufferId(), attrib->byteStride(),
+
+        auto getAttributeByteSize = [] (const QAttribute::VertexBaseType type) {
+            switch (type) {
+            case QAttribute::Byte:
+            case QAttribute::UnsignedByte:
+                return 1;
+            case QAttribute::Short:
+            case QAttribute::UnsignedShort:
+            case QAttribute::HalfFloat:
+                return 2;
+            case QAttribute::Int:
+            case QAttribute::UnsignedInt:
+            case QAttribute::Float:
+                return 4;
+            case QAttribute::Double:
+                return 8;
+            }
+        };
+
+        uint byteStride = attrib->byteStride();
+        // in GL 0 means tighly packed, we therefore assume a tighly packed
+        // attribute and compute the stride if that happens
+        if (byteStride == 0)
+            byteStride = attrib->vertexSize() * getAttributeByteSize(attrib->vertexBaseType());
+
+        const BufferBinding binding = { attrib->bufferId(), byteStride,
                                         classification,
                                         isPerInstanceAttr ? attrib->divisor() : 1U };
 
