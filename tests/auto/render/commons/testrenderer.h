@@ -99,8 +99,6 @@ public:
     bool accessOpenGLTexture(Qt3DCore::QNodeId, QOpenGLTexture **, QMutex **, bool) override { return false; }
     QSharedPointer<Qt3DRender::Render::RenderBackendResourceAccessor> resourceAccessor() const override { return m_resourceAccessor; }
 
-    void loadShader(Qt3DRender::Render::Shader *, Qt3DRender::Render::HShader) override {}
-
 protected:
     Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet m_changes;
     Qt3DRender::QRenderAspect *m_aspect = nullptr;

@@ -393,14 +393,6 @@ QOpenGLContext *Renderer::shareContext() const
                              : nullptr);
 }
 
-// Executed in the reloadDirtyShader job
-void Renderer::loadShader(Shader *shader, HShader shaderHandle)
-{
-    Q_UNUSED(shader);
-    if (!Qt3DCore::contains(m_dirtyShaders, shaderHandle))
-        m_dirtyShaders.push_back(shaderHandle);
-}
-
 void Renderer::setOpenGLContext(QOpenGLContext *context)
 {
     m_glContext = context;
@@ -1069,8 +1061,10 @@ void Renderer::reloadDirtyShaders()
                     }
                 }
 
-                if (shader->isDirty())
-                    loadShader(shader, shaderHandle);
+                if (shader->isDirty()) {
+                    if (!Qt3DCore::contains(m_dirtyShaders, shaderHandle))
+                        m_dirtyShaders.push_back(shaderHandle);
+                }
             }
         }
     }

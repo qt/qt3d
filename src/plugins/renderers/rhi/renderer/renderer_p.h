@@ -247,9 +247,6 @@ public:
 
     inline RHIResourceManagers *rhiResourceManagers() const { return m_RHIResourceManagers; }
 
-    // Executed in secondary GL thread
-    void loadShader(Shader *shader, Qt3DRender::Render::HShader shaderHandle) override;
-
     void updateResources();
     void updateTexture(Texture *texture);
     void cleanupTexture(Qt3DCore::QNodeId cleanedUpTextureId);

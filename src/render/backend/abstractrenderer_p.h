@@ -196,10 +196,6 @@ public:
     virtual QSurfaceFormat format() = 0;
     virtual QOpenGLContext *shareContext() const = 0;
     virtual const GraphicsApiFilterData *contextInfo() const = 0;
-
-    // These commands are executed in a dedicated command thread
-    // More will be added later
-    virtual void loadShader(Shader *shader, Qt3DRender::Render::HShader shaderHandle) = 0;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(AbstractRenderer::BackendNodeDirtySet)

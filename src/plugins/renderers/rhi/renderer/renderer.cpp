@@ -401,14 +401,6 @@ QOpenGLContext *Renderer::shareContext() const
     return nullptr;
 }
 
-// Executed in the reloadDirtyShader job
-void Renderer::loadShader(Shader *shader, HShader shaderHandle)
-{
-    Q_UNUSED(shader);
-    if (!Qt3DCore::contains(m_dirtyShaders, shaderHandle))
-        m_dirtyShaders.push_back(shaderHandle);
-}
-
 void Renderer::setOpenGLContext(QOpenGLContext *context)
 {
     m_glContext = context;
@@ -1507,8 +1499,10 @@ void Renderer::reloadDirtyShaders()
                     }
                 }
 
-                if (shader != nullptr && shader->isDirty())
-                    loadShader(shader, shaderHandle);
+                if (shader != nullptr && shader->isDirty()) {
+                    if (!Qt3DCore::contains(m_dirtyShaders, shaderHandle))
+                        m_dirtyShaders.push_back(shaderHandle);
+                }
             }
         }
     }
@@ -2588,6 +2582,8 @@ bool Renderer::uploadBuffersForCommand(RHIGraphicsPipeline* graphicsPipeline, Re
 
 bool Renderer::uploadBuffersForCommand(RHIComputePipeline* computePipeline, RenderCommand &command)
 {
+    Q_UNUSED(computePipeline);
+    Q_UNUSED(command);
     return true;
 }
 

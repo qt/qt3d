@@ -236,10 +236,6 @@ public:
 
     inline GLResourceManagers *glResourceManagers() const { return m_glResourceManagers; }
 
-    // Executed in secondary GL thread
-    void loadShader(Shader *shader, Qt3DRender::Render::HShader shaderHandle) override;
-
-
     void updateGLResources();
     void updateTexture(Texture *texture);
     void cleanupTexture(Qt3DCore::QNodeId cleanedUpTextureId);
