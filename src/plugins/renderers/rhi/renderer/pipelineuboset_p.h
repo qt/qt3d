@@ -85,6 +85,19 @@ public:
         HRHIBuffer buffer;
     };
 
+    struct MultiUBOBufferWithBindingAndBlockSize
+    {
+        int binding = -1;
+        int blockSize = -1;
+        size_t alignedBlockSize = 0;
+        size_t alignment = 0;
+        size_t commandsPerUBO = 0;
+        std::vector<HRHIBuffer> buffers;
+
+        HRHIBuffer bufferForCommand(size_t distanceToCommand) const;
+        size_t localOffsetInBufferForCommand(size_t distanceToCommand) const;
+    };
+
     PipelineUBOSet();
     ~PipelineUBOSet();
 
@@ -107,13 +120,13 @@ private:
     void uploadUBOsForCommand(const RenderCommand &command,
                               size_t distanceToCommand);
     void uploadShaderDataProperty(const ShaderData *shaderData,
-                                  const PipelineUBOSet::UBOBufferWithBindingAndBlockSize *ubo,
+                                  const PipelineUBOSet::MultiUBOBufferWithBindingAndBlockSize *ubo,
                                   const RHIShader::UBO_Member &uboMemberInstance,
                                   size_t distanceToCommand, int arrayOffset = 0);
 
     UBOBufferWithBindingAndBlockSize m_rvUBO; // Fixed size
-    UBOBufferWithBindingAndBlockSize m_commandsUBO; // Variable size
-    std::vector<UBOBufferWithBindingAndBlockSize> m_materialsUBOs; // Variable size
+    MultiUBOBufferWithBindingAndBlockSize m_commandsUBO; // Variable size
+    std::vector<MultiUBOBufferWithBindingAndBlockSize> m_materialsUBOs; // Variable size
     std::vector<ShaderStorageBlock> m_storageBlocks; // Fixed size
 
     // TO DO: We also need to handle cases where UBO was directly provided by the frontend

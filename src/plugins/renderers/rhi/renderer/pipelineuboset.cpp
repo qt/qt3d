@@ -61,6 +61,12 @@ namespace Render {
 
 namespace Rhi {
 
+namespace {
+// This is the minimum max UBO size requirements with GL
+// therefore safe to assume that is also the baseline for other graphics APIs
+constexpr size_t MaxUBOByteSize = 16384;
+}
+
 PipelineUBOSet::PipelineUBOSet()
 {
 }
@@ -94,27 +100,29 @@ void PipelineUBOSet::initializeLayout(SubmissionContext *ctx, RHIShader *shader)
 {
     // We should only be called with a clean Pipeline
     Q_ASSERT(m_rvUBO.buffer.isNull());
-    RHIBufferManager *bufferManager = m_resourceManagers->rhiBufferManager();
 
     m_rvUBO.binding = 0;
     m_rvUBO.blockSize = sizeof(RenderViewUBO);
-    m_rvUBO.buffer = bufferManager->allocateResource();
 
     m_commandsUBO.binding = 1;
     m_commandsUBO.blockSize = sizeof(CommandUBO);
     m_commandsUBO.alignedBlockSize = ctx->rhi()->ubufAligned((m_commandsUBO.blockSize));
-    m_commandsUBO.buffer = bufferManager->allocateResource();
+    m_commandsUBO.alignment = size_t(ctx->rhi()->ubufAlignment());
+    m_commandsUBO.commandsPerUBO = MaxUBOByteSize / m_commandsUBO.alignedBlockSize;
 
     // For UBO, we try to create a single large UBO that will contain frontend
     // Qt3D UBO data at various offsets
     const std::vector<ShaderUniformBlock> &uniformBlocks = shader->uniformBlocks();
     for (const ShaderUniformBlock &block : uniformBlocks) {
         if (block.m_binding > 1) { // Binding 0 and 1 are for RV and Command UBOs
+            const size_t alignedBlockSize = size_t(ctx->rhi()->ubufAligned(block.m_size));
             m_materialsUBOs.push_back(
                         { block.m_binding,
                           block.m_size,
-                          size_t(ctx->rhi()->ubufAligned(block.m_size)),
-                          bufferManager->allocateResource()});
+                          alignedBlockSize,
+                          size_t(ctx->rhi()->ubufAlignment()),
+                          MaxUBOByteSize / alignedBlockSize,
+                          {} });
         }
     }
 
@@ -128,14 +136,17 @@ void PipelineUBOSet::releaseResources()
     RHIBufferManager *bufferManager = m_resourceManagers->rhiBufferManager();
 
     bufferManager->release(m_rvUBO.buffer);
-    bufferManager->release(m_commandsUBO.buffer);
+
+    for (const HRHIBuffer &hBuf : m_commandsUBO.buffers)
+        bufferManager->release(hBuf);
 
     m_rvUBO = {};
     m_commandsUBO = {};
 
     if (!m_materialsUBOs.empty()) {
-        for (const UBOBufferWithBindingAndBlockSize &ubo : m_materialsUBOs) {
-            bufferManager->release(ubo.buffer);
+        for (const MultiUBOBufferWithBindingAndBlockSize &ubo : m_materialsUBOs) {
+            for (const HRHIBuffer &hBuf : ubo.buffers)
+                bufferManager->release(hBuf);
         }
         m_materialsUBOs.clear();
     }
@@ -143,27 +154,44 @@ void PipelineUBOSet::releaseResources()
 
 bool PipelineUBOSet::allocateUBOs(SubmissionContext *ctx)
 {
+    RHIBufferManager *bufferManager = m_resourceManagers->rhiBufferManager();
     // Note: RHIBuffer only releases/recreates when it needs more size than what it
     // can currently hold
     Q_ASSERT(m_resourceManagers);
     const bool dynamic = true;
     const size_t commandCount = std::max(m_renderCommands.size(), size_t(1));
 
+    if (m_rvUBO.buffer.isNull())
+        m_rvUBO.buffer = bufferManager->allocateResource();
+
     // RHIBuffer only reallocates if size is < than required
     m_rvUBO.buffer->allocate(QByteArray(m_rvUBO.blockSize, '\0'), dynamic);
-
-    // We need to take into account any minimum alignment requirement for dynamic offsets
-    m_commandsUBO.buffer->allocate(QByteArray(m_commandsUBO.alignedBlockSize * commandCount, '\0'), dynamic);
-
     // Binding buffer ensure underlying RHI resource is created
     m_rvUBO.buffer->bind(ctx, RHIBuffer::UniformBuffer);
-    m_commandsUBO.buffer->bind(ctx, RHIBuffer::UniformBuffer);
 
-    for (const UBOBufferWithBindingAndBlockSize &ubo : m_materialsUBOs) {
-        if (ubo.binding > 1) { // Binding 0 and 1 are for RV and Command UBOs
-            ubo.buffer->allocate(QByteArray(ubo.alignedBlockSize * commandCount, '\0'), dynamic);
-            ubo.buffer->bind(ctx, RHIBuffer::UniformBuffer);
+    auto allocateMultiUBOsForCommands = [&] (MultiUBOBufferWithBindingAndBlockSize &ubo) {
+        // Round up
+        const size_t uboCount = std::ceil(float(commandCount) / ubo.commandsPerUBO);
+
+        if (ubo.buffers.size() < uboCount)
+            ubo.buffers.resize(uboCount);
+
+        for (HRHIBuffer &buf : ubo.buffers) {
+            if (buf.isNull())
+                buf = bufferManager->allocateResource();
+            // We need to take into account any minimum alignment requirement for dynamic offsets
+            buf->allocate(QByteArray(MaxUBOByteSize, '\0'), dynamic);
+            buf->bind(ctx, RHIBuffer::UniformBuffer);
         }
+    };
+
+    // Commands UBOs
+    allocateMultiUBOsForCommands(m_commandsUBO);
+
+    // Material UBOs
+    for (MultiUBOBufferWithBindingAndBlockSize &ubo : m_materialsUBOs) {
+        if (ubo.binding > 1) // Binding 0 and 1 are for RV and Command UBOs
+            allocateMultiUBOsForCommands(ubo);
     }
 
     // SSBO are using RHIBuffer directly, nothing we need to handle ourselves
@@ -190,10 +218,17 @@ std::vector<QRhiCommandBuffer::DynamicOffset> PipelineUBOSet::offsets(const Rend
     // RenderCommand offset
     // binding, offset
     const size_t dToCmd = distanceToCommand(cmd);
-    offsets.push_back({1, dToCmd * m_commandsUBO.alignedBlockSize});
+    {
+        // Compute offset relative to the select UBO in the subset
+        const size_t localOffset = m_commandsUBO.localOffsetInBufferForCommand(dToCmd);
+        offsets.push_back({1, localOffset});
+    }
 
-    for (const UBOBufferWithBindingAndBlockSize &buffer : m_materialsUBOs)
-        offsets.push_back({buffer.binding, dToCmd * buffer.alignedBlockSize});
+    for (const MultiUBOBufferWithBindingAndBlockSize &materialUBO : m_materialsUBOs) {
+        // Compute offset relative to the select UBO in the subset
+        const size_t localOffset = materialUBO.localOffsetInBufferForCommand(dToCmd);
+        offsets.push_back({materialUBO.binding, localOffset});
+    }
 
     return offsets;
 }
@@ -218,7 +253,7 @@ std::vector<QRhiShaderResourceBinding> PipelineUBOSet::resourceLayout(const RHIS
 
     // Create additional empty UBO Buffer for UBO with binding point > 1 (since
     // we assume 0 and 1 and for Qt3D standard values)
-    for (const UBOBufferWithBindingAndBlockSize &ubo : m_materialsUBOs)
+    for (const MultiUBOBufferWithBindingAndBlockSize &ubo : m_materialsUBOs)
         bindings.push_back(
                     QRhiShaderResourceBinding::uniformBufferWithDynamicOffset(
                         ubo.binding, stages, nullptr, ubo.blockSize));
@@ -247,17 +282,30 @@ std::vector<QRhiShaderResourceBinding> PipelineUBOSet::resourceBindings(const Re
     const QRhiShaderResourceBinding::StageFlags stages = QRhiShaderResourceBinding::VertexStage|QRhiShaderResourceBinding::FragmentStage;
     std::vector<QRhiShaderResourceBinding> bindings = {
         QRhiShaderResourceBinding::uniformBuffer(0, stages, m_rvUBO.buffer->rhiBuffer()),
-        QRhiShaderResourceBinding::uniformBufferWithDynamicOffset(1, stages, m_commandsUBO.buffer->rhiBuffer(), m_commandsUBO.buffer->size())
     };
+
+    const size_t dToCmd = distanceToCommand(command);
+
+    // CommandUBO
+    {
+        const HRHIBuffer &commandUBO = m_commandsUBO.bufferForCommand(dToCmd);
+        bindings.push_back(
+                    QRhiShaderResourceBinding::uniformBufferWithDynamicOffset(1,
+                                                                              stages,
+                                                                              commandUBO->rhiBuffer(),
+                                                                              m_commandsUBO.alignedBlockSize));
+    }
 
     // Create additional empty UBO Buffer for UBO with binding point > 1 (since
     // we assume 0 and 1 and for Qt3D standard values)
     // Note: if a Parameter provides a UBO Buffer, its content will have been
     // copied at right offset into the matching materials UBO
-    for (const UBOBufferWithBindingAndBlockSize &ubo : m_materialsUBOs)
+    for (const MultiUBOBufferWithBindingAndBlockSize &ubo : m_materialsUBOs) {
+        const HRHIBuffer &materialUBO = ubo.bufferForCommand(dToCmd);
         bindings.push_back(
                     QRhiShaderResourceBinding::uniformBufferWithDynamicOffset(
-                        ubo.binding, stages, ubo.buffer->rhiBuffer(), ubo.buffer->size()));
+                        ubo.binding, stages, materialUBO->rhiBuffer(), ubo.alignedBlockSize));
+    }
 
     // Samplers
     for (const ShaderParameterPack::NamedResource &textureParameter : command.m_parameterPack.textures()) {
@@ -304,10 +352,11 @@ void PipelineUBOSet::uploadUBOs(SubmissionContext *ctx, RenderView *rv)
 
     // Trigger actual upload to GPU
     m_rvUBO.buffer->bind(ctx, RHIBuffer::UniformBuffer);
-    m_commandsUBO.buffer->bind(ctx, RHIBuffer::UniformBuffer);
-    for (const UBOBufferWithBindingAndBlockSize &ubo : m_materialsUBOs) {
-        // Binding triggers the upload
-        ubo.buffer->bind(ctx, RHIBuffer::UniformBuffer);
+    for (const HRHIBuffer &ubo : m_commandsUBO.buffers)
+        ubo->bind(ctx, RHIBuffer::UniformBuffer);
+    for (const MultiUBOBufferWithBindingAndBlockSize &multiUbo : m_materialsUBOs) {
+        for (const HRHIBuffer &ubo : multiUbo.buffers)
+            ubo->bind(ctx, RHIBuffer::UniformBuffer);
     }
 }
 
@@ -346,11 +395,13 @@ void printUpload(const UniformValue &value, const QShaderDescription::BlockVaria
 }
 
 inline void uploadDataToUBO(const QByteArray rawData,
-                            const PipelineUBOSet::UBOBufferWithBindingAndBlockSize *ubo,
+                            const PipelineUBOSet::MultiUBOBufferWithBindingAndBlockSize *ubo,
                             const RHIShader::UBO_Member &member,
                             size_t distanceToCommand, int arrayOffset = 0)
 {
-    ubo->buffer->update(rawData, ubo->alignedBlockSize * distanceToCommand + member.blockVariable.offset + arrayOffset);
+    const HRHIBuffer &buffer = ubo->bufferForCommand(distanceToCommand);
+    const size_t localOffset = ubo->localOffsetInBufferForCommand(distanceToCommand);
+    buffer->update(rawData, localOffset+ member.blockVariable.offset + arrayOffset);
 }
 
 QByteArray rawDataForUniformValue(const QShaderDescription::BlockVariable &blockVariable,
@@ -378,7 +429,7 @@ QByteArray rawDataForUniformValue(const QShaderDescription::BlockVariable &block
 }
 
 void uploadUniform(const PackUniformHash &uniforms,
-                   const PipelineUBOSet::UBOBufferWithBindingAndBlockSize *ubo,
+                   const PipelineUBOSet::MultiUBOBufferWithBindingAndBlockSize *ubo,
                    const RHIShader::UBO_Member &member,
                    size_t distanceToCommand, int arrayOffset = 0)
 {
@@ -404,7 +455,7 @@ void uploadUniform(const PackUniformHash &uniforms,
 } // anonymous
 
 void PipelineUBOSet::uploadShaderDataProperty(const ShaderData *shaderData,
-                              const PipelineUBOSet::UBOBufferWithBindingAndBlockSize *ubo,
+                              const PipelineUBOSet::MultiUBOBufferWithBindingAndBlockSize *ubo,
                               const RHIShader::UBO_Member &uboMemberInstance,
                               size_t distanceToCommand, int arrayOffset)
 {
@@ -455,10 +506,14 @@ void PipelineUBOSet::uploadUBOsForCommand(const RenderCommand &command,
     if (!shader)
         return;
 
-    m_commandsUBO.buffer->update(QByteArray::fromRawData(
+    {
+        const HRHIBuffer &commandUBOBuffer = m_commandsUBO.bufferForCommand(distanceToCommand);
+        const size_t localOffset = m_commandsUBO.localOffsetInBufferForCommand(distanceToCommand);
+        commandUBOBuffer->update(QByteArray::fromRawData(
                                      reinterpret_cast<const char *>(&command.m_commandUBO),
                                      sizeof(CommandUBO)),
-                                 distanceToCommand * m_commandsUBO.alignedBlockSize);
+                                 localOffset);
+    }
 
     const std::vector<RHIShader::UBO_Block> &uboBlocks = shader->uboBlocks();
     const ShaderParameterPack &parameterPack = command.m_parameterPack;
@@ -467,10 +522,10 @@ void PipelineUBOSet::uploadUBOsForCommand(const RenderCommand &command,
     // Update Buffer CPU side data based on uniforms being set
 
     auto findMaterialUBOForBlock = [this] (const RHIShader::UBO_Block &uboBlock)
-            -> PipelineUBOSet::UBOBufferWithBindingAndBlockSize* {
+            -> PipelineUBOSet::MultiUBOBufferWithBindingAndBlockSize* {
         auto it = std::find_if(m_materialsUBOs.begin(), m_materialsUBOs.end(),
-                               [&uboBlock] (const PipelineUBOSet::UBOBufferWithBindingAndBlockSize &buffer) {
-            return buffer.binding == uboBlock.block.m_binding;
+                               [&uboBlock] (const PipelineUBOSet::MultiUBOBufferWithBindingAndBlockSize &materialUBO) {
+            return materialUBO.binding == uboBlock.block.m_binding;
         });
 
         if (it == m_materialsUBOs.end())
@@ -497,7 +552,7 @@ void PipelineUBOSet::uploadUBOsForCommand(const RenderCommand &command,
             continue;
 
         // Update UBO with uniform value
-        const PipelineUBOSet::UBOBufferWithBindingAndBlockSize *ubo = findMaterialUBOForBlock(uboBlock);
+        const PipelineUBOSet::MultiUBOBufferWithBindingAndBlockSize *ubo = findMaterialUBOForBlock(uboBlock);
         if (ubo == nullptr)
             continue;
 
@@ -543,7 +598,7 @@ void PipelineUBOSet::uploadUBOsForCommand(const RenderCommand &command,
         if (block == nullptr)
             continue;
         // Find Material UBO for Block
-        PipelineUBOSet::UBOBufferWithBindingAndBlockSize *materialsUBO = findMaterialUBOForBlock(*block);
+        PipelineUBOSet::MultiUBOBufferWithBindingAndBlockSize *materialsUBO = findMaterialUBOForBlock(*block);
         if (materialsUBO == nullptr)
             continue;
 
@@ -552,7 +607,9 @@ void PipelineUBOSet::uploadUBOsForCommand(const RenderCommand &command,
         if (!uboBuffer)
             continue;
 
-        materialsUBO->buffer->update(uboBuffer->data(), distanceToCommand * materialsUBO->alignedBlockSize);
+        const HRHIBuffer &materialBuffer = materialsUBO->bufferForCommand(distanceToCommand);
+        const size_t localOffsetIntoBuffer = materialsUBO->localOffsetInBufferForCommand(distanceToCommand);
+        materialBuffer->update(uboBuffer->data(), localOffsetIntoBuffer);
     }
 
     // ShaderData -> convenience for filling a struct member of a UBO
@@ -568,7 +625,7 @@ void PipelineUBOSet::uploadUBOsForCommand(const RenderCommand &command,
         if (block == nullptr)
             continue;
         // Find Material UBO for Block
-        PipelineUBOSet::UBOBufferWithBindingAndBlockSize *materialsUBO = findMaterialUBOForBlock(*block);
+        PipelineUBOSet::MultiUBOBufferWithBindingAndBlockSize *materialsUBO = findMaterialUBOForBlock(*block);
         if (materialsUBO == nullptr)
             continue;
 
@@ -581,6 +638,17 @@ void PipelineUBOSet::uploadUBOsForCommand(const RenderCommand &command,
 
     // Note: There's nothing to do for SSBO as those are directly uploaded to the GPU, no extracting
     // required
+}
+
+HRHIBuffer PipelineUBOSet::MultiUBOBufferWithBindingAndBlockSize::bufferForCommand(size_t distanceToCommand) const
+{
+    const size_t uboIdx = distanceToCommand / commandsPerUBO;
+    return buffers[uboIdx];
+}
+
+size_t PipelineUBOSet::MultiUBOBufferWithBindingAndBlockSize::localOffsetInBufferForCommand(size_t distanceToCommand) const
+{
+    return (distanceToCommand % commandsPerUBO) * alignedBlockSize;
 }
 
 } // Rhi
