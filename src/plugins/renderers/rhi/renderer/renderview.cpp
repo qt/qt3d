@@ -928,6 +928,14 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const Entity **entit
                         }
                     }
 
+                    // Sort attributes by name so that same attributes added
+                    // in different order would still result in the same geometeyLayout key
+                    std::sort(command.m_attributeInfo.begin(),
+                              command.m_attributeInfo.end(),
+                              [] (const AttributeInfo &a, const AttributeInfo &b) {
+                        return a.nameId < b.nameId;
+                    });
+
                     command.m_drawIndexed = (indexAttribute != nullptr);
                     command.m_drawIndirect = (indirectAttribute != nullptr);
                     command.indexAttribute = nullptr;
