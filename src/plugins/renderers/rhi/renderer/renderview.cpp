@@ -144,22 +144,17 @@ static QRectF resolveViewport(const QRectF &fractionalViewport, const QSize &sur
 
 static Matrix4x4 getProjectionMatrix(const CameraLens *lens, bool yIsUp)
 {
-    if (lens) {
-        if (yIsUp) {
-            // OpenGL
-            return lens->projection();
-        } else {
-            // Others. Note : this could likely be optimized...
-            auto p = lens->projection();
-            Matrix4x4 rev { 0, 0, 0, 0, 0, -2 * p(1, 1), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-            p += rev;
-            return p;
-        }
-    } else {
-        qWarning() << "[Qt3D Renderer] No Camera Lens found. Add a CameraSelector to your Frame "
-                      "Graph or make sure that no entities will be rendered.";
-        return Matrix4x4();
+    Matrix4x4 m;
+    if (lens)
+        m = lens->projection();
+    if (!yIsUp) {
+        const Matrix4x4 rev { 1,  0,   0,   0,
+                              0, -1,   0,   0,
+                              0,  0, 0.5, 0.5,
+                              0,  0,   0,   1 };
+        return rev * m;
     }
+    return m;
 }
 
 /*!
