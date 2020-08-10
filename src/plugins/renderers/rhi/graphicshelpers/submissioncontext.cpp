@@ -548,7 +548,9 @@ void SubmissionContext::initialize()
     Qt3DRender::API requestedApi = Qt3DRender::API::RHI;
     const auto userRequestedApi = qgetenv("QSG_RHI_BACKEND").toLower();
     if (!userRequestedApi.isEmpty()) {
-        if (userRequestedApi == QByteArrayLiteral("opengl")) {
+        if (userRequestedApi == QByteArrayLiteral("opengl") ||
+            userRequestedApi == QByteArrayLiteral("gl") ||
+            userRequestedApi == QByteArrayLiteral("gles2")) {
             requestedApi = Qt3DRender::API::OpenGL;
         } else if (userRequestedApi == QByteArrayLiteral("vulkan")) {
             requestedApi = Qt3DRender::API::Vulkan;

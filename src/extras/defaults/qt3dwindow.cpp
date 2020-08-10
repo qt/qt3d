@@ -252,7 +252,9 @@ void setupWindowSurface(QWindow *window, Qt3DRender::API api) noexcept
     // If the user pass an API through the environment, we use that over the one passed as argument.
     const auto userRequestedApi = qgetenv("QSG_RHI_BACKEND").toLower();
     if (!userRequestedApi.isEmpty()) {
-        if (userRequestedApi == QByteArrayLiteral("opengl")) {
+        if (userRequestedApi == QByteArrayLiteral("opengl") ||
+            userRequestedApi == QByteArrayLiteral("gl") ||
+            userRequestedApi == QByteArrayLiteral("gles2")) {
             api = Qt3DRender::API::OpenGL;
         } else if (userRequestedApi == QByteArrayLiteral("vulkan")) {
             api = Qt3DRender::API::Vulkan;
