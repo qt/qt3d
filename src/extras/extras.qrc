@@ -54,7 +54,10 @@
         <file>shaders/rhi/gooch.frag</file>
         <file>shaders/rhi/distancefieldtext.vert</file>
         <file>shaders/rhi/distancefieldtext.frag</file>
-        <file>shaders/rhi/default.vert</file>
+        <file>shaders/rhi/default_pos_tex.vert</file>
+        <file>shaders/rhi/default_pos_norm.vert</file>
+        <file>shaders/rhi/default_pos_norm_tex.vert</file>
+        <file>shaders/rhi/default_pos_norm_tex_tan.vert</file>
         <file>shaders/rhi/coordinatesystems.inc</file>
         <file>shaders/rhi/defaultuniforms.inc</file>
     </qresource>

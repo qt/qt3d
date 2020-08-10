@@ -123,7 +123,7 @@ void QDiffuseMapMaterialPrivate::init()
                                                        QStringLiteral("specular"),
                                                        QStringLiteral("normal")});
 
-    m_diffuseMapRHIShader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/rhi/default.vert"))));
+    m_diffuseMapRHIShader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/rhi/default_pos_tex.vert"))));
     m_diffuseMapRHIShaderBuilder->setParent(q);
     m_diffuseMapRHIShaderBuilder->setShaderProgram(m_diffuseMapRHIShader);
     m_diffuseMapRHIShaderBuilder->setFragmentShaderGraph(QUrl(QStringLiteral("qrc:/shaders/graphs/phong.frag.json")));

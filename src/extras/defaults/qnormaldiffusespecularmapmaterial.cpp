@@ -140,7 +140,7 @@ void QNormalDiffuseSpecularMapMaterialPrivate::init()
                                                                   QStringLiteral("specularTexture"),
                                                                   QStringLiteral("normalTexture")});
 
-    m_normalDiffuseSpecularRHIShader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/rhi/default.vert"))));
+    m_normalDiffuseSpecularRHIShader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/rhi/default_pos_norm_tex_tan.vert"))));
     m_normalDiffuseSpecularRHIShaderBuilder->setParent(q);
     m_normalDiffuseSpecularRHIShaderBuilder->setShaderProgram(m_normalDiffuseSpecularRHIShader);
     m_normalDiffuseSpecularRHIShaderBuilder->setFragmentShaderGraph(QUrl(QStringLiteral("qrc:/shaders/graphs/phong.frag.json")));

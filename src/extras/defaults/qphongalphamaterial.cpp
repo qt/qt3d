@@ -120,7 +120,7 @@ void QPhongAlphaMaterialPrivate::init()
                                                        QStringLiteral("specular"),
                                                        QStringLiteral("normal")});
 
-    m_phongAlphaRHIShader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/rhi/default.vert"))));
+    m_phongAlphaRHIShader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/rhi/default_pos_norm.vert"))));
     m_phongAlphaRHIShaderBuilder->setParent(q);
     m_phongAlphaRHIShaderBuilder->setShaderProgram(m_phongAlphaRHIShader);
     m_phongAlphaRHIShaderBuilder->setFragmentShaderGraph(QUrl(QStringLiteral("qrc:/shaders/graphs/phong.frag.json")));
