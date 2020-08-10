@@ -59,6 +59,41 @@
     The Qt 3D Render aspect offers support for data-driven configuration as described
     in \l {Qt 3D Render Framegraph}.
 
+    \section1 Selecting a Rendering Backend
+
+    The Render aspect comes with two rendering backends.
+
+    \list
+    \li OpenGL backend (ES 2, ES 3.2, GL 2, GL 3, GL 3.2, GL 4.3)
+    \li RHI backend (ES 2, GL, DirectX, Vulkan, Metal)
+    \endlist
+
+    If you are targeting OpenGL exclusively and are using specific OpenGL
+    features, you might be better off using the OpenGL backend. This is the
+    OpenGL backend that Qt 3D exclusively used in the Qt 5 series.
+
+    For cases where you are not using specific OpenGL features and want to
+    target different platforms that might have deprecated OpenGL, using the RHI
+    backend is a better alternative.
+
+    To select your rendering backend, the environment variable QT3D_RENDERER is
+    to be set to either "opengl" or "rhi". Defaults to the OpenGL backend.
+
+    When using the RHI backend, you can further force the internal RHI backend
+    by setting the QSG_RHI_BACKEND to one of the following values:
+
+    \list
+    \li opengl -> RHI OpenGL backend
+    \li gl -> RHI OpenGL backend
+    \li gles2 -> RHI OpenGL backend
+    \li metal -> RHI Metal backend
+    \li vulkan -> RHI Vulkan backend
+    \li d3d11 -> RHI DirectX 11 backend
+    \endlist
+
+    If not specified, RHI will default to what it deduces to be the best backend
+    for the platform.
+
     \section1 Reference
     \list
     \li \l {Qt 3D Render C++ Classes}
@@ -89,4 +124,42 @@
    \qml \QtMinorVersion
    import Qt3D.Render 2.\1
    \endqml
+
+    \section1 Selecting a Rendering Backend
+
+    The Render aspect comes with two rendering backends.
+
+    \list
+    \li OpenGL backend (ES 2, ES 3.2, GL 2, GL 3, GL 3.2, GL 4.3)
+    \li RHI backend (ES 2, GL, DirectX, Vulkan, Metal)
+    \endlist
+
+    If you are targeting OpenGL exclusively and are using specific OpenGL
+    features, you might be better off using the OpenGL backend. This is the
+    OpenGL backend that Qt 3D exclusively used in the Qt 5 series.
+
+    For cases where you are not using specific OpenGL features and want to
+    target different platforms that might have deprecated OpenGL, using the RHI
+    backend is a better alternative.
+
+    To select your rendering backend, the environment variable QT3D_RENDERER is
+    to be set to either "opengl" or "rhi". Defaults to the OpenGL backend.
+
+    When using the RHI backend, you can further force the internal RHI backend
+    by setting the QSG_RHI_BACKEND to one of the following values:
+
+    \list
+    \li opengl -> RHI OpenGL backend
+    \li gl -> RHI OpenGL backend
+    \li gles2 -> RHI OpenGL backend
+    \li metal -> RHI Metal backend
+    \li vulkan -> RHI Vulkan backend
+    \li d3d11 -> RHI DirectX 11 backend
+    \endlist
+
+    If not specified, RHI will default to what it deduces to be the best backend
+    for the platform.
+
+    Alternatively, if using a QQuickWindow, \l [QQuickWindow::setGraphicsApi()]
+    can be used to specify the RHI internal rendering backend.
 */
