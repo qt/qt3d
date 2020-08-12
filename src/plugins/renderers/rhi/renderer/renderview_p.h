@@ -250,9 +250,6 @@ public:
 
     void updateRenderCommand(const EntityRenderCommandDataSubView &subView);
 
-    void setAttachmentPack(const AttachmentPack &pack) { m_attachmentPack = pack; }
-    const AttachmentPack &attachmentPack() const { return m_attachmentPack; }
-
     void setRenderTargetId(Qt3DCore::QNodeId renderTargetId) Q_DECL_NOTHROW { m_renderTarget = renderTargetId; }
     Qt3DCore::QNodeId renderTargetId() const Q_DECL_NOTHROW { return m_renderTarget; }
 

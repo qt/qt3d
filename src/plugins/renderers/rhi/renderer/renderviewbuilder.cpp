@@ -439,27 +439,6 @@ private:
     RebuildFlagSet m_rebuildFlags;
 };
 
-class SetClearDrawBufferIndex
-{
-public:
-    explicit SetClearDrawBufferIndex(const RenderViewInitializerJobPtr &renderViewJob)
-        : m_renderViewJob(renderViewJob)
-    {}
-
-    void operator()()
-    {
-        RenderView *rv = m_renderViewJob->renderView();
-        std::vector<ClearBufferInfo> &clearBuffersInfo = rv->specificClearColorBufferInfo();
-        const AttachmentPack &attachmentPack = rv->attachmentPack();
-        for (ClearBufferInfo &clearBufferInfo : clearBuffersInfo)
-            clearBufferInfo.drawBufferIndex = attachmentPack.getDrawBufferIndex(clearBufferInfo.attchmentPoint);
-
-    }
-
-private:
-    RenderViewInitializerJobPtr m_renderViewJob;
-};
-
 class SyncFilterEntityByLayer
 {
 public:
@@ -533,7 +512,6 @@ RenderViewBuilder::RenderViewBuilder(Render::FrameGraphNode *leafNode, int rende
     , m_filterEntityByLayerJob()
     , m_frustumCullingJob(new Render::FrustumCullingJob())
     , m_syncPreFrustumCullingJob(CreateSynchronizerJobPtr(SyncPreFrustumCulling(m_renderViewJob, m_frustumCullingJob), JobTypes::SyncFrustumCulling))
-    , m_setClearDrawBufferIndexJob(CreateSynchronizerJobPtr(SetClearDrawBufferIndex(m_renderViewJob), JobTypes::ClearBufferDrawIndex))
     , m_syncFilterEntityByLayerJob()
     , m_filterProximityJob(Render::FilterProximityDistanceJobPtr::create())
 {
@@ -596,11 +574,6 @@ SynchronizerJobPtr RenderViewBuilder::syncRenderViewPreCommandUpdateJob() const
 SynchronizerJobPtr RenderViewBuilder::syncRenderViewPostCommandUpdateJob() const
 {
     return m_syncRenderViewPostCommandUpdateJob;
-}
-
-SynchronizerJobPtr RenderViewBuilder::setClearDrawBufferIndexJob() const
-{
-    return m_setClearDrawBufferIndexJob;
 }
 
 SynchronizerJobPtr RenderViewBuilder::syncFilterEntityByLayerJob() const
@@ -737,8 +710,6 @@ std::vector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
     m_frustumCullingJob->addDependency(expandBVJob);
     m_frustumCullingJob->addDependency(m_syncPreFrustumCullingJob);
 
-    m_setClearDrawBufferIndexJob->addDependency(m_syncRenderViewPostInitializationJob);
-
     m_syncRenderViewPostInitializationJob->addDependency(m_renderViewJob);
 
     m_filterProximityJob->addDependency(expandBVJob);
@@ -761,7 +732,6 @@ std::vector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
     }
 
     m_renderer->frameCleanupJob()->addDependency(m_syncRenderViewPostCommandUpdateJob);
-    m_renderer->frameCleanupJob()->addDependency(m_setClearDrawBufferIndexJob);
 
     // Add jobs
     jobs.push_back(m_renderViewJob); // Step 1
@@ -802,7 +772,6 @@ std::vector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
     }
     jobs.push_back(m_syncPreFrustumCullingJob); // Step 3
     jobs.push_back(m_filterProximityJob); // Step 3
-    jobs.push_back(m_setClearDrawBufferIndexJob); // Step 3
 
     if (materialCacheNeedsRebuild) {
         for (const auto &materialGatherer : m_materialGathererJobs)  {

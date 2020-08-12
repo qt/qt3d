@@ -255,16 +255,12 @@ public:
     void cleanupTexture(Qt3DCore::QNodeId cleanedUpTextureId);
     void cleanupShader(const Shader *shader);
     void downloadGLBuffers();
-    void blitFramebuffer(Qt3DCore::QNodeId inputRenderTargetId,
-                         Qt3DCore::QNodeId outputRenderTargetId, QRect inputRect, QRect outputRect,
-                         GLuint defaultFramebuffer);
 
     struct RHIPassInfo
     {
         std::vector<RenderView *> rvs;
         QSurface *surface = nullptr;
         Qt3DCore::QNodeId renderTargetId;
-        AttachmentPack attachmentPack;
     };
 
     std::vector<RHIPassInfo> prepareCommandsSubmission(const std::vector<RenderView *> &renderViews);
@@ -440,7 +436,7 @@ private:
 
     void cleanupRenderTarget(const Qt3DCore::QNodeId &renderTarget);
 
-    void createRenderTarget(RenderView* rv, RHIRenderTarget *);
+    void createRenderTarget(RenderTarget *);
     bool setupRenderTarget(RenderView* rv, RHIGraphicsPipeline* graphicsPipeline, QRhiSwapChain* swapchain);
 
     bool uploadBuffersForCommand(QRhiCommandBuffer *cb, const RenderView *rv,

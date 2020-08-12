@@ -221,19 +221,13 @@ void RenderView::setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const
                 const RenderTargetSelector *targetSelector =
                         static_cast<const RenderTargetSelector *>(node);
                 Qt3DCore::QNodeId renderTargetUid = targetSelector->renderTargetUuid();
-                HTarget renderTargetHandle =
-                        manager->renderTargetManager()->lookupHandle(renderTargetUid);
 
-                // Add renderTarget Handle and build renderCommand AttachmentPack
+                // Note: we ignore the render target outputs the RenderTargetSelector
+                // might specify as we can't handle that with RHI
+
+                // Add renderTarget Handle
                 if (!rv->renderTargetId()) {
                     rv->setRenderTargetId(renderTargetUid);
-
-                    RenderTarget *renderTarget =
-                            manager->renderTargetManager()->data(renderTargetHandle);
-                    if (renderTarget)
-                        rv->setAttachmentPack(AttachmentPack(renderTarget,
-                                                             manager->attachmentManager(),
-                                                             targetSelector->outputs()));
                 }
                 break;
             }

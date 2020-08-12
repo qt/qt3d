@@ -85,8 +85,6 @@ public:
 class Q_AUTOTEST_EXPORT RHIRenderTargetManager
         : public Qt3DCore::QResourceManager<RHIRenderTarget, Qt3DCore::QNodeId, Qt3DCore::NonLockingPolicy>
 {
-public:
-    QHash<RHIRenderTarget *, Qt3DCore::QNodeId> nodeIdForRHIRenderTarget;
 };
 
 class Q_AUTOTEST_EXPORT RHIShaderManager : public APIShaderManager<RHIShader>

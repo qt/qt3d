@@ -51,23 +51,27 @@ private Q_SLOTS:
         QCOMPARE(backendRenderTarget.isEnabled(), false);
         QVERIFY(backendRenderTarget.peerId().isNull());
         QVERIFY(backendRenderTarget.renderOutputs().empty());
+        QCOMPARE(backendRenderTarget.isDirty(), false);
     }
 
     void checkCleanupState()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::Render::RenderTarget backendRenderTarget;
+        Qt3DRender::QRenderTarget renderTarget;
+        Qt3DRender::QRenderTargetOutput renderTargetOuput;
+        renderTarget.addOutput(&renderTargetOuput);
 
         // WHEN
-        backendRenderTarget.setEnabled(true);
-        backendRenderTarget.appendRenderOutput(Qt3DCore::QNodeId::createId());
-        backendRenderTarget.appendRenderOutput(Qt3DCore::QNodeId::createId());
-
+        backendRenderTarget.setRenderer(&renderer);
+        simulateInitializationSync(&renderTarget, &backendRenderTarget);
         backendRenderTarget.cleanup();
 
         // THEN
         QCOMPARE(backendRenderTarget.isEnabled(), false);
         QCOMPARE(backendRenderTarget.renderOutputs().size(), 0);
+        QCOMPARE(backendRenderTarget.isDirty(), false);
     }
 
     void checkInitializeFromPeer()
@@ -87,6 +91,9 @@ private Q_SLOTS:
             QCOMPARE(backendRenderTarget.isEnabled(), true);
             QCOMPARE(backendRenderTarget.peerId(), renderTarget.id());
             QCOMPARE(backendRenderTarget.renderOutputs(), (QList<Qt3DCore::QNodeId> { renderTargetOuput.id() }));
+            QCOMPARE(backendRenderTarget.isDirty(), true);
+
+            backendRenderTarget.unsetDirty();
         }
         {
             // WHEN
@@ -98,71 +105,94 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(backendRenderTarget.peerId(), renderTarget.id());
             QCOMPARE(backendRenderTarget.isEnabled(), false);
+            QCOMPARE(backendRenderTarget.isDirty(), true);
+
+            backendRenderTarget.unsetDirty();
         }
     }
 
     void checkAddNoDuplicateOutput()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::Render::RenderTarget backendRenderTarget;
+        Qt3DRender::QRenderTarget renderTarget;
+        Qt3DRender::QRenderTargetOutput renderTargetOuput;
 
         // THEN
+        backendRenderTarget.setRenderer(&renderer);
+        simulateInitializationSync(&renderTarget, &backendRenderTarget);
         QCOMPARE(backendRenderTarget.renderOutputs().size(), 0);
+        backendRenderTarget.unsetDirty();
 
         // WHEN
-        Qt3DCore::QNodeId renderTargetOutputId = Qt3DCore::QNodeId::createId();
-        backendRenderTarget.appendRenderOutput(renderTargetOutputId);
+        renderTarget.addOutput(&renderTargetOuput);
+        backendRenderTarget.syncFromFrontEnd(&renderTarget, false);
 
         // THEN
         QCOMPARE(backendRenderTarget.renderOutputs().size(), 1);
+        QCOMPARE(backendRenderTarget.isDirty(), true);
+        backendRenderTarget.unsetDirty();
 
         // WHEN
-        backendRenderTarget.appendRenderOutput(renderTargetOutputId);
+        renderTarget.addOutput(&renderTargetOuput);
+        backendRenderTarget.syncFromFrontEnd(&renderTarget, false);
 
         // THEN
         QCOMPARE(backendRenderTarget.renderOutputs().size(), 1);
+        QCOMPARE(backendRenderTarget.isDirty(), false);
     }
 
     void checkAddRemoveOutput()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::Render::RenderTarget backendRenderTarget;
+        Qt3DRender::QRenderTarget renderTarget;
+        Qt3DRender::QRenderTargetOutput renderTargetOuput;
 
         // THEN
+        backendRenderTarget.setRenderer(&renderer);
+        simulateInitializationSync(&renderTarget, &backendRenderTarget);
         QCOMPARE(backendRenderTarget.renderOutputs().size(), 0);
+        backendRenderTarget.unsetDirty();
 
         // WHEN
-        Qt3DCore::QNodeId renderTargetOutputId1 = Qt3DCore::QNodeId::createId();
-        Qt3DCore::QNodeId renderTargetOutputId2 = Qt3DCore::QNodeId::createId();
-        backendRenderTarget.appendRenderOutput(renderTargetOutputId1);
-        backendRenderTarget.appendRenderOutput(renderTargetOutputId2);
+        Qt3DRender::QRenderTargetOutput renderTargetOuput1;
+        Qt3DRender::QRenderTargetOutput renderTargetOuput2;
+        renderTarget.addOutput(&renderTargetOuput1);
+        renderTarget.addOutput(&renderTargetOuput2);
 
         // THEN
+        backendRenderTarget.syncFromFrontEnd(&renderTarget, false);
         QCOMPARE(backendRenderTarget.renderOutputs().size(), 2);
+        QCOMPARE(backendRenderTarget.isDirty(), true);
+        backendRenderTarget.unsetDirty();
 
         // WHEN
-        backendRenderTarget.removeRenderOutput(Qt3DCore::QNodeId());
-
-        // THEN
-        QCOMPARE(backendRenderTarget.renderOutputs().size(), 2);
-
-        // WHEN
-        backendRenderTarget.removeRenderOutput(renderTargetOutputId1);
+        renderTarget.removeOutput(&renderTargetOuput1);
+        backendRenderTarget.syncFromFrontEnd(&renderTarget, false);
 
         // THEN
         QCOMPARE(backendRenderTarget.renderOutputs().size(), 1);
+        QCOMPARE(backendRenderTarget.isDirty(), true);
+        backendRenderTarget.unsetDirty();
 
         // WHEN
-        backendRenderTarget.removeRenderOutput(renderTargetOutputId1);
+        renderTarget.removeOutput(&renderTargetOuput1);
+        backendRenderTarget.syncFromFrontEnd(&renderTarget, false);
 
         // THEN
         QCOMPARE(backendRenderTarget.renderOutputs().size(), 1);
+        QCOMPARE(backendRenderTarget.isDirty(), false);
 
         // WHEN
-        backendRenderTarget.removeRenderOutput(renderTargetOutputId2);
+        renderTarget.removeOutput(&renderTargetOuput2);
+        backendRenderTarget.syncFromFrontEnd(&renderTarget, false);
 
         // THEN
         QCOMPARE(backendRenderTarget.renderOutputs().size(), 0);
+        QCOMPARE(backendRenderTarget.isDirty(), true);
     }
 
     void checkSceneChangeEvents()
@@ -173,6 +203,7 @@ private Q_SLOTS:
         TestRenderer renderer;
         backendRenderTarget.setRenderer(&renderer);
         simulateInitializationSync(&renderTarget, &backendRenderTarget);
+        backendRenderTarget.unsetDirty();
 
         {
             // WHEN
@@ -193,7 +224,9 @@ private Q_SLOTS:
             QCOMPARE(backendRenderTarget.renderOutputs().size(), 1);
             QCOMPARE(backendRenderTarget.renderOutputs().first(), targetOutput.id());
             QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::AllDirty);
+            QCOMPARE(backendRenderTarget.isDirty(), true);
             renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+            backendRenderTarget.unsetDirty();
 
             // WHEN
             renderTarget.removeOutput(&targetOutput);
@@ -202,7 +235,9 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(backendRenderTarget.renderOutputs().size(), 0);
             QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::AllDirty);
+            QCOMPARE(backendRenderTarget.isDirty(), true);
             renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+            backendRenderTarget.unsetDirty();
         }
     }
 

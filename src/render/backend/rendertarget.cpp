@@ -53,6 +53,7 @@ namespace Render {
 
 RenderTarget::RenderTarget()
     : BackendNode()
+    , m_dirty(false)
 {
 }
 
@@ -69,6 +70,7 @@ void RenderTarget::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstT
 
     if (m_renderOutputs != outputIds) {
         m_renderOutputs = outputIds;
+        m_dirty = true;
         markDirty(AbstractRenderer::AllDirty);
     }
 }
@@ -76,23 +78,23 @@ void RenderTarget::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstT
 void RenderTarget::cleanup()
 {
     m_renderOutputs.clear();
+    m_dirty = false;
     QBackendNode::setEnabled(false);
-}
-
-void RenderTarget::appendRenderOutput(QNodeId outputId)
-{
-    if (!m_renderOutputs.contains(outputId))
-        m_renderOutputs.append(outputId);
-}
-
-void RenderTarget::removeRenderOutput(QNodeId outputId)
-{
-    m_renderOutputs.removeOne(outputId);
 }
 
 QList<Qt3DCore::QNodeId> RenderTarget::renderOutputs() const
 {
     return m_renderOutputs;
+}
+
+bool RenderTarget::isDirty() const
+{
+    return m_dirty;
+}
+
+void RenderTarget::unsetDirty()
+{
+    m_dirty = false;
 }
 
 RenderTargetFunctor::RenderTargetFunctor(AbstractRenderer *renderer, RenderTargetManager *manager)

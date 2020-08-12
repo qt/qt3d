@@ -97,7 +97,6 @@ public:
     SynchronizerJobPtr syncRenderViewPreCommandBuildingJob() const;
     SynchronizerJobPtr syncRenderViewPreCommandUpdateJob() const;
     SynchronizerJobPtr syncRenderViewPostCommandUpdateJob() const;
-    SynchronizerJobPtr setClearDrawBufferIndexJob() const;
     SynchronizerJobPtr syncFilterEntityByLayerJob() const;
     FilterProximityDistanceJobPtr filterProximityJob() const;
     SynchronizerJobPtr syncMaterialGathererJob() const;
@@ -142,7 +141,6 @@ private:
     SynchronizerJobPtr m_syncRenderViewPreCommandBuildingJob;
     SynchronizerJobPtr m_syncRenderViewPreCommandUpdateJob;
     SynchronizerJobPtr m_syncRenderViewPostCommandUpdateJob;
-    SynchronizerJobPtr m_setClearDrawBufferIndexJob;
     SynchronizerJobPtr m_syncFilterEntityByLayerJob;
     SynchronizerJobPtr m_syncMaterialGathererJob;
     FilterProximityDistanceJobPtr m_filterProximityJob;

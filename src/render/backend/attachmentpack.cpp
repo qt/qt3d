@@ -62,6 +62,14 @@ AttachmentPack::AttachmentPack(const RenderTarget *target,
             m_attachments.push_back(*output->attachment());
     }
 
+    // Sort by attachment point
+    std::sort(m_attachments.begin(),
+              m_attachments.end(),
+              [] (const Attachment &a, const Attachment &b) {
+            return a.m_point < b.m_point;
+    });
+
+
     // Create actual DrawBuffers list that is used for glDrawBuffers
 
     // If nothing is specified, use all the attachments as draw buffers

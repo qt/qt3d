@@ -1113,19 +1113,29 @@ void Renderer::buildComputePipelines(RHIComputePipeline *computePipeline,
         return onFailure();
 }
 
-void Renderer::createRenderTarget(RenderView *rv, RHIRenderTarget *target)
+void Renderer::createRenderTarget(RenderTarget *target)
 {
+    const Qt3DCore::QNodeId &renderTargetId = target->peerId();
+    RHIRenderTargetManager *rhiRenderTargetManager = m_RHIResourceManagers->rhiRenderTargetManager();
+
+    Q_ASSERT(!m_RHIResourceManagers->rhiRenderTargetManager()->contains(renderTargetId));
+    RHIRenderTarget *rhiTarget = rhiRenderTargetManager->getOrCreateResource(renderTargetId);
+
     // Used in case of failure
     QVarLengthArray<QRhiResource*> resourcesToClean;
     auto cleanAllocatedResources = [&] {
-        for (auto res : resourcesToClean)
-        {
-            res->destroy(); delete res;
+        for (auto res : resourcesToClean) {
+            res->destroy();
+            delete res;
         }
     };
 
-    auto &texman = *rhiResourceManagers()->rhiTextureManager();
-    auto &pack = rv->attachmentPack();
+    RHITextureManager *texman = rhiResourceManagers()->rhiTextureManager();
+    // TO DO: We use all render targets and ignore the fact that
+    // QRenderTargetSelector can specify a subset of outputs
+    // -> We should propably remove that from the frontend API
+    // as it's hard to handle for us and very unlikely anyone uses that
+    const AttachmentPack pack = AttachmentPack(target, m_nodesManager->attachmentManager());
     QRhiTextureRenderTargetDescription desc;
 
     QSize targetSize{};
@@ -1135,51 +1145,46 @@ void Renderer::createRenderTarget(RenderView *rv, RHIRenderTarget *target)
     bool hasDepthTexture = false;
 
     // Look up attachments to populate the RT description
-    for (const Attachment &attachment : pack.attachments())
-    {
-        RHITexture *tex = texman.lookupResource(attachment.m_textureUuid);
-        if (tex && tex->getRhiTexture())
-        {
+    // Attachments are sorted by attachment point (Color0 is first)
+    for (const Attachment &attachment : pack.attachments()) {
+        RHITexture *tex = texman->lookupResource(attachment.m_textureUuid);
+        if (tex && tex->getRhiTexture()) {
+
             auto rhiTex = tex->getRhiTexture();
             if (!rhiTex->flags().testFlag(QRhiTexture::RenderTarget)) {
                 rhiTex->setFlags(rhiTex->flags() | QRhiTexture::RenderTarget);
                 rhiTex->create();
             }
-            switch (rhiTex->format())
-            {
+            switch (rhiTex->format()) {
             case QRhiTexture::Format::D16:
             case QRhiTexture::Format::D24:
             case QRhiTexture::Format::D24S8:
-            case QRhiTexture::Format::D32F:
-            {
+            case QRhiTexture::Format::D32F: {
                 desc.setDepthTexture(rhiTex);
                 targetSize = tex->size();
                 hasDepthTexture = true;
                 break;
             }
-            default:
-            {
+            default: {
                 QRhiColorAttachment rhiAtt{rhiTex};
                 // TODO handle cubemap face
+                targetSize = tex->size();
+                targetSamples = tex->properties().samples;
+
                 rhiAtt.setLayer(attachment.m_layer);
                 rhiAtt.setLevel(attachment.m_mipLevel);
                 rhiAttachments.push_back(rhiAtt);
 
-                targetSize = tex->size();
-                targetSamples = tex->properties().samples;
                 break;
             }
             }
-        }
-        else
-        {
+        } else {
             cleanAllocatedResources();
             return;
         }
     }
 
-    if (targetSize.width() <= 0 || targetSize.height() <= 0)
-    {
+    if (targetSize.width() <= 0 || targetSize.height() <= 0) {
         cleanAllocatedResources();
         return;
     }
@@ -1188,8 +1193,7 @@ void Renderer::createRenderTarget(RenderView *rv, RHIRenderTarget *target)
 
     // Potentially create a depth & stencil renderbuffer
     QRhiRenderBuffer *ds{};
-    if (!hasDepthTexture)
-    {
+    if (!hasDepthTexture) {
       ds = m_submissionContext->rhi()->newRenderBuffer(QRhiRenderBuffer::DepthStencil, targetSize, targetSamples);
       resourcesToClean << ds;
 
@@ -1211,12 +1215,13 @@ void Renderer::createRenderTarget(RenderView *rv, RHIRenderTarget *target)
 
     if (!rt->create()) {
         cleanAllocatedResources();
+        rhiRenderTargetManager->releaseResource(renderTargetId);
         return;
     }
 
-    target->renderTarget = rt;
-    target->renderPassDescriptor = rp;
-    target->depthStencilBuffer = ds;
+    rhiTarget->renderTarget = rt;
+    rhiTarget->renderPassDescriptor = rp;
+    rhiTarget->depthStencilBuffer = ds;
 }
 
 bool Renderer::setupRenderTarget(RenderView *rv,
@@ -1231,26 +1236,10 @@ bool Renderer::setupRenderTarget(RenderView *rv,
     auto *renderTarget = renderTargetManager.lookupResource(rv->renderTargetId());
     if (renderTarget) {
         // Render to texture
-        RHIRenderTarget *rhiTarget{};
-        {
-            const auto &renderTargetId = renderTarget->peerId();
-            auto rhiRenderTargetManager = m_RHIResourceManagers->rhiRenderTargetManager();
-            rhiTarget = rhiRenderTargetManager->lookupResource(renderTargetId);
-
-            // No RHIRenderTarget associated yet -> create it
-            if (rhiTarget == nullptr) {
-                rhiTarget = rhiRenderTargetManager->getOrCreateResource(renderTargetId);
-
-                createRenderTarget(rv, rhiTarget);
-
-                // In case of error during creation renderTarget won't be set.
-                if (!rhiTarget->renderTarget) {
-                    rhiRenderTargetManager->releaseResource(renderTargetId);
-                    return false;
-                }
-                rhiRenderTargetManager->nodeIdForRHIRenderTarget.insert(rhiTarget, renderTargetId);
-            }
-        }
+        const Qt3DCore::QNodeId &renderTargetId = renderTarget->peerId();
+        RHIRenderTargetManager *rhiRenderTargetManager = m_RHIResourceManagers->rhiRenderTargetManager();
+        RHIRenderTarget *rhiTarget = rhiRenderTargetManager->lookupResource(renderTargetId);
+        Q_ASSERT(rhiTarget);
         rhiPipeline->setRenderPassDescriptor(rhiTarget->renderPassDescriptor);
         rhiPipeline->setSampleCount(rhiTarget->renderTarget->sampleCount());
         return true;
@@ -1268,6 +1257,7 @@ bool Renderer::setupRenderTarget(RenderView *rv,
         return true;
     }
 }
+
 // When this function is called, we must not be processing the commands for frame n+1
 std::vector<Renderer::RHIPassInfo>
 Renderer::prepareCommandsSubmission(const std::vector<RenderView *> &renderViews)
@@ -1324,13 +1314,17 @@ Renderer::prepareCommandsSubmission(const std::vector<RenderView *> &renderViews
         bucket.rvs = std::move(sameRenderTargetRVs);
         bucket.surface = refRV->surface();
         bucket.renderTargetId = refRV->renderTargetId();
-        bucket.attachmentPack = refRV->attachmentPack();
         rhiPassesInfo.push_back(bucket);
     }
 
     // Assign a Graphics Pipeline to each RenderCommand
     for (size_t i = 0; i < renderViewCount; ++i) {
         RenderView *rv = renderViews[i];
+
+        // Handle BlitFrameBufferCase
+        if (rv->hasBlitFramebufferInfo())
+            qWarning(Backend) << "The RHI backend doesn't support Blit operations. Instead, we recommend drawing a full screen quad with a custom shader and resolving manually.";
+
         rv->forEachCommand([&] (RenderCommand &command) {
             // Update/Create GraphicsPipelines
             if (command.m_type == RenderCommand::Draw) {
@@ -1656,6 +1650,7 @@ bool Renderer::prepareGeometryInputBindings(const Geometry *geometry, const RHIS
             case QAttribute::Double:
                 return 8;
             }
+            return 0;
         };
 
         uint byteStride = attrib->byteStride();
@@ -1844,26 +1839,41 @@ void Renderer::updateResources()
         const std::vector<HTarget> &activeHandles = renderTargetManager->activeHandles();
         for (const HTarget &hTarget : activeHandles) {
             const Qt3DCore::QNodeId renderTargetId = hTarget->peerId();
-            const Qt3DCore::QNodeIdVector &attachmentIds = hTarget->renderOutputs();
-            for (const Qt3DCore::QNodeId &attachmentId : attachmentIds) {
-                RenderTargetOutput *output = attachmentManager->lookupResource(attachmentId);
+            bool isDirty = hTarget->isDirty() || !rhiRenderTargetManager->contains(renderTargetId);
 
-                auto it = std::find_if(m_updatedTextureProperties.begin(),
-                                       m_updatedTextureProperties.end(),
-                                       [&output] (const QPair<Texture::TextureUpdateInfo, Qt3DCore::QNodeIdVector> &updateData) {
-                    const Qt3DCore::QNodeIdVector &referencedTextureIds = updateData.second;
-                    return referencedTextureIds.contains(output->textureUuid());
-                });
-                // Attachment references a texture which was update
+            // Check dirtiness of attachments if RenderTarget is not dirty
+            if (!isDirty) {
+                const Qt3DCore::QNodeIdVector &attachmentIds = hTarget->renderOutputs();
+                for (const Qt3DCore::QNodeId &attachmentId : attachmentIds) {
+                    RenderTargetOutput *output = attachmentManager->lookupResource(attachmentId);
+
+                    auto it = std::find_if(m_updatedTextureProperties.begin(),
+                                           m_updatedTextureProperties.end(),
+                                           [&output] (const QPair<Texture::TextureUpdateInfo, Qt3DCore::QNodeIdVector> &updateData) {
+                        const Qt3DCore::QNodeIdVector &referencedTextureIds = updateData.second;
+                        return referencedTextureIds.contains(output->textureUuid());
+                    });
+                    // Attachment references a texture which was updated
+                    isDirty = (it != m_updatedTextureProperties.end());
+                }
+            }
+
+            if (isDirty) {
+                hTarget->unsetDirty();
                 // We need to destroy the render target and the pipelines associated with it
                 // so that they can be recreated
-                if (it != m_updatedTextureProperties.end()) {
-                    graphicsPipelineManager->releasePipelinesReferencingRenderTarget(renderTargetId);
-                    rhiRenderTargetManager->releaseResource(renderTargetId);
-                }
+                // If the RT was never created, the 2 lines below are noop
+                graphicsPipelineManager->releasePipelinesReferencingRenderTarget(renderTargetId);
+                rhiRenderTargetManager->releaseResource(renderTargetId);
+
+                // Create RenderTarget
+                createRenderTarget(hTarget.data());
             }
         }
     }
+
+
+
 
     // Record list of buffer that might need uploading
     lookForDownloadableBuffers();

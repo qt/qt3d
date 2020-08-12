@@ -76,10 +76,14 @@ public:
 
     QList<Qt3DCore::QNodeId> renderOutputs() const;
 
+    bool isDirty() const;
+    void unsetDirty();
+
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
 private:
     QList<Qt3DCore::QNodeId> m_renderOutputs;
+    bool m_dirty;
 };
 
 class Q_AUTOTEST_EXPORT RenderTargetFunctor : public Qt3DCore::QBackendNodeMapper
