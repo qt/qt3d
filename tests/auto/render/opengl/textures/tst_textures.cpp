@@ -150,7 +150,7 @@ public:
         Qt3DRender::QAbstractTextureImage::notifyDataGeneratorChanged();
     }
 
-    Qt3DRender::QTextureImageDataGeneratorPtr dataGenerator() const
+    Qt3DRender::QTextureImageDataGeneratorPtr dataGenerator() const override
     {
         return Qt3DRender::QTextureImageDataGeneratorPtr(new TestImageDataGenerator(m_genId));
     }
@@ -166,7 +166,7 @@ public:
     {
     }
 
-    Qt3DRender::QTextureImageDataGeneratorPtr dataGenerator() const
+    Qt3DRender::QTextureImageDataGeneratorPtr dataGenerator() const override
     {
         return {};
     }

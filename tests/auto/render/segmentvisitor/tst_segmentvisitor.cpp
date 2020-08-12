@@ -49,7 +49,7 @@ public:
 
     }
 
-    virtual void visit(uint andx, const Vector3D &a, uint bndx, const Vector3D &b)
+    void visit(uint andx, const Vector3D &a, uint bndx, const Vector3D &b) override
     {
         m_segments.push_back(TestSegment(andx, a, bndx, b));
     }

@@ -107,8 +107,8 @@ public:
         QRenderAspect::onUnregistered();
     }
 
-    void onRegistered() { Qt3DRender::QRenderAspect::onRegistered(); }
-    void onUnregistered() { Qt3DRender::QRenderAspect::onUnregistered(); }
+    void onRegistered() override { Qt3DRender::QRenderAspect::onRegistered(); }
+    void onUnregistered() override { Qt3DRender::QRenderAspect::onUnregistered(); }
 
     Qt3DRender::Render::NodeManagers *nodeManagers() const { return d_func()->m_renderer->nodeManagers(); }
     Qt3DRender::Render::FrameGraphNode *frameGraphRoot() const { return d_func()->m_renderer->frameGraphRoot(); }

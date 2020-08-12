@@ -49,7 +49,7 @@ public:
 
     }
 
-    virtual void visit(uint andx, const Vector3D &a, uint bndx, const Vector3D &b, uint cndx, const Vector3D &c)
+    void visit(uint andx, const Vector3D &a, uint bndx, const Vector3D &b, uint cndx, const Vector3D &c) override
     {
         m_triangles.push_back(TestTriangle(andx, a, bndx, b, cndx, c));
     }

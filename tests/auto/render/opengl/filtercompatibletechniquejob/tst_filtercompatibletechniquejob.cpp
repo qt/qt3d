@@ -123,8 +123,8 @@ public:
         return static_cast<Render::OpenGL::Renderer *>(d_func()->m_renderer);
     }
 
-    void onRegistered() { QRenderAspect::onRegistered(); }
-    void onUnregistered() { QRenderAspect::onUnregistered(); }
+    void onRegistered() override { QRenderAspect::onRegistered(); }
+    void onUnregistered() override { QRenderAspect::onUnregistered(); }
 
 private:
     QScopedPointer<Qt3DCore::QAspectJobManager> m_jobManager;

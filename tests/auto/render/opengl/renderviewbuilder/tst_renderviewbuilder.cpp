@@ -106,8 +106,8 @@ public:
         return job;
     }
 
-    void onRegistered() { QRenderAspect::onRegistered(); }
-    void onUnregistered() { QRenderAspect::onUnregistered(); }
+    void onRegistered() override { QRenderAspect::onRegistered(); }
+    void onUnregistered() override { QRenderAspect::onUnregistered(); }
 
 private:
     QScopedPointer<Qt3DCore::QAspectJobManager> m_jobManager;
