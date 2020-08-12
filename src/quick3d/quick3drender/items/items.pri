@@ -5,7 +5,6 @@ HEADERS += \
     $$PWD/quick3dmaterial_p.h \
     $$PWD/quick3drenderpass_p.h \
     $$PWD/quick3drenderpassfilter_p.h \
-    $$PWD/quick3drendertargetselector_p.h \
     $$PWD/quick3dscene_p.h \
     $$PWD/quick3dshaderdata_p.h \
     $$PWD/quick3dshaderdataarray_p.h \
@@ -37,7 +36,6 @@ SOURCES += \
     $$PWD/quick3dshaderdata.cpp \
     $$PWD/quick3dshaderdataarray.cpp \
     $$PWD/quick3dstateset.cpp \
-    $$PWD/quick3drendertargetselector.cpp \
     $$PWD/quick3drendertargetoutput.cpp \
     $$PWD/quick3dmemorybarrier.cpp \
     $$PWD/quick3draycaster.cpp \

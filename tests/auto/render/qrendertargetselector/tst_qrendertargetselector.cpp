@@ -47,7 +47,6 @@ private Q_SLOTS:
         QScopedPointer<Qt3DRender::QRenderTargetSelector> defaultTargetSelector(new Qt3DRender::QRenderTargetSelector);
 
         QVERIFY(defaultTargetSelector->target() == nullptr);
-        QCOMPARE(defaultTargetSelector->outputs().count(), 0);
     }
 
     void checkPropertyUpdates()
@@ -77,35 +76,6 @@ private Q_SLOTS:
 
         // WHEN
         renderTargetSelector->setTarget(nullptr);
-        QCoreApplication::processEvents();
-
-        // THEN
-        QCOMPARE(arbiter.dirtyNodes().size(), 1);
-        QCOMPARE(arbiter.dirtyNodes().front(), renderTargetSelector.data());
-
-        arbiter.clear();
-
-        // WHEN
-        QList<Qt3DRender::QRenderTargetOutput::AttachmentPoint> outputs;
-        outputs << Qt3DRender::QRenderTargetOutput::Color0 << Qt3DRender::QRenderTargetOutput::Depth;
-        renderTargetSelector->setOutputs(outputs);
-        QCoreApplication::processEvents();
-
-        // THEN
-        QCOMPARE(arbiter.dirtyNodes().size(), 1);
-        QCOMPARE(arbiter.dirtyNodes().front(), renderTargetSelector.data());
-
-        arbiter.clear();
-
-        // WHEN
-        renderTargetSelector->setOutputs(outputs);
-        QCoreApplication::processEvents();
-
-        // THEN
-        QCOMPARE(arbiter.dirtyNodes().size(), 0);
-
-        // WHEN
-        renderTargetSelector->setOutputs(QList<Qt3DRender::QRenderTargetOutput::AttachmentPoint>());
         QCoreApplication::processEvents();
 
         // THEN

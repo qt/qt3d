@@ -17,7 +17,6 @@ qt_add_module(3DQuickRender
         items/quick3drenderpass.cpp items/quick3drenderpass_p.h
         items/quick3drenderpassfilter.cpp items/quick3drenderpassfilter_p.h
         items/quick3drendertargetoutput.cpp items/quick3drendertargetoutput_p.h
-        items/quick3drendertargetselector.cpp items/quick3drendertargetselector_p.h
         items/quick3dscene.cpp items/quick3dscene_p.h
         items/quick3dscreenraycaster.cpp items/quick3dscreenraycaster_p.h
         items/quick3dscreenraycaster_p_p.h

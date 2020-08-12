@@ -131,7 +131,6 @@
 #include <Qt3DQuickRender/private/quick3drenderpass_p.h>
 #include <Qt3DQuickRender/private/quick3drenderpassfilter_p.h>
 #include <Qt3DQuickRender/private/quick3drendertargetoutput_p.h>
-#include <Qt3DQuickRender/private/quick3drendertargetselector_p.h>
 #include <Qt3DQuickRender/private/quick3dscene_p.h>
 #include <Qt3DQuickRender/private/quick3dshaderdata_p.h>
 #include <Qt3DQuickRender/private/quick3dshaderdataarray_p.h>
@@ -257,7 +256,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QTechniqueFilter, Qt3DRender::Render::Quick::Quick3DTechniqueFilter>("QTechniqueFilter", "Qt3D.Render/TechniqueFilter", uri, 2, 0, "TechniqueFilter");
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QViewport, Qt3DRender::Render::Quick::Quick3DViewport>("QViewport", "Qt3D.Render/Viewport", uri, 2, 0, "Viewport");
     qmlRegisterType<Qt3DRender::QViewport, 9>(uri, 2, 9, "Viewport");
-    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QRenderTargetSelector, Qt3DRender::Render::Quick::Quick3DRenderTargetSelector>("QRenderTargetSelector", "Qt3D.Render/RenderTargetSelector", uri, 2, 0, "RenderTargetSelector");
+    qmlRegisterType<Qt3DRender::QRenderTargetSelector>(uri, 2, 0, "RenderTargetSelector");
     qmlRegisterType<Qt3DRender::QClearBuffers>(uri, 2, 0, "ClearBuffers");
     qmlRegisterType<Qt3DRender::QFrameGraphNode>(uri, 2, 0, "FrameGraphNode");
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QRenderStateSet, Qt3DRender::Render::Quick::Quick3DStateSet>("QRenderStateSet", "Qt3D.Render/RenderStateSet", uri, 2, 0, "RenderStateSet");

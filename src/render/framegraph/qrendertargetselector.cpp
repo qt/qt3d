@@ -56,10 +56,7 @@ namespace Qt3DRender {
     A Qt3DRender::QRenderTargetSelector is used to select active Qt3DRender::QRenderTarget
     for the FrameGraph. When QRenderTargetSelector is present in the FrameGraph,
     the rendering is directed into QTexture objects or draw buffers instead of the surface
-    specified in the Qt3DRender::QRenderSurfaceSelector. A render buffer is automatically
-    generated for an attachment point if drawBuffers contain attachment point that any
-    output in the QRenderTarget do not specify. If the drawBuffers is empty,
-    the renderer will default to using all the outputs in QRenderTarget.
+    specified in the Qt3DRender::QRenderSurfaceSelector.
  */
 
 /*!
@@ -74,12 +71,6 @@ namespace Qt3DRender {
     for the FrameGraph. When RenderTargetSelector is present in the FrameGraph,
     the rendering is directed into Texture objects or draw buffers instead of the surface
     specified in the RenderSurfaceSelector.
- */
-/*!
-    \qmlproperty list<variant> RenderTargetSelector::drawBuffers
-    Holds the list of draw buffers enabled for the RenderTarget.
-
-    \sa Qt3DRender::QRenderTargetOutput::AttachmentPoint
  */
 
 QRenderTargetSelectorPrivate::QRenderTargetSelectorPrivate()
@@ -135,33 +126,6 @@ QRenderTarget *QRenderTargetSelector::target() const
 {
     Q_D(const QRenderTargetSelector);
     return d->m_target;
-}
-
-/*!
-    Sets the draw \a buffers to be used. The draw buffers should be
-    matching the Qt3DRender::QRenderTargetOutput::AttachmentPoint
-    defined in the attachments of the Qt3DRender::QRenderTarget associated to the
-    Qt3DRender::QRenderTargetSelector instance.
-
-    \note At render time, if no draw buffer has been specified, the renderer will
-    default to using all the attachments' draw buffers.
- */
-void QRenderTargetSelector::setOutputs(const QList<QRenderTargetOutput::AttachmentPoint> &buffers)
-{
-    Q_D(QRenderTargetSelector);
-    if (buffers != d->m_outputs) {
-        d->m_outputs = buffers;
-        d->update();
-    }
-}
-
-/*!
-    \return the list of draw buffers for the current Qt3DRender::QRenderTargetSelector instance.
- */
-QList<QRenderTargetOutput::AttachmentPoint> QRenderTargetSelector::outputs() const
-{
-    Q_D(const QRenderTargetSelector);
-    return d->m_outputs;
 }
 
 /*! \internal */

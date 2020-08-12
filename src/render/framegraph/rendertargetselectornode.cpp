@@ -70,11 +70,6 @@ void RenderTargetSelector::syncFromFrontEnd(const QNode *frontEnd, bool firstTim
         m_renderTargetUuid = renderTargetId;
         markDirty(AbstractRenderer::FrameGraphDirty);
     }
-
-    if (node->outputs() != m_outputs) {
-        m_outputs = node->outputs();
-        markDirty(AbstractRenderer::FrameGraphDirty);
-    }
 }
 
 } // namespace Render
