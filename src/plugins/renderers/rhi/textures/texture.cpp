@@ -774,10 +774,9 @@ void RHITexture::updateRhiTextureParameters(SubmissionContext *ctx)
     const bool isMultisampledTexture =
             (actualTarget == QAbstractTexture::Target2DMultisample
              || actualTarget == QAbstractTexture::Target2DMultisampleArray);
+
     // Multisampled textures can only be accessed by texelFetch in shaders
-    // and don't support wrap modes and mig/mag filtes
-    if (isMultisampledTexture)
-        return;
+    // and don't support wrap modes and mig/mag filters
 
     // TO DO:
     if (m_rhiSampler) {
@@ -786,14 +785,19 @@ void RHITexture::updateRhiTextureParameters(SubmissionContext *ctx)
         m_rhiSampler = nullptr;
     }
 
-    const QRhiSampler::Filter magFilter =
-            rhiFilterFromTextureFilter(m_parameters.magnificationFilter);
-    const QRhiSampler::Filter minFilter =
-            rhiFilterFromTextureFilter(m_parameters.minificationFilter);
-    const QRhiSampler::Filter mipMapFilter =
-            rhiMipMapFilterFromTextureFilter(m_parameters.magnificationFilter);
-    const auto wrapMode = rhiWrapModeFromTextureWrapMode(
-            m_parameters.wrapModeX, m_parameters.wrapModeY, m_parameters.wrapModeZ);
+    const QRhiSampler::Filter magFilter = isMultisampledTexture ?
+                QRhiSampler::Linear :
+                rhiFilterFromTextureFilter(m_parameters.magnificationFilter);
+    const QRhiSampler::Filter minFilter = isMultisampledTexture ?
+                QRhiSampler::Linear :
+                rhiFilterFromTextureFilter(m_parameters.minificationFilter);
+    const QRhiSampler::Filter mipMapFilter = isMultisampledTexture ?
+                QRhiSampler::None :
+                rhiMipMapFilterFromTextureFilter(m_parameters.magnificationFilter);
+    const auto wrapMode = isMultisampledTexture ?
+    std::make_tuple(QRhiSampler::ClampToEdge, QRhiSampler::ClampToEdge, QRhiSampler::ClampToEdge) :
+                rhiWrapModeFromTextureWrapMode(
+                    m_parameters.wrapModeX, m_parameters.wrapModeY, m_parameters.wrapModeZ);
     const QRhiSampler::CompareOp compareOp
             = m_parameters.comparisonMode == QAbstractTexture::CompareNone
             ? QRhiSampler::CompareOp::Never
@@ -805,7 +809,7 @@ void RHITexture::updateRhiTextureParameters(SubmissionContext *ctx)
     m_rhiSampler->setTextureCompareOp(compareOp);
 
     if (!m_rhiSampler->create()) {
-        qDebug("Could not build RHI texture sampler");
+        qWarning("Could not build RHI texture sampler");
     }
 }
 
