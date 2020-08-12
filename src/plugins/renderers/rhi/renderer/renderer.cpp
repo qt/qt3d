@@ -1124,6 +1124,7 @@ void Renderer::createRenderTarget(RenderTarget *target)
     // Used in case of failure
     QVarLengthArray<QRhiResource*> resourcesToClean;
     auto cleanAllocatedResources = [&] {
+        qCWarning(Backend) << "Failed to create RenderTarget";
         for (auto res : resourcesToClean) {
             res->destroy();
             delete res;
@@ -1240,6 +1241,12 @@ bool Renderer::setupRenderTarget(RenderView *rv,
         RHIRenderTargetManager *rhiRenderTargetManager = m_RHIResourceManagers->rhiRenderTargetManager();
         RHIRenderTarget *rhiTarget = rhiRenderTargetManager->lookupResource(renderTargetId);
         Q_ASSERT(rhiTarget);
+
+        if (!rhiTarget->renderTarget) {
+            qWarning(Backend) << "Invalid RenderTarget for Pipeline";
+            return false;
+        }
+
         rhiPipeline->setRenderPassDescriptor(rhiTarget->renderPassDescriptor);
         rhiPipeline->setSampleCount(rhiTarget->renderTarget->sampleCount());
         return true;
@@ -2796,6 +2803,11 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
             }
 
             if (!inDraw) {
+                if (rhiRenderTarget == nullptr) {
+                    qWarning(Backend) << "Invalid Render Target for pass, skipping";
+                    inDraw = false;
+                    continue;
+                }
                 cb->beginPass(rhiRenderTarget, clearColor, clearDepthStencil, m_submissionContext->m_currentUpdates);
                 inDraw = true;
             }
