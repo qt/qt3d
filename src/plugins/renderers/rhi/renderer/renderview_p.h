@@ -143,8 +143,10 @@ struct RenderViewUBO
     float gamma;
     float exposure;
     float time;
+    float yUpInNDC;
+    float yUpInFBO;
 };
-static_assert(sizeof(RenderViewUBO) == sizeof(float) * (8 * 16 + 1 * 4 + 1 * 3 + 4 * 1),
+static_assert(sizeof(RenderViewUBO) == sizeof(float) * (8 * 16 + 1 * 4 + 1 * 3 + 6 * 1),
               "UBO doesn't match std140");
 
 class Q_AUTOTEST_EXPORT RenderView

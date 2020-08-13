@@ -1104,6 +1104,11 @@ void RenderView::updateRenderCommand(const EntityRenderCommandDataSubView &subVi
         memcpy(&m_renderViewUBO.exposure, &exposure, sizeof(float));
         const float timeValue = float(m_renderer->time() / 1000000000.0f);
         memcpy(&m_renderViewUBO.time, &timeValue, sizeof(float));
+
+        const float yUpNDC = yIsUp ? 1.0f : 0.0f;
+        const float yUpFBO = m_renderer->submissionContext()->rhi()->isYUpInFramebuffer() ? 1.0f : 0.0f;
+        memcpy(&m_renderViewUBO.yUpInNDC, &yUpNDC, sizeof(float));
+        memcpy(&m_renderViewUBO.yUpInFBO, &yUpFBO, sizeof(float));
     }
 
     subView.forEach([&] (const Entity *entity,

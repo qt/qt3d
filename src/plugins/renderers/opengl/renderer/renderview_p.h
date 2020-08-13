@@ -369,7 +369,9 @@ private:
         Exposure,
         Gamma,
         EyePosition,
-        SkinningPalette
+        SkinningPalette,
+        YUpInNDC,
+        YUpInFBO,
     };
 
     typedef QHash<int, StandardUniform> StandardUniformsNameToTypeHash;

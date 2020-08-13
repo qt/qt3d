@@ -80,6 +80,8 @@ const int Shader::gammaNameId = StringToInt::lookupId(QLatin1String("gamma"));
 const int Shader::timeNameId = StringToInt::lookupId(QLatin1String("time"));
 const int Shader::eyePositionNameId = StringToInt::lookupId(QLatin1String("eyePosition"));
 const int Shader::skinningPaletteNameId = StringToInt::lookupId(QLatin1String("skinningPalette[0]"));
+const int Shader::yUpInFBOId = StringToInt::lookupId(QLatin1String("yUpInFBO"));
+const int Shader::yUpInNDCId = StringToInt::lookupId(QLatin1String("yUpInNDC"));
 
 Shader::Shader()
     : BackendNode(ReadWrite)

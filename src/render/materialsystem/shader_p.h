@@ -92,6 +92,8 @@ public:
     static const int timeNameId;
     static const int eyePositionNameId;
     static const int skinningPaletteNameId;
+    static const int yUpInFBOId;
+    static const int yUpInNDCId;
 
     Shader();
     ~Shader();

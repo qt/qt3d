@@ -146,6 +146,8 @@ RenderView::StandardUniformsNameToTypeHash RenderView::initializeStandardUniform
     setters.insert(Shader::timeNameId, Time);
     setters.insert(Shader::eyePositionNameId, EyePosition);
     setters.insert(Shader::skinningPaletteNameId, SkinningPalette);
+    setters.insert(Shader::yUpInFBOId, YUpInFBO);
+    setters.insert(Shader::yUpInNDCId, YUpInNDC);
 
     return setters;
 }
@@ -233,6 +235,10 @@ UniformValue RenderView::standardUniformValue(RenderView::StandardUniform standa
         }
         return armature->skinningPaletteUniform();
     }
+    case YUpInNDC:
+        return UniformValue(0.0f);
+    case YUpInFBO:
+        return UniformValue(0.0f);
     default:
         Q_UNREACHABLE();
         return UniformValue();
