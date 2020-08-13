@@ -205,9 +205,8 @@ private:
 int locationForAttribute(Attribute *attr, const RHIShader *shader) noexcept
 {
     const std::vector<ShaderAttribute> &attribInfo = shader->attributes();
-    const auto it = std::find_if(
-            attribInfo.begin(), attribInfo.end(),
-            [attr](const ShaderAttribute &sAttr) { return attr->nameId() == sAttr.m_nameId; });
+    const auto it = std::find_if(attribInfo.begin(), attribInfo.end(),
+                                 [attr](const ShaderAttribute &sAttr) { return attr->nameId() == sAttr.m_nameId; });
     if (it != attribInfo.end())
         return it->m_location;
     return -1;
@@ -858,7 +857,7 @@ void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv,
                                       int renderViewIndex)
 {
     if (!cmd.m_rhiShader) {
-        qDebug() << "Warning: command has no shader";
+        qCWarning(Backend) << "Command has no shader";
         return;
     }
 
@@ -1026,7 +1025,7 @@ void Renderer::buildGraphicsPipelines(RHIGraphicsPipeline *graphicsPipeline,
 void Renderer::updateComputePipeline(RenderCommand &cmd, RenderView *rv, int renderViewIndex)
 {
     if (!cmd.m_rhiShader) {
-        qDebug() << "Warning: command has no shader";
+        qCWarning(Backend) << "Command has no shader";
         return;
     }
 
@@ -1044,7 +1043,7 @@ void Renderer::updateComputePipeline(RenderCommand &cmd, RenderView *rv, int ren
     }
 
     if (!computePipeline) {
-        qDebug() << "Warning : could not create a compute pipeline";
+        qCWarning(Backend) << "Could not create a compute pipeline";
         return;
     }
 
@@ -1614,6 +1613,10 @@ bool Renderer::prepareGeometryInputBindings(const Geometry *geometry, const RHIS
                                             QVarLengthArray<QRhiVertexInputAttribute, 8> &rhiAttributes,
                                             QHash<int, int> &attributeNameToBinding)
 {
+    if (shader->attributes().size() == 0)
+        // shader requires no attributes
+        return true;
+
     // QRhiVertexInputBinding -> specifies the stride of an attribute,
     // whether it's per vertex or per instance and the instance divisor
 
@@ -1706,6 +1709,7 @@ bool Renderer::prepareGeometryInputBindings(const Geometry *geometry, const RHIS
     }
 
     if (uniqueBindings.empty() || rhiAttributes.empty()) {
+        qCWarning(Backend) << "No bindings or no attributes where found";
         return false;
     }
 
@@ -1719,10 +1723,10 @@ bool Renderer::prepareGeometryInputBindings(const Geometry *geometry, const RHIS
                  << binding.stride
                  << binding.classification
                  << binding.attributeDivisor;
-        */
+        //*/
 
-        inputBindings[i] = QRhiVertexInputBinding { binding.stride, binding.classification,
-                int(binding.attributeDivisor) };
+        inputBindings[i] = QRhiVertexInputBinding{ binding.stride, binding.classification,
+                                                   int(binding.attributeDivisor) };
     }
 
     return true;
