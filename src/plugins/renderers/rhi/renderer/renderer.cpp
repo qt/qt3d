@@ -1520,11 +1520,13 @@ void Renderer::sendShaderChangesToFrontend(Qt3DCore::QAspectManager *manager)
         if (s->requiresFrontendSync()) {
             QShaderProgram *frontend =
                     static_cast<decltype(frontend)>(manager->lookupNode(s->peerId()));
-            QShaderProgramPrivate *dFrontend =
-                    static_cast<decltype(dFrontend)>(QNodePrivate::get(frontend));
-            s->unsetRequiresFrontendSync();
-            dFrontend->setStatus(s->status());
-            dFrontend->setLog(s->log());
+            if (frontend) {
+                QShaderProgramPrivate *dFrontend =
+                        static_cast<decltype(dFrontend)>(QNodePrivate::get(frontend));
+                dFrontend->setStatus(s->status());
+                dFrontend->setLog(s->log());
+                s->unsetRequiresFrontendSync();
+            }
         }
     }
 
