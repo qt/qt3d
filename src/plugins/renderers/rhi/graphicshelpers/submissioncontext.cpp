@@ -1675,23 +1675,23 @@ SubmissionContext::ShaderCreationInfo SubmissionContext::createShaderProgram(RHI
     QVector<QShaderBaker::GeneratedShader> generatedShaders;
 
 #if QT_FEATURE_vulkan
-    generatedShaders.push_back({ QShader::SpirvShader, 100 });
+    if (m_rhi->backend() == QRhi::Vulkan)
+        generatedShaders.push_back({ QShader::SpirvShader, 100 });
 #endif
 
 #ifndef QT_NO_OPENGL
-    // GLES2 RHI backend does not seem to support compute
-    //if (shaderCode.at(QShaderProgram::Compute).isEmpty())
-    {
-      generatedShaders.push_back({ QShader::GlslShader, glslVersionForFormat(format()) });
-    }
+    if (m_rhi->backend() == QRhi::OpenGLES2)
+        generatedShaders.push_back({ QShader::GlslShader, glslVersionForFormat(format()) });
 #endif
 
 #ifdef Q_OS_WIN
-    generatedShaders.push_back({ QShader::HlslShader, QShaderVersion(50) });
+    if (m_rhi->backend() == QRhi::D3D11)
+        generatedShaders.push_back({ QShader::HlslShader, QShaderVersion(50) });
 #endif
 
 #ifdef Q_OS_MACOS
-    generatedShaders.push_back({ QShader::MslShader, QShaderVersion(12) });
+    if (m_rhi->backend() == QRhi::Metal)
+        generatedShaders.push_back({ QShader::MslShader, QShaderVersion(12) });
 #endif
 
     QVector<QShader::Variant> generatedShaderVariants(generatedShaders.size());
