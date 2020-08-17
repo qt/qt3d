@@ -41,6 +41,7 @@
 #define QT3DRENDER_QRAYCASTERHIT_H
 
 #include <Qt3DCore/qcomponent.h>
+#include <Qt3DCore/qentity.h>
 #include <Qt3DRender/qt3drender_global.h>
 
 #include <QtCore/QSharedData>
