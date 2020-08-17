@@ -56,6 +56,7 @@
 #include <pipelineuboset_p.h>
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DRender/private/handle_types_p.h>
+#include <Qt3DRender/qgeometryrenderer.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -73,6 +74,7 @@ struct GraphicsPipelineIdentifier
     int geometryLayoutKey;
     Qt3DCore::QNodeId shader;
     Qt3DCore::QNodeId renderTarget;
+    Qt3DRender::QGeometryRenderer::PrimitiveType primitiveType;
     int renderViewIndex = 0;
 };
 

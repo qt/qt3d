@@ -157,6 +157,7 @@ inline uint qHash(const GraphicsPipelineIdentifier &key, uint seed = 0)
     seed = qHash(p, seed);
     seed = qHash(key.renderTarget, seed);
     seed = qHash(key.renderViewIndex, seed);
+    seed = qHash(key.primitiveType, seed);
     return seed;
 }
 
@@ -165,7 +166,8 @@ inline bool operator==(const GraphicsPipelineIdentifier &a, const GraphicsPipeli
     return a.geometryLayoutKey == b.geometryLayoutKey &&
            a.shader == b.shader &&
            a.renderTarget == b.renderTarget &&
-           a.renderViewIndex == b.renderViewIndex;
+           a.renderViewIndex == b.renderViewIndex &&
+           a.primitiveType == b.primitiveType;
 }
 
 inline uint qHash(const ComputePipelineIdentifier &key, uint seed = 0)

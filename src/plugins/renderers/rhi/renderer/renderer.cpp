@@ -868,7 +868,7 @@ void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv,
     // as it is likely many geometrys will have the same layout
     RHIGraphicsPipelineManager *pipelineManager = m_RHIResourceManagers->rhiGraphicsPipelineManager();
     const int geometryLayoutId = pipelineManager->getIdForAttributeVec(cmd.m_attributeInfo);
-    const GraphicsPipelineIdentifier pipelineKey { geometryLayoutId, cmd.m_shaderId, rv->renderTargetId(), renderViewIndex };
+    const GraphicsPipelineIdentifier pipelineKey { geometryLayoutId, cmd.m_shaderId, rv->renderTargetId(), cmd.m_primitiveType, renderViewIndex };
     RHIGraphicsPipeline *graphicsPipeline = pipelineManager->lookupResource(pipelineKey);
     if (graphicsPipeline == nullptr) {
         // Init UBOSet the first time we allocate a new pipeline
@@ -979,6 +979,48 @@ void Renderer::buildGraphicsPipelines(RHIGraphicsPipeline *graphicsPipeline,
                                 { QRhiShaderStage::Fragment, fragmentShader } });
 
     pipeline->setShaderResourceBindings(shaderResourceBindings);
+
+    auto rhiTopologyFromQt3DTopology = [] (const Qt3DRender::QGeometryRenderer::PrimitiveType t) {
+        switch (t) {
+        case Qt3DRender::QGeometryRenderer::Points:
+        return QRhiGraphicsPipeline::Points;
+
+        case Qt3DRender::QGeometryRenderer::Lines:
+        return QRhiGraphicsPipeline::Lines;
+
+        case Qt3DRender::QGeometryRenderer::LineStrip:
+            return QRhiGraphicsPipeline::LineStrip;
+
+        case Qt3DRender::QGeometryRenderer::Triangles:
+        return QRhiGraphicsPipeline::Triangles;
+
+        case Qt3DRender::QGeometryRenderer::TriangleStrip:
+            return QRhiGraphicsPipeline::TriangleStrip;
+
+        case Qt3DRender::QGeometryRenderer::TriangleFan:
+            return QRhiGraphicsPipeline::TriangleFan;
+
+        case Qt3DRender::QGeometryRenderer::LineLoop: {
+            qWarning(Backend) << "LineLoop primitive type is not handled by RHI";
+            return QRhiGraphicsPipeline::Lines;
+        }
+
+        case Qt3DRender::QGeometryRenderer::Patches: {
+            qWarning(Backend) << "Patches primitive type is not handled by RHI";
+            return QRhiGraphicsPipeline::Points;
+        }
+
+        case Qt3DRender::QGeometryRenderer::LinesAdjacency:
+        case Qt3DRender::QGeometryRenderer::TrianglesAdjacency:
+        case Qt3DRender::QGeometryRenderer::LineStripAdjacency:
+        case Qt3DRender::QGeometryRenderer::TriangleStripAdjacency: {
+            qWarning(Backend) << "Adjancency primitive types are not handled by RHI";
+            return QRhiGraphicsPipeline::Points;
+        }
+        }
+    };
+
+    pipeline->setTopology(rhiTopologyFromQt3DTopology(cmd.m_primitiveType));
 
     QRhiVertexInputLayout inputLayout;
     inputLayout.setBindings(inputBindings.begin(), inputBindings.end());
