@@ -170,9 +170,6 @@ public:
     bool hasRHIBufferForBuffer(Buffer *buffer);
     RHIBuffer *rhiBufferForRenderBuffer(Buffer *buf);
 
-    // Parameters
-    bool setParameters(ShaderParameterPack &parameterPack, RHIShader *shader);
-
     // RenderState
     void applyStateSet(const RenderStateSet *ss, QRhiGraphicsPipeline *graphicsPipeline);
     StateVariant *getState(RenderStateSet *ss, StateMask type) const;

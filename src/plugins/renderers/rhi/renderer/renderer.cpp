@@ -1018,6 +1018,7 @@ void Renderer::buildGraphicsPipelines(RHIGraphicsPipeline *graphicsPipeline,
             return QRhiGraphicsPipeline::Points;
         }
         }
+        return QRhiGraphicsPipeline::Points;
     };
 
     pipeline->setTopology(rhiTopologyFromQt3DTopology(cmd.m_primitiveType));
@@ -1338,8 +1339,7 @@ Renderer::prepareCommandsSubmission(const std::vector<RenderView *> &renderViews
 
     for (size_t i = 0; i < renderViewCount;) {
         std::vector<RenderView *> sameRenderTargetRVs;
-        std::vector<QRhiBuffer *> rvUbos;
-        RenderView *refRV = renderViews.at(i);
+        RenderView *refRV = renderViews[i];
         sameRenderTargetRVs.push_back(refRV);
 
         for (i = i + 1; i < renderViewCount; ++i) {

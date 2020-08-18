@@ -43,8 +43,8 @@ public:
     FakeBackendDevice()
         : Qt3DInput::QAbstractPhysicalDeviceBackendNode(Qt3DCore::QBackendNode::ReadOnly)
     {}
-    float axisValue(int) const { return 0.0f; }
-    bool isButtonPressed(int) const { return false; }
+    float axisValue(int) const override { return 0.0f; }
+    bool isButtonPressed(int) const  override { return false; }
 };
 
 class FakeInputDeviceIntegration : public Qt3DInput::QInputDeviceIntegration

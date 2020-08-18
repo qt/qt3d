@@ -243,7 +243,7 @@ public:
 
     // QThread interface
 protected:
-    void run()
+    void run() override
     {
         int i = 0;
         int max = 65535;
@@ -313,7 +313,7 @@ public:
 
     // QThread interface
 protected:
-    void run()
+    void run() override
     {
         int i = 0;
         int max = 65535;

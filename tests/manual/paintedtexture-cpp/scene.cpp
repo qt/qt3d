@@ -71,7 +71,7 @@ public:
     }
 
 protected:
-    void paint(QPainter *painter)
+    void paint(QPainter *painter) override
     {
         int w = painter->device()->width();
         int h = painter->device()->height();

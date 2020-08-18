@@ -44,7 +44,7 @@ class JobPrivate : public QAspectJobPrivate
 
 public:
     // QAspectJobPrivate interface
-    void postFrame(QAspectManager *aspectManager)
+    void postFrame(QAspectManager *aspectManager) override
     {
         Q_ASSERT(aspectManager);
         m_postFrameCalled = true;
@@ -129,7 +129,7 @@ public:
 
 private:
     // QAbstractAspect interface
-    std::vector<QAspectJobPtr> jobsToExecute(qint64)
+    std::vector<QAspectJobPtr> jobsToExecute(qint64) override
     {
         return { m_first, m_second };
     }

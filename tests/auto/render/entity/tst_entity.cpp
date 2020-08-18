@@ -74,7 +74,7 @@ public:
     CompleteVisitor(NodeManagers *manager) : EntityVisitor(manager) { }
 
     int count = 0;
-    Operation visit(Entity *) { count++; return Continue; }
+    Operation visit(Entity *) override { count++; return Continue; }
 };
 
 class EnabledVisitor : public EntityVisitor
@@ -83,7 +83,7 @@ public:
     EnabledVisitor(NodeManagers *manager) : EntityVisitor(manager) { }
 
     int count = 0;
-    Operation visit(Entity *e) { count++; return e->isEnabled() ? Continue : Prune; }
+    Operation visit(Entity *e) override { count++; return e->isEnabled() ? Continue : Prune; }
 };
 
 class tst_RenderEntity : public QObject

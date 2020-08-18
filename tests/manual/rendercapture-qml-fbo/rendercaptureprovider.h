@@ -70,7 +70,7 @@ public:
         m_image = reply->image();
     }
 
-    virtual QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize)
+    virtual QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize) override
     {
         Q_UNUSED(id);
         Q_UNUSED(requestedSize);
