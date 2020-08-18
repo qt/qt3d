@@ -834,7 +834,7 @@ std::optional<QRhiVertexInputAttribute::Format> rhiAttributeType(Attribute *attr
             return QRhiVertexInputAttribute::Float2;
         if (attr->vertexSize() == 3)
             return QRhiVertexInputAttribute::Float3;
-        if (attr->vertexSize() == 4)
+        if (attr->vertexSize() >= 4)
             return QRhiVertexInputAttribute::Float4;
         break;
     }
@@ -1651,8 +1651,8 @@ bool Renderer::prepareGeometryInputBindings(const Geometry *geometry, const RHIS
                                             QVarLengthArray<QRhiVertexInputAttribute, 8> &rhiAttributes,
                                             QHash<int, int> &attributeNameToBinding)
 {
+    // shader requires no attributes
     if (shader->attributes().size() == 0)
-        // shader requires no attributes
         return true;
 
     // QRhiVertexInputBinding -> specifies the stride of an attribute,
@@ -1675,6 +1675,12 @@ bool Renderer::prepareGeometryInputBindings(const Geometry *geometry, const RHIS
     for (Qt3DCore::QNodeId attribute_id : attributesIds) {
         Attribute *attrib = m_nodesManager->attributeManager()->lookupResource(attribute_id);
         if (attrib->attributeType() != QAttribute::VertexAttribute)
+            continue;
+        const int location = locationForAttribute(attrib, shader);
+        // In case the shader doesn't use the attribute, we would get no
+        // location. This is not a failure, just that we provide more attributes
+        // than required.
+        if (location == -1)
             continue;
 
         const bool isPerInstanceAttr = attrib->divisor() != 0;
@@ -1702,21 +1708,16 @@ bool Renderer::prepareGeometryInputBindings(const Geometry *geometry, const RHIS
         };
 
         uint byteStride = attrib->byteStride();
+        const uint vertexTypeByteSize = getAttributeByteSize(attrib->vertexBaseType());
         // in GL 0 means tighly packed, we therefore assume a tighly packed
         // attribute and compute the stride if that happens
         if (byteStride == 0)
-            byteStride = attrib->vertexSize() * getAttributeByteSize(attrib->vertexBaseType());
+            byteStride = attrib->vertexSize() * vertexTypeByteSize;
 
         const BufferBinding binding = { attrib->bufferId(), byteStride,
                                         classification,
                                         isPerInstanceAttr ? attrib->divisor() : 1U };
 
-        const int location = locationForAttribute(attrib, shader);
-        // In case the shader doesn't use the attribute, we would get no
-        // location. This is not a failure, just that we provide more attributes
-        // than required.
-        if (location == -1)
-            continue;
 
         const auto it = std::find_if(uniqueBindings.begin(), uniqueBindings.end(),
                                      [binding](const BufferBinding &a) {
@@ -1738,17 +1739,20 @@ bool Renderer::prepareGeometryInputBindings(const Geometry *geometry, const RHIS
             return false;
         }
 
-        rhiAttributes.push_back({ bindingIndex,
-                                  location,
-                                  *attributeType,
-                                  attrib->byteOffset() });
+        // Special Handling for Matrix as Vertex Attributes
+        // If an attribute has a size > 4 it can only be a matrix based type
+        // for which we will actually upload several attributes at contiguous
+        // locations
+        const uint elementsPerColumn = 4;
+        const int attributeSpan = std::ceil(float(attrib->vertexSize()) / elementsPerColumn);
+        for (int i = 0; i < attributeSpan; ++i) {
+            rhiAttributes.push_back({ bindingIndex,
+                                      location + i,
+                                      *attributeType,
+                                      attrib->byteOffset() + (i * elementsPerColumn * vertexTypeByteSize)});
+        }
 
         attributeNameToBinding.insert(attrib->nameId(), bindingIndex);
-    }
-
-    if (uniqueBindings.empty() || rhiAttributes.empty()) {
-        qCWarning(Backend) << "No bindings or no attributes where found";
-        return false;
     }
 
     inputBindings.resize(uniqueBindings.size());
