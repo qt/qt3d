@@ -2726,16 +2726,6 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
                 // Prevents further processing which could be catastrophic
                 command.m_isValid = false;
             }
-
-            if (command.m_type == RenderCommand::Draw) {
-                if (!uploadBuffersForCommand(cb, rv, command)) {
-                    // Something went wrong trying to upload buffers
-                    // -> likely that frontend buffer has no initial data
-                    qCWarning(Backend) << "Failed to upload buffers";
-                    // Prevents further processing which could be catastrophic
-                    command.m_isValid = false;
-                }
-            }
         });
 
         // Record clear information
