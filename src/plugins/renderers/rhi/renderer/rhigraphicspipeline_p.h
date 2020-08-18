@@ -75,7 +75,7 @@ struct GraphicsPipelineIdentifier
     Qt3DCore::QNodeId shader;
     Qt3DCore::QNodeId renderTarget;
     Qt3DRender::QGeometryRenderer::PrimitiveType primitiveType;
-    int renderViewIndex = 0;
+    int renderStatesKey = 0;
 };
 
 struct ComputePipelineIdentifier

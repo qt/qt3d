@@ -99,6 +99,21 @@ int RHIGraphicsPipelineManager::getIdForAttributeVec(const std::vector<Attribute
     return std::distance(m_attributesInfo.begin(), it);
 }
 
+int RHIGraphicsPipelineManager::getIdForRenderStates(const RenderStateSetPtr &stateSet)
+{
+    if (!stateSet)
+        return -1;
+    const std::vector<StateVariant> &states = stateSet->states();
+    auto it = std::find(m_renderStates.begin(),
+                        m_renderStates.end(),
+                        states);
+    if (it == m_renderStates.end()) {
+        m_renderStates.emplace_back(states);
+        return m_renderStates.size() - 1;
+    }
+    return std::distance(m_renderStates.begin(), it);
+}
+
 namespace {
 
 template<typename Manager>

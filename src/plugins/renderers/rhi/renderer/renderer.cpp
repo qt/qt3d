@@ -845,8 +845,7 @@ std::optional<QRhiVertexInputAttribute::Format> rhiAttributeType(Attribute *attr
 }
 }
 
-void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv,
-                                      int renderViewIndex)
+void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv)
 {
     if (!cmd.m_rhiShader) {
         qCWarning(Backend) << "Command has no shader";
@@ -868,7 +867,8 @@ void Renderer::updateGraphicsPipeline(RenderCommand &cmd, RenderView *rv,
     // as it is likely many geometrys will have the same layout
     RHIGraphicsPipelineManager *pipelineManager = m_RHIResourceManagers->rhiGraphicsPipelineManager();
     const int geometryLayoutId = pipelineManager->getIdForAttributeVec(cmd.m_attributeInfo);
-    const GraphicsPipelineIdentifier pipelineKey { geometryLayoutId, cmd.m_shaderId, rv->renderTargetId(), cmd.m_primitiveType, renderViewIndex };
+    const int renderStatesKey = pipelineManager->getIdForRenderStates(cmd.m_stateSet);
+    const GraphicsPipelineIdentifier pipelineKey { geometryLayoutId, cmd.m_shaderId, rv->renderTargetId(), cmd.m_primitiveType, renderStatesKey };
     RHIGraphicsPipeline *graphicsPipeline = pipelineManager->lookupResource(pipelineKey);
     if (graphicsPipeline == nullptr) {
         // Init UBOSet the first time we allocate a new pipeline
@@ -1388,7 +1388,7 @@ Renderer::prepareCommandsSubmission(const std::vector<RenderView *> &renderViews
                 if (rGeometryRenderer->isDirty())
                     rGeometryRenderer->unsetDirty();
 
-                updateGraphicsPipeline(command, rv, i);
+                updateGraphicsPipeline(command, rv);
 
             } else if (command.m_type == RenderCommand::Compute) {
                 // By this time shaders have been loaded

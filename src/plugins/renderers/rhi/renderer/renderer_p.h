@@ -418,8 +418,7 @@ private:
                                       QVarLengthArray<QRhiVertexInputAttribute, 8> &rhiAttributes,
                                       QHash<int, int> &attributeNameToBinding);
 
-    void updateGraphicsPipeline(RenderCommand &command, RenderView *rv,
-                                int renderViewIndex);
+    void updateGraphicsPipeline(RenderCommand &command, RenderView *rv);
     void updateComputePipeline(RenderCommand &cmd, RenderView *rv,
                                int renderViewIndex);
 

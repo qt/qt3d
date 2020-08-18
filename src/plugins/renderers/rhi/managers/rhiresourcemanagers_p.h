@@ -101,6 +101,7 @@ public:
     RHIGraphicsPipelineManager() { }
 
     int getIdForAttributeVec(const std::vector<AttributeInfo> &attributesInfo);
+    int getIdForRenderStates(const RenderStateSetPtr &stateSet);
 
     void releasePipelinesReferencingShader(const Qt3DCore::QNodeId &shaderId);
     void releasePipelinesReferencingRenderTarget(const Qt3DCore::QNodeId &renderTargetId);
@@ -108,6 +109,7 @@ public:
 private:
     using AttributeInfoVec= std::vector<AttributeInfo>;
     std::vector<AttributeInfoVec> m_attributesInfo;
+    std::vector<std::vector<StateVariant>> m_renderStates;
 };
 
 class Q_AUTOTEST_EXPORT RHIComputePipelineManager
@@ -156,7 +158,7 @@ inline uint qHash(const GraphicsPipelineIdentifier &key, uint seed = 0)
     using QT_PREPEND_NAMESPACE(qHash);
     seed = qHash(p, seed);
     seed = qHash(key.renderTarget, seed);
-    seed = qHash(key.renderViewIndex, seed);
+    seed = qHash(key.renderStatesKey, seed);
     seed = qHash(key.primitiveType, seed);
     return seed;
 }
@@ -166,7 +168,7 @@ inline bool operator==(const GraphicsPipelineIdentifier &a, const GraphicsPipeli
     return a.geometryLayoutKey == b.geometryLayoutKey &&
            a.shader == b.shader &&
            a.renderTarget == b.renderTarget &&
-           a.renderViewIndex == b.renderViewIndex &&
+           a.renderStatesKey == b.renderStatesKey &&
            a.primitiveType == b.primitiveType;
 }
 
