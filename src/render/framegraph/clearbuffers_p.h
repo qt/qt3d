@@ -90,8 +90,8 @@ private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) final;
 
     QClearBuffers::BufferType m_type;
-    QVector4D m_clearColor;
     QColor m_clearColorAsColor;
+    QVector4D m_clearColor;
     float m_clearDepthValue;
     int m_clearStencilValue;
     Qt3DCore::QNodeId m_colorBufferId;

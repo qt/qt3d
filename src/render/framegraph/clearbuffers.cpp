@@ -56,6 +56,8 @@ static QVector4D vec4dFromColor(const QColor &color)
 ClearBuffers::ClearBuffers()
     : FrameGraphNode(FrameGraphNode::ClearBuffers)
     , m_type(QClearBuffers::None)
+    , m_clearColorAsColor(Qt::black)
+    , m_clearColor(vec4dFromColor(m_clearColorAsColor))
     , m_clearDepthValue(1.f)
     , m_clearStencilValue(0)
 {
