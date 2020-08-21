@@ -333,7 +333,11 @@ void Scene3DRenderer::beforeSynchronize()
             const bool generateNewTexture = m_finalFBO.isNull() || forceRecreate;
             if (generateNewTexture) {
                 m_finalFBO.reset(createFramebufferObject(m_lastSize));
-                m_texture.reset(m_window->createTextureFromId(m_finalFBO->texture(), m_finalFBO->size(), QQuickWindow::TextureHasAlphaChannel));
+                const GLuint textureId = m_finalFBO->texture();
+                m_texture.reset(m_window->createTextureFromNativeObject(QQuickWindow::NativeObjectTexture,
+                                                                        &textureId, 0,
+                                                                        m_finalFBO->size(),
+                                                                        QQuickWindow::TextureHasAlphaChannel));
             }
 
             // We can render either the Scene3D or the Scene3DView but not both
