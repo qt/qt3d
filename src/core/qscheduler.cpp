@@ -80,7 +80,7 @@ void dumpJobs(QVector<Qt3DCore::QAspectJobPtr> jobs) {
     for (const auto &job: jobs) {
         auto dependencies = job->dependencies();
         for (const auto &dependency: dependencies)
-            stream << QLatin1String("\t") << formatJob(job.data()) << QLatin1String(" -> ") << formatJob(dependency.toStrongRef().data()) << Qt::endl;
+            stream << QLatin1String("\t") << formatJob(dependency.toStrongRef().data()) << QLatin1String(" -> ") << formatJob(job.data()) << Qt::endl;
     }
 
     stream << "}" << Qt::endl;

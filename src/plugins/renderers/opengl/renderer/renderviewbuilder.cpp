@@ -561,8 +561,8 @@ RenderViewBuilder::RenderViewBuilder(Render::FrameGraphNode *leafNode, int rende
     , m_renderViewJob(RenderViewInitializerJobPtr::create())
     , m_filterEntityByLayerJob()
     , m_frustumCullingJob(new Render::FrustumCullingJob())
-    , m_syncPreFrustumCullingJob(CreateSynchronizerJobPtr(SyncPreFrustumCulling(m_renderViewJob, m_frustumCullingJob), JobTypes::SyncFrustumCulling))
-    , m_setClearDrawBufferIndexJob(CreateSynchronizerJobPtr(SetClearDrawBufferIndex(m_renderViewJob), JobTypes::ClearBufferDrawIndex))
+    , m_syncPreFrustumCullingJob(CreateSynchronizerJobPtr(SyncPreFrustumCulling(m_renderViewJob, m_frustumCullingJob), JobTypes::SyncFrustumCulling, renderViewIndex))
+    , m_setClearDrawBufferIndexJob(CreateSynchronizerJobPtr(SetClearDrawBufferIndex(m_renderViewJob), JobTypes::ClearBufferDrawIndex, renderViewIndex))
     , m_syncFilterEntityByLayerJob()
     , m_filterProximityJob(Render::FilterProximityDistanceJobPtr::create())
 {
@@ -664,7 +664,8 @@ void RenderViewBuilder::prepareJobs()
                                                                                                 m_renderViewCommandBuilderJobs,
                                                                                                 m_renderer,
                                                                                                 m_leafNode),
-                                                                         JobTypes::SyncRenderViewPreCommandBuilding);
+                                                                         JobTypes::SyncRenderViewPreCommandBuilding,
+                                                                         m_renderViewIndex);
     }
 
     m_renderViewJob->setRenderer(m_renderer);
@@ -704,7 +705,8 @@ void RenderViewBuilder::prepareJobs()
         m_syncMaterialGathererJob = CreateSynchronizerJobPtr(SyncMaterialParameterGatherer(m_materialGathererJobs,
                                                                                            m_renderer,
                                                                                            m_leafNode),
-                                                             JobTypes::SyncMaterialGatherer);
+                                                             JobTypes::SyncMaterialGatherer,
+                                                             m_renderViewIndex);
     }
 
     const bool layerCacheNeedsRebuild = m_rebuildFlags.testFlag(RebuildFlag::LayerCacheRebuild);
@@ -712,9 +714,10 @@ void RenderViewBuilder::prepareJobs()
         m_filterEntityByLayerJob = Render::FilterLayerEntityJobPtr::create();
         m_filterEntityByLayerJob->setManager(m_renderer->nodeManagers());
         m_syncFilterEntityByLayerJob = CreateSynchronizerJobPtr(SyncFilterEntityByLayer(m_filterEntityByLayerJob,
-                                                                                          m_renderer,
-                                                                                          m_leafNode),
-                                                                  JobTypes::SyncFilterEntityByLayer);
+                                                                                        m_renderer,
+                                                                                        m_leafNode),
+                                                                JobTypes::SyncFilterEntityByLayer,
+                                                                m_renderViewIndex);
     }
 
     m_syncRenderViewPreCommandUpdateJob = CreateSynchronizerJobPtr(SyncRenderViewPreCommandUpdate(m_renderViewJob,
@@ -726,13 +729,15 @@ void RenderViewBuilder::prepareJobs()
                                                                                                   m_renderer,
                                                                                                   m_leafNode,
                                                                                                   m_rebuildFlags),
-                                                                   JobTypes::SyncRenderViewPreCommandUpdate);
+                                                                   JobTypes::SyncRenderViewPreCommandUpdate,
+                                                                   m_renderViewIndex);
 
     m_syncRenderViewPostCommandUpdateJob = CreateSynchronizerJobPtr(SyncRenderViewPostCommandUpdate(m_renderViewJob,
                                                                                                     m_renderViewCommandUpdaterJobs,
                                                                                                     m_renderer,
                                                                                                     m_leafNode),
-                                                                    JobTypes::SyncRenderViewPostCommandUpdate);
+                                                                    JobTypes::SyncRenderViewPostCommandUpdate,
+                                                                    m_renderViewIndex);
 
     m_syncRenderViewPostInitializationJob = CreateSynchronizerJobPtr(SyncRenderViewPostInitialization(m_renderViewJob,
                                                                                                       m_frustumCullingJob,
@@ -741,7 +746,8 @@ void RenderViewBuilder::prepareJobs()
                                                                                                       m_materialGathererJobs,
                                                                                                       m_renderViewCommandUpdaterJobs,
                                                                                                       m_renderViewCommandBuilderJobs),
-                                                                     JobTypes::SyncRenderViewInitialization);
+                                                                     JobTypes::SyncRenderViewInitialization,
+                                                                     m_renderViewIndex);
 }
 
 QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
