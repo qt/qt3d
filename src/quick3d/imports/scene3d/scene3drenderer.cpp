@@ -65,17 +65,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-namespace {
-
-inline QMetaMethod setItemAreaAndDevicePixelRatioMethod()
-{
-    const int idx = Scene3DItem::staticMetaObject.indexOfMethod("setItemAreaAndDevicePixelRatio(QSize,qreal)");
-    Q_ASSERT(idx != -1);
-    return Scene3DItem::staticMetaObject.method(idx);
-}
-
-} // anonymous
-
 class ContextSaver
 {
 public:
@@ -148,7 +137,6 @@ private:
  */
 Scene3DRenderer::Scene3DRenderer()
     : QObject()
-    , m_item(nullptr)
     , m_aspectEngine(nullptr)
     , m_renderAspect(nullptr)
     , m_node(nullptr)
@@ -163,22 +151,16 @@ Scene3DRenderer::Scene3DRenderer()
 
 }
 
-void Scene3DRenderer::init(Scene3DItem *item, Qt3DCore::QAspectEngine *aspectEngine,
+void Scene3DRenderer::init(Qt3DCore::QAspectEngine *aspectEngine,
                            QRenderAspect *renderAspect)
 {
-    m_item = item;
     m_aspectEngine = aspectEngine;
     m_renderAspect = renderAspect;
     m_needsShutdown = true;
 
-    Q_CHECK_PTR(m_item);
-    Q_CHECK_PTR(m_item->window());
-
-    m_window = m_item->window();
-
     // Detect which Rendering backend Qt3D is using
-    Qt3DRender::QRenderAspectPrivate *aspectPriv = static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect));
-    Qt3DRender::Render::AbstractRenderer *renderer = aspectPriv->m_renderer;
+     Qt3DRender::QRenderAspectPrivate *aspectPriv = static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect));
+     Qt3DRender::Render::AbstractRenderer *renderer = aspectPriv->m_renderer;
 
     const bool isRHI = renderer->api() == API::RHI;
     if (isRHI)
@@ -186,29 +168,30 @@ void Scene3DRenderer::init(Scene3DItem *item, Qt3DCore::QAspectEngine *aspectEng
     else
         m_quickRenderer = new Scene3DRenderer::GLRenderer;
     m_quickRenderer->initialize(this, renderer);
+}
 
-    QObject::connect(m_item->window(), &QQuickWindow::beforeSynchronizing,
-                     this, [this] () { m_quickRenderer->beforeSynchronize(this); }, Qt::DirectConnection);
-    QObject::connect(m_item->window(), &QQuickWindow::beforeRendering, this,
-                     [this] () { m_quickRenderer->beforeRendering(this); }, Qt::DirectConnection);
-    QObject::connect(m_item->window(), &QQuickWindow::beforeRenderPassRecording, this,
-                     [this] () { m_quickRenderer->beforeRenderPassRecording(this); }, Qt::DirectConnection);
-    QObject::connect(m_item->window(), &QQuickWindow::sceneGraphInvalidated, this,
-                     &Scene3DRenderer::onSceneGraphInvalidated, Qt::DirectConnection);
-    // So that we can schedule the cleanup
-    QObject::connect(m_item, &QQuickItem::windowChanged, this,
-                     &Scene3DRenderer::onWindowChanged, Qt::QueuedConnection);
-    // Main thread -> updates the rendering window
-    QObject::connect(m_item, &QQuickItem::windowChanged, this, [this] (QQuickWindow *w) {
-        QMutexLocker l(&m_windowMutex);
-        m_window = w;
-    });
-    scheduleRootEntityChange();
+void Scene3DRenderer::setWindow(QQuickWindow *window)
+{
+    if (window == m_window)
+        return;
+
+    QObject::disconnect(m_window);
+    m_window = window;
+
+    if (m_window) {
+        QObject::connect(m_window, &QQuickWindow::beforeRendering, this,
+                         [this] () { m_quickRenderer->beforeRendering(this); }, Qt::DirectConnection);
+        QObject::connect(m_window, &QQuickWindow::beforeRenderPassRecording, this,
+                         [this] () { m_quickRenderer->beforeRenderPassRecording(this); }, Qt::DirectConnection);
+    } else {
+        shutdown();
+    }
 }
 
 Scene3DRenderer::~Scene3DRenderer()
 {
     qCDebug(Scene3D) << Q_FUNC_INFO << QThread::currentThread();
+    shutdown();
 }
 
 Scene3DSGNode *Scene3DRenderer::sgNode() const
@@ -216,58 +199,22 @@ Scene3DSGNode *Scene3DRenderer::sgNode() const
     return m_node;
 }
 
-void Scene3DRenderer::scheduleRootEntityChange()
-{
-    QMetaObject::invokeMethod(m_item, "applyRootEntityChange", Qt::QueuedConnection);
-}
-
 // Executed in the QtQuick render thread (which may even be the gui/main with QQuickWidget / RenderControl).
 void Scene3DRenderer::shutdown()
 {
-    qCDebug(Scene3D) << Q_FUNC_INFO << QThread::currentThread();
-
-    // In case the same item is rendered on another window reset it
-    m_resetRequested = true;
-
-    // Set to null so that subsequent calls to render
-    // would return early
-    m_item = nullptr;
-
-    // Exit the simulation loop so no more jobs are asked for. Once this
-    // returns it is safe to shutdown the renderer.
-    if (m_aspectEngine) {
-        auto engineD = Qt3DCore::QAspectEnginePrivate::get(m_aspectEngine);
-        engineD->exitSimulationLoop();
-    }
+    if (!m_needsShutdown)
+        return;
+    m_needsShutdown = false;
 
     m_quickRenderer->shutdown(this);
-
-    m_renderAspect = nullptr;
-    m_aspectEngine = nullptr;
-
     delete m_quickRenderer;
     m_quickRenderer = nullptr;
 }
 
-// QtQuick render thread (which may also be the gui/main thread with QQuickWidget / RenderControl)
-void Scene3DRenderer::onSceneGraphInvalidated()
+// Render Thread, GUI locked
+void Scene3DRenderer::beforeSynchronize()
 {
-    qCDebug(Scene3D) << Q_FUNC_INFO << QThread::currentThread();
-    if (m_needsShutdown) {
-        m_needsShutdown = false;
-        shutdown();
-    }
-}
-
-void Scene3DRenderer::onWindowChanged(QQuickWindow *w)
-{
-    qCDebug(Scene3D) << Q_FUNC_INFO << QThread::currentThread() << w;
-    if (!w) {
-        if (m_needsShutdown) {
-            m_needsShutdown = false;
-            shutdown();
-        }
-    }
+    m_quickRenderer->beforeSynchronize(this);
 }
 
 void Scene3DRenderer::allowRender()
@@ -283,6 +230,16 @@ void Scene3DRenderer::setCompositingMode(Scene3DItem::CompositingMode mode)
 void Scene3DRenderer::setSkipFrame(bool skip)
 {
     m_skipFrame = skip;
+}
+
+void Scene3DRenderer::setMultisample(bool multisample)
+{
+    m_multisample = multisample;
+}
+
+void Scene3DRenderer::setBoundingSize(const QSize &size)
+{
+    m_boundingRectSize = size;
 }
 
 // Main Thread, Render Thread locked
@@ -327,10 +284,9 @@ void Scene3DRenderer::GLRenderer::initialize(Scene3DRenderer *scene3DRenderer,
 void Scene3DRenderer::GLRenderer::beforeSynchronize(Scene3DRenderer *scene3DRenderer)
 {
     // Check size / multisampling
-    Scene3DItem *item = scene3DRenderer->m_item;
     QQuickWindow *window = scene3DRenderer->m_window;
 
-    if (!item || !window)
+    if (!window)
         return;
 
     // Only render if we are sure aspectManager->processFrame was called prior
@@ -353,22 +309,15 @@ void Scene3DRenderer::GLRenderer::beforeSynchronize(Scene3DRenderer *scene3DRend
 
     scene3DRenderer->m_shouldRender = true;
 
-    m_multisample = item->multisample();
-    const QSize boundingRectSize = item->boundingRect().size().toSize();
+    const QSize boundingRectSize = scene3DRenderer->boundingSize();
     const QSize currentSize = boundingRectSize * window->effectiveDevicePixelRatio();
     const bool sizeHasChanged = currentSize != m_lastSize;
-    const bool multisampleHasChanged = m_multisample != m_lastMultisample;
+    const bool multisampleHasChanged = scene3DRenderer->multisample() != m_lastMultisample;
     const bool forceRecreate = sizeHasChanged || multisampleHasChanged;
     // Store the current size as a comparison
     // point for the next frame
     m_lastSize = currentSize;
-    m_lastMultisample = m_multisample;
-
-    if (sizeHasChanged) {
-        static const QMetaMethod setItemAreaAndDevicePixelRatio = setItemAreaAndDevicePixelRatioMethod();
-        setItemAreaAndDevicePixelRatio.invoke(item, Qt::QueuedConnection, Q_ARG(QSize, boundingRectSize),
-                                              Q_ARG(qreal, window->effectiveDevicePixelRatio()));
-    }
+    m_lastMultisample = scene3DRenderer->multisample();
 
     // Rebuild FBO if size/multisampling has changed
     const bool usesFBO = scene3DRenderer->m_compositingMode == Scene3DItem::FBO;
@@ -416,17 +365,12 @@ void Scene3DRenderer::GLRenderer::beforeSynchronize(Scene3DRenderer *scene3DRend
         }
     }
 
-    if (scene3DRenderer->m_aspectEngine->rootEntity() != item->entity())
-        scene3DRenderer->scheduleRootEntityChange();
-
     // Mark SGNodes as dirty so that QQuick will trigger some rendering
     if (node)
         node->markDirty(QSGNode::DirtyMaterial);
 
     for (Scene3DView *view : qAsConst(scene3DRenderer->m_views))
         view->markSGNodeDirty();
-
-    item->update();
 }
 
 void Scene3DRenderer::GLRenderer::beforeRendering(Scene3DRenderer *scene3DRenderer)
@@ -527,10 +471,9 @@ void Scene3DRenderer::RHIRenderer::initialize(Scene3DRenderer *scene3DRenderer,
 void Scene3DRenderer::RHIRenderer::beforeSynchronize(Scene3DRenderer *scene3DRenderer)
 {
     // Check size / multisampling
-    Scene3DItem *item = scene3DRenderer->m_item;
     QQuickWindow *window = scene3DRenderer->m_window;
 
-    if (!item || !window)
+    if (!window)
         return;
 
     // Only render if we are sure aspectManager->processFrame was called prior
@@ -552,19 +495,13 @@ void Scene3DRenderer::RHIRenderer::beforeSynchronize(Scene3DRenderer *scene3DRen
 
     scene3DRenderer->m_shouldRender = true;
 
-    const QSize boundingRectSize = item->boundingRect().size().toSize();
+    const QSize boundingRectSize = scene3DRenderer->boundingSize();
     const QSize currentSize = boundingRectSize * window->effectiveDevicePixelRatio();
     const bool sizeHasChanged = currentSize != m_lastSize;
-    const bool multisampleHasChanged = item->multisample() != m_lastMultisample;
+    const bool multisampleHasChanged = scene3DRenderer->multisample() != m_lastMultisample;
     // Store the current size and multisample as a comparison point for the next frame
-    m_lastMultisample = item->multisample();
+    m_lastMultisample = scene3DRenderer->multisample();
     m_lastSize = currentSize;
-
-    if (sizeHasChanged) {
-        static const QMetaMethod setItemAreaAndDevicePixelRatio = setItemAreaAndDevicePixelRatioMethod();
-        setItemAreaAndDevicePixelRatio.invoke(item, Qt::QueuedConnection, Q_ARG(QSize, boundingRectSize),
-                                              Q_ARG(qreal, window->effectiveDevicePixelRatio()));
-    }
 
     const bool forceRecreate = sizeHasChanged || multisampleHasChanged;
     const bool usesFBO = scene3DRenderer->m_compositingMode == Scene3DItem::FBO;
@@ -572,7 +509,7 @@ void Scene3DRenderer::RHIRenderer::beforeSynchronize(Scene3DRenderer *scene3DRen
     // RHI RenderPasses prior to QtQuick and beginning a new RenderPass clears the screen
     Q_ASSERT(usesFBO);
     const bool generateNewTexture = m_texture.isNull() || forceRecreate;
-    const int samples = item->multisample() ? 4 : 1;
+    const int samples = m_lastMultisample ? 4 : 1;
 
     if (generateNewTexture) {
         releaseRHIResources();
@@ -626,11 +563,6 @@ void Scene3DRenderer::RHIRenderer::beforeSynchronize(Scene3DRenderer *scene3DRen
 
     // Mark SGNodes as dirty so that QQuick will trigger some rendering
     node->markDirty(QSGNode::DirtyMaterial);
-
-    if (scene3DRenderer->m_aspectEngine->rootEntity() != item->entity())
-        scene3DRenderer->scheduleRootEntityChange();
-
-    item->update();
 }
 
 void Scene3DRenderer::RHIRenderer::beforeRendering(Scene3DRenderer *scene3DRenderer)

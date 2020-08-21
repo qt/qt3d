@@ -284,7 +284,8 @@ void QAspectEnginePrivate::shutdown()
 
 void QAspectEnginePrivate::exitSimulationLoop()
 {
-    m_aspectManager->exitSimulationLoop();
+    if (m_aspectManager != nullptr)
+        m_aspectManager->exitSimulationLoop();
 }
 
 /*!

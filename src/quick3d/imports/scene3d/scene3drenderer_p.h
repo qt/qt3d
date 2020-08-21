@@ -95,20 +95,27 @@ public:
     void allowRender();
     void setCompositingMode(Scene3DItem::CompositingMode mode);
     void setSkipFrame(bool skip);
-    void setScene3DViews(const QList<Scene3DView *> &views);
     void init(Scene3DItem *item, Qt3DCore::QAspectEngine *aspectEngine, QRenderAspect *renderAspect);
 
-    QRenderAspect *renderAspect() const
-    {
-        return m_renderAspect;
-    }
+    void setMultisample(bool multisample);
+    void setBoundingSize(const QSize &size);
+
+    bool multisample() const { return m_multisample; }
+    QSize boundingSize() const { return m_boundingRectSize; }
+
+    void setScene3DViews(const QList<Scene3DView *> &views);
+    void init(Qt3DCore::QAspectEngine *aspectEngine, QRenderAspect *renderAspect);
+
+    void beforeSynchronize();
+    void setWindow(QQuickWindow *window);
+
+    bool hasShutdown() const { return !m_needsShutdown; }
+
+    QRenderAspect *renderAspect() const { return m_renderAspect; }
 public Q_SLOTS:
     void shutdown();
-    void onSceneGraphInvalidated();
-    void onWindowChanged(QQuickWindow *w);
 
 private:
-    void scheduleRootEntityChange();
 
     class QuickRenderer
     {
@@ -173,12 +180,17 @@ private:
         QRhi *m_rhi = nullptr;
     };
 
-    Scene3DItem *m_item; // Will be released by the QQuickWindow/QML Engine
     Qt3DCore::QAspectEngine *m_aspectEngine; // Will be released by the Scene3DItem
     QRenderAspect *m_renderAspect; // Will be released by the aspectEngine
     Scene3DSGNode *m_node; // Will be released by the QtQuick SceneGraph
     QQuickWindow *m_window;
     QMutex m_windowMutex;
+
+    QSize m_lastSize;
+    QSize m_boundingRectSize;
+    bool m_multisample;
+    bool m_lastMultisample;
+
     bool m_needsShutdown;
     bool m_shouldRender;
     bool m_dirtyViews;

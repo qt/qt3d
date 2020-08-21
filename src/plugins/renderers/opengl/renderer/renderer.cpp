@@ -534,7 +534,11 @@ void Renderer::shutdown()
     QMutexLocker lock(&m_hasBeenInitializedMutex);
 
     qCDebug(Backend) << Q_FUNC_INFO << "Requesting renderer shutdown";
-    m_running.storeRelaxed(0);
+    const bool wasRunning = m_running.testAndSetRelaxed(1, 0);
+
+    // We might have already been shutdown
+    if (!wasRunning)
+        return;
 
     // We delete any renderqueue that we may not have had time to render
     // before the surface was destroyed
@@ -1699,7 +1703,7 @@ bool Renderer::shouldRender() const
 {
     // Only render if something changed during the last frame, or the last frame
     // was not rendered successfully (or render-on-demand is disabled)
-    return (m_settings->renderPolicy() == QRenderSettings::Always
+    return ((m_settings && m_settings->renderPolicy() == QRenderSettings::Always)
             || m_dirtyBits.marked != 0
             || m_dirtyBits.remaining != 0
             || !m_lastFrameCorrect.loadRelaxed());
