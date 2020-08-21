@@ -86,26 +86,26 @@ public:
     void allowRender();
     void setCompositingMode(Scene3DItem::CompositingMode mode);
     void setSkipFrame(bool skip);
-    void setScene3DViews(const QVector<Scene3DView *> views);
-    void init(Scene3DItem *item, Qt3DCore::QAspectEngine *aspectEngine, QRenderAspect *renderAspect);
+    void setMultisample(bool multisample);
+    void setBoundingSize(const QSize &size);
 
-    QRenderAspect *renderAspect() const
-    {
-        return m_renderAspect;
-    }
+    void setScene3DViews(const QVector<Scene3DView *> views);
+    void init(Qt3DCore::QAspectEngine *aspectEngine, QRenderAspect *renderAspect);
+
+    void beforeSynchronize();
+    void setWindow(QQuickWindow *window);
+
+    bool hasShutdown() const { return !m_needsShutdown; }
+
+    QRenderAspect *renderAspect() const { return m_renderAspect; }
 public Q_SLOTS:
     void render();
     void shutdown();
-    void onSceneGraphInvalidated();
-    void onWindowChanged(QQuickWindow *w);
 
 private:
     QOpenGLFramebufferObject *createMultisampledFramebufferObject(const QSize &size);
     QOpenGLFramebufferObject *createFramebufferObject(const QSize &size);
-    void beforeSynchronize();
-    void scheduleRootEntityChange();
 
-    Scene3DItem *m_item; // Will be released by the QQuickWindow/QML Engine
     Qt3DCore::QAspectEngine *m_aspectEngine; // Will be released by the Scene3DItem
     QRenderAspect *m_renderAspect; // Will be released by the aspectEngine
     QScopedPointer<QOpenGLFramebufferObject> m_multisampledFBO;
@@ -115,6 +115,7 @@ private:
     QQuickWindow *m_window;
     QMutex m_windowMutex;
     QSize m_lastSize;
+    QSize m_boundingRectSize;
     bool m_multisample;
     bool m_lastMultisample;
     bool m_needsShutdown;

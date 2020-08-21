@@ -629,7 +629,8 @@ void QRenderAspectPrivate::renderSynchronous(bool swapBuffers)
  */
 void QRenderAspectPrivate::renderShutdown()
 {
-    m_renderer->shutdown();
+    if (m_renderer != nullptr)
+        m_renderer->shutdown();
 }
 
 QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
