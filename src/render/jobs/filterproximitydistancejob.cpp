@@ -40,13 +40,22 @@ namespace Qt3DRender {
 
 namespace Render {
 
+namespace {
+int instanceCounter = 0;
+} // anonymous
+
 
 FilterProximityDistanceJob::FilterProximityDistanceJob()
     : m_manager(nullptr)
     , m_targetEntity(nullptr)
     , m_distanceThresholdSquared(0.)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::ProximityFiltering, 0)
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::ProximityFiltering, instanceCounter++)
+}
+
+FilterProximityDistanceJob::~FilterProximityDistanceJob()
+{
+    --instanceCounter;
 }
 
 void FilterProximityDistanceJob::run()

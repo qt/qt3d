@@ -74,8 +74,8 @@ namespace OpenGL {
 class Renderer;
 
 using SynchronizerJobPtr = GenericLambdaJobPtr<std::function<void()>>;
-#define CreateSynchronizerJobPtr(lambda, type) \
-    SynchronizerJobPtr::create(lambda, type, #type)
+#define CreateSynchronizerJobPtr(lambda, type, instance) \
+    SynchronizerJobPtr::create(lambda, type, #type, instance)
 
 using RenderViewCommandBuilderJobPtr = Render::RenderViewCommandBuilderJobPtr<RenderView, RenderCommand>;
 using RenderViewCommandUpdaterJobPtr = Render::RenderViewCommandUpdaterJobPtr<RenderView, RenderCommand>;

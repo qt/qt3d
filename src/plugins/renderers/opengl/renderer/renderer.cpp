@@ -255,9 +255,9 @@ Renderer::Renderer()
     , m_lightGathererJob(new CachingLightGatherer(&m_cache))
     , m_renderableEntityFilterJob(new CachingRenderableEntityFilter(&m_cache))
     , m_computableEntityFilterJob(new CachingComputableEntityFilter(&m_cache))
-    , m_bufferGathererJob(CreateSynchronizerJobPtr([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering))
-    , m_vaoGathererJob(CreateSynchronizerJobPtr([this] { lookForAbandonedVaos(); }, JobTypes::DirtyVaoGathering))
-    , m_textureGathererJob(CreateSynchronizerJobPtr([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering))
+    , m_bufferGathererJob(CreateSynchronizerJobPtr([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering, 0))
+    , m_vaoGathererJob(CreateSynchronizerJobPtr([this] { lookForAbandonedVaos(); }, JobTypes::DirtyVaoGathering, 0))
+    , m_textureGathererJob(CreateSynchronizerJobPtr([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering, 0))
     , m_introspectShaderJob(CreateSynchronizerPostFramePtr([this] { reloadDirtyShaders(); },
                                                            [this] (Qt3DCore::QAspectManager *m) { sendShaderChangesToFrontend(m); },
                                                            JobTypes::DirtyShaderGathering))

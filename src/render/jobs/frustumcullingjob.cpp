@@ -51,13 +51,22 @@ namespace Qt3DRender {
 
 namespace Render {
 
+namespace {
+int instanceCounter = 0;
+} // anonymous
+
 FrustumCullingJob::FrustumCullingJob()
     : Qt3DCore::QAspectJob()
     , m_root(nullptr)
     , m_manager(nullptr)
     , m_active(false)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::FrustumCulling, 0)
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::FrustumCulling, instanceCounter++)
+}
+
+FrustumCullingJob::~FrustumCullingJob()
+{
+    --instanceCounter;
 }
 
 void FrustumCullingJob::run()

@@ -73,6 +73,7 @@ class Q_3DRENDERSHARED_PRIVATE_EXPORT FrustumCullingJob : public Qt3DCore::QAspe
 {
 public:
     FrustumCullingJob();
+    ~FrustumCullingJob();
 
     QT3D_ALIGNED_MALLOC_AND_FREE()
 

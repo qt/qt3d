@@ -57,6 +57,7 @@ class Q_3DRENDERSHARED_PRIVATE_EXPORT FilterProximityDistanceJob : public Qt3DCo
 {
 public:
     FilterProximityDistanceJob();
+    ~FilterProximityDistanceJob();
 
     inline void setManager(NodeManagers *manager) { m_manager = manager; }
     inline void setProximityFilterIds(const Qt3DCore::QNodeIdVector &proximityFilterIds) { m_proximityFilterIds = proximityFilterIds; }
