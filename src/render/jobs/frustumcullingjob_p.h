@@ -83,6 +83,7 @@ public:
     inline bool isActive() const Q_DECL_NOTHROW { return m_active; }
     inline void setViewProjection(const Matrix4x4 &viewProjection) Q_DECL_NOTHROW { m_viewProjection = viewProjection; }
     inline Matrix4x4 viewProjection() const Q_DECL_NOTHROW { return m_viewProjection; }
+    bool isRequired() override;
 
     const std::vector<Entity *> &visibleEntities() const Q_DECL_NOTHROW { return m_visibleEntities; }
 

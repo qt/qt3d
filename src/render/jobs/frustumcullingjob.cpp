@@ -115,6 +115,11 @@ void FrustumCullingJob::cullScene(Entity *e, const Plane *planes)
     });
 }
 
+bool FrustumCullingJob::isRequired()
+{
+    return m_active;
+}
+
 } // Render
 
 } // Qt3DRender

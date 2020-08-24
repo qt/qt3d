@@ -58,6 +58,11 @@ FilterProximityDistanceJob::~FilterProximityDistanceJob()
     --instanceCounter;
 }
 
+bool FilterProximityDistanceJob::isRequired()
+{
+    return hasProximityFilter();
+}
+
 void FilterProximityDistanceJob::run()
 {
     Q_ASSERT(m_manager != nullptr);

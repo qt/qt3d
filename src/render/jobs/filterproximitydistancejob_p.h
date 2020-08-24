@@ -66,6 +66,7 @@ public:
     // QAspectJob interface
     void run() final;
     const std::vector<Entity *> &filteredEntities() const { return m_filteredEntities; }
+    bool isRequired() override;
 
 #if defined (QT_BUILD_INTERNAL)
     // For unit testing
