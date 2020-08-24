@@ -143,6 +143,12 @@ Q_3DRENDERSHARED_PRIVATE_EXPORT void addStatesToRenderStateSet(RenderStateSet *s
                                                                const QList<Qt3DCore::QNodeId> stateIds,
                                                                RenderStateManager *manager);
 
+Q_3DRENDERSHARED_PRIVATE_EXPORT int findIdealNumberOfWorkers(int elementCount, int packetSize = 100, int maxJobCount = 1)
+;
+
+Q_3DRENDERSHARED_PRIVATE_EXPORT std::vector<Entity *> entitiesInSubset(const std::vector<Entity *> &entities,
+const std::vector<Entity *> &subset);
+
 } // namespace Render
 } // namespace Qt3DRender
 

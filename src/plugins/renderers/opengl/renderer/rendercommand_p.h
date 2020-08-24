@@ -75,15 +75,6 @@ namespace Render {
 class RenderStateSet;
 using RenderStateSetPtr = QSharedPointer<RenderStateSet>;
 
-enum RebuildFlag {
-    FullCommandRebuild = 1 << 0,
-    LayerCacheRebuild = 1 << 1,
-    MaterialCacheRebuild = 1 << 2,
-    LightCacheRebuild = 1 << 3
-};
-Q_DECLARE_FLAGS(RebuildFlagSet, RebuildFlag)
-Q_DECLARE_OPERATORS_FOR_FLAGS(RebuildFlagSet)
-
 namespace OpenGL {
 
 class GLShader;

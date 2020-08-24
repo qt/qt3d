@@ -35,7 +35,8 @@ HEADERS += \
     $$PWD/renderercache_p.h \
     $$PWD/renderviewcommandbuilderjob_p.h \
     $$PWD/renderviewcommandupdaterjob_p.h \
-    $$PWD/renderviewinitializerjob_p.h
+    $$PWD/renderviewinitializerjob_p.h \
+    $$PWD/rendersyncjobs_p.h
 
 SOURCES += \
     $$PWD/updateworldtransformjob.cpp \

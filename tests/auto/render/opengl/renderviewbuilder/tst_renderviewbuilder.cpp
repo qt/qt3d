@@ -54,6 +54,7 @@
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/filterentitybycomponentjob_p.h>
 #include <Qt3DRender/private/qrenderaspect_p.h>
+#include <Qt3DRender/private/renderviewjobutils_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -675,7 +676,7 @@ private Q_SLOTS:
         std::sort(renderableEntity.begin(), renderableEntity.end());
 
         // WHEN
-        renderableEntity = Qt3DRender::Render::OpenGL::RenderViewBuilder::entitiesInSubset(renderableEntity, filteredEntity);
+        renderableEntity = Qt3DRender::Render::entitiesInSubset(renderableEntity, filteredEntity);
 
         // THEN
         QCOMPARE(renderableEntity.size(), 100);

@@ -46,6 +46,7 @@
 
 #include "imguirenderer_p.h"
 #include <renderview_p.h>
+#include <rendercommand_p.h>
 #include <renderer_p.h>
 #include <submissioncontext_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>

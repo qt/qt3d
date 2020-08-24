@@ -225,6 +225,24 @@ bool ParameterInfo::operator<(const int otherNameId) const Q_DECL_NOEXCEPT
     return nameId < otherNameId;
 }
 
+int findIdealNumberOfWorkers(int elementCount, int packetSize, int maxJobCount)
+{
+    if (elementCount == 0 || packetSize == 0)
+        return 0;
+    return std::min(std::max(elementCount / packetSize, 1), maxJobCount);
+}
+
+std::vector<Entity *> entitiesInSubset(const std::vector<Entity *> &entities, const std::vector<Entity *> &subset)
+{
+    std::vector<Entity *> intersection;
+    intersection.reserve(qMin(entities.size(), subset.size()));
+    std::set_intersection(entities.begin(), entities.end(),
+                          subset.begin(), subset.end(),
+                          std::back_inserter(intersection));
+
+    return intersection;
+}
+
 } // namespace Render
 } // namespace Qt3DRender
 

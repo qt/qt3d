@@ -97,6 +97,7 @@ namespace Rhi {
 
 class Renderer;
 class RenderCommand;
+class RHIShader;
 
 typedef QPair<ShaderUniform, QVariant> ActivePropertyContent;
 typedef QPair<QString, ActivePropertyContent> ActiveProperty;

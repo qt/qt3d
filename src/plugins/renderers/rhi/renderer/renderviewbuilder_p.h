@@ -61,6 +61,8 @@
 #include <Qt3DRender/private/materialparametergathererjob_p.h>
 #include <Qt3DRender/private/renderviewcommandbuilderjob_p.h>
 #include <Qt3DRender/private/renderviewcommandupdaterjob_p.h>
+#include <Qt3DRender/private/rendersyncjobs_p.h>
+#include <rendercommand_p.h>
 #include <renderview_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -119,9 +121,6 @@ public:
     static int defaultJobCount();
     int optimalJobCount() const;
     void setOptimalJobCount(int v);
-
-    static std::vector<Entity *> entitiesInSubset(const std::vector<Entity *> &entities,
-                                                  const std::vector<Entity *> &subset);
 
 private:
     Render::FrameGraphNode *m_leafNode;

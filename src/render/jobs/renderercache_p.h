@@ -51,12 +51,11 @@
 // We mean it.
 //
 
+#include <Qt3DCore/private/vector_helper_p.h>
 #include <Qt3DRender/QFrameGraphNode>
-
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/renderviewjobutils_p.h>
 #include <Qt3DRender/private/lightsource_p.h>
-#include <rendercommand_p.h>
 
 QT_BEGIN_NAMESPACE
 

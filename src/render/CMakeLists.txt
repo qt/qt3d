@@ -170,6 +170,7 @@ qt_add_module(3DRender
         jobs/renderviewcommandbuilderjob_p.h
         jobs/renderviewcommandupdaterjob_p.h
         jobs/renderviewinitializerjob_p.h
+        jobs/rendersyncjobs_p.h
         lights/environmentlight.cpp lights/environmentlight_p.h
         lights/light.cpp lights/light_p.h
         lights/lightsource.cpp lights/lightsource_p.h
