@@ -55,6 +55,8 @@
 
 #include <Qt3DInput/private/qt3dinput_global_p.h>
 
+#include <QtCore/QVariant>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {

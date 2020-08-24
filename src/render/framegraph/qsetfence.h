@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include <Qt3DRender/QFrameGraphNode>
+#include <QtCore/QVariant>
 
 #ifndef QT3DRENDER_QSETFENCE_H
 #define QT3DRENDER_QSETFENCE_H

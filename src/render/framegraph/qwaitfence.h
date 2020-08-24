@@ -41,6 +41,7 @@
 #define QT3DRENDER_QWAITFENCE_H
 
 #include <Qt3DRender/QFrameGraphNode>
+#include <QtCore/QVariant>
 
 QT_BEGIN_NAMESPACE
 

@@ -41,6 +41,7 @@
 
 #include <QtCore/QDataStream>
 #include <QtCore/QLoggingCategory>
+#include <QtCore/QIODevice>
 
 QT_BEGIN_NAMESPACE
 

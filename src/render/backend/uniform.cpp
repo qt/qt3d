@@ -39,6 +39,7 @@
 
 #include "uniform_p.h"
 #include "qabstracttexture.h"
+#include <QVariant>
 
 QT_BEGIN_NAMESPACE
 

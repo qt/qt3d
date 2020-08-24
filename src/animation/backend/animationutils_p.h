@@ -56,6 +56,7 @@
 
 #include <QtCore/qbitarray.h>
 #include <QtCore/qdebug.h>
+#include <QtCore/QVariant>
 #include <qmath.h>
 
 QT_BEGIN_NAMESPACE

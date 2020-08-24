@@ -41,6 +41,7 @@
 
 #include <QtCore/QLoggingCategory>
 #include <QtCore/QRegularExpression>
+#include <QtCore/QIODevice>
 
 QT_BEGIN_NAMESPACE
 
