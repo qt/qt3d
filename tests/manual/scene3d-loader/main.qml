@@ -50,7 +50,7 @@
 
 import QtQuick 2.0
 import QtQuick.Scene3D 2.0
-import QtQuick.Controls 1.2
+import QtQuick.Controls 2.0
 
 Item {
 
@@ -71,11 +71,12 @@ Item {
         spacing: 10
         Button {
             text: "Scene 1";
-            isDefault: true
+            highlighted: loader.source === "Scene.qml"
             onClicked: loader.source = "Scene.qml"
         }
         Button {
             text: "Scene 2";
+            highlighted: loader.source === "Scene2.qml"
             onClicked: loader.source = "Scene2.qml"
         }
     }
