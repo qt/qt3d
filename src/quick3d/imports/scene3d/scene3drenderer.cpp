@@ -57,7 +57,6 @@
 #include <scene3ditem_p.h>
 #include <scene3dlogging_p.h>
 #include <scene3dsgnode_p.h>
-#include <scene3dview_p.h>
 
 #include <QtQuick/private/qquickwindow_p.h>
 
@@ -242,13 +241,6 @@ void Scene3DRenderer::setBoundingSize(const QSize &size)
     m_boundingRectSize = size;
 }
 
-// Main Thread, Render Thread locked
-void Scene3DRenderer::setScene3DViews(const QList<Scene3DView *> &views)
-{
-    m_views = views;
-    m_dirtyViews = true;
-}
-
 QOpenGLFramebufferObject *Scene3DRenderer::GLRenderer::createMultisampledFramebufferObject(const QSize &size)
 {
     QOpenGLFramebufferObjectFormat format;
@@ -343,34 +335,14 @@ void Scene3DRenderer::GLRenderer::beforeSynchronize(Scene3DRenderer *scene3DRend
             m_texture.reset(QPlatformInterface::QSGOpenGLTexture::fromNative(m_textureId, window, m_finalFBO->size(), QQuickWindow::TextureHasAlphaChannel));
         }
 
-        // We can render either the Scene3D or the Scene3DView but not both
-        // at the same time
-        const auto &views = scene3DRenderer->m_views;
-        Q_ASSERT((node == nullptr || views.empty()) ||
-                 (node != nullptr && views.empty()) ||
-                 (node == nullptr && !views.empty()));
-
-
-
         // Set texture on node
         if (!node->texture() || generateNewTexture)
             node->setTexture(m_texture.data());
-
-        // Set textures on Scene3DView
-        if (scene3DRenderer->m_dirtyViews || generateNewTexture) {
-            for (Scene3DView *view : qAsConst(views))
-                if (!view->texture() || generateNewTexture)
-                    view->setTexture(m_texture.data());
-            scene3DRenderer->m_dirtyViews = false;
-        }
     }
 
     // Mark SGNodes as dirty so that QQuick will trigger some rendering
     if (node)
         node->markDirty(QSGNode::DirtyMaterial);
-
-    for (Scene3DView *view : qAsConst(scene3DRenderer->m_views))
-        view->markSGNodeDirty();
 }
 
 void Scene3DRenderer::GLRenderer::beforeRendering(Scene3DRenderer *scene3DRenderer)

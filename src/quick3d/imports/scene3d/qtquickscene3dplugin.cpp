@@ -42,7 +42,6 @@
 #include <QtQml>
 
 #include <scene3ditem_p.h>
-#include <scene3dview_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -50,7 +49,6 @@ void QtQuickScene3DPlugin::registerTypes(const char *uri)
 {
     qmlRegisterType<Qt3DRender::Scene3DItem>(uri, 2, 0, "Scene3D");
     qmlRegisterType<Qt3DRender::Scene3DItem, 14>(uri, 2, 14, "Scene3D");
-    qmlRegisterType<Qt3DRender::Scene3DView>(uri, 2, 14, "Scene3DView");
 
     // The minor version used to be the current Qt 5 minor. For compatibility it is the last
     // Qt 5 release.

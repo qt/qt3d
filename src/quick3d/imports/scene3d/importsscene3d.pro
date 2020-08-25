@@ -16,8 +16,7 @@ HEADERS += \
     scene3drenderer_p.h \
     scene3dsgnode_p.h \
     scene3dsgmaterialshader_p.h \
-    scene3dsgmaterial_p.h \
-    scene3dview_p.h
+    scene3dsgmaterial_p.h
 
 SOURCES += \
     qtquickscene3dplugin.cpp \
@@ -26,8 +25,7 @@ SOURCES += \
     scene3drenderer.cpp \
     scene3dsgnode.cpp \
     scene3dsgmaterialshader.cpp \
-    scene3dsgmaterial.cpp \
-    scene3dview.cpp
+    scene3dsgmaterial.cpp
 
 OTHER_FILES += qmldir shaders/*
 

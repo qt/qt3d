@@ -17,7 +17,6 @@ qt_add_qml_module(qtquickscene3dplugin
         scene3dsgmaterial.cpp scene3dsgmaterial_p.h
         scene3dsgmaterialshader.cpp scene3dsgmaterialshader_p.h
         scene3dsgnode.cpp scene3dsgnode_p.h
-        scene3dview.cpp scene3dview_p.h
     PUBLIC_LIBRARIES
         Qt::3DCore
         Qt::3DRender

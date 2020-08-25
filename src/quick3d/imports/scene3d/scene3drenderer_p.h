@@ -103,7 +103,6 @@ public:
     bool multisample() const { return m_multisample; }
     QSize boundingSize() const { return m_boundingRectSize; }
 
-    void setScene3DViews(const QList<Scene3DView *> &views);
     void init(Qt3DCore::QAspectEngine *aspectEngine, QRenderAspect *renderAspect);
 
     void beforeSynchronize();
@@ -197,7 +196,6 @@ private:
     bool m_skipFrame;
     QSemaphore m_allowRendering;
     Scene3DItem::CompositingMode m_compositingMode;
-    QList<Scene3DView *> m_views;
     bool m_resetRequested = false;
     QuickRenderer *m_quickRenderer = nullptr;
 
