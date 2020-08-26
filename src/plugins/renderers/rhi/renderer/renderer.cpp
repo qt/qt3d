@@ -51,6 +51,7 @@
 #include <Qt3DRender/qtechnique.h>
 #include <Qt3DRender/qrenderaspect.h>
 #include <Qt3DRender/qeffect.h>
+#include <Qt3DRender/qrendercapture.h>
 
 #include <Qt3DRender/private/qsceneimporter_p.h>
 #include <Qt3DRender/private/renderstates_p.h>
@@ -1186,8 +1187,10 @@ void Renderer::createRenderTarget(RenderTarget *target)
         if (tex && tex->getRhiTexture()) {
 
             auto rhiTex = tex->getRhiTexture();
-            if (!rhiTex->flags().testFlag(QRhiTexture::RenderTarget)) {
-                rhiTex->setFlags(rhiTex->flags() | QRhiTexture::RenderTarget);
+            if (!rhiTex->flags().testFlag(QRhiTexture::RenderTarget) ||
+                !rhiTex->flags().testFlag(QRhiTexture::UsedAsTransferSource)) {
+                // UsedAsTransferSource is required if we ever want to read back from the texture
+                rhiTex->setFlags(rhiTex->flags() | QRhiTexture::RenderTarget|QRhiTexture::UsedAsTransferSource);
                 rhiTex->create();
             }
             switch (rhiTex->format()) {
@@ -2813,6 +2816,7 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
 
     // All the RVs in the current passinfo target the same RenderTarget
     // A single beginPass should take place, unless Computes RVs are intermingled
+    QRhiResourceUpdateBatch *inPassUpdates = nullptr;
 
     // Per Pass Global States
     for (RenderView *rv : renderViews) {
@@ -2851,11 +2855,60 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
             }
 
             executeDrawRenderView(rv);
+
+            const Qt3DCore::QNodeId renderCaptureId = rv->renderCaptureNodeId();
+            if (!renderCaptureId.isNull()) {
+                const QRenderCaptureRequest request = rv->renderCaptureRequest();
+                QRhiRenderTarget *rhiTarget = nullptr;
+                RHIRenderTarget *target = nullptr;
+
+                if (rv->renderTargetId()) {
+                    RHIRenderTargetManager *targetManager = m_RHIResourceManagers->rhiRenderTargetManager();
+                    target = targetManager->lookupResource(rv->renderTargetId());
+                    if (target != nullptr)
+                        rhiTarget = target->renderTarget;
+                }
+                // Use FBO size if RV has one
+                const QSize size = rhiTarget ? rhiTarget->pixelSize() : rv->surfaceSize();
+
+                QRect rect(QPoint(0, 0), size);
+                if (!request.rect.isEmpty())
+                    rect = rect.intersected(request.rect);
+                QImage image;
+                if (!rect.isEmpty()) {
+                    // Bind fbo as read framebuffer
+                    QRhiReadbackResult *readBackResult = new QRhiReadbackResult;
+                    readBackResult->completed = [this, readBackResult, renderCaptureId, request] () {
+                        const QImage::Format fmt = QImage::Format_RGBA8888_Premultiplied; // fits QRhiTexture::RGBA8
+                        const uchar *p = reinterpret_cast<const uchar *>(readBackResult->data.constData());
+                        const QImage image(p, readBackResult->pixelSize.width(), readBackResult->pixelSize.height(), fmt);
+
+                        Render::RenderCapture *renderCapture = static_cast<Render::RenderCapture*>(m_nodesManager->frameGraphManager()->lookupNode(renderCaptureId));
+                        renderCapture->addRenderCapture(request.captureId, image);
+                        if (!Qt3DCore::contains(m_pendingRenderCaptureSendRequests, renderCaptureId))
+                            m_pendingRenderCaptureSendRequests.push_back(renderCaptureId);
+                        delete readBackResult;
+                    };
+
+                    QRhiReadbackDescription readbackDesc;
+                    if (rhiTarget) {
+                        // First texture should be Attachment 0
+                        QRhiTextureRenderTarget *textureRenderTarget = static_cast<QRhiTextureRenderTarget *>(rhiTarget);
+                        const QRhiTextureRenderTargetDescription &desc = textureRenderTarget->description();
+                        const QRhiColorAttachment *color0Att = desc.colorAttachmentAt(0);
+                        readbackDesc.setTexture(color0Att->texture());
+                    }
+                    inPassUpdates = m_submissionContext->rhi()->nextResourceUpdateBatch();
+                    inPassUpdates->readBackTexture(readbackDesc, readBackResult);
+                } else {
+                    qCWarning(Backend) << "Requested capture rectangle is outside framebuffer";
+                }
+            }
         }
     }
 
     if (Q_LIKELY(inDraw))
-        cb->endPass();
+        cb->endPass(inPassUpdates);
     else if (inCompute)
         cb->endComputePass();
 

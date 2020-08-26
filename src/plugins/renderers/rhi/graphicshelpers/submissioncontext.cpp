@@ -1159,7 +1159,8 @@ SubmissionContext::SwapChainInfo *SubmissionContext::swapChainForSurface(QSurfac
         const int samples = format().samples();
 
         swapChain->setWindow(window);
-        swapChain->setFlags(QRhiSwapChain::Flags {});
+        // Allow to read back from swap chain for RenderCapture to work
+        swapChain->setFlags(QRhiSwapChain::Flags { QRhiSwapChain::UsedAsTransferSource });
         swapChain->setSampleCount(samples);
 
         QRhiRenderBuffer *renderBuffer =
