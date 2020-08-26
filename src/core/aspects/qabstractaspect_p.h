@@ -133,7 +133,6 @@ public:
     void syncDirtyFrontEndNodes(const QList<QNode *> &nodes);
     void syncDirtyEntityComponentNodes(const QList<ComponentRelationshipChange> &nodes);
     virtual void syncDirtyFrontEndNode(QNode *node, QBackendNode *backend, bool firstTime) const;
-    void sendPropertyMessages(QNode *node, QBackendNode *backend) const;
 
     virtual void onEngineAboutToShutdown();
 
