@@ -37,40 +37,42 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QCOREASPECT_H
-#define QT3DCORE_QCOREASPECT_H
+#ifndef QT3DCORE_QCORESETTINGS_H
+#define QT3DCORE_QCORESETTINGS_H
 
-#include <Qt3DCore/qabstractaspect.h>
+#include <Qt3DCore/qcomponent.h>
+#include <Qt3DCore/qt3dcore_global.h>
+#include <QtCore/QSharedPointer>
+
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QCoreAspectPrivate;
+class QCoreSettingsPrivate;
 
-class Q_3DCORESHARED_EXPORT QCoreAspect : public Qt3DCore::QAbstractAspect
+class Q_3DCORESHARED_EXPORT QCoreSettings : public Qt3DCore::QComponent
 {
     Q_OBJECT
+    Q_PROPERTY(bool boundingVolumesEnabled WRITE setBoundingVolumesEnabled READ boundingVolumesEnabled NOTIFY boundingVolumesEnabledChanged)
 public:
-    explicit QCoreAspect(QObject *parent = nullptr);
-    ~QCoreAspect();
+    explicit QCoreSettings(Qt3DCore::QNode *parent = nullptr);
+    ~QCoreSettings();
 
-    QAspectJobPtr calculateBoundingVolumeJob() const;
+    bool boundingVolumesEnabled() const;
 
-protected:
-    Q_DECLARE_PRIVATE(QCoreAspect)
+public Q_SLOTS:
+    void setBoundingVolumesEnabled(bool boundingVolumesEnabled);
+
+Q_SIGNALS:
+    void boundingVolumesEnabledChanged(bool boundingVolumesEnabled);
 
 private:
-    std::vector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) override;
-    QVariant executeCommand(const QStringList &args) override;
-    void onRegistered() override;
-    void onUnregistered() override;
-    void onEngineStartup() override;
-    void frameDone() override;
+    Q_DECLARE_PRIVATE(QCoreSettings)
 };
 
-}
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_QCOREASPECT_H
+#endif // QT3DCORE_QCORESETTINGS_H

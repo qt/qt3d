@@ -37,40 +37,57 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QCOREASPECT_H
-#define QT3DCORE_QCOREASPECT_H
+#ifndef QT3DCORE_RENDERSETTINGS_H
+#define QT3DCORE_RENDERSETTINGS_H
 
-#include <Qt3DCore/qabstractaspect.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DCore/qcoresettings.h>
+#include <Qt3DCore/private/qt3dcore_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QCoreAspectPrivate;
+class QCoreAspect;
 
-class Q_3DCORESHARED_EXPORT QCoreAspect : public Qt3DCore::QAbstractAspect
+class Q_3DCORE_PRIVATE_EXPORT CoreSettings : public QBackendNode
 {
-    Q_OBJECT
 public:
-    explicit QCoreAspect(QObject *parent = nullptr);
-    ~QCoreAspect();
+    CoreSettings();
 
-    QAspectJobPtr calculateBoundingVolumeJob() const;
-
-protected:
-    Q_DECLARE_PRIVATE(QCoreAspect)
+    void setAspect(QCoreAspect *aspect) { m_aspect = aspect; }
+    void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
 private:
-    std::vector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) override;
-    QVariant executeCommand(const QStringList &args) override;
-    void onRegistered() override;
-    void onUnregistered() override;
-    void onEngineStartup() override;
-    void frameDone() override;
+    QCoreAspect *m_aspect;
 };
 
-}
+class CoreSettingsFunctor : public Qt3DCore::QBackendNodeMapper
+{
+public:
+    explicit CoreSettingsFunctor(QCoreAspect *aspect);
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNodeId id) const override;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const override;
+    void destroy(Qt3DCore::QNodeId id) const override;
+
+private:
+    QCoreAspect *m_aspect;
+    mutable CoreSettings *m_settings;
+};
+
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_QCOREASPECT_H
+#endif // QT3DCORE_RENDERSETTINGS_H

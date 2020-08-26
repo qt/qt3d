@@ -61,6 +61,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
+class QCoreAspect;
 class CalculateBoundingVolumeJobPrivate;
 class QEntity;
 class QAttribute;
@@ -96,14 +97,16 @@ struct Q_3DCORE_PRIVATE_EXPORT BoundingVolumeComputeData {
 class Q_3DCORE_PRIVATE_EXPORT CalculateBoundingVolumeJob : public Qt3DCore::QAspectJob
 {
 public:
-    explicit CalculateBoundingVolumeJob();
+    explicit CalculateBoundingVolumeJob(QCoreAspect *aspect);
 
     void setRoot(QEntity *root) { m_root = root; }
+    bool isRequired() override;
     void run() override;
     void postFrame(QAspectEngine *aspectEngine) override;
 
 private:
     Q_DECLARE_PRIVATE(CalculateBoundingVolumeJob)
+    QCoreAspect *m_aspect;
     QEntity *m_root;
     std::vector<BoundingVolumeComputeResult> m_results;
 };

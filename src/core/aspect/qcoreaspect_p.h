@@ -71,12 +71,14 @@ public:
     ~QCoreAspectPrivate();
 
     Q_DECLARE_PUBLIC(QCoreAspect)
+    static QCoreAspectPrivate *get(QCoreAspect *aspect);
 
     void jobsDone() override;
     void frameDone() override;
 
     bool m_initialized;
     CalculateBoundingVolumeJobPtr m_calculateBoundingVolumeJob;
+    bool m_boundingVolumesEnabled;
 };
 
 }

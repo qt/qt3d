@@ -207,7 +207,7 @@ void runRequiredJobs(Qt3DRender::TestAspect *test)
     updateWorldTransform.setManagers(test->nodeManagers());
     updateWorldTransform.run();
 
-    Qt3DCore::CalculateBoundingVolumeJob calcCBVolume;
+    Qt3DCore::CalculateBoundingVolumeJob calcCBVolume(nullptr);
     calcCBVolume.setRoot(test->root());
     calcCBVolume.run();
     calcCBVolume.postFrame(nullptr);

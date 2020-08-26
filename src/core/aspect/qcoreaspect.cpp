@@ -39,6 +39,8 @@
 
 #include "qcoreaspect.h"
 #include "qcoreaspect_p.h"
+#include <Qt3DCore/qcoresettings.h>
+#include <Qt3DCore/private/coresettings_p.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/calcboundingvolumejob_p.h>
@@ -49,6 +51,7 @@ using namespace Qt3DCore;
 
 QCoreAspectPrivate::QCoreAspectPrivate()
     : Qt3DCore::QAbstractAspectPrivate()
+    , m_boundingVolumesEnabled(true)
 {
 
 }
@@ -56,6 +59,11 @@ QCoreAspectPrivate::QCoreAspectPrivate()
 QCoreAspectPrivate::~QCoreAspectPrivate()
 {
 
+}
+
+QCoreAspectPrivate *QCoreAspectPrivate::get(QCoreAspect *aspect)
+{
+    return aspect->d_func();
 }
 
 void QCoreAspectPrivate::jobsDone()
@@ -95,9 +103,11 @@ std::vector<QAspectJobPtr> QCoreAspect::jobsToExecute(qint64 time)
     auto scene = d->m_aspectManager->scene();
     auto dirtyBits = scene->dirtyBits();
 
-    if (dirtyBits & QScene::GeometryDirty ||
-        dirtyBits & QScene::BuffersDirty) {
-        jobs.push_back(d->m_calculateBoundingVolumeJob);
+    if (d->m_boundingVolumesEnabled) {
+        if (dirtyBits & QScene::GeometryDirty ||
+            dirtyBits & QScene::BuffersDirty) {
+            jobs.push_back(d->m_calculateBoundingVolumeJob);
+        }
     }
 
     return jobs;
@@ -114,7 +124,14 @@ void QCoreAspect::onRegistered()
     Q_D(QCoreAspect);
 
     if (d->m_calculateBoundingVolumeJob.isNull())
-        d->m_calculateBoundingVolumeJob = CalculateBoundingVolumeJobPtr::create();
+        d->m_calculateBoundingVolumeJob = CalculateBoundingVolumeJobPtr::create(this);
+
+    registerBackendType<QCoreSettings>(QSharedPointer<CoreSettingsFunctor>::create(this));
+}
+
+void QCoreAspect::onUnregistered()
+{
+    unregisterBackendType<Qt3DCore::QCoreSettings>();
 }
 
 void QCoreAspect::onEngineStartup()

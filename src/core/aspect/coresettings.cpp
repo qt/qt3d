@@ -37,40 +37,60 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QCOREASPECT_H
-#define QT3DCORE_QCOREASPECT_H
-
-#include <Qt3DCore/qabstractaspect.h>
+#include "coresettings_p.h"
+#include <Qt3DCore/private/qcoreaspect_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+using namespace Qt3DCore;
 
-class QCoreAspectPrivate;
-
-class Q_3DCORESHARED_EXPORT QCoreAspect : public Qt3DCore::QAbstractAspect
+CoreSettings::CoreSettings()
+    : QBackendNode()
 {
-    Q_OBJECT
-public:
-    explicit QCoreAspect(QObject *parent = nullptr);
-    ~QCoreAspect();
+}
 
-    QAspectJobPtr calculateBoundingVolumeJob() const;
+void CoreSettings::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
+{
+    Q_UNUSED(firstTime);
 
-protected:
-    Q_DECLARE_PRIVATE(QCoreAspect)
+    const QCoreSettings *node = qobject_cast<const QCoreSettings *>(frontEnd);
+    if (!node)
+        return;
 
-private:
-    std::vector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) override;
-    QVariant executeCommand(const QStringList &args) override;
-    void onRegistered() override;
-    void onUnregistered() override;
-    void onEngineStartup() override;
-    void frameDone() override;
-};
+    Q_ASSERT(m_aspect);
+    auto daspect = QCoreAspectPrivate::get(m_aspect);
+    daspect->m_boundingVolumesEnabled = node->boundingVolumesEnabled();
+}
 
+CoreSettingsFunctor::CoreSettingsFunctor(QCoreAspect *aspect)
+    : m_aspect(aspect)
+    , m_settings(nullptr)
+{
+}
+
+Qt3DCore::QBackendNode *CoreSettingsFunctor::create(Qt3DCore::QNodeId) const
+{
+    if (m_settings != nullptr) {
+        qWarning() << "Core settings already exists";
+        return nullptr;
+    }
+
+    m_settings = new CoreSettings;
+    m_settings->setAspect(m_aspect);
+    return m_settings;
+}
+
+Qt3DCore::QBackendNode *CoreSettingsFunctor::get(Qt3DCore::QNodeId id) const
+{
+    Q_UNUSED(id);
+    return m_settings;
+}
+
+void CoreSettingsFunctor::destroy(Qt3DCore::QNodeId id) const
+{
+    Q_UNUSED(id);
+    delete m_settings;
+    m_settings = nullptr;
 }
 
 QT_END_NAMESPACE
-
-#endif // QT3DCORE_QCOREASPECT_H

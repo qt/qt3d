@@ -43,7 +43,9 @@
 #include <Qt3DCore/qboundingvolume.h>
 #include <Qt3DCore/qbuffer.h>
 #include <Qt3DCore/qgeometryview.h>
+#include <Qt3DCore/qcoreaspect.h>
 #include <Qt3DCore/private/job_common_p.h>
+#include <Qt3DCore/private/qcoreaspect_p.h>
 #include <Qt3DCore/private/qaspectjob_p.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/qattribute_p.h>
@@ -203,15 +205,39 @@ BoundingVolumeComputeResult BoundingVolumeComputeData::compute() const
 }
 
 
-CalculateBoundingVolumeJob::CalculateBoundingVolumeJob()
+CalculateBoundingVolumeJob::CalculateBoundingVolumeJob(QCoreAspect *aspect)
     : Qt3DCore::QAspectJob()
+    , m_aspect(aspect)
     , m_root(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::CalcBoundingVolume, 0)
 }
 
+bool CalculateBoundingVolumeJob::isRequired()
+{
+    if (!m_aspect)
+        return true;
+
+    auto daspect = QCoreAspectPrivate::get(m_aspect);
+    return daspect->m_boundingVolumesEnabled;
+}
+
 void CalculateBoundingVolumeJob::run()
 {
+    // There's 2 bounding volume jobs, one here in Core, the other in Render.
+    // - This one computes bounding volumes for entities that have QBoundingVolume
+    //   components and use QGeometryViews.
+    //   In that case the component is updated directly by this job (since core
+    //   aspect does not maintain backend objects for the component)
+    // - The one in render does 2 things:
+    //   . Copy the results of this job to the backend object for entities that
+    //     use QBoundingVolume and QGeometryView (computed results arrive one
+    //     frame later, explicit results arrive on time)
+    //   . Compute the BV for old style QGeometryRenderer which use a QGeometry
+    //     directly without a QGeometryView
+    //
+    // (see more details in Qt3DRender::CalculateBoundingVolumeJob::run)
+
     m_results.clear();
 
     QHash<QEntity *, BoundingVolumeComputeData> dirtyEntities;

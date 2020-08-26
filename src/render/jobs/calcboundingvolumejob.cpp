@@ -245,6 +245,7 @@ BoundingVolumeComputeData findBoundingVolumeComputeData(NodeManagers *manager, E
     if (!res.geometry)
         return res;
 
+    // if it has a view, the bounding volume will have been computed by the core aspect
     if (res.renderer->hasView())
         return res;
 
@@ -400,6 +401,9 @@ public:
             // only valid if front end is a QGeometryRenderer without a view. All other cases handled by core aspect
             m_entities.push_back(data);
         } else {
+            // TODO: this means data is copied at every frame, should track dirty
+            //       implicit or explicit objects and only copy data for those.
+            //       Ultimately would be best to avoid traversal altogether.
             if (!data.renderer || data.renderer->primitiveType() == QGeometryRenderer::Patches
                 || !data.renderer->hasView())    // should have been handled above
                 return Continue;
@@ -445,6 +449,14 @@ CalculateBoundingVolumeJob::CalculateBoundingVolumeJob()
 
 void CalculateBoundingVolumeJob::run()
 {
+    // There's 2 bounding volume jobs, one in Core, the other here in Render.
+    // This one is setup to run after the other.
+    // (see more details in Qt3DCore::CalculateBoundingVolumeJob::run)
+    //
+    // TODO:
+    // - remove the one frame delay for propagating results of first job
+    // - avoid copying the computed BV at every frame
+
     Q_ASSERT(m_frontEndNodeManager);
 
     DirtyEntityAccumulator accumulator(m_manager);

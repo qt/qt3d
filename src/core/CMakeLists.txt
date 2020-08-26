@@ -7,6 +7,8 @@
 qt_add_module(3DCore
     SOURCES
         aspect/qcoreaspect.cpp aspect/qcoreaspect.h aspect/qcoreaspect_p.h
+        aspect/qcoresettings.cpp aspect/qcoresettings.h aspect/qcoresettings_p.h
+        aspect/coresettings.cpp aspect/coresettings_p.h
         aspects/aspectcommanddebugger.cpp aspects/aspectcommanddebugger_p.h
         aspects/qabstractaspect.cpp aspects/qabstractaspect.h aspects/qabstractaspect_p.h
         aspects/qaspectengine.cpp aspects/qaspectengine.h aspects/qaspectengine_p.h
