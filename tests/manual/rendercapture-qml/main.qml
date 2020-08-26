@@ -97,7 +97,8 @@ Item {
                 function doRenderCapture()
                 {
                     reply = scene.requestRenderCapture()
-                    reply.completeChanged.connect(onRenderCaptureComplete)
+                    console.log(reply)
+                    reply.completed.connect(onRenderCaptureComplete)
                 }
 
                 function onRenderCaptureComplete()
