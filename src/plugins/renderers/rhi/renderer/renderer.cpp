@@ -1360,6 +1360,7 @@ Renderer::prepareCommandsSubmission(const std::vector<RenderView *> &renderViews
         rhiPassesInfo.push_back(bucket);
     }
 
+    RHIShaderManager *rhiShaderManager = m_RHIResourceManagers->rhiShaderManager();
     // Assign a Graphics Pipeline to each RenderCommand
     for (size_t i = 0; i < renderViewCount; ++i) {
         RenderView *rv = renderViews[i];
@@ -1376,6 +1377,8 @@ Renderer::prepareCommandsSubmission(const std::vector<RenderView *> &renderViews
                 GeometryRenderer *rGeometryRenderer =
                         m_nodesManager->data<GeometryRenderer, GeometryRendererManager>(
                                 command.m_geometryRenderer);
+
+                command.m_rhiShader = rhiShaderManager->lookupResource(command.m_shaderId);
                 // By this time shaders should have been loaded
                 RHIShader *shader = command.m_rhiShader;
                 if (!shader)

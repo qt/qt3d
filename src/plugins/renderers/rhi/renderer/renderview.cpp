@@ -819,7 +819,6 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const Entity **entit
                                                             int offset, int count) const
 {
     EntityRenderCommandData commands;
-    RHIShaderManager *rhiShaderManager = m_renderer->rhiResourceManagers()->rhiShaderManager();
 
     commands.reserve(count);
 
@@ -869,11 +868,9 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const Entity **entit
                             m_renderer->defaultRenderState()->changeCost(command.m_stateSet.data());
                 }
                 command.m_shaderId = pass->shaderProgram();
-                command.m_rhiShader = rhiShaderManager->lookupResource(command.m_shaderId);
 
-                // It takes two frames to have a valid command as we can only
-                // reference a glShader at frame n if it has been loaded at frame n - 1
-
+                // At submission time, shaderId is used to retrieve a RHIShader
+                // No point in continuing if shaderId is null
                 if (!command.m_shaderId)
                     continue;
 
