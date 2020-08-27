@@ -2,7 +2,7 @@
     {
         "Id": "imgui",
         "Name": "Dear ImGui",
-        "QDocModule": "qtrhi",
+        "QDocModule": "qt3d",
         "Description": "Dear ImGui",
         "QtUsage": "Used in tests to demonstrate and verify the integration of an external GUI library.",
 
@@ -12,5 +12,32 @@
         "LicenseId": "MIT",
         "LicenseFile": "LICENSE.txt",
         "Copyright": "Copyright (c) 2014-2018 Omar Cornut"
+    },
+    {
+        "Id": "imgui-proggyclean",
+        "Name": "Dear ImGui - ProggyClean.ttf",
+        "QDocModule": "qt3d",
+        "Description": "ProggyClean.ttf font that is embedded into Dear ImGui",
+        "QtUsage": "Used in tests to demonstrate and verify the integration of an external GUI library.",
+        "Files": "imgui_draw.cpp",
+
+        "Homepage": "http://upperbounds.net",
+        "License": "MIT License",
+        "LicenseId": "MIT",
+        "LicenseFile": "LICENSE_proggyclean.txt",
+        "Copyright": "Copyright (c) 2004, 2005 Tristan Grimmer"
+    },
+    {
+        "Id": "imgui-proggyclean",
+        "Name": "Dear ImGui - stb",
+        "QDocModule": "qt3d",
+        "Description": "Single-file public domain (or MIT licensed) libraries for C/C++",
+        "QtUsage": "Used in tests to demonstrate and verify the integration of an external GUI library.",
+        "Files": "imstb_rectpack.h,imstb_textedit.h,imstb_truetype.h",
+
+        "Homepage": "https://github.com/nothings/stb/",
+        "License": "MIT License or Public Domain",
+        "LicenseFile": "LICENSE_imstb.txt",
+        "Copyright": "Copyright (c) 2017 Sean Barrett"
     }
 ]
