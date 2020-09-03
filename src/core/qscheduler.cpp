@@ -128,6 +128,9 @@ int QScheduler::scheduleAndWaitForFrameAspectJobs(qint64 time, bool dumpJobs)
                         std::make_move_iterator(aspectJobs.end()));
     }
 
+    if (jobQueue.empty())
+        return 0;
+
     if (dumpJobs)
         ::dumpJobs(jobQueue);
 

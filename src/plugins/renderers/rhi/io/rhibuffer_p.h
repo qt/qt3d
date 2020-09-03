@@ -87,7 +87,7 @@ public:
     QByteArray download(SubmissionContext *ctx, uint size);
     void cleanup();
 
-    int size() const { return m_allocSize; }
+    qsizetype size() const { return m_allocSize; }
     QRhiBuffer *rhiBuffer() const noexcept { return m_rhiBuffer; }
 
 private:
@@ -95,7 +95,7 @@ private:
 
     uint m_bufferId;
     bool m_dynamic;
-    int m_allocSize {};
+    qsizetype m_allocSize {};
 
     QRhiBuffer *m_rhiBuffer {};
 

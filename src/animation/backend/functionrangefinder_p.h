@@ -81,7 +81,7 @@ private:
     int locate(float x) const;
     int hunt(float x) const;
 
-    const QList<float> &m_x;
+    QList<float> m_x;
     mutable int m_previousLowerBound;
     mutable bool m_correlated;
     int m_rangeSize;

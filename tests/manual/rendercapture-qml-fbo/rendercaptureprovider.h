@@ -54,12 +54,12 @@
 #include <QtQuick/QQuickImageProvider>
 #include <Qt3DRender/QRenderCapture>
 
-class RenderCaptureProvider : public QObject, public QQuickImageProvider
+class RenderCaptureProvider : public QQuickImageProvider
 {
     Q_OBJECT
 public:
     RenderCaptureProvider()
-        : QObject(), QQuickImageProvider(Image)
+        : QQuickImageProvider(Image)
     {
         m_image = QImage(10,10, QImage::Format_ARGB32);
         m_image.fill(QColor("blue").rgba());
