@@ -106,7 +106,7 @@ namespace Rhi {
 namespace {
 
 // register our QNodeId's as a metatype during program loading
-const int Q_DECL_UNUSED qNodeIdTypeId = qMetaTypeId<Qt3DCore::QNodeId>();
+Q_DECL_UNUSED const int qNodeIdTypeId = qMetaTypeId<Qt3DCore::QNodeId>();
 
 const int MAX_LIGHTS = 8;
 
