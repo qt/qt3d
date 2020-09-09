@@ -121,7 +121,7 @@ QBoundingVolumePrivate *QBoundingVolumePrivate::get(QBoundingVolume *q)
  * \inqmlmodule Qt3D.Core
  * \since 2.16
  *
- * \brief can be used to override an entity's bounding volume
+ * \brief can be used to override an entity's bounding volume.
  *
  * An entity's bounding volume is used for many operations such as
  * picking or view frustum culling. It is normally computed by
@@ -160,7 +160,7 @@ QBoundingVolumePrivate *QBoundingVolumePrivate::get(QBoundingVolume *q)
  * \inherits Qt3DCore::QComponent
  * \since 6.0
  *
- * \brief can be used to override an entity's bounding volume
+ * \brief can be used to override an entity's bounding volume.
  *
  * An entity's bounding volume is used for many operations such as
  * picking or view frustum culling. It is normally computed by
