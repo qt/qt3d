@@ -204,6 +204,9 @@ Scene3DItem::Scene3DItem(QQuickItem *parent)
     // we still won't get ignored by the QtQuick SG when in Underlay mode
     setWidth(1);
     setHeight(1);
+
+    if (qgetenv("QT3D_RENDERER").isEmpty())
+        qputenv("QT3D_RENDERER", "rhi"); // QtQuick requires RHI
 }
 
 Scene3DItem::~Scene3DItem()
@@ -820,10 +823,6 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
 
     // If the render aspect wasn't created yet, do so now
     if (!managerNode->isInitialized()) {
-        // Requested API of OpenGLRhi implies OpenGL renderer
-        if (windowApi != QSGRendererInterface::OpenGLRhi && qgetenv("QT3D_RENDERER").isEmpty())
-            qputenv("QT3D_RENDERER", "rhi"); // else Qt3D still defaults to OpenGL
-
         auto *rw = QQuickRenderControl::renderWindowFor(window());
         auto renderAspectPriv = static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(renderAspect));
         renderAspectPriv->m_screen = (rw ? rw->screen() : window()->screen());

@@ -22,7 +22,6 @@ qt_feature("qt3d_rhi_renderer" PRIVATE
     SECTION "Qt 3D Renderers"
     LABEL "RHI Renderer"
     PURPOSE "Build the RHI renderer"
-    AUTODETECT OFF
 )
 
 qt_configure_add_summary_section(NAME "Qt3D Renderers")

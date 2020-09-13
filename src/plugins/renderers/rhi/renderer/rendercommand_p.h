@@ -189,7 +189,7 @@ public:
         }
 
         template<typename F>
-        auto visit(F&& f) const noexcept(noexcept(std::visit(f, (const variant&) *this)))
+        auto visit(F&& f) const
         {
             return std::visit(f, (const variant&) *this);
         }
