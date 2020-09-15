@@ -41,7 +41,7 @@
 #include "qparameter_p.h"
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/qtexture.h>
-
+#include <QtCore/qiterable.h>
 
 /*!
     \qmltype Parameter

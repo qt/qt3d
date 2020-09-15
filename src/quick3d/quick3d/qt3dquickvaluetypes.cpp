@@ -122,42 +122,42 @@ void Quick3DColorValueType::setA(qreal a)
 
 void Quick3DColorValueType::setHsvHue(qreal hsvHue)
 {
-    qreal hue, saturation, value, alpha;
+    float hue, saturation, value, alpha;
     v.getHsvF(&hue, &saturation, &value, &alpha);
     v.setHsvF(hsvHue, saturation, value, alpha);
 }
 
 void Quick3DColorValueType::setHsvSaturation(qreal hsvSaturation)
 {
-    qreal hue, saturation, value, alpha;
+    float hue, saturation, value, alpha;
     v.getHsvF(&hue, &saturation, &value, &alpha);
     v.setHsvF(hue, hsvSaturation, value, alpha);
 }
 
 void Quick3DColorValueType::setHsvValue(qreal hsvValue)
 {
-    qreal hue, saturation, value, alpha;
+    float hue, saturation, value, alpha;
     v.getHsvF(&hue, &saturation, &value, &alpha);
     v.setHsvF(hue, saturation, hsvValue, alpha);
 }
 
 void Quick3DColorValueType::setHslHue(qreal hslHue)
 {
-    qreal hue, saturation, lightness, alpha;
+    float hue, saturation, lightness, alpha;
     v.getHslF(&hue, &saturation, &lightness, &alpha);
     v.setHslF(hslHue, saturation, lightness, alpha);
 }
 
 void Quick3DColorValueType::setHslSaturation(qreal hslSaturation)
 {
-    qreal hue, saturation, lightness, alpha;
+    float hue, saturation, lightness, alpha;
     v.getHslF(&hue, &saturation, &lightness, &alpha);
     v.setHslF(hue, hslSaturation, lightness, alpha);
 }
 
 void Quick3DColorValueType::setHslLightness(qreal hslLightness)
 {
-    qreal hue, saturation, lightness, alpha;
+    float hue, saturation, lightness, alpha;
     v.getHslF(&hue, &saturation, &lightness, &alpha);
     v.setHslF(hue, saturation, hslLightness, alpha);
 }
