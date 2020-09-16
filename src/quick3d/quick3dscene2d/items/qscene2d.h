@@ -60,7 +60,7 @@ class Q_3DQUICKSCENE2DSHARED_EXPORT QScene2D : public Qt3DCore::QNode
     Q_OBJECT
 
     Q_PROPERTY(Qt3DRender::QRenderTargetOutput *output READ output WRITE setOutput NOTIFY outputChanged)
-    Q_PROPERTY(QScene2D::RenderPolicy renderPolicy READ renderPolicy WRITE setRenderPolicy NOTIFY renderPolicyChanged)
+    Q_PROPERTY(RenderPolicy renderPolicy READ renderPolicy WRITE setRenderPolicy NOTIFY renderPolicyChanged)
     Q_PROPERTY(QQuickItem *item READ item WRITE setItem NOTIFY itemChanged)
     Q_PROPERTY(bool mouseEnabled READ isMouseEnabled WRITE setMouseEnabled NOTIFY mouseEnabledChanged)
 
