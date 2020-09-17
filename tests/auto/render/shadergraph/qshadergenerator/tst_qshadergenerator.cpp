@@ -202,6 +202,7 @@ private slots:
     void shouldHandlePortNamesPrefixingOneAnother();
     void shouldHandleNodesWithMultipleOutputPorts();
     void shouldHandleExpressionsInInputNodes();
+    void shouldGenerateLayerDefines();
 };
 
 void tst_QShaderGenerator::shouldHaveDefaultState()
@@ -860,6 +861,8 @@ void tst_QShaderGenerator::shouldGenerateDifferentCodeDependingOnActiveLayers()
         const auto expected = QByteArrayList()
                 << "#version 400 core"
                 << ""
+                << "#define LAYER_diffuseUniform"
+                << "#define LAYER_normalUniform"
                 << "uniform vec3 normalUniform;"
                 << "uniform vec4 diffuseUniform;"
                 << "#pragma include gl4/lightmodel.frag.inc"
@@ -880,6 +883,8 @@ void tst_QShaderGenerator::shouldGenerateDifferentCodeDependingOnActiveLayers()
         // THEN
         const auto expected = QByteArrayList() << "#version 400 core"
                                                << ""
+                                               << "#define LAYER_diffuseUniform"
+                                               << "#define LAYER_normalTexture"
                                                << "in vec2 texCoord;"
                                                << "uniform sampler2D normalTexture;"
                                                << "uniform vec4 diffuseUniform;"
@@ -903,6 +908,8 @@ void tst_QShaderGenerator::shouldGenerateDifferentCodeDependingOnActiveLayers()
         const auto expected = QByteArrayList()
                 << "#version 400 core"
                 << ""
+                << "#define LAYER_diffuseTexture"
+                << "#define LAYER_normalUniform"
                 << "in vec2 texCoord;"
                 << "uniform vec3 normalUniform;"
                 << "uniform sampler2D diffuseTexture;"
@@ -926,6 +933,8 @@ void tst_QShaderGenerator::shouldGenerateDifferentCodeDependingOnActiveLayers()
         const auto expected = QByteArrayList()
                 << "#version 400 core"
                 << ""
+                << "#define LAYER_diffuseTexture"
+                << "#define LAYER_normalTexture"
                 << "in vec2 texCoord;"
                 << "uniform sampler2D normalTexture;"
                 << "uniform sampler2D diffuseTexture;"
@@ -1050,6 +1059,8 @@ void tst_QShaderGenerator::shouldUseGlobalVariableRatherThanTemporaries()
         const auto expected = QByteArrayList()
                 << "#version 400 core"
                 << ""
+                << "#define LAYER_diffuseUniform"
+                << "#define LAYER_normalUniform"
                 << "in vec4 vertexPosition;"
                 << "out vec4 fragColor;"
                 << ""
@@ -1417,6 +1428,31 @@ void tst_QShaderGenerator::shouldHandleExpressionsInInputNodes()
             << "void main()"
             << "{"
             << "    globalOut = 3 + 4;"
+            << "}"
+            << "";
+    QCOMPARE(code, expected.join("\n"));
+}
+
+void tst_QShaderGenerator::shouldGenerateLayerDefines()
+{
+    // GIVEN
+    const auto gl4 = createFormat(QShaderFormat::OpenGLCoreProfile, 4, 0);
+
+    auto generator = QShaderGenerator();
+    generator.format = gl4;
+
+    // WHEN
+    const auto code = generator.createShaderCode({"layer1", "layer2"});
+
+    // THEN
+    const auto expected = QByteArrayList()
+            << "#version 400 core"
+            << ""
+            << "#define LAYER_layer1"
+            << "#define LAYER_layer2"
+            << ""
+            << "void main()"
+            << "{"
             << "}"
             << "";
     QCOMPARE(code, expected.join("\n"));
