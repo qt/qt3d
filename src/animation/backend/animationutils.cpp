@@ -277,7 +277,7 @@ ClipResults evaluateClipAtLocalTime(AnimationClip *clip, float localTime)
                         return quat;
                     };
 
-                    const int lowerKeyframeBound = channel.channelComponents[0].fcurve.lowerKeyframeBound(localTime);
+                    const int lowerKeyframeBound = std::max(0, channel.channelComponents[0].fcurve.lowerKeyframeBound(localTime));
                     const auto lowerQuat = quaternionFromChannel(lowerKeyframeBound);
                     const auto higherQuat = quaternionFromChannel(lowerKeyframeBound + 1);
                     auto cosHalfTheta = QQuaternion::dotProduct(lowerQuat, higherQuat);
