@@ -507,6 +507,17 @@ namespace
         }
         }
     }
+
+    QByteArrayList layerDefines(const QStringList &enabledLayers) noexcept
+    {
+        QByteArrayList defines;
+        const QString defineTemplate = QStringLiteral("#define LAYER_%1");
+
+        for (const QString &layer : enabledLayers)
+            defines << defineTemplate.arg(layer).toUtf8();
+
+        return defines;
+    }
 }
 
 QByteArray QShaderGenerator::createShaderCode(const QStringList &enabledLayers) const
@@ -518,6 +529,7 @@ QByteArray QShaderGenerator::createShaderCode(const QStringList &enabledLayers) 
 
     code << versionString(format);
     code << QByteArray();
+    code << layerDefines(enabledLayers);
 
     if (format.api() == QShaderFormat::VulkanFlavoredGLSL || format.api() == QShaderFormat::RHI) {
         GLSL45HeaderWriter builder;
