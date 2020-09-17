@@ -311,33 +311,6 @@ public:
         return nullptr;
     }
 
-    bool init(int type, QVariant& dst) override
-    {
-        switch (type) {
-        case QMetaType::QColor:
-            dst.setValue<QColor>(QColor());
-            return true;
-        case QMetaType::QVector2D:
-            dst.setValue<QVector2D>(QVector2D());
-            return true;
-        case QMetaType::QVector3D:
-            dst.setValue<QVector3D>(QVector3D());
-            return true;
-        case QMetaType::QVector4D:
-            dst.setValue<QVector4D>(QVector4D());
-            return true;
-        case QMetaType::QQuaternion:
-            dst.setValue<QQuaternion>(QQuaternion());
-            return true;
-        case QMetaType::QMatrix4x4:
-            dst.setValue<QMatrix4x4>(QMatrix4x4());
-            return true;
-        default: break;
-        }
-
-        return false;
-    }
-
     bool create(int type, int argc, const void *argv[], QVariant *v) override
     {
         switch (type) {
@@ -426,60 +399,6 @@ public:
         return false;
     }
 
-    bool createStringFrom(int type, const void *data, QString *s) override
-    {
-        if (type == QMetaType::QColor) {
-            const QColor *color = reinterpret_cast<const QColor *>(data);
-            new (s) QString(QVariant(*color).toString());
-            return true;
-        }
-
-        return false;
-    }
-
-    bool variantFromString(const QString &s, QVariant *v) override
-    {
-        QColor c(s);
-        if (c.isValid()) {
-            *v = QVariant::fromValue(c);
-            return true;
-        }
-
-        bool ok = false;
-
-        QVector2D v2 = vector2DFromString(s, &ok);
-        if (ok) {
-            *v = QVariant::fromValue(v2);
-            return true;
-        }
-
-        QVector3D v3 = vector3DFromString(s, &ok);
-        if (ok) {
-            *v = QVariant::fromValue(v3);
-            return true;
-        }
-
-        QVector4D v4 = vector4DFromString(s, &ok);
-        if (ok) {
-            *v = QVariant::fromValue(v4);
-            return true;
-        }
-
-        QQuaternion q = quaternionFromString(s, &ok);
-        if (ok) {
-            *v = QVariant::fromValue(q);
-            return true;
-        }
-
-        QMatrix4x4 m = matrix4x4FromString(s, &ok);
-        if (ok) {
-            *v = QVariant::fromValue(m);
-            return true;
-        }
-
-        return false;
-    }
-
     bool variantFromString(int type, const QString &s, QVariant *v) override
     {
         bool ok = false;
@@ -540,32 +459,6 @@ public:
         return ok;
     }
 
-    template<typename T>
-    bool typedEqual(const void *lhs, const QVariant& rhs)
-    {
-        return (*(reinterpret_cast<const T *>(lhs)) == rhs.value<T>());
-    }
-
-    bool equal(int type, const void *lhs, const QVariant &rhs) override
-    {
-        switch (type) {
-        case QMetaType::QColor:
-            return typedEqual<QColor>(lhs, rhs);
-        case QMetaType::QVector2D:
-            return typedEqual<QVector2D>(lhs, rhs);
-        case QMetaType::QVector3D:
-            return typedEqual<QVector3D>(lhs, rhs);
-        case QMetaType::QVector4D:
-            return typedEqual<QVector4D>(lhs, rhs);
-        case QMetaType::QQuaternion:
-            return typedEqual<QQuaternion>(lhs, rhs);
-        case QMetaType::QMatrix4x4:
-            return typedEqual<QMatrix4x4>(lhs, rhs);
-        default: break;
-        }
-
-        return false;
-    }
 
     template<typename T>
     bool typedStore(const void *src, void *dst, size_t dstSize)
@@ -589,71 +482,6 @@ public:
             new (color) QColor(QColor::fromRgba(*rgb));
             return true;
             }
-        default: break;
-        }
-
-        return false;
-    }
-
-    template<typename T>
-    bool typedRead(const QVariant& src, int dstType, void *dst)
-    {
-        T *dstT = reinterpret_cast<T *>(dst);
-        if (src.type() == QVariant::Type(dstType)) {
-            *dstT = src.value<T>();
-        } else {
-            *dstT = T();
-        }
-        return true;
-    }
-
-    bool read(const QVariant &src, void *dst, int dstType) override
-    {
-        switch (dstType) {
-        case QMetaType::QColor:
-            return typedRead<QColor>(src, dstType, dst);
-        case QMetaType::QVector2D:
-            return typedRead<QVector2D>(src, dstType, dst);
-        case QMetaType::QVector3D:
-            return typedRead<QVector3D>(src, dstType, dst);
-        case QMetaType::QVector4D:
-            return typedRead<QVector4D>(src, dstType, dst);
-        case QMetaType::QQuaternion:
-            return typedRead<QQuaternion>(src, dstType, dst);
-        case QMetaType::QMatrix4x4:
-            return typedRead<QMatrix4x4>(src, dstType, dst);
-        default: break;
-        }
-
-        return false;
-    }
-
-    template<typename T>
-    bool typedWrite(const void *src, QVariant& dst)
-    {
-        const T *srcT = reinterpret_cast<const T *>(src);
-        if (dst.value<T>() != *srcT) {
-            dst = *srcT;
-            return true;
-        }
-        return false;
-    }
-
-    bool write(int type, const void *src, QVariant& dst) override
-    {
-        switch (type) {
-        case QMetaType::QColor:
-            return typedWrite<QColor>(src, dst);
-        case QMetaType::QVector2D:
-            return typedWrite<QVector2D>(src, dst);
-        case QMetaType::QVector3D:
-            return typedWrite<QVector3D>(src, dst);
-        case QMetaType::QVector4D:
-            return typedWrite<QVector4D>(src, dst);
-        case QMetaType::QQuaternion:
-            return typedWrite<QQuaternion>(src, dst);
-        case QMetaType::QMatrix4x4:
-            return typedWrite<QMatrix4x4>(src, dst);
         default: break;
         }
 
