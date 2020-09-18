@@ -166,13 +166,11 @@ Entity {
         primitiveType: GeometryRenderer.Triangles
         Buffer {
             id: vertexBuffer
-            type: Buffer.VertexBuffer
             data: buildVertexBufferData()
         }
 
         Buffer {
             id: indexBuffer
-            type: Buffer.IndexBuffer
             data: buildIndexBufferData()
         }
         geometry:  Geometry {
