@@ -1,7 +1,9 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>instanced.frag</file>
-        <file>instanced.vert</file>
+        <file>gl3/instanced.frag</file>
+        <file>gl3/instanced.vert</file>
+        <file>gl45/instanced.frag</file>
+        <file>gl45/instanced.vert</file>
     </qresource>
 </RCC>

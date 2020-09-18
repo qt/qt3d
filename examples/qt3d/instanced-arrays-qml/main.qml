@@ -85,21 +85,38 @@ Entity {
     Material {
         id: instancedPhongMaterial
         effect: Effect {
-            techniques: Technique {
-                graphicsApiFilter {
-                    api: GraphicsApiFilter.OpenGL
-                    profile: GraphicsApiFilter.CoreProfile
-                    minorVersion: 2
-                    majorVersion: 3
-                }
-                filterKeys: FilterKey { name: "renderingStyle"; value: "forward" }
-                renderPasses: RenderPass {
-                    shaderProgram: ShaderProgram {
-                        vertexShaderCode: loadSource("qrc:/instanced.vert")
-                        fragmentShaderCode: loadSource("qrc:/instanced.frag")
+            techniques: [
+                Technique {
+                    graphicsApiFilter {
+                        api: GraphicsApiFilter.OpenGL
+                        profile: GraphicsApiFilter.CoreProfile
+                        minorVersion: 2
+                        majorVersion: 3
+                    }
+                    filterKeys: FilterKey { name: "renderingStyle"; value: "forward" }
+                    renderPasses: RenderPass {
+                        shaderProgram: ShaderProgram {
+                            vertexShaderCode: loadSource("qrc:/gl3/instanced.vert")
+                            fragmentShaderCode: loadSource("qrc:/gl3/instanced.frag")
+                        }
+                    }
+                },
+                Technique {
+                    graphicsApiFilter {
+                        api: GraphicsApiFilter.RHI
+                        profile: GraphicsApiFilter.NoProfile
+                        minorVersion: 1
+                        majorVersion: 0
+                    }
+                    filterKeys: FilterKey { name: "renderingStyle"; value: "forward" }
+                    renderPasses: RenderPass {
+                        shaderProgram: ShaderProgram {
+                            vertexShaderCode: loadSource("qrc:/gl45/instanced.vert")
+                            fragmentShaderCode: loadSource("qrc:/gl45/instanced.frag")
+                        }
                     }
                 }
-            }
+            ]
         }
     }
 

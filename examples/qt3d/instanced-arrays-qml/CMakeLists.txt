@@ -44,8 +44,10 @@ target_link_libraries(instanced-arrays-qml PUBLIC
 
 # Resources:
 set(instanced-arrays-qml_resource_files
-    "instanced.frag"
-    "instanced.vert"
+    "gl3/instanced.frag"
+    "gl3/instanced.vert"
+    "gl45/instanced.frag"
+    "gl45/instanced.vert"
     "main.qml"
 )
 
