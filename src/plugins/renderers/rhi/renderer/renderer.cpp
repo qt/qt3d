@@ -680,17 +680,7 @@ void Renderer::render(bool swapBuffers)
         rhiPassesInfo = prepareCommandsSubmission(renderViews);
         // 2) Update Pipelines and copy data into commands to allow concurrent submission
 
-        bool hasCommands = false;
-        for (const RenderView *rv : renderViews) {
-            // TODO find a way to break earlier with this pattern.
-            rv->forEachCommand([&] (const RenderCommand &cmd) {
-                hasCommands |= cmd.isValid();
-            });
-            if (hasCommands)
-                break;
-        }
-
-        if (hasCommands) {
+        {
             // Scoped to destroy surfaceLock
             SurfaceLocker surfaceLock(surface);
             const bool surfaceIsValid = (surface && surfaceLock.isSurfaceValid());
