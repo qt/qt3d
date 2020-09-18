@@ -927,6 +927,14 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const Entity **entit
                     command.m_changeCost = m_renderer->defaultRenderState()->changeCost(command.m_stateSet.data());
                 }
                 command.m_shaderId = pass->shaderProgram();
+
+                // We try to resolve the m_glShader here. If the shader exist,
+                // it won't be null and will allow us to full process the
+                // command over a single frame. Otherwise, the shader will be
+                // loaded at the next submission time and the command will only
+                // be fully valid on the next frame. Additionally, that way, if
+                // a commands keeps being rebuilt, frame after frame, it will
+                // still be visible on screen as long as the shader exists
                 command.m_glShader = glShaderManager->lookupResource(command.m_shaderId);
 
                 // It takes two frames to have a valid command as we can only

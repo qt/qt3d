@@ -874,6 +874,16 @@ EntityRenderCommandData RenderView::buildDrawRenderCommands(const Entity **entit
                 if (!command.m_shaderId)
                     continue;
 
+                // We try to resolve the m_rhiShader here. If the shader exist,
+                // it won't be null and will allow us to full process the
+                // command over a single frame. Otherwise, the shader will be
+                // loaded at the next submission time and the command will only
+                // be fully valid on the next frame. Additionally, that way, if
+                // a commands keeps being rebuilt, frame after frame, it will
+                // still be visible on screen as long as the shader exists
+                RHIShaderManager *rhiShaderManager = m_renderer->rhiResourceManagers()->rhiShaderManager();
+                command.m_rhiShader = rhiShaderManager->lookupResource(command.m_shaderId);
+
                 { // Scoped to show extent
 
                     // Build of list of Attribute Layout information which
@@ -987,7 +997,6 @@ EntityRenderCommandData RenderView::buildComputeRenderCommands(const Entity **en
     // layer component
     // material/effect/technique/parameters/filters/
     EntityRenderCommandData commands;
-    RHIShaderManager *rhiShaderManager = m_renderer->rhiResourceManagers()->rhiShaderManager();
 
     commands.reserve(count);
 
@@ -1023,12 +1032,21 @@ EntityRenderCommandData RenderView::buildComputeRenderCommands(const Entity **en
                             m_renderer->defaultRenderState()->changeCost(command.m_stateSet.data());
                 }
                 command.m_shaderId = pass->shaderProgram();
-                command.m_rhiShader = rhiShaderManager->lookupResource(command.m_shaderId);
 
-                // It takes two frames to have a valid command as we can only
-                // reference a glShader at frame n if it has been loaded at frame n - 1
-                if (!command.m_rhiShader)
+                // At submission time, shaderId is used to retrieve a RHIShader
+                // No point in continuing if shaderId is null
+                if (!command.m_shaderId)
                     continue;
+
+                // We try to resolve the m_rhiShader here. If the shader exist,
+                // it won't be null and will allow us to full process the
+                // command over a single frame. Otherwise, the shader will be
+                // loaded at the next submission time and the command will only
+                // be fully valid on the next frame. Additionally, that way, if
+                // a commands keeps being rebuilt, frame after frame, it will
+                // still be visible on screen as long as the shader exists
+                RHIShaderManager *rhiShaderManager = m_renderer->rhiResourceManagers()->rhiShaderManager();
+                command.m_rhiShader = rhiShaderManager->lookupResource(command.m_shaderId);
 
                 command.m_computeCommand = computeCommandHandle;
                 command.m_type = RenderCommand::Compute;
