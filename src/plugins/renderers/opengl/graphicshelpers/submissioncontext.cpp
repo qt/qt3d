@@ -623,7 +623,7 @@ QSize SubmissionContext::renderTargetSize(const QSize &surfaceSize) const
                 return renderTargetSize;
         }
     } else {
-        renderTargetSize = surfaceSize;
+        renderTargetSize = m_surface->size().isValid() ? m_surface->size() : surfaceSize;
         if (m_surface->surfaceClass() == QSurface::Window) {
             const float dpr = static_cast<QWindow *>(m_surface)->devicePixelRatio();
             renderTargetSize *= dpr;
