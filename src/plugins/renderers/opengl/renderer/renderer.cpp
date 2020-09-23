@@ -627,7 +627,8 @@ void Renderer::releaseGraphicsResources()
         m_submissionContext->releaseRenderTargets();
 
         m_frameProfiler.reset();
-        context->doneCurrent();
+        if (m_ownedContext)
+            context->doneCurrent();
     } else {
         qWarning() << "Failed to make context current: OpenGL resources will not be destroyed";
     }
