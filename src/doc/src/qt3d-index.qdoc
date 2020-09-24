@@ -108,6 +108,10 @@
         \li WinRT - Not supported yet
     \endlist
 
+    \section1 Module Evolution
+    \l{Porting to Qt 6 - Qt3D} lists important changes in the module API
+    and functionality that were done for the Qt 6 series of Qt.
+
     \section1 Licenses and Attributions
 
     Qt 3D is available under commercial licenses from \l{The Qt Company}.
