@@ -59,6 +59,7 @@ private Q_SLOTS:
         QCOMPARE(tid->pixelFormat(), QOpenGLTexture::RGBA);
         QCOMPARE(tid->pixelType(), QOpenGLTexture::UInt8);
         QCOMPARE(tid->isCompressed(), false);
+        QCOMPARE(tid->alignment(), 1);
     }
 
     void checkCloning_data()

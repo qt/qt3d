@@ -76,6 +76,7 @@ public:
     int m_faces;
     int m_mipLevels;
     int m_blockSize;
+    int m_alignment;
 
     QOpenGLTexture::Target m_target;
     QOpenGLTexture::TextureFormat m_format;

@@ -79,6 +79,9 @@ public:
     void setMipLevels(int mipLevels) Q_DECL_NOTHROW;
     void setFaces(int faces) Q_DECL_NOTHROW;
 
+    int alignment() const Q_DECL_NOTHROW;
+    void setAlignment(int alignment) Q_DECL_NOTHROW;
+
     QOpenGLTexture::Target target() const Q_DECL_NOTHROW;
     QOpenGLTexture::TextureFormat format() const Q_DECL_NOTHROW;
 
