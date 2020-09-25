@@ -54,6 +54,7 @@ QTextureImageDataPrivate::QTextureImageDataPrivate()
     , m_faces(-1)
     , m_mipLevels(-1)
     , m_blockSize(-1)
+    , m_alignment(1)
     , m_target(QOpenGLTexture::Target2D)
     , m_format(QOpenGLTexture::NoFormat)
     , m_pixelFormat(QOpenGLTexture::RGBA)
@@ -188,6 +189,7 @@ void QTextureImageData::cleanup() Q_DECL_NOTHROW
     d->m_faces = -1;
     d->m_mipLevels = -1;
     d->m_blockSize = 0;
+    d->m_alignment = 1;
     d->m_isCompressed = false;
     d->m_data.clear();
 }

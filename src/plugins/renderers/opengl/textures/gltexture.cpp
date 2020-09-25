@@ -76,13 +76,13 @@ void uploadGLData(QOpenGLTexture *glTex,
                   int level, int layer, QOpenGLTexture::CubeMapFace face,
                   const QByteArray &bytes, const QTextureImageDataPtr &data)
 {
-    if (data->isCompressed()) {
+    const auto alignment = QTextureImageDataPrivate::get(data.get())->m_alignment;
+    QOpenGLPixelTransferOptions uploadOptions;
+    uploadOptions.setAlignment(alignment);
+    if (data->isCompressed())
         glTex->setCompressedData(level, layer, face, bytes.size(), bytes.constData());
-    } else {
-        QOpenGLPixelTransferOptions uploadOptions;
-        uploadOptions.setAlignment(1);
+    else
         glTex->setData(level, layer, face, data->pixelFormat(), data->pixelType(), bytes.constData(), &uploadOptions);
-    }
 }
 
 // For partial sub image uploads
@@ -94,8 +94,9 @@ void uploadGLData(QOpenGLTexture *glTex,
     if (data->isCompressed()) {
         qWarning() << Q_FUNC_INFO << "Uploading non full sized Compressed Data not supported yet";
     } else {
+        const auto alignment = QTextureImageDataPrivate::get(data.get())->m_alignment;
         QOpenGLPixelTransferOptions uploadOptions;
-        uploadOptions.setAlignment(1);
+        uploadOptions.setAlignment(alignment);
         glTex->setData(xOffset, yOffset, zOffset,
                        data->width(), data->height(), data->depth(),
                        mipLevel, layer, cubeFace, data->layers(),
