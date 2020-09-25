@@ -29,7 +29,7 @@ qt_add_resource(animation-keyframe-simple "main"
     FILES
         ${main_resource_files}
 )
-
+target_sources(animation-keyframe-simple PRIVATE ${main_resource_files})
 
 #### Keys ignored in scope 1:.:.:animation-keyframe-simple.pro:<TRUE>:
 # OTHER_FILES = "main.qml" "DefaultSceneEntity.qml"

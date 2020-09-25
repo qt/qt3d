@@ -69,7 +69,7 @@ namespace Animation {
     If the previous results are uncorrelated, a simple bisection is used.
  */
 
-FunctionRangeFinder::FunctionRangeFinder(const QList<float> &x)
+FunctionRangeFinder::FunctionRangeFinder(QList<float> *x)
     : m_x(x)
     , m_previousLowerBound(0)
     , m_correlated(0)
@@ -78,8 +78,8 @@ FunctionRangeFinder::FunctionRangeFinder(const QList<float> &x)
     , m_ascending(true)
 {
     updateAutomaticCorrelationThreshold();
-    if (!m_x.isEmpty())
-        m_ascending = (m_x.last() >= m_x.first());
+    if (!m_x->isEmpty())
+        m_ascending = (m_x->last() >= m_x->first());
 }
 
 /*!
@@ -88,14 +88,14 @@ FunctionRangeFinder::FunctionRangeFinder(const QList<float> &x)
 */
 int FunctionRangeFinder::locate(float x) const
 {
-    if (m_x.size() < 2 || m_rangeSize < 2 || m_rangeSize > m_x.size())
+    if (m_x->size() < 2 || m_rangeSize < 2 || m_rangeSize > m_x->size())
         return -1;
 
     int jLower = 0;
-    int jUpper = m_x.size() - 1;
+    int jUpper = m_x->size() - 1;
     while (jUpper - jLower > 1) {
         int jMid = (jUpper + jLower) >> 1;
-        if ((x >= m_x[jMid]) == m_ascending)
+        if ((x >= m_x->at(jMid)) == m_ascending)
             jLower = jMid;
         else
             jUpper = jMid;
@@ -104,7 +104,7 @@ int FunctionRangeFinder::locate(float x) const
     m_correlated = std::abs(jLower - m_previousLowerBound) <= m_correlationThreshold;
     m_previousLowerBound = jLower;
 
-    return qMax(0, qMin(m_x.size() - m_rangeSize, jLower - ((m_rangeSize - 2) >> 1)));
+    return qMax(0, qMin(m_x->size() - m_rangeSize, jLower - ((m_rangeSize - 2) >> 1)));
 }
 
 /*!
@@ -113,24 +113,24 @@ int FunctionRangeFinder::locate(float x) const
  */
 int FunctionRangeFinder::hunt(float x) const
 {
-    if (m_x.size() < 2 || m_rangeSize < 2 || m_rangeSize > m_x.size())
+    if (m_x->size() < 2 || m_rangeSize < 2 || m_rangeSize > m_x->size())
         return -1;
 
     int jLower = m_previousLowerBound;
     int jMid;
     int jUpper;
-    if (jLower < 0 || jLower > (m_x.size() - 1)) {
+    if (jLower < 0 || jLower > (m_x->size() - 1)) {
         jLower = 0;
-        jUpper = m_x.size() - 1;
+        jUpper = m_x->size() - 1;
     } else {
         int increment = 1;
-        if ((x >= m_x[jLower]) == m_ascending) {
+        if ((x >= m_x->at(jLower)) == m_ascending) {
             for (;;) {
                 jUpper = jLower + increment;
-                if (jUpper >= m_x.size() - 1) {
-                    jUpper = m_x.size() - 1;
+                if (jUpper >= m_x->size() - 1) {
+                    jUpper = m_x->size() - 1;
                     break;
-                } else if ((x < m_x[jUpper]) == m_ascending) {
+                } else if ((x < m_x->at(jUpper)) == m_ascending) {
                     break;
                 } else {
                     jLower = jUpper;
@@ -144,7 +144,7 @@ int FunctionRangeFinder::hunt(float x) const
                 if (jLower <= 0) {
                     jLower = 0;
                     break;
-                } else if ((x >= m_x[jLower]) == m_ascending) {
+                } else if ((x >= m_x->at(jLower)) == m_ascending) {
                     break;
                 } else {
                     jUpper = jLower;
@@ -156,7 +156,7 @@ int FunctionRangeFinder::hunt(float x) const
 
     while (jUpper - jLower > 1) {
         jMid = (jUpper + jLower) >> 1;
-        if ((x >= m_x[jMid]) == m_ascending)
+        if ((x >= m_x->at(jMid)) == m_ascending)
             jLower = jMid;
         else
             jUpper = jMid;
@@ -165,7 +165,7 @@ int FunctionRangeFinder::hunt(float x) const
     m_correlated = std::abs(jLower - m_previousLowerBound) <= m_correlationThreshold;
     m_previousLowerBound = jLower;
 
-    return qMax(0, qMin(m_x.size() - m_rangeSize, jLower - ((m_rangeSize - 2) >> 1)));
+    return qMax(0, qMin(m_x->size() - m_rangeSize, jLower - ((m_rangeSize - 2) >> 1)));
 }
 
 } // namespace Animation

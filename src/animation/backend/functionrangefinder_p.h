@@ -61,7 +61,7 @@ namespace Animation {
 class Q_AUTOTEST_EXPORT FunctionRangeFinder
 {
 public:
-    FunctionRangeFinder(const QList<float> &x);
+    FunctionRangeFinder(QList<float> *x);
 
     inline int findLowerBound(float x) const { return m_correlated ? hunt(x) : locate(x); }
 
@@ -74,14 +74,14 @@ public:
     int correlationThreshold() const { return m_correlationThreshold; }
     void updateAutomaticCorrelationThreshold()
     {
-        m_correlationThreshold = std::max(1, int(std::pow(float(m_x.size()), 0.25)));
+        m_correlationThreshold = std::max(1, int(std::pow(float(m_x->size()), 0.25)));
     }
 
 private:
     int locate(float x) const;
     int hunt(float x) const;
 
-    QList<float> m_x;
+    QList<float> *m_x;
     mutable int m_previousLowerBound;
     mutable bool m_correlated;
     int m_rangeSize;

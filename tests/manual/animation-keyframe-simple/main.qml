@@ -77,14 +77,15 @@ DefaultSceneEntity {
             ObjectPicker {
                 onClicked: {
                     if (animator.running == false) {
-                        animator.running = true;
+                        animator.normalizedTime = 0
+                        animator.running = true
                     } else {
                         switch (pick.button) {
                         case PickEvent.RightButton:
-                            animationClock.playbackRate *= 2.0;
+                            animationClock.playbackRate *= 2.0
                             break;
                         case PickEvent.LeftButton:
-                            animationClock.playbackRate /= 2.0;
+                            animationClock.playbackRate /= 2.0
                             break;
                         default:
                             break;
@@ -103,7 +104,7 @@ DefaultSceneEntity {
                 }
 
                 clip: AnimationClipLoader {
-                    source: "cubeanimation.json"
+                    source: "qrc:///cubeanimation.json"
                     onDurationChanged: console.log("duration = " + duration)
                 }
 

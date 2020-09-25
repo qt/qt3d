@@ -47,7 +47,7 @@ namespace Qt3DAnimation {
 namespace Animation {
 
 FCurve::FCurve()
-    : m_rangeFinder(m_localTimes)
+    : m_rangeFinder(&m_localTimes)
 {
 }
 

@@ -42,7 +42,7 @@ private Q_SLOTS:
         QList<float> data;
 
         // WHEN
-        FunctionRangeFinder finder(data);
+        FunctionRangeFinder finder(&data);
 
         // THEN
         QCOMPARE(finder.rangeSize(), 2);
@@ -87,7 +87,7 @@ private Q_SLOTS:
         QFETCH(bool, ascending);
 
         // WHEN
-        FunctionRangeFinder finder(x);
+        FunctionRangeFinder finder(&x);
 
         // THEN
         QCOMPARE(finder.rangeSize(), 2);
@@ -156,7 +156,7 @@ private Q_SLOTS:
         QFETCH(QList<float>, x);
         QFETCH(QList<float>, needles);
         QFETCH(QList<int>, lowerBounds);
-        FunctionRangeFinder finder(x);
+        FunctionRangeFinder finder(&x);
 
         for (int i = 0; i < needles.size(); ++i) {
             // WHEN
