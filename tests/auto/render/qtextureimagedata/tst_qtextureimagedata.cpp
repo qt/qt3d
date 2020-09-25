@@ -74,6 +74,17 @@ private Q_SLOTS:
     void checkPropertyUpdates()
     {
     }
+
+    void checkTextureDataUsesFunctor() {
+        Qt3DRender::QTextureImageData *tid = new Qt3DRender::QTextureImageData();
+
+        tid->setData({}, [](int, int, int) {
+            return QByteArray("a");
+        }, false);
+
+        QByteArray data = tid->data();
+        QCOMPARE(data.data()[0], 'a');
+    }
 /*
 protected:
 
