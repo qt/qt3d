@@ -306,6 +306,13 @@ void CalculateBoundingVolumeJob::run()
                 m_results.push_back(res); // How do we push it to the backends????
         }
     }
+
+    // This is needed so that the matching job in the render aspect gets the right data.
+    // It is currently safe since the main thread is locked, there's no other
+    // core aspect jobs in existence, and other aspect jobs only access backend data.
+    // TODO: find a way for aspects to pass around data, or create groups of jobs
+    // that need to run first, sync, then process next group.
+    postFrame(nullptr);
 }
 
 void CalculateBoundingVolumeJob::postFrame(QAspectEngine *aspectEngine)
