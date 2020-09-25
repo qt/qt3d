@@ -88,6 +88,9 @@ QByteArray QTextureImageDataPrivate::data(int layer, int face, int mipmapLevel) 
         return QByteArray();
     }
 
+    if (m_dataExtractor)
+        return m_dataExtractor(layer, face, mipmapLevel);
+
     if (m_isKtx)
         return ktxData(layer, face, mipmapLevel);
 
@@ -111,6 +114,15 @@ void QTextureImageDataPrivate::setData(const QByteArray &data,
     m_isCompressed = isCompressed;
     m_data = data;
     m_blockSize = blockSize;
+}
+
+void QTextureImageDataPrivate::setData(const QByteArray &data,
+                                       std::function<QByteArray(int layer, int face, int mipmapLevel)> dataExtractor,
+                                       bool isCompressed)
+{
+    m_isCompressed = isCompressed;
+    m_data = data;
+    m_dataExtractor = dataExtractor;
 }
 
 int QTextureImageDataPrivate::ddsLayerSize() const

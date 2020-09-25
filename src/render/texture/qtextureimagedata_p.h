@@ -64,6 +64,9 @@ public:
     QTextureImageDataPrivate();
 
     void setData(const QByteArray &data, int blockSize, bool isCompressed);
+    void setData(const QByteArray &data,
+                 std::function<QByteArray(int layer, int face, int mipmapLevel)> dataExtractor,
+                 bool isCompressed);
 
     bool setCompressedFile(const QString &source);
 
@@ -90,6 +93,7 @@ public:
     // public API changes. Consider https://codereview.qt-project.org/#/c/178474/ for Qt 6.
     bool m_isKtx;
     QByteArray m_data;
+    std::function<QByteArray(int layer, int face, int mipmapLevel)> m_dataExtractor;
 
     static QTextureImageDataPrivate *get(QTextureImageData *imageData);
 
