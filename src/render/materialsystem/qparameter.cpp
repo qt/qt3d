@@ -42,6 +42,7 @@
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/qtexture.h>
 #include <QtCore/qiterable.h>
+#include <QtCore/qsequentialiterable.h>
 
 /*!
     \qmltype Parameter
