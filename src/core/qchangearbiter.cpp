@@ -171,12 +171,21 @@ void QChangeArbiter::removeLockingChangeQueue(QChangeArbiter::QChangeQueue *queu
 
 void QChangeArbiter::syncChanges()
 {
-    const std::lock_guard<QRecursiveMutex> locker(m_mutex);;
-    for (QChangeArbiter::QChangeQueue *changeQueue : qAsConst(m_changeQueues))
-        distributeQueueChanges(changeQueue);
+    const std::lock_guard<QRecursiveMutex> locker(m_mutex);
 
-    for (QChangeQueue *changeQueue : qAsConst(m_lockingChangeQueues))
+    bool hasChanges = false;
+    for (QChangeArbiter::QChangeQueue *changeQueue : qAsConst(m_changeQueues)) {
+        hasChanges |= !changeQueue->empty();
         distributeQueueChanges(changeQueue);
+    }
+
+    for (QChangeQueue *changeQueue : qAsConst(m_lockingChangeQueues)) {
+        hasChanges |= !changeQueue->empty();
+        distributeQueueChanges(changeQueue);
+    }
+
+    if (hasChanges)
+        emit syncedChanges();
 }
 
 void QChangeArbiter::setScene(QScene *scene)

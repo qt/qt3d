@@ -138,6 +138,7 @@ public:
 
 Q_SIGNALS:
     void receivedChange();
+    void syncedChanges();
 
 protected:
     typedef std::vector<QSceneChangePtr> QChangeQueue;

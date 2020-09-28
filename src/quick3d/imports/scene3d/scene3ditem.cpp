@@ -886,8 +886,15 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
         updateWindowSurface();
         managerNode->init();
         // Note: ChangeArbiter is only set after aspect was registered
+
+        // This allows Scene3DItem to know when it needs to re-render as a result of frontend nodes receiving a change.
         QObject::connect(renderAspectPriv->m_aspectManager->changeArbiter(), &Qt3DCore::QChangeArbiter::receivedChange,
                          this, [this] { m_dirty = true; }, Qt::DirectConnection);
+
+        // This allows Scene3DItem to know when it needs to re-render as a result of backend nodes receiving a change.
+        // For e.g. nodes being created/destroyed.
+        QObject::connect(renderAspectPriv->m_aspectManager->changeArbiter(), &Qt3DCore::QChangeArbiter::syncedChanges,
+                         this, [this] { m_dirty = true; }, Qt::QueuedConnection);
     }
 
     const bool usesFBO = m_compositingMode == FBO;
