@@ -158,14 +158,14 @@ public:
     #define ASSERT_VALID_SIZE(size, min) Q_ASSERT(size >= min)
 #endif
 
-    static QVector2D vector2DFromString(QStringView s, bool *ok)
+    static QVector2D vector2DFromString(const QString &s, bool *ok)
     {
         if (s.count(QLatin1Char(',')) == 1) {
             int index = s.indexOf(QLatin1Char(','));
 
             bool xGood, yGood;
-            float xCoord = s.left(index).toFloat(&xGood);
-            float yCoord = s.mid(index+1).toFloat(&yGood);
+            float xCoord = QStringView{s}.left(index).toFloat(&xGood);
+            float yCoord = QStringView{s}.mid(index + 1).toFloat(&yGood);
 
             if (xGood && yGood) {
                 if (ok) *ok = true;
@@ -177,16 +177,16 @@ public:
         return QVector2D();
     }
 
-    static QVector3D vector3DFromString(QStringView s, bool *ok)
+    static QVector3D vector3DFromString(const QString &s, bool *ok)
     {
         if (s.count(QLatin1Char(',')) == 2) {
             int index = s.indexOf(QLatin1Char(','));
             int index2 = s.indexOf(QLatin1Char(','), index+1);
 
             bool xGood, yGood, zGood;
-            float xCoord = s.left(index).toFloat(&xGood);
-            float yCoord = s.mid(index+1, index2-index-1).toFloat(&yGood);
-            float zCoord = s.mid(index2+1).toFloat(&zGood);
+            float xCoord = QStringView{s}.left(index).toFloat(&xGood);
+            float yCoord = QStringView{s}.mid(index + 1, index2 - index - 1).toFloat(&yGood);
+            float zCoord = QStringView{s}.mid(index2 + 1).toFloat(&zGood);
 
             if (xGood && yGood && zGood) {
                 if (ok) *ok = true;
@@ -198,7 +198,7 @@ public:
         return QVector3D();
     }
 
-    static QVector4D vector4DFromString(QStringView s, bool *ok)
+    static QVector4D vector4DFromString(const QString &s, bool *ok)
     {
         if (s.count(QLatin1Char(',')) == 3) {
             int index = s.indexOf(QLatin1Char(','));
@@ -206,10 +206,10 @@ public:
             int index3 = s.indexOf(QLatin1Char(','), index2+1);
 
             bool xGood, yGood, zGood, wGood;
-            float xCoord = s.left(index).toFloat(&xGood);
-            float yCoord = s.mid(index+1, index2-index-1).toFloat(&yGood);
-            float zCoord = s.mid(index2+1, index3-index2-1).toFloat(&zGood);
-            float wCoord = s.mid(index3+1).toFloat(&wGood);
+            float xCoord = QStringView{s}.left(index).toFloat(&xGood);
+            float yCoord = QStringView{s}.mid(index + 1, index2 - index - 1).toFloat(&yGood);
+            float zCoord = QStringView{s}.mid(index2 + 1, index3 - index2 - 1).toFloat(&zGood);
+            float wCoord = QStringView{s}.mid(index3 + 1).toFloat(&wGood);
 
             if (xGood && yGood && zGood && wGood) {
                 if (ok) *ok = true;
@@ -221,7 +221,7 @@ public:
         return QVector4D();
     }
 
-    static QQuaternion quaternionFromString(QStringView s, bool *ok)
+    static QQuaternion quaternionFromString(const QString &s, bool *ok)
     {
         if (s.count(QLatin1Char(',')) == 3) {
             int index = s.indexOf(QLatin1Char(','));
@@ -229,10 +229,10 @@ public:
             int index3 = s.indexOf(QLatin1Char(','), index2+1);
 
             bool sGood, xGood, yGood, zGood;
-            qreal sCoord = s.left(index).toDouble(&sGood);
-            qreal xCoord = s.mid(index+1, index2-index-1).toDouble(&xGood);
-            qreal yCoord = s.mid(index2+1, index3-index2-1).toDouble(&yGood);
-            qreal zCoord = s.mid(index3+1).toDouble(&zGood);
+            qreal sCoord = QStringView{s}.left(index).toDouble(&sGood);
+            qreal xCoord = QStringView{s}.mid(index+1, index2-index-1).toDouble(&xGood);
+            qreal yCoord = QStringView{s}.mid(index2+1, index3-index2-1).toDouble(&yGood);
+            qreal zCoord = QStringView{s}.mid(index3+1).toDouble(&zGood);
 
             if (sGood && xGood && yGood && zGood) {
                 if (ok) *ok = true;
@@ -244,15 +244,16 @@ public:
         return QQuaternion();
     }
 
-    static QMatrix4x4 matrix4x4FromString(QStringView s, bool *ok)
+    static QMatrix4x4 matrix4x4FromString(const QString &s, bool *ok)
     {
         if (s.count(QLatin1Char(',')) == 15) {
             float matValues[16];
             bool vOK = true;
+            QStringView mutableStr(s);
             for (int i = 0; vOK && i < 16; ++i) {
-                int cidx = s.indexOf(QLatin1Char(','));
-                matValues[i] = s.left(cidx).toDouble(&vOK);
-                s = s.mid(cidx + 1);
+                int cidx = mutableStr.indexOf(QLatin1Char(','));
+                matValues[i] = mutableStr.left(cidx).toDouble(&vOK);
+                mutableStr = mutableStr.mid(cidx + 1);
             }
 
             if (vOK) {
@@ -265,100 +266,107 @@ public:
         return QMatrix4x4();
     }
 
-    static QMatrix4x4 matrix4x4FromObject(const QV4::Value &object, QV4::ExecutionEngine *v4, bool *ok)
-    {
-        if (ok) *ok = false;
-        QV4::Scope scope(v4);
-        QV4::ScopedArrayObject array(scope, object);
-        if (!array)
-            return QMatrix4x4();
-
-        if (array->getLength() != 16)
-            return QMatrix4x4();
-
-        float matVals[16];
-        QV4::ScopedValue v(scope);
-        for (quint32 i = 0; i < 16; ++i) {
-            v = array->get(i);
-            if (!v->isNumber())
-                return QMatrix4x4();
-            matVals[i] = v->asDouble();
-        }
-
-        if (ok) *ok = true;
-        return QMatrix4x4(matVals);
-    }
-
-    const QMetaObject *getMetaObjectForMetaType(int type) override
+    bool create(int type, const QJSValue &params, QVariant *v) override
     {
         switch (type) {
         case QMetaType::QColor:
-            return &Quick3DColorValueType::staticMetaObject;
-        case QMetaType::QVector2D:
-            return &Quick3DVector2DValueType::staticMetaObject;
-        case QMetaType::QVector3D:
-            return &Quick3DVector3DValueType::staticMetaObject;
-        case QMetaType::QVector4D:
-            return &Quick3DVector4DValueType::staticMetaObject;
-        case QMetaType::QQuaternion:
-            return &Quick3DQuaternionValueType::staticMetaObject;
-        case QMetaType::QMatrix4x4:
-            return &Quick3DMatrix4x4ValueType::staticMetaObject;
-        default:
-            break;
-        }
-
-        return nullptr;
-    }
-
-    bool create(int type, int argc, const void *argv[], QVariant *v) override
-    {
-        switch (type) {
-        case QMetaType::QVector2D:
-            if (argc == 1) {
-                const float *xy = reinterpret_cast<const float*>(argv[0]);
-                QVector2D v2(xy[0], xy[1]);
-                *v = QVariant(v2);
+            if (params.isString()) {
+                *v = QVariant(QColor(params.toString()));
                 return true;
+            }
+            break;
+        case QMetaType::QVector2D:
+            if (params.isArray()) {
+                *v = QVariant(QVector2D(params.property(0).toNumber(),
+                                        params.property(1).toNumber()));
+                return true;
+            } else if (params.isString()) {
+                bool ok = false;
+                auto vector = vector2DFromString(params.toString(), &ok);
+                if (ok) {
+                    *v = QVariant(vector);
+                    return true;
+                }
             }
             break;
         case QMetaType::QVector3D:
-            if (argc == 1) {
-                const float *xyz = reinterpret_cast<const float*>(argv[0]);
-                QVector3D v3(xyz[0], xyz[1], xyz[2]);
-                *v = QVariant(v3);
+            if (params.isArray()) {
+                *v = QVariant(QVector3D(params.property(0).toNumber(),
+                                        params.property(1).toNumber(),
+                                        params.property(2).toNumber()));
                 return true;
+            } else if (params.isString()) {
+                bool ok = false;
+                auto vector = vector3DFromString(params.toString(), &ok);
+                if (ok) {
+                    *v = QVariant(vector);
+                    return true;
+                }
             }
             break;
         case QMetaType::QVector4D:
-            if (argc == 1) {
-                const float *xyzw = reinterpret_cast<const float*>(argv[0]);
-                QVector4D v4(xyzw[0], xyzw[1], xyzw[2], xyzw[3]);
-                *v = QVariant(v4);
+            if (params.isArray()) {
+                *v = QVariant(QVector4D(params.property(0).toNumber(),
+                                        params.property(1).toNumber(),
+                                        params.property(2).toNumber(),
+                                        params.property(3).toNumber()));
                 return true;
+            } else if (params.isString()) {
+                bool ok = false;
+                auto vector = vector4DFromString(params.toString(), &ok);
+                if (ok) {
+                    *v = QVariant(vector);
+                    return true;
+                }
             }
             break;
         case QMetaType::QQuaternion:
-            if (argc == 1) {
-                const qreal *sxyz = reinterpret_cast<const qreal*>(argv[0]);
-                QQuaternion q(sxyz[0], sxyz[1], sxyz[2], sxyz[3]);
-                *v = QVariant(q);
+            if (params.isArray()) {
+                *v = QVariant(QQuaternion(params.property(0).toNumber(),
+                                          params.property(1).toNumber(),
+                                          params.property(2).toNumber(),
+                                          params.property(3).toNumber()));
                 return true;
+            } else if (params.isString()) {
+                bool ok = false;
+                auto vector = quaternionFromString(params.toString(), &ok);
+                if (ok) {
+                    *v = QVariant(vector);
+                    return true;
+                }
             }
             break;
         case QMetaType::QMatrix4x4:
-            if (argc == 0) {
+            if (params.isNull() || params.isUndefined()) {
                 QMatrix4x4 m;
                 *v = QVariant(m);
                 return true;
-            } else if (argc == 1) {
-                const qreal *vals = reinterpret_cast<const qreal*>(argv[0]);
-                QMatrix4x4 m(vals[0], vals[1], vals[2], vals[3],
-                             vals[4], vals[5], vals[6], vals[7],
-                             vals[8], vals[9], vals[10], vals[11],
-                             vals[12], vals[13], vals[14], vals[15]);
-                *v = QVariant(m);
+            } else if (params.isArray()
+                       && params.property(QStringLiteral("length")).toInt() == 16) {
+                *v = QVariant(QMatrix4x4(params.property(0).toNumber(),
+                                         params.property(1).toNumber(),
+                                         params.property(2).toNumber(),
+                                         params.property(3).toNumber(),
+                                         params.property(4).toNumber(),
+                                         params.property(5).toNumber(),
+                                         params.property(6).toNumber(),
+                                         params.property(7).toNumber(),
+                                         params.property(8).toNumber(),
+                                         params.property(9).toNumber(),
+                                         params.property(10).toNumber(),
+                                         params.property(11).toNumber(),
+                                         params.property(12).toNumber(),
+                                         params.property(13).toNumber(),
+                                         params.property(14).toNumber(),
+                                         params.property(15).toNumber()));
                 return true;
+            } else if (params.isString()) {
+                bool ok = false;
+                auto vector = matrix4x4FromString(params.toString(), &ok);
+                if (ok) {
+                    *v = QVariant(vector);
+                    return true;
+                }
             }
             break;
         default: break;
@@ -367,126 +375,6 @@ public:
         return false;
     }
 
-    template<typename T>
-    bool createFromStringTyped(void *data, size_t dataSize, T initValue)
-    {
-        ASSERT_VALID_SIZE(dataSize, sizeof(T));
-        T *t = reinterpret_cast<T *>(data);
-        new (t) T(initValue);
-        return true;
-    }
-
-    bool createFromString(int type, const QString &s, void *data, size_t dataSize) override
-    {
-        bool ok = false;
-
-        switch (type) {
-        case QMetaType::QColor:
-            return createFromStringTyped<QColor>(data, dataSize, QColor(s));
-        case QMetaType::QVector2D:
-            return createFromStringTyped<QVector2D>(data, dataSize, vector2DFromString(s, &ok));
-        case QMetaType::QVector3D:
-            return createFromStringTyped<QVector3D>(data, dataSize, vector3DFromString(s, &ok));
-        case QMetaType::QVector4D:
-            return createFromStringTyped<QVector4D>(data, dataSize, vector4DFromString(s, &ok));
-        case QMetaType::QQuaternion:
-            return createFromStringTyped<QQuaternion>(data, dataSize, quaternionFromString(s, &ok));
-        case QMetaType::QMatrix4x4:
-            return createFromStringTyped<QMatrix4x4>(data, dataSize, matrix4x4FromString(s, &ok));
-        default: break;
-        }
-
-        return false;
-    }
-
-    bool variantFromString(int type, const QString &s, QVariant *v) override
-    {
-        bool ok = false;
-
-        switch (type) {
-        case QMetaType::QColor:
-            {
-            QColor c(s);
-            *v = QVariant::fromValue(c);
-            return true;
-            }
-        case QMetaType::QVector2D:
-            {
-            *v = QVariant::fromValue(vector2DFromString(s, &ok));
-            return true;
-            }
-        case QMetaType::QVector3D:
-            {
-            *v = QVariant::fromValue(vector3DFromString(s, &ok));
-            return true;
-            }
-        case QMetaType::QVector4D:
-            {
-            *v = QVariant::fromValue(vector4DFromString(s, &ok));
-            return true;
-            }
-        case QMetaType::QQuaternion:
-            {
-            *v = QVariant::fromValue(quaternionFromString(s, &ok));
-            return true;
-            }
-        case QMetaType::QMatrix4x4:
-            {
-            *v = QVariant::fromValue(matrix4x4FromString(s, &ok));
-            return true;
-            }
-        default:
-            break;
-        }
-
-        return false;
-    }
-
-    bool variantFromJsObject(int type, const QV4::Value &object, QV4::ExecutionEngine *v4, QVariant *v) override
-    {
-        QV4::Scope scope(v4);
-#ifndef QT_NO_DEBUG
-        QV4::ScopedObject obj(scope, object);
-        Q_ASSERT(obj);
-#endif
-        bool ok = false;
-        switch (type) {
-        case QMetaType::QMatrix4x4:
-            *v = QVariant::fromValue(matrix4x4FromObject(object, v4, &ok));
-        default: break;
-        }
-
-        return ok;
-    }
-
-
-    template<typename T>
-    bool typedStore(const void *src, void *dst, size_t dstSize)
-    {
-        ASSERT_VALID_SIZE(dstSize, sizeof(T));
-        const T *srcT = reinterpret_cast<const T *>(src);
-        T *dstT = reinterpret_cast<T *>(dst);
-        new (dstT) T(*srcT);
-        return true;
-    }
-
-    bool store(int type, const void *src, void *dst, size_t dstSize) override
-    {
-        switch (type) {
-        case QMetaType::QColor:
-            {
-            Q_ASSERT(dstSize >= sizeof(QColor));
-            Q_UNUSED(dstSize);
-            const QRgb *rgb = reinterpret_cast<const QRgb *>(src);
-            QColor *color = reinterpret_cast<QColor *>(dst);
-            new (color) QColor(QColor::fromRgba(*rgb));
-            return true;
-            }
-        default: break;
-        }
-
-        return false;
-    }
 #undef ASSERT_VALID_SIZE
 };
 
