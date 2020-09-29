@@ -302,7 +302,7 @@ void setupWindowSurface(QWindow *window, Qt3DRender::API api) noexcept
     if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {
         format.setVersion(4, 3);
         format.setProfile(QSurfaceFormat::CoreProfile);
-    }
+    } else
 #endif
     if (!userRequestedApi.isEmpty()) {
         // This is used for RHI
