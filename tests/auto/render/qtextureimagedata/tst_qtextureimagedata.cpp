@@ -62,38 +62,16 @@ private Q_SLOTS:
         QCOMPARE(tid->alignment(), 1);
     }
 
-    void checkCloning_data()
-    {
-
-    }
-
-    void checkCloning()
-    {
-    }
-
-    void checkPropertyUpdates()
-    {
-    }
-
     void checkTextureDataUsesFunctor() {
         Qt3DRender::QTextureImageData *tid = new Qt3DRender::QTextureImageData();
 
-        tid->setData({}, [](int, int, int) {
+        tid->setData({}, [](QByteArray, int, int, int) {
             return QByteArray("a");
         }, false);
 
         QByteArray data = tid->data();
         QCOMPARE(data.data()[0], 'a');
     }
-/*
-protected:
-
-    Qt3DCore::QNode *doClone() const override
-    {
-        return nullptr;
-    }
-    */
-
 };
 
 QTEST_MAIN(tst_QTextureImageData)

@@ -100,7 +100,7 @@ public:
                  bool isCompressed = false);
 
     void setData(const QByteArray &data,
-                 std::function<QByteArray(int layer, int face, int mipmapLevel)>,
+                 std::function<QByteArray(QByteArray rawData, int layer, int face, int mipmapLevel)>,
                  bool isCompressed = false);
 
     QByteArray data(int layer = 0, int face = 0, int mipmapLevel = 0) const;
