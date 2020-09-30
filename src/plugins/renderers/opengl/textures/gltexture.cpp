@@ -80,7 +80,7 @@ void uploadGLData(QOpenGLTexture *glTex,
     QOpenGLPixelTransferOptions uploadOptions;
     uploadOptions.setAlignment(alignment);
     if (data->isCompressed())
-        glTex->setCompressedData(level, layer, face, bytes.size(), bytes.constData());
+        glTex->setCompressedData(level, layer, face, bytes.size(), bytes.constData(), &uploadOptions);
     else
         glTex->setData(level, layer, face, data->pixelFormat(), data->pixelType(), bytes.constData(), &uploadOptions);
 }
