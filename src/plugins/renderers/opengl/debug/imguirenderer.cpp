@@ -527,7 +527,7 @@ bool ImGuiRenderer::createDeviceObjects()
         "}\n";
 
     const GLchar *vertex_shader_es3 =
-        "#version 110\n"
+        "#version 300 es\n"
         "uniform mat4 ProjMtx;\n"
         "in vec2 Position;\n"
         "in vec2 UV;\n"
@@ -542,13 +542,15 @@ bool ImGuiRenderer::createDeviceObjects()
         "}\n";
 
     const GLchar* fragment_shader_es3 =
-        "#version 110\n"
+        "#version 300 es\n"
+        "precision highp float;\n"
         "uniform sampler2D Texture;\n"
         "in vec2 Frag_UV;\n"
         "in vec4 Frag_Color;\n"
+        "out vec4 Out_Color;\n"
         "void main()\n"
         "{\n"
-        "  gl_FragColor = Frag_Color * texture2D(Texture, Frag_UV.st);\n"
+        "  Out_Color = Frag_Color * texture(Texture, Frag_UV.st);\n"
         "}\n";
 
 //    m_shaderHandle = m_funcs->glCreateProgram();
