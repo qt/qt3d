@@ -118,6 +118,7 @@
 #include <Qt3DRender/qshaderimage.h>
 #include <Qt3DRender/qsubtreeenabler.h>
 #include <Qt3DRender/qrendercapabilities.h>
+#include <Qt3DRender/qdebugoverlay.h>
 
 #include <QtGui/qwindow.h>
 
@@ -274,6 +275,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QWaitFence>(uri, 2, 13, "WaitFence");
     qmlRegisterType<Qt3DRender::QNoPicking>(uri, 2, 14, "NoPicking");
     qmlRegisterType<Qt3DRender::QSubtreeEnabler>(uri, 2, 14, "SubtreeEnabler");
+    qmlRegisterType<Qt3DRender::QDebugOverlay>(uri, 2, 16, "DebugOverlay");
 
     // RenderTarget
     qmlRegisterType<Qt3DRender::QRenderTargetOutput>(uri, 2, 0, "RenderTargetOutput");
