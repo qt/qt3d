@@ -197,6 +197,53 @@ private Q_SLOTS:
         // * destroying the aspect engine
     }
 
+    void shouldNotCrashWhenEntityIsAddedThenImmediatelyDeleted()
+    {
+        // GIVEN
+        // An initialized aspect engine...
+        QAspectEngine engine;
+        // ...and a simple aspect
+        PrintRootAspect *aspect = new PrintRootAspect;
+
+        // WHEN
+        // We register the aspect
+        engine.registerAspect(aspect);
+
+        // THEN
+        const auto registeredAspects = engine.aspects();
+        QCOMPARE(registeredAspects.size(), 1);
+        QCOMPARE(registeredAspects.first(), aspect);
+
+        // WHEN
+        QEntityPtr entity(new QEntity);
+        entity->setObjectName("RootEntity");
+        // we set a scene root entity
+        engine.setRootEntity(entity);
+
+        QEventLoop eventLoop;
+        QTimer::singleShot(1000, &eventLoop, SLOT(quit()));
+        eventLoop.exec();
+
+        // THEN
+        // we don't crash and...
+        const auto rootEntity = engine.rootEntity();
+        QCOMPARE(rootEntity, entity);
+
+        // WHEN
+        // we create a child node and delete within the same spin of
+        // the event loop
+        Qt3DCore::QEntity *childEntity = new Qt3DCore::QEntity(entity.data());
+        delete childEntity;
+        entity = nullptr;
+        QTimer::singleShot(600, &eventLoop, SLOT(quit()));
+
+        // ...and allow events to process...
+        eventLoop.exec();
+
+        // ...and we don't crash when the childEntity is removed from the
+        // post construction init routines
+    }
+
     void shouldNotCrashOnShutdownWhenComponentIsCreatedWithParentBeforeItsEntity()
     {
         // GIVEN

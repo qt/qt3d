@@ -141,6 +141,11 @@ void QNodePrivate::notifyDestructionChangesAndRemoveFromScene()
 {
     Q_Q(QNode);
 
+    // Ensure this node is not queued up for post-construction init
+    // to avoid crashing when the event loop spins.
+    if (m_scene && m_scene->postConstructorInit())
+        m_scene->postConstructorInit()->removeNode(q);
+
     // We notify the backend that the parent lost us as a child
     if (m_changeArbiter != nullptr && !m_parentId.isNull()) {
         const auto change = QPropertyNodeRemovedChangePtr::create(m_parentId, q);
