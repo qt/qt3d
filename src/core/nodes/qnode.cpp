@@ -134,6 +134,11 @@ void QNodePrivate::notifyDestructionChangesAndRemoveFromScene()
 {
     Q_Q(QNode);
 
+    // Ensure this node is not queued up for post-construction init
+    // to avoid crashing when the event loop spins.
+    if (m_scene && m_scene->postConstructorInit())
+        m_scene->postConstructorInit()->removeNode(q);
+
     // Tell the backend we are about to be destroyed
     if (m_hasBackendNode && m_scene && m_scene->engine())
         QAspectEnginePrivate::get(m_scene->engine())->removeNode(q);
