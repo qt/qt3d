@@ -163,8 +163,6 @@ static QRectF resolveViewport(const QRectF &fractionalViewport, const QSize &sur
 
 static Matrix4x4 getProjectionMatrix(const CameraLens *lens)
 {
-    if (!lens)
-        qWarning() << "[Qt3D Renderer] No Camera Lens found. Add a CameraSelector to your Frame Graph or make sure that no entities will be rendered.";
     return lens ? lens->projection() : Matrix4x4();
 }
 
