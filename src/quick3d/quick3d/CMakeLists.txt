@@ -54,3 +54,13 @@ qt_extend_target(3DQuick CONDITION gcov
         "-fprofile-arcs"
         "-ftest-coverage"
 )
+
+set_target_properties(3DQuick PROPERTIES
+    QT_QML_MODULE_VERSION ${CMAKE_PROJECT_VERSION}
+    QT_QML_MODULE_URI Qt3D.Core
+    QT_QML_MODULE_INSTALL_QMLTYPES TRUE
+    QT_QMLTYPES_FILENAME plugins.qmltypes
+    QT_QML_MODULE_INSTALL_DIR "${INSTALL_QMLDIR}/Qt3D/Core"
+)
+
+qt6_qml_type_registration(3DQuick)

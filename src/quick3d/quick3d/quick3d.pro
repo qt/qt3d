@@ -26,4 +26,7 @@ SOURCES += \
 
 include(./items/items.pri)
 
+QML_IMPORT_NAME = Qt3DQuick
+QML_IMPORT_MAJOR_VERSION = 1
+
 load(qt_module)
