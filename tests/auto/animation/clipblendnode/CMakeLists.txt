@@ -4,7 +4,7 @@
 ## tst_clipblendnode Test:
 #####################################################################
 
-qt_add_test(tst_clipblendnode
+qt_internal_add_test(tst_clipblendnode
     SOURCES
         tst_clipblendnode.cpp
     INCLUDE_DIRECTORIES
@@ -24,7 +24,7 @@ qt_add_test(tst_clipblendnode
 ## Scopes:
 #####################################################################
 
-qt_extend_target(tst_clipblendnode CONDITION QT_FEATURE_private_tests
+qt_internal_extend_target(tst_clipblendnode CONDITION QT_FEATURE_private_tests
     SOURCES
         ../../core/common/qbackendnodetester.cpp ../../core/common/qbackendnodetester.h
         ../../core/common/testarbiter.h

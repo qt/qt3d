@@ -4,7 +4,7 @@
 ## tst_skeleton Test:
 #####################################################################
 
-qt_add_test(tst_skeleton
+qt_internal_add_test(tst_skeleton
     SOURCES
         tst_skeleton.cpp
     PUBLIC_LIBRARIES

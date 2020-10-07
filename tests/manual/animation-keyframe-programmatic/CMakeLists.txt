@@ -4,7 +4,7 @@
 ## animation-keyframe-programmatic Binary:
 #####################################################################
 
-qt_add_manual_test(animation-keyframe-programmatic
+qt_internal_add_manual_test(animation-keyframe-programmatic
     GUI
     SOURCES
         animationfactory.cpp animationfactory.h
@@ -21,7 +21,7 @@ set(main_resource_files
     "main.qml"
 )
 
-qt_add_resource(animation-keyframe-programmatic "main"
+qt_internal_add_resource(animation-keyframe-programmatic "main"
     PREFIX
         "/"
     FILES

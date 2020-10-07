@@ -4,7 +4,7 @@
 ## tst_qtechniquefilter Test:
 #####################################################################
 
-qt_add_test(tst_qtechniquefilter
+qt_internal_add_test(tst_qtechniquefilter
     SOURCES
         tst_qtechniquefilter.cpp
     PUBLIC_LIBRARIES

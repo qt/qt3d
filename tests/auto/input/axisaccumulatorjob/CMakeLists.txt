@@ -4,7 +4,7 @@
 ## tst_axisaccumulatorjob Test:
 #####################################################################
 
-qt_add_test(tst_axisaccumulatorjob
+qt_internal_add_test(tst_axisaccumulatorjob
     SOURCES
         tst_axisaccumulatorjob.cpp
     INCLUDE_DIRECTORIES
@@ -24,7 +24,7 @@ qt_add_test(tst_axisaccumulatorjob
 ## Scopes:
 #####################################################################
 
-qt_extend_target(tst_axisaccumulatorjob CONDITION QT_FEATURE_private_tests
+qt_internal_extend_target(tst_axisaccumulatorjob CONDITION QT_FEATURE_private_tests
     SOURCES
         ../../core/common/qbackendnodetester.cpp ../../core/common/qbackendnodetester.h
         ../../core/common/testarbiter.h

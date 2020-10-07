@@ -4,7 +4,7 @@
 ## Qt::3DQuickInput Module:
 #####################################################################
 
-qt_add_module(3DQuickInput
+qt_internal_add_module(3DQuickInput
     SOURCES
         items/quick3daction.cpp items/quick3daction_p.h
         items/quick3daxis.cpp items/quick3daxis_p.h
@@ -40,7 +40,7 @@ qt_add_module(3DQuickInput
 ## Scopes:
 #####################################################################
 
-qt_extend_target(3DQuickInput CONDITION gcov
+qt_internal_extend_target(3DQuickInput CONDITION gcov
     COMPILE_OPTIONS
         -fprofile-arcs
         -ftest-coverage

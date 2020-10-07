@@ -4,7 +4,7 @@
 ## tst_armature Test:
 #####################################################################
 
-qt_add_test(tst_armature
+qt_internal_add_test(tst_armature
     SOURCES
         tst_armature.cpp
     PUBLIC_LIBRARIES

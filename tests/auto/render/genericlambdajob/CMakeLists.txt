@@ -4,7 +4,7 @@
 ## tst_genericlambdajob Test:
 #####################################################################
 
-qt_add_test(tst_genericlambdajob
+qt_internal_add_test(tst_genericlambdajob
     SOURCES
         tst_genericlambdajob.cpp
     PUBLIC_LIBRARIES

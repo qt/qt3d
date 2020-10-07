@@ -4,7 +4,7 @@
 ## tst_qanimationaspect Test:
 #####################################################################
 
-qt_add_test(tst_qanimationaspect
+qt_internal_add_test(tst_qanimationaspect
     SOURCES
         tst_qanimationaspect.cpp
     PUBLIC_LIBRARIES

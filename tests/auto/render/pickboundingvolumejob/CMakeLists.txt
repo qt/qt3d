@@ -4,7 +4,7 @@
 ## tst_pickboundingvolumejob Test:
 #####################################################################
 
-qt_add_test(tst_pickboundingvolumejob
+qt_internal_add_test(tst_pickboundingvolumejob
     SOURCES
         ../qmlscenereader/qmlscenereader.cpp ../qmlscenereader/qmlscenereader.h
         tst_pickboundingvolumejob.cpp
@@ -41,7 +41,7 @@ set(pickboundingvolumejob_resource_files
     "testscene_viewports.qml"
 )
 
-qt_add_resource(tst_pickboundingvolumejob "pickboundingvolumejob"
+qt_internal_add_resource(tst_pickboundingvolumejob "pickboundingvolumejob"
     PREFIX
         "/"
     FILES

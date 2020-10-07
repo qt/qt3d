@@ -4,7 +4,7 @@
 ## tst_qrendersurfaceselector Test:
 #####################################################################
 
-qt_add_test(tst_qrendersurfaceselector
+qt_internal_add_test(tst_qrendersurfaceselector
     SOURCES
         tst_qrendersurfaceselector.cpp
     PUBLIC_LIBRARIES

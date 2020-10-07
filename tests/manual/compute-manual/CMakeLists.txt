@@ -4,7 +4,7 @@
 ## compute-manual Binary:
 #####################################################################
 
-qt_add_manual_test(compute-manual
+qt_internal_add_manual_test(compute-manual
     GUI
     SOURCES
         main.cpp
@@ -29,7 +29,7 @@ set(compute-manual_resource_files
     "particles.vert"
 )
 
-qt_add_resource(compute-manual "compute-manual"
+qt_internal_add_resource(compute-manual "compute-manual"
     PREFIX
         "/"
     FILES

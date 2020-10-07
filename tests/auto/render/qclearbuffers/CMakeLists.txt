@@ -4,7 +4,7 @@
 ## tst_qclearbuffer Test:
 #####################################################################
 
-qt_add_test(tst_qclearbuffer
+qt_internal_add_test(tst_qclearbuffer
     SOURCES
         tst_qclearbuffers.cpp
     PUBLIC_LIBRARIES

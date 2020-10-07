@@ -4,7 +4,7 @@
 ## tst_qmesh Test:
 #####################################################################
 
-qt_add_test(tst_qmesh
+qt_internal_add_test(tst_qmesh
     SOURCES
         tst_qmesh.cpp
     PUBLIC_LIBRARIES

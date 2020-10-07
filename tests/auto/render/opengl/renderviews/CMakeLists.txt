@@ -4,7 +4,7 @@
 ## tst_renderviews Test:
 #####################################################################
 
-qt_add_test(tst_renderviews
+qt_internal_add_test(tst_renderviews
     SOURCES
         tst_renderviews.cpp
 )
@@ -20,7 +20,7 @@ qt3d_setup_common_render_test(tst_renderviews USE_TEST_ASPECT)
 include(${PROJECT_SOURCE_DIR}/src/plugins/renderers/opengl/opengl.cmake)
 qt3d_setup_opengl_renderer_target(tst_renderviews)
 
-qt_extend_target(tst_renderviews CONDITION gcov
+qt_internal_extend_target(tst_renderviews CONDITION gcov
     COMPILE_OPTIONS
         -fprofile-arcs
         -ftest-coverage

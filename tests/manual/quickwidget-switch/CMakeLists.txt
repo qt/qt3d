@@ -4,7 +4,7 @@
 ## quickwidget-switch Binary:
 #####################################################################
 
-qt_add_manual_test(quickwidget-switch
+qt_internal_add_manual_test(quickwidget-switch
     GUI
     SOURCES
         main.cpp
@@ -28,7 +28,7 @@ set(quickwidget-switch_resource_files
     "main.qml"
 )
 
-qt_add_resource(quickwidget-switch "quickwidget-switch"
+qt_internal_add_resource(quickwidget-switch "quickwidget-switch"
     PREFIX
         "/"
     FILES

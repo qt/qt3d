@@ -4,7 +4,7 @@
 ## Qt::3DQuickAnimation Module:
 #####################################################################
 
-qt_add_module(3DQuickAnimation
+qt_internal_add_module(3DQuickAnimation
     SOURCES
         items/quick3danimationcontroller.cpp items/quick3danimationcontroller_p.h
         items/quick3danimationgroup.cpp items/quick3danimationgroup_p.h
@@ -42,7 +42,7 @@ qt_add_module(3DQuickAnimation
 ## Scopes:
 #####################################################################
 
-qt_extend_target(3DQuickAnimation CONDITION gcov
+qt_internal_extend_target(3DQuickAnimation CONDITION gcov
     COMPILE_OPTIONS
         -fprofile-arcs
         -ftest-coverage

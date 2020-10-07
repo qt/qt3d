@@ -4,7 +4,7 @@
 ## tst_inputchord Test:
 #####################################################################
 
-qt_add_test(tst_inputchord
+qt_internal_add_test(tst_inputchord
     SOURCES
         ../commons/testdevice.h
         ../commons/testdeviceproxy.h
@@ -27,7 +27,7 @@ qt_add_test(tst_inputchord
 ## Scopes:
 #####################################################################
 
-qt_extend_target(tst_inputchord CONDITION QT_FEATURE_private_tests
+qt_internal_extend_target(tst_inputchord CONDITION QT_FEATURE_private_tests
     SOURCES
         ../../core/common/qbackendnodetester.cpp ../../core/common/qbackendnodetester.h
         ../../core/common/testarbiter.h

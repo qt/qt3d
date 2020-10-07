@@ -4,7 +4,7 @@
 ## tst_proximityfilter Test:
 #####################################################################
 
-qt_add_test(tst_proximityfilter
+qt_internal_add_test(tst_proximityfilter
     SOURCES
         tst_proximityfilter.cpp
     PUBLIC_LIBRARIES

@@ -4,7 +4,7 @@
 ## tst_materialparametergathererjob Test:
 #####################################################################
 
-qt_add_test(tst_materialparametergathererjob
+qt_internal_add_test(tst_materialparametergathererjob
     SOURCES
         tst_materialparametergathererjob.cpp
 )
@@ -20,7 +20,7 @@ qt3d_setup_common_render_test(tst_materialparametergathererjob)
 include(${PROJECT_SOURCE_DIR}/src/plugins/renderers/opengl/opengl.cmake)
 qt3d_setup_opengl_renderer_target(tst_materialparametergathererjob)
 
-qt_extend_target(tst_materialparametergathererjob CONDITION gcov
+qt_internal_extend_target(tst_materialparametergathererjob CONDITION gcov
     COMPILE_OPTIONS
         -fprofile-arcs
         -ftest-coverage

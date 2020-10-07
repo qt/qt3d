@@ -4,7 +4,7 @@
 ## skybox Binary:
 #####################################################################
 
-qt_add_manual_test(skybox
+qt_internal_add_manual_test(skybox
     GUI
     SOURCES
         main.cpp
@@ -25,7 +25,7 @@ set(skybox_resource_files
     "main.qml"
 )
 
-qt_add_resource(skybox "skybox"
+qt_internal_add_resource(skybox "skybox"
     PREFIX
         "/"
     FILES
@@ -66,7 +66,7 @@ set(cubemaps_resource_files
     "assets/cubemaps/miramar/miramar_posz.webp"
 )
 
-qt_add_resource(skybox "cubemaps"
+qt_internal_add_resource(skybox "cubemaps"
     PREFIX
         "/"
     BASE

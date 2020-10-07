@@ -4,7 +4,7 @@
 ## qtquickscene3dplugin Plugin:
 #####################################################################
 
-qt_add_qml_module(qtquickscene3dplugin
+qt_internal_add_qml_module(qtquickscene3dplugin
     URI "QtQuick.Scene3D"
     VERSION "2.${CMAKE_PROJECT_VERSION_MINOR}"
     CLASSNAME QtQuickScene3DPlugin
@@ -37,17 +37,17 @@ qt_add_qml_module(qtquickscene3dplugin
 ## Scopes:
 #####################################################################
 
-qt_extend_target(qtquickscene3dplugin CONDITION QT_FEATURE_qt3d_input
+qt_internal_extend_target(qtquickscene3dplugin CONDITION QT_FEATURE_qt3d_input
     PUBLIC_LIBRARIES
         Qt::3DInput
 )
 
-qt_extend_target(qtquickscene3dplugin CONDITION QT_FEATURE_qt3d_logic
+qt_internal_extend_target(qtquickscene3dplugin CONDITION QT_FEATURE_qt3d_logic
     PUBLIC_LIBRARIES
         Qt::3DLogic
 )
 
-qt_extend_target(qtquickscene3dplugin CONDITION QT_FEATURE_qt3d_animation
+qt_internal_extend_target(qtquickscene3dplugin CONDITION QT_FEATURE_qt3d_animation
     PUBLIC_LIBRARIES
         Qt::3DAnimation
 )
@@ -58,7 +58,7 @@ set(shader_resource_files
     "shaders/scene3dmaterial.frag.qsb"
 )
 
-qt_add_resource(qtquickscene3dplugin "scene3d"
+qt_internal_add_resource(qtquickscene3dplugin "scene3d"
     PREFIX
         "/"
     FILES

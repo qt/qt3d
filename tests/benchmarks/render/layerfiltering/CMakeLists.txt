@@ -4,7 +4,7 @@
 ## tst_bench_layerfiltering Test:
 #####################################################################
 
-qt_add_test(tst_bench_layerfiltering
+qt_internal_add_test(tst_bench_layerfiltering
     SOURCES
         tst_bench_layerfiltering.cpp
     PUBLIC_LIBRARIES

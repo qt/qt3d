@@ -4,7 +4,7 @@
 ## tst_qabstractlight Test:
 #####################################################################
 
-qt_add_test(tst_qabstractlight
+qt_internal_add_test(tst_qabstractlight
     SOURCES
         tst_qabstractlight.cpp
     PUBLIC_LIBRARIES

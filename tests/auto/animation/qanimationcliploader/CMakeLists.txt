@@ -4,7 +4,7 @@
 ## tst_qanimationclip Test:
 #####################################################################
 
-qt_add_test(tst_qanimationclip
+qt_internal_add_test(tst_qanimationclip
     SOURCES
         tst_qanimationcliploader.cpp
     INCLUDE_DIRECTORIES
@@ -24,7 +24,7 @@ qt_add_test(tst_qanimationclip
 ## Scopes:
 #####################################################################
 
-qt_extend_target(tst_qanimationclip CONDITION QT_FEATURE_private_tests
+qt_internal_extend_target(tst_qanimationclip CONDITION QT_FEATURE_private_tests
     SOURCES
         ../../core/common/qbackendnodetester.cpp ../../core/common/qbackendnodetester.h
         ../../core/common/testarbiter.h

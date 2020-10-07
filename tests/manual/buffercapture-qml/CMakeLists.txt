@@ -4,7 +4,7 @@
 ## buffercapture-qml Binary:
 #####################################################################
 
-qt_add_manual_test(buffercapture-qml
+qt_internal_add_manual_test(buffercapture-qml
     GUI
     SOURCES
         main.cpp
@@ -30,7 +30,7 @@ set(resources_resource_files
     "main.qml"
 )
 
-qt_add_resource(buffercapture-qml "resources"
+qt_internal_add_resource(buffercapture-qml "resources"
     PREFIX
         "/"
     FILES

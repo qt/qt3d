@@ -4,7 +4,7 @@
 ## rendercapture-qml-fbo Binary:
 #####################################################################
 
-qt_add_manual_test(rendercapture-qml-fbo
+qt_internal_add_manual_test(rendercapture-qml-fbo
     GUI
     SOURCES
         main.cpp
@@ -28,7 +28,7 @@ set(qml_resource_files
     "main.qml"
 )
 
-qt_add_resource(rendercapture-qml-fbo "qml"
+qt_internal_add_resource(rendercapture-qml-fbo "qml"
     PREFIX
         "/"
     FILES

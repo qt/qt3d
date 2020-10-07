@@ -4,7 +4,7 @@
 ## tst_effect Test:
 #####################################################################
 
-qt_add_test(tst_effect
+qt_internal_add_test(tst_effect
     SOURCES
         tst_effect.cpp
     PUBLIC_LIBRARIES

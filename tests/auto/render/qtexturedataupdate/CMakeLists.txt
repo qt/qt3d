@@ -4,7 +4,7 @@
 ## tst_qtexturedataupdate Test:
 #####################################################################
 
-qt_add_test(tst_qtexturedataupdate
+qt_internal_add_test(tst_qtexturedataupdate
     SOURCES
         tst_qtexturedataupdate.cpp
     PUBLIC_LIBRARIES

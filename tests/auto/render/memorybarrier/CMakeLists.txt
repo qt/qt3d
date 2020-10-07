@@ -4,7 +4,7 @@
 ## tst_memorybarrier Test:
 #####################################################################
 
-qt_add_test(tst_memorybarrier
+qt_internal_add_test(tst_memorybarrier
     SOURCES
         tst_memorybarrier.cpp
     PUBLIC_LIBRARIES

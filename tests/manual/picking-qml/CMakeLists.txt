@@ -4,7 +4,7 @@
 ## picking-qml Binary:
 #####################################################################
 
-qt_add_manual_test(picking-qml
+qt_internal_add_manual_test(picking-qml
     GUI
     SOURCES
         main.cpp
@@ -26,7 +26,7 @@ set(picking-qml_resource_files
     "main.qml"
 )
 
-qt_add_resource(picking-qml "picking-qml"
+qt_internal_add_resource(picking-qml "picking-qml"
     PREFIX
         "/"
     FILES

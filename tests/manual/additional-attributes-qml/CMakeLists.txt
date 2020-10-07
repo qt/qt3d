@@ -4,7 +4,7 @@
 ## additional-attributes-qml Binary:
 #####################################################################
 
-qt_add_manual_test(additional-attributes-qml
+qt_internal_add_manual_test(additional-attributes-qml
     GUI
     SOURCES
         main.cpp
@@ -25,7 +25,7 @@ set(additional-attributes-qml_resource_files
     "main.qml"
 )
 
-qt_add_resource(additional-attributes-qml "additional-attributes-qml"
+qt_internal_add_resource(additional-attributes-qml "additional-attributes-qml"
     PREFIX
         "/"
     FILES

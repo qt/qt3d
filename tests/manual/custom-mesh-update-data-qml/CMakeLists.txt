@@ -4,7 +4,7 @@
 ## custom-mesh-update-data-qml Binary:
 #####################################################################
 
-qt_add_manual_test(custom-mesh-update-data-qml
+qt_internal_add_manual_test(custom-mesh-update-data-qml
     GUI
     SOURCES
         main.cpp
@@ -23,7 +23,7 @@ set(custom-mesh-update-data-qml_resource_files
     "main.qml"
 )
 
-qt_add_resource(custom-mesh-update-data-qml "custom-mesh-update-data-qml"
+qt_internal_add_resource(custom-mesh-update-data-qml "custom-mesh-update-data-qml"
     PREFIX
         "/"
     FILES

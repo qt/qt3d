@@ -4,7 +4,7 @@
 ## video-texture-qml Binary:
 #####################################################################
 
-qt_add_manual_test(video-texture-qml
+qt_internal_add_manual_test(video-texture-qml
     GUI
     SOURCES
         main.cpp
@@ -25,7 +25,7 @@ set(video-texture-qml_resource_files
     "main.qml"
 )
 
-qt_add_resource(video-texture-qml "video-texture-qml"
+qt_internal_add_resource(video-texture-qml "video-texture-qml"
     PREFIX
         "/"
     FILES

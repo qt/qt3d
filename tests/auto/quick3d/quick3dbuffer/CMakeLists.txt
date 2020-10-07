@@ -4,7 +4,7 @@
 ## tst_quick3dbuffer Test:
 #####################################################################
 
-qt_add_test(tst_quick3dbuffer
+qt_internal_add_test(tst_quick3dbuffer
     SOURCES
         tst_quick3dbuffer.cpp
     PUBLIC_LIBRARIES

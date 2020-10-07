@@ -4,7 +4,7 @@
 ## tst_animationutils Test:
 #####################################################################
 
-qt_add_test(tst_animationutils
+qt_internal_add_test(tst_animationutils
     SOURCES
         tst_animationutils.cpp
     PUBLIC_LIBRARIES
@@ -26,7 +26,7 @@ set(animationutils_resource_files
     "clip6.json"
 )
 
-qt_add_resource(tst_animationutils "animationutils"
+qt_internal_add_resource(tst_animationutils "animationutils"
     PREFIX
         "/"
     FILES

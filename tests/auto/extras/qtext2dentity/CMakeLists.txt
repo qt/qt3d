@@ -4,7 +4,7 @@
 ## tst_qtext2dentity Test:
 #####################################################################
 
-qt_add_test(tst_qtext2dentity
+qt_internal_add_test(tst_qtext2dentity
     SOURCES
         tst_qtext2dentity.cpp
     PUBLIC_LIBRARIES
@@ -21,7 +21,7 @@ set(qtext2dentity_resource_files
     "qtext2dentity.qml"
 )
 
-qt_add_resource(tst_qtext2dentity "qtext2dentity"
+qt_internal_add_resource(tst_qtext2dentity "qtext2dentity"
     PREFIX
         "/"
     FILES

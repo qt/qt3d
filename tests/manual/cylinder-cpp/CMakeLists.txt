@@ -4,7 +4,7 @@
 ## cylinder-cpp Binary:
 #####################################################################
 
-qt_add_manual_test(cylinder-cpp
+qt_internal_add_manual_test(cylinder-cpp
     GUI
     SOURCES
         main.cpp

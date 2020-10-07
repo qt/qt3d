@@ -4,7 +4,7 @@
 ## tst_buttonaxisinput Test:
 #####################################################################
 
-qt_add_test(tst_buttonaxisinput
+qt_internal_add_test(tst_buttonaxisinput
     SOURCES
         ../commons/testdevice.h
         ../commons/testdeviceproxy.h
@@ -27,7 +27,7 @@ qt_add_test(tst_buttonaxisinput
 ## Scopes:
 #####################################################################
 
-qt_extend_target(tst_buttonaxisinput CONDITION QT_FEATURE_private_tests
+qt_internal_extend_target(tst_buttonaxisinput CONDITION QT_FEATURE_private_tests
     SOURCES
         ../../core/common/qbackendnodetester.cpp ../../core/common/qbackendnodetester.h
         ../../core/common/testarbiter.h

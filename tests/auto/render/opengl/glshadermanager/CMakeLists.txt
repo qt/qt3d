@@ -4,7 +4,7 @@
 ## tst_glshadermanager Test:
 #####################################################################
 
-qt_add_test(tst_glshadermanager
+qt_internal_add_test(tst_glshadermanager
     SOURCES
         tst_glshadermanager.cpp
 )
@@ -20,7 +20,7 @@ qt3d_setup_common_render_test(tst_glshadermanager USE_TEST_ASPECT)
 include(${PROJECT_SOURCE_DIR}/src/plugins/renderers/opengl/opengl.cmake)
 qt3d_setup_opengl_renderer_target(tst_glshadermanager)
 
-qt_extend_target(tst_glshadermanager CONDITION gcov
+qt_internal_extend_target(tst_glshadermanager CONDITION gcov
     COMPILE_OPTIONS
         -fprofile-arcs
         -ftest-coverage

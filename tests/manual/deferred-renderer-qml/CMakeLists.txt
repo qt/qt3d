@@ -4,7 +4,7 @@
 ## deferred-renderer-qml Binary:
 #####################################################################
 
-qt_add_manual_test(deferred-renderer-qml
+qt_internal_add_manual_test(deferred-renderer-qml
     GUI
     SOURCES
         main.cpp
@@ -39,7 +39,7 @@ set(deferred-renderer-qml_resource_files
     "main.qml"
 )
 
-qt_add_resource(deferred-renderer-qml "deferred-renderer-qml"
+qt_internal_add_resource(deferred-renderer-qml "deferred-renderer-qml"
     PREFIX
         "/"
     FILES

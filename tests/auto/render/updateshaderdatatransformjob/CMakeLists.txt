@@ -4,7 +4,7 @@
 ## tst_updateshaderdatatransformjob Test:
 #####################################################################
 
-qt_add_test(tst_updateshaderdatatransformjob
+qt_internal_add_test(tst_updateshaderdatatransformjob
     SOURCES
         ../qmlscenereader/qmlscenereader.cpp ../qmlscenereader/qmlscenereader.h
         tst_updateshaderdatatransformjob.cpp
@@ -31,7 +31,7 @@ set(updateshaderdatatransformjob_resource_files
     "test_scene_model_to_world.qml"
 )
 
-qt_add_resource(tst_updateshaderdatatransformjob "updateshaderdatatransformjob"
+qt_internal_add_resource(tst_updateshaderdatatransformjob "updateshaderdatatransformjob"
     PREFIX
         "/"
     FILES

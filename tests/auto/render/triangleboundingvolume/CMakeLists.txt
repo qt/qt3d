@@ -4,7 +4,7 @@
 ## tst_triangleboundingvolume Test:
 #####################################################################
 
-qt_add_test(tst_triangleboundingvolume
+qt_internal_add_test(tst_triangleboundingvolume
     SOURCES
         tst_triangleboundingvolume.cpp
     PUBLIC_LIBRARIES

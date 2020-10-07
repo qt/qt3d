@@ -4,7 +4,7 @@
 ## custom-mesh-qml Binary:
 #####################################################################
 
-qt_add_manual_test(custom-mesh-qml
+qt_internal_add_manual_test(custom-mesh-qml
     GUI
     SOURCES
         main.cpp
@@ -23,7 +23,7 @@ set(custom-mesh-qml_resource_files
     "main.qml"
 )
 
-qt_add_resource(custom-mesh-qml "custom-mesh-qml"
+qt_internal_add_resource(custom-mesh-qml "custom-mesh-qml"
     PREFIX
         "/"
     FILES

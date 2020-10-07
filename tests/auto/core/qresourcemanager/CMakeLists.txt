@@ -4,7 +4,7 @@
 ## tst_qresourcemanager Test:
 #####################################################################
 
-qt_add_test(tst_qresourcemanager
+qt_internal_add_test(tst_qresourcemanager
     SOURCES
         tst_qresourcemanager.cpp
     PUBLIC_LIBRARIES

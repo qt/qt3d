@@ -4,7 +4,7 @@
 ## bigmodel-qml Binary:
 #####################################################################
 
-qt_add_manual_test(bigmodel-qml
+qt_internal_add_manual_test(bigmodel-qml
     GUI
     SOURCES
         main.cpp
@@ -26,7 +26,7 @@ set(bigmodel-qml_resource_files
     "main.qml"
 )
 
-qt_add_resource(bigmodel-qml "bigmodel-qml"
+qt_internal_add_resource(bigmodel-qml "bigmodel-qml"
     PREFIX
         "/"
     FILES

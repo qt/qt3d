@@ -4,7 +4,7 @@
 ## animation-keyframe-simple Binary:
 #####################################################################
 
-qt_add_manual_test(animation-keyframe-simple
+qt_internal_add_manual_test(animation-keyframe-simple
     GUI
     SOURCES
         main.cpp
@@ -23,7 +23,7 @@ set(main_resource_files
     "pulsing-moving-cube.json"
 )
 
-qt_add_resource(animation-keyframe-simple "main"
+qt_internal_add_resource(animation-keyframe-simple "main"
     PREFIX
         "/"
     FILES

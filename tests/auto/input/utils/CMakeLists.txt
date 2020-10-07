@@ -4,7 +4,7 @@
 ## tst_utils Test:
 #####################################################################
 
-qt_add_test(tst_utils
+qt_internal_add_test(tst_utils
     SOURCES
         ../commons/testdevice.h
         ../commons/testdeviceproxy.h
@@ -27,7 +27,7 @@ qt_add_test(tst_utils
 ## Scopes:
 #####################################################################
 
-qt_extend_target(tst_utils CONDITION QT_FEATURE_private_tests
+qt_internal_extend_target(tst_utils CONDITION QT_FEATURE_private_tests
     SOURCES
         ../../core/common/qbackendnodetester.cpp ../../core/common/qbackendnodetester.h
         ../../core/common/testarbiter.h

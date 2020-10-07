@@ -4,7 +4,7 @@
 ## tst_qanimationcontroller Test:
 #####################################################################
 
-qt_add_test(tst_qanimationcontroller
+qt_internal_add_test(tst_qanimationcontroller
     SOURCES
         tst_qanimationcontroller.cpp
     PUBLIC_LIBRARIES

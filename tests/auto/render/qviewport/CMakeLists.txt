@@ -4,7 +4,7 @@
 ## tst_qviewport Test:
 #####################################################################
 
-qt_add_test(tst_qviewport
+qt_internal_add_test(tst_qviewport
     SOURCES
         tst_qviewport.cpp
     PUBLIC_LIBRARIES

@@ -4,7 +4,7 @@
 ## tst_aspectcommandddebugger Test:
 #####################################################################
 
-qt_add_test(tst_aspectcommandddebugger
+qt_internal_add_test(tst_aspectcommandddebugger
     SOURCES
         tst_aspectcommanddebugger.cpp
     PUBLIC_LIBRARIES

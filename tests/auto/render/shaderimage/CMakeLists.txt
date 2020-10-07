@@ -4,7 +4,7 @@
 ## tst_shaderimage Test:
 #####################################################################
 
-qt_add_test(tst_shaderimage
+qt_internal_add_test(tst_shaderimage
     SOURCES
         tst_shaderimage.cpp
     PUBLIC_LIBRARIES

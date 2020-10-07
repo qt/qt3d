@@ -4,7 +4,7 @@
 ## raycaster Test:
 #####################################################################
 
-qt_add_test(tst_raycaster
+qt_internal_add_test(tst_raycaster
     SOURCES
         tst_raycaster.cpp
     PUBLIC_LIBRARIES

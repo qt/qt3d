@@ -4,7 +4,7 @@
 ## render-qml-to-texture Binary:
 #####################################################################
 
-qt_add_manual_test(render-qml-to-texture
+qt_internal_add_manual_test(render-qml-to-texture
     GUI
     SOURCES
         main.cpp
@@ -32,7 +32,7 @@ set(render-qml-to-texture_resource_files
     "shaders/gl3/texturing.vert"
 )
 
-qt_add_resource(render-qml-to-texture "render-qml-to-texture"
+qt_internal_add_resource(render-qml-to-texture "render-qml-to-texture"
     PREFIX
         "/"
     FILES

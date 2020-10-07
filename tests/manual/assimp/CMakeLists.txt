@@ -4,7 +4,7 @@
 ## assimp Binary:
 #####################################################################
 
-qt_add_manual_test(assimp
+qt_internal_add_manual_test(assimp
     GUI
     SOURCES
         main.cpp
@@ -25,7 +25,7 @@ set(assimp_resource_files
     "main.qml"
 )
 
-qt_add_resource(assimp "assimp"
+qt_internal_add_resource(assimp "assimp"
     PREFIX
         "/"
     FILES
@@ -38,7 +38,7 @@ set(test_scene_resource_files
     "assets/test_scene.dae"
 )
 
-qt_add_resource(assimp "test_scene"
+qt_internal_add_resource(assimp "test_scene"
     PREFIX
         "/"
     BASE
@@ -69,7 +69,7 @@ set(obj_resource_files
     "assets/obj/trefoil.obj"
 )
 
-qt_add_resource(assimp "obj"
+qt_internal_add_resource(assimp "obj"
     PREFIX
         "/"
     BASE

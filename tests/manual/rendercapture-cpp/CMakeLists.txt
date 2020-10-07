@@ -4,7 +4,7 @@
 ## rendercapture-cpp Binary:
 #####################################################################
 
-qt_add_manual_test(rendercapture-cpp
+qt_internal_add_manual_test(rendercapture-cpp
     GUI
     SOURCES
         main.cpp

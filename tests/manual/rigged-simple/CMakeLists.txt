@@ -4,7 +4,7 @@
 ## rigged-simple Binary:
 #####################################################################
 
-qt_add_manual_test(rigged-simple
+qt_internal_add_manual_test(rigged-simple
     GUI
     SOURCES
         main.cpp
@@ -29,7 +29,7 @@ set(rigged-simple_resource_files
     "skinnedPbr.vert"
 )
 
-qt_add_resource(rigged-simple "rigged-simple"
+qt_internal_add_resource(rigged-simple "rigged-simple"
     PREFIX
         "/"
     FILES
@@ -70,7 +70,7 @@ set(cubemaps_resource_files
     "assets/cubemaps/miramar/miramar_posz.webp"
 )
 
-qt_add_resource(rigged-simple "cubemaps"
+qt_internal_add_resource(rigged-simple "cubemaps"
     PREFIX
         "/"
     BASE
@@ -89,7 +89,7 @@ set(envmaps_resource_files
     "assets/envmaps/cedar-bridge/cedar_bridge_specular.dds"
 )
 
-qt_add_resource(rigged-simple "envmaps"
+qt_internal_add_resource(rigged-simple "envmaps"
     PREFIX
         "/"
     BASE
@@ -172,7 +172,7 @@ set(gltf_resource_files
     "assets/gltf/wine/wine3VS.glsl"
 )
 
-qt_add_resource(rigged-simple "gltf"
+qt_internal_add_resource(rigged-simple "gltf"
     PREFIX
         "/"
     BASE

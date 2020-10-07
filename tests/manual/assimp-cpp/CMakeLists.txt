@@ -4,7 +4,7 @@
 ## assimp-cpp Binary:
 #####################################################################
 
-qt_add_manual_test(assimp-cpp
+qt_internal_add_manual_test(assimp-cpp
     GUI
     SOURCES
         main.cpp

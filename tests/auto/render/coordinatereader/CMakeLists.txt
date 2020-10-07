@@ -4,7 +4,7 @@
 ## coordinatereader Test:
 #####################################################################
 
-qt_add_test(tst_coordinatereader
+qt_internal_add_test(tst_coordinatereader
     SOURCES
         tst_coordinatereader.cpp
     PUBLIC_LIBRARIES

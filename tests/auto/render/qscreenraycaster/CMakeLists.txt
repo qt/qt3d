@@ -4,7 +4,7 @@
 ## tst_qscreenraycaster Test:
 #####################################################################
 
-qt_add_test(tst_qscreenraycaster
+qt_internal_add_test(tst_qscreenraycaster
     SOURCES
         tst_qscreenraycaster.cpp
     PUBLIC_LIBRARIES

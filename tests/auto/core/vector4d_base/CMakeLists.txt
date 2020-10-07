@@ -4,7 +4,7 @@
 ## tst_vector4d_base Test:
 #####################################################################
 
-qt_add_test(tst_vector4d_base
+qt_internal_add_test(tst_vector4d_base
     SOURCES
         tst_vector4d_base.cpp
     PUBLIC_LIBRARIES

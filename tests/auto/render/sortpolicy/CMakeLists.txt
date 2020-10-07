@@ -4,7 +4,7 @@
 ## tst_sortpolicy Test:
 #####################################################################
 
-qt_add_test(tst_sortpolicy
+qt_internal_add_test(tst_sortpolicy
     SOURCES
         tst_sortpolicy.cpp
     PUBLIC_LIBRARIES

@@ -4,7 +4,7 @@
 ## tst_qkeyframeanimation Test:
 #####################################################################
 
-qt_add_test(tst_qkeyframeanimation
+qt_internal_add_test(tst_qkeyframeanimation
     SOURCES
         tst_qkeyframeanimation.cpp
     PUBLIC_LIBRARIES

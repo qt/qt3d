@@ -4,7 +4,7 @@
 ## tst_boundingsphere Test:
 #####################################################################
 
-qt_add_test(tst_boundingsphere
+qt_internal_add_test(tst_boundingsphere
     SOURCES
         ../qmlscenereader/qmlscenereader.cpp ../qmlscenereader/qmlscenereader.h
         tst_boundingsphere.cpp
@@ -31,7 +31,7 @@ set(boundingsphere_resource_files
     "sphere.qml"
 )
 
-qt_add_resource(tst_boundingsphere "boundingsphere"
+qt_internal_add_resource(tst_boundingsphere "boundingsphere"
     PREFIX
         "/"
     FILES

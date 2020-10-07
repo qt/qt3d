@@ -4,7 +4,7 @@
 ## spritegrid Binary:
 #####################################################################
 
-qt_add_manual_test(spritegrid
+qt_internal_add_manual_test(spritegrid
     GUI
     SOURCES
         main.cpp
@@ -25,7 +25,7 @@ set(spritegrid_resource_files
     "spritegrid.png"
 )
 
-qt_add_resource(spritegrid "spritegrid"
+qt_internal_add_resource(spritegrid "spritegrid"
     PREFIX
         "/"
     FILES

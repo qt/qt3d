@@ -4,7 +4,7 @@
 ## tst_qaspectengine Test:
 #####################################################################
 
-qt_add_test(tst_qaspectengine
+qt_internal_add_test(tst_qaspectengine
     SOURCES
         tst_qaspectengine.cpp
     PUBLIC_LIBRARIES

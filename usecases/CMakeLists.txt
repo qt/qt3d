@@ -4,7 +4,7 @@
 ## use_cases Binary:
 #####################################################################
 
-qt_add_executable(use_cases
+qt_internal_add_executable(use_cases
     GUI
     PUBLIC_LIBRARIES
         Qt::Gui

@@ -4,7 +4,7 @@
 ## tst_vsyncframeadvanceservice Test:
 #####################################################################
 
-qt_add_test(tst_vsyncframeadvanceservice
+qt_internal_add_test(tst_vsyncframeadvanceservice
     SOURCES
         tst_vsyncframeadvanceservice.cpp
     PUBLIC_LIBRARIES

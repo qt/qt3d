@@ -4,7 +4,7 @@
 ## tst_qsetfence Test:
 #####################################################################
 
-qt_add_test(tst_qsetfence
+qt_internal_add_test(tst_qsetfence
     SOURCES
         tst_qsetfence.cpp
     PUBLIC_LIBRARIES

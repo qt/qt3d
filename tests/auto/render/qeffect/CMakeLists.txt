@@ -4,7 +4,7 @@
 ## tst_qeffect Test:
 #####################################################################
 
-qt_add_test(tst_qeffect
+qt_internal_add_test(tst_qeffect
     SOURCES
         tst_qeffect.cpp
     PUBLIC_LIBRARIES

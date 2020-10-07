@@ -4,7 +4,7 @@
 ## gltf Binary:
 #####################################################################
 
-qt_add_manual_test(gltf
+qt_internal_add_manual_test(gltf
     GUI
     SOURCES
         main.cpp
@@ -25,7 +25,7 @@ set(gltf_example_resource_files
     "main.qml"
 )
 
-qt_add_resource(gltf "gltf_example"
+qt_internal_add_resource(gltf "gltf_example"
     PREFIX
         "/"
     FILES
@@ -106,7 +106,7 @@ set(gltf_resource_files
     "assets/gltf/wine/wine3VS.glsl"
 )
 
-qt_add_resource(gltf "gltf"
+qt_internal_add_resource(gltf "gltf"
     PREFIX
         "/"
     BASE

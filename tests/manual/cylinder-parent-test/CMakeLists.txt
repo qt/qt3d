@@ -4,7 +4,7 @@
 ## cylinder-parent-test Binary:
 #####################################################################
 
-qt_add_manual_test(cylinder-parent-test
+qt_internal_add_manual_test(cylinder-parent-test
     GUI
     SOURCES
         main.cpp

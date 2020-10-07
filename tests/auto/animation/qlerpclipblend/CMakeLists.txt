@@ -4,7 +4,7 @@
 ## tst_qlerpclipblend Test:
 #####################################################################
 
-qt_add_test(tst_qlerpclipblend
+qt_internal_add_test(tst_qlerpclipblend
     SOURCES
         tst_qlerpclipblend.cpp
     INCLUDE_DIRECTORIES
@@ -24,7 +24,7 @@ qt_add_test(tst_qlerpclipblend
 ## Scopes:
 #####################################################################
 
-qt_extend_target(tst_qlerpclipblend CONDITION QT_FEATURE_private_tests
+qt_internal_extend_target(tst_qlerpclipblend CONDITION QT_FEATURE_private_tests
     SOURCES
         ../../core/common/qbackendnodetester.cpp ../../core/common/qbackendnodetester.h
         ../../core/common/testarbiter.h

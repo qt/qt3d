@@ -4,7 +4,7 @@
 ## quick3dlogicplugin Plugin:
 #####################################################################
 
-qt_add_qml_module(quick3dlogicplugin
+qt_internal_add_qml_module(quick3dlogicplugin
     URI "Qt3D.Logic"
     VERSION "2.${CMAKE_PROJECT_VERSION_MINOR}"
     CLASSNAME Qt3DQuick3DLogicPlugin

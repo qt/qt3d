@@ -71,7 +71,7 @@ if(QT_FEATURE_private_tests)
         QT_NO_FOREACH
     )
 
-    qt_extend_target(OpenGLRendererLib CONDITION NOT INTEGRITY
+    qt_internal_extend_target(OpenGLRendererLib CONDITION NOT INTEGRITY
         SOURCES
             debug/imguirenderer.cpp debug/imguirenderer_p.h
             ${PROJECT_SOURCE_DIR}/src/3rdparty/imgui/imgui.cpp
@@ -118,7 +118,7 @@ qt_internal_add_plugin(OpenGLRendererPlugin
         Qt::OpenGLPrivate
 )
 
-qt_extend_target(OpenGLRendererPlugin CONDITION NOT INTEGRITY
+qt_internal_extend_target(OpenGLRendererPlugin CONDITION NOT INTEGRITY
     SOURCES
         debug/imguirenderer.cpp debug/imguirenderer_p.h
         ${PROJECT_SOURCE_DIR}/src/3rdparty/imgui/imgui.cpp
@@ -132,7 +132,7 @@ qt_extend_target(OpenGLRendererPlugin CONDITION NOT INTEGRITY
 ## Scopes:
 #####################################################################
 
-qt_extend_target(OpenGLRendererPlugin CONDITION gcov
+qt_internal_extend_target(OpenGLRendererPlugin CONDITION gcov
     COMPILE_OPTIONS
         -fprofile-arcs
         -ftest-coverage

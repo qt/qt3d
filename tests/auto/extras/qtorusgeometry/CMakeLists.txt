@@ -4,7 +4,7 @@
 ## tst_qtorusgeometry Test:
 #####################################################################
 
-qt_add_test(tst_qtorusgeometry
+qt_internal_add_test(tst_qtorusgeometry
     SOURCES
         ../common/geometrytesthelper.h
         tst_qtorusgeometry.cpp

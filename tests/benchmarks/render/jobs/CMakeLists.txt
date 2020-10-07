@@ -4,7 +4,7 @@
 ## tst_bench_jobs Binary:
 #####################################################################
 
-qt_add_benchmark(tst_bench_jobs
+qt_internal_add_benchmark(tst_bench_jobs
     SOURCES
         tst_bench_jobs.cpp
     DEFINES
@@ -26,7 +26,7 @@ qt3d_setup_common_render_test(tst_bench_jobs USE_TEST_ASPECT)
 include(${PROJECT_SOURCE_DIR}/src/plugins/renderers/opengl/opengl.cmake)
 qt3d_setup_opengl_renderer_target(tst_bench_jobs)
 
-qt_extend_target(tst_bench_jobs CONDITION gcov
+qt_internal_extend_target(tst_bench_jobs CONDITION gcov
     COMPILE_OPTIONS
         -fprofile-arcs
         -ftest-coverage

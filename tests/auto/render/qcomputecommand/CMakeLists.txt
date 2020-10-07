@@ -4,7 +4,7 @@
 ## tst_qcomputecommand Test:
 #####################################################################
 
-qt_add_test(tst_qcomputecommand
+qt_internal_add_test(tst_qcomputecommand
     SOURCES
         tst_qcomputecommand.cpp
     PUBLIC_LIBRARIES

@@ -4,7 +4,7 @@
 ## tst_filtercompatibletechniquejob Test:
 #####################################################################
 
-qt_add_test(tst_filtercompatibletechniquejob
+qt_internal_add_test(tst_filtercompatibletechniquejob
     SOURCES
         tst_filtercompatibletechniquejob.cpp
 )
@@ -21,7 +21,7 @@ qt3d_setup_common_test(tst_filtercompatibletechniquejob)
 include(${PROJECT_SOURCE_DIR}/src/plugins/renderers/opengl/opengl.cmake)
 qt3d_setup_opengl_renderer_target(tst_filtercompatibletechniquejob)
 
-qt_extend_target(tst_filtercompatibletechniquejob CONDITION gcov
+qt_internal_extend_target(tst_filtercompatibletechniquejob CONDITION gcov
     COMPILE_OPTIONS
         -fprofile-arcs
         -ftest-coverage

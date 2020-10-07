@@ -4,7 +4,7 @@
 ## tst_qcuboidgeometry Test:
 #####################################################################
 
-qt_add_test(tst_qcuboidgeometry
+qt_internal_add_test(tst_qcuboidgeometry
     SOURCES
         ../common/geometrytesthelper.h
         tst_qcuboidgeometry.cpp

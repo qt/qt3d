@@ -4,7 +4,7 @@
 ## enabled-qml Binary:
 #####################################################################
 
-qt_add_manual_test(enabled-qml
+qt_internal_add_manual_test(enabled-qml
     GUI
     SOURCES
         main.cpp
@@ -22,7 +22,7 @@ set(enabled-qml_resource_files
     "main.qml"
 )
 
-qt_add_resource(enabled-qml "enabled-qml"
+qt_internal_add_resource(enabled-qml "enabled-qml"
     PREFIX
         "/"
     FILES

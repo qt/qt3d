@@ -4,7 +4,7 @@
 ## Qt::3DQuickExtras Module:
 #####################################################################
 
-qt_add_module(3DQuickExtras
+qt_internal_add_module(3DQuickExtras
     SOURCES
         items/quick3dlevelofdetailloader.cpp items/quick3dlevelofdetailloader_p.h
         items/quick3dlevelofdetailloader_p_p.h
@@ -42,7 +42,7 @@ qt_add_module(3DQuickExtras
 ## Scopes:
 #####################################################################
 
-qt_extend_target(3DQuickExtras CONDITION gcov
+qt_internal_extend_target(3DQuickExtras CONDITION gcov
     COMPILE_OPTIONS
         -fprofile-arcs
         -ftest-coverage

@@ -4,7 +4,7 @@
 ## shader-image-qml Binary:
 #####################################################################
 
-qt_add_manual_test(shader-image-qml
+qt_internal_add_manual_test(shader-image-qml
     GUI
     SOURCES
         main.cpp
@@ -25,7 +25,7 @@ set(shader-image-qml_resource_files
     "main.qml"
 )
 
-qt_add_resource(shader-image-qml "shader-image-qml"
+qt_internal_add_resource(shader-image-qml "shader-image-qml"
     PREFIX
         "/"
     FILES

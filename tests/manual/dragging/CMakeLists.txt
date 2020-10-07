@@ -4,7 +4,7 @@
 ## dragging Binary:
 #####################################################################
 
-qt_add_manual_test(dragging
+qt_internal_add_manual_test(dragging
     GUI
     SOURCES
         main.cpp
@@ -24,7 +24,7 @@ set(dragging_resource_files
     "main.qml"
 )
 
-qt_add_resource(dragging "dragging"
+qt_internal_add_resource(dragging "dragging"
     PREFIX
         "/"
     FILES

@@ -4,7 +4,7 @@
 ## pointlinesize Binary:
 #####################################################################
 
-qt_add_manual_test(pointlinesize
+qt_internal_add_manual_test(pointlinesize
     GUI
     SOURCES
         main.cpp
@@ -25,7 +25,7 @@ set(pointlinesize_resource_files
     "main.qml"
 )
 
-qt_add_resource(pointlinesize "pointlinesize"
+qt_internal_add_resource(pointlinesize "pointlinesize"
     PREFIX
         "/"
     FILES

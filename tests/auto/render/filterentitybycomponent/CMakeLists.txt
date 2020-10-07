@@ -4,7 +4,7 @@
 ## tst_filterentitybycomponent Test:
 #####################################################################
 
-qt_add_test(tst_filterentitybycomponent
+qt_internal_add_test(tst_filterentitybycomponent
     SOURCES
         tst_filterentitybycomponent.cpp
     PUBLIC_LIBRARIES

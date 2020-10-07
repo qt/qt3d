@@ -4,7 +4,7 @@
 ## tst_uniform Test:
 #####################################################################
 
-qt_add_test(tst_uniform
+qt_internal_add_test(tst_uniform
     SOURCES
         tst_uniform.cpp
     PUBLIC_LIBRARIES

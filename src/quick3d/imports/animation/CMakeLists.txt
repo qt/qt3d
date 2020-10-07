@@ -4,7 +4,7 @@
 ## quick3danimationplugin Plugin:
 #####################################################################
 
-qt_add_qml_module(quick3danimationplugin
+qt_internal_add_qml_module(quick3danimationplugin
     URI "Qt3D.Animation"
     VERSION "2.${CMAKE_PROJECT_VERSION_MINOR}"
     CLASSNAME Qt3DQuick3DAnimationPlugin

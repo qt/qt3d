@@ -4,7 +4,7 @@
 ## manual-renderloop Binary:
 #####################################################################
 
-qt_add_manual_test(manual-renderloop
+qt_internal_add_manual_test(manual-renderloop
     GUI
     SOURCES
         main.cpp

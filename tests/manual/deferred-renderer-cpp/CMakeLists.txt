@@ -4,7 +4,7 @@
 ## deferred-renderer-cpp Binary:
 #####################################################################
 
-qt_add_manual_test(deferred-renderer-cpp
+qt_internal_add_manual_test(deferred-renderer-cpp
     GUI
     SOURCES
         deferredrenderer.cpp deferredrenderer.h
@@ -35,7 +35,7 @@ set(deferred-renderer-cpp_resource_files
     "geometry_gl3.vert"
 )
 
-qt_add_resource(deferred-renderer-cpp "deferred-renderer-cpp"
+qt_internal_add_resource(deferred-renderer-cpp "deferred-renderer-cpp"
     PREFIX
         "/"
     FILES

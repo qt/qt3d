@@ -4,7 +4,7 @@
 ## tst_qdispatchcompute Test:
 #####################################################################
 
-qt_add_test(tst_qdispatchcompute
+qt_internal_add_test(tst_qdispatchcompute
     SOURCES
         tst_qdispatchcompute.cpp
     PUBLIC_LIBRARIES

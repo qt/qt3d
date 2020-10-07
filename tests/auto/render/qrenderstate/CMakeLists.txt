@@ -4,7 +4,7 @@
 ## tst_qrenderstate Test:
 #####################################################################
 
-qt_add_test(tst_qrenderstate
+qt_internal_add_test(tst_qrenderstate
     SOURCES
         tst_qrenderstate.cpp
     PUBLIC_LIBRARIES

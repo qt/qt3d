@@ -4,7 +4,7 @@
 ## tst_geometryloaders Test:
 #####################################################################
 
-qt_add_test(tst_geometryloaders
+qt_internal_add_test(tst_geometryloaders
     SOURCES
         tst_geometryloaders.cpp
     PUBLIC_LIBRARIES
@@ -26,7 +26,7 @@ set(geometryloaders_resource_files
     "cube_buffer.bin"
 )
 
-qt_add_resource(tst_geometryloaders "geometryloaders"
+qt_internal_add_resource(tst_geometryloaders "geometryloaders"
     PREFIX
         "/"
     FILES

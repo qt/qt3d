@@ -4,7 +4,7 @@
 ## tst_bezierevaluator Test:
 #####################################################################
 
-qt_add_test(tst_bezierevaluator
+qt_internal_add_test(tst_bezierevaluator
     SOURCES
         tst_bezierevaluator.cpp
     PUBLIC_LIBRARIES

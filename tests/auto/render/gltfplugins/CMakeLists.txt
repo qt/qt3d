@@ -4,7 +4,7 @@
 ## tst_gltfplugins Test:
 #####################################################################
 
-qt_add_test(tst_gltfplugins
+qt_internal_add_test(tst_gltfplugins
     SOURCES
         tst_gltfplugins.cpp
     PUBLIC_LIBRARIES
@@ -28,7 +28,7 @@ set(images_resource_files
     "qtlogo_with_alpha.png"
 )
 
-qt_add_resource(tst_gltfplugins "images"
+qt_internal_add_resource(tst_gltfplugins "images"
     PREFIX
         "/"
     FILES

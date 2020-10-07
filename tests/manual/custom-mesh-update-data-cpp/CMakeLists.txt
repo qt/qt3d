@@ -4,7 +4,7 @@
 ## custom-mesh-update-data-cpp Binary:
 #####################################################################
 
-qt_add_manual_test(custom-mesh-update-data-cpp
+qt_internal_add_manual_test(custom-mesh-update-data-cpp
     GUI
     SOURCES
         main.cpp

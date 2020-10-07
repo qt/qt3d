@@ -4,7 +4,7 @@
 ## Qt::3DExtras Module:
 #####################################################################
 
-qt_add_module(3DExtras
+qt_internal_add_module(3DExtras
     SOURCES
         3dtext/qextrudedtextgeometry.cpp 3dtext/qextrudedtextgeometry.h 3dtext/qextrudedtextgeometry_p.h
         3dtext/qextrudedtextmesh.cpp 3dtext/qextrudedtextmesh.h
@@ -145,7 +145,7 @@ set(extras_resource_files
     "shaders/rhi/unlittexture.vert"
 )
 
-qt_add_resource(3DExtras "extras"
+qt_internal_add_resource(3DExtras "extras"
     PREFIX
         "/"
     FILES

@@ -4,7 +4,7 @@
 ## shared_texture_image Binary:
 #####################################################################
 
-qt_add_manual_test(shared_texture_image
+qt_internal_add_manual_test(shared_texture_image
     GUI
     SOURCES
         main.cpp
@@ -26,7 +26,7 @@ set(shared_texture_image_resource_files
     "main.qml"
 )
 
-qt_add_resource(shared_texture_image "shared_texture_image"
+qt_internal_add_resource(shared_texture_image "shared_texture_image"
     PREFIX
         "/"
     FILES

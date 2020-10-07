@@ -4,7 +4,7 @@
 ## proximityfilter Binary:
 #####################################################################
 
-qt_add_manual_test(proximityfilter
+qt_internal_add_manual_test(proximityfilter
     GUI
     SOURCES
         main.cpp
@@ -23,7 +23,7 @@ set(proximityfilter_resource_files
     "main.qml"
 )
 
-qt_add_resource(proximityfilter "proximityfilter"
+qt_internal_add_resource(proximityfilter "proximityfilter"
     PREFIX
         "/"
     FILES

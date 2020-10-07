@@ -4,7 +4,7 @@
 ## tst_import3dinput Test:
 #####################################################################
 
-qt_add_test(tst_import3dinput
+qt_internal_add_test(tst_import3dinput
     SOURCES
         ../../render/qmlscenereader/qmlscenereader.cpp ../../render/qmlscenereader/qmlscenereader.h
         tst_import3dinput.cpp
@@ -26,7 +26,7 @@ set(3dinput_resource_files
     "3dinput.qml"
 )
 
-qt_add_resource(tst_import3dinput "3dinput"
+qt_internal_add_resource(tst_import3dinput "3dinput"
     PREFIX
         "/"
     FILES

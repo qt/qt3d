@@ -4,7 +4,7 @@
 ## tst_qcameralens Test:
 #####################################################################
 
-qt_add_test(tst_qcameralens
+qt_internal_add_test(tst_qcameralens
     SOURCES
         tst_qcameralens.cpp
     PUBLIC_LIBRARIES

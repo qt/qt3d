@@ -4,7 +4,7 @@
 ## tessellation-modes Binary:
 #####################################################################
 
-qt_add_manual_test(tessellation-modes
+qt_internal_add_manual_test(tessellation-modes
     GUI
     SOURCES
         main.cpp
@@ -39,7 +39,7 @@ set(tessellation-modes_resource_files
     "shaders/triangles.tes"
 )
 
-qt_add_resource(tessellation-modes "tessellation-modes"
+qt_internal_add_resource(tessellation-modes "tessellation-modes"
     PREFIX
         "/"
     FILES

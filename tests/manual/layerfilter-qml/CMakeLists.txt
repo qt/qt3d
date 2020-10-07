@@ -4,7 +4,7 @@
 ## layerfilter-qml Binary:
 #####################################################################
 
-qt_add_manual_test(layerfilter-qml
+qt_internal_add_manual_test(layerfilter-qml
     GUI
     SOURCES
         main.cpp
@@ -24,7 +24,7 @@ set(layerfilter-qml_resource_files
     "main.qml"
 )
 
-qt_add_resource(layerfilter-qml "layerfilter-qml"
+qt_internal_add_resource(layerfilter-qml "layerfilter-qml"
     PREFIX
         "/"
     FILES

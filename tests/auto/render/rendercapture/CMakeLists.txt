@@ -4,7 +4,7 @@
 ## rendercapture Test:
 #####################################################################
 
-qt_add_test(tst_rendercapture
+qt_internal_add_test(tst_rendercapture
     SOURCES
         tst_rendercapture.cpp
     PUBLIC_LIBRARIES

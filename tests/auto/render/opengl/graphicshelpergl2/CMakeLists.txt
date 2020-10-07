@@ -4,7 +4,7 @@
 ## tst_graphicshelpergl2 Test:
 #####################################################################
 
-qt_add_test(tst_graphicshelpergl2
+qt_internal_add_test(tst_graphicshelpergl2
     SOURCES
         tst_graphicshelpergl2.cpp
 )
@@ -20,7 +20,7 @@ qt3d_setup_common_render_test(tst_graphicshelpergl2 USE_TEST_ASPECT)
 include(${PROJECT_SOURCE_DIR}/src/plugins/renderers/opengl/opengl.cmake)
 qt3d_setup_opengl_renderer_target(tst_graphicshelpergl2)
 
-qt_extend_target(tst_graphicshelpergl2 CONDITION gcov
+qt_internal_extend_target(tst_graphicshelpergl2 CONDITION gcov
     COMPILE_OPTIONS
         -fprofile-arcs
         -ftest-coverage

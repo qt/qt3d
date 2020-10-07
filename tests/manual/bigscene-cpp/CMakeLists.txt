@@ -4,7 +4,7 @@
 ## bigscene-cpp Binary:
 #####################################################################
 
-qt_add_manual_test(bigscene-cpp
+qt_internal_add_manual_test(bigscene-cpp
     GUI
     SOURCES
         entity.cpp entity.h

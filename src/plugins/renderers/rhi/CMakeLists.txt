@@ -98,7 +98,7 @@ qt_internal_add_plugin(RhiRendererPlugin
 ## Scopes:
 #####################################################################
 
-qt_extend_target(RhiRendererPlugin CONDITION gcov
+qt_internal_extend_target(RhiRendererPlugin CONDITION gcov
     COMPILE_OPTIONS
         -fprofile-arcs
         -ftest-coverage

@@ -4,7 +4,7 @@
 ## tst_qabstracttextureimage Test:
 #####################################################################
 
-qt_add_test(tst_qabstracttextureimage
+qt_internal_add_test(tst_qabstracttextureimage
     SOURCES
         tst_qabstracttextureimage.cpp
     PUBLIC_LIBRARIES

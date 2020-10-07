@@ -4,7 +4,7 @@
 ## tst_qforwardrenderer Test:
 #####################################################################
 
-qt_add_test(tst_qforwardrenderer
+qt_internal_add_test(tst_qforwardrenderer
     SOURCES
         tst_qforwardrenderer.cpp
     PUBLIC_LIBRARIES

@@ -4,7 +4,7 @@
 ## tst_alignedresourcesmanagers-avx Test:
 #####################################################################
 
-qt_add_test(tst_alignedresourcesmanagers-avx
+qt_internal_add_test(tst_alignedresourcesmanagers-avx
     SOURCES
         tst_alignedresourcesmanagers-avx.cpp
     PUBLIC_LIBRARIES

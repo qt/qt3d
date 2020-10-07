@@ -4,7 +4,7 @@
 ## tst_shader Test:
 #####################################################################
 
-qt_add_test(tst_shader
+qt_internal_add_test(tst_shader
     SOURCES
         tst_shader.cpp
     PUBLIC_LIBRARIES

@@ -4,7 +4,7 @@
 ## tst_bench_qresourcesmanager Binary:
 #####################################################################
 
-qt_add_benchmark(tst_bench_qresourcesmanager
+qt_internal_add_benchmark(tst_bench_qresourcesmanager
     SOURCES
         tst_bench_qresourcesmanager.cpp
     PUBLIC_LIBRARIES

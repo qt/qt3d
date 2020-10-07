@@ -4,7 +4,7 @@
 ## tst_qshaderprogrambuilder Test:
 #####################################################################
 
-qt_add_test(tst_qshaderprogrambuilder
+qt_internal_add_test(tst_qshaderprogrambuilder
     SOURCES
         tst_qshaderprogrambuilder.cpp
     PUBLIC_LIBRARIES

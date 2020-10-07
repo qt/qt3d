@@ -4,7 +4,7 @@
 ## tst_handle Test:
 #####################################################################
 
-qt_add_test(tst_handle
+qt_internal_add_test(tst_handle
     SOURCES
         tst_handle.cpp
     PUBLIC_LIBRARIES

@@ -4,7 +4,7 @@
 ## scene3d-in-sync Binary:
 #####################################################################
 
-qt_add_manual_test(scene3d-in-sync
+qt_internal_add_manual_test(scene3d-in-sync
     GUI
     SOURCES
         main.cpp
@@ -20,7 +20,7 @@ set(scene3d-in-sync_resource_files
     "main.qml"
 )
 
-qt_add_resource(scene3d-in-sync "scene3d-in-sync"
+qt_internal_add_resource(scene3d-in-sync "scene3d-in-sync"
     PREFIX
         "/"
     FILES

@@ -4,7 +4,7 @@
 ## tst_import3dcore Test:
 #####################################################################
 
-qt_add_test(tst_import3dcore
+qt_internal_add_test(tst_import3dcore
     SOURCES
         ../../render/qmlscenereader/qmlscenereader.cpp ../../render/qmlscenereader/qmlscenereader.h
         tst_import3dcore.cpp
@@ -26,7 +26,7 @@ set(3dcore_resource_files
     "3dcore.qml"
 )
 
-qt_add_resource(tst_import3dcore "Qt::3DCore"
+qt_internal_add_resource(tst_import3dcore "Qt::3DCore"
     PREFIX
         "/"
     FILES

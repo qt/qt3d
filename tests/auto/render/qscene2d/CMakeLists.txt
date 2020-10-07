@@ -4,7 +4,7 @@
 ## qscene2d Test:
 #####################################################################
 
-qt_add_test(qscene2d
+qt_internal_add_test(qscene2d
     SOURCES
         tst_qscene2d.cpp
     PUBLIC_LIBRARIES

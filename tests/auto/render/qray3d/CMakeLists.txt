@@ -4,7 +4,7 @@
 ## tst_qray3d Test:
 #####################################################################
 
-qt_add_test(tst_qray3d
+qt_internal_add_test(tst_qray3d
     SOURCES
         tst_qray3d.cpp
     PUBLIC_LIBRARIES

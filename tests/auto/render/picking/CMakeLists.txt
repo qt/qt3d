@@ -4,7 +4,7 @@
 ## tst_picking Test:
 #####################################################################
 
-qt_add_test(tst_picking
+qt_internal_add_test(tst_picking
     SOURCES
         tst_picking.cpp
     PUBLIC_LIBRARIES

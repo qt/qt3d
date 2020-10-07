@@ -4,7 +4,7 @@
 ## blitframebuffer-qml Binary:
 #####################################################################
 
-qt_add_manual_test(blitframebuffer-qml
+qt_internal_add_manual_test(blitframebuffer-qml
     GUI
     SOURCES
         main.cpp
@@ -25,7 +25,7 @@ set(blitframebuffer-qml_resource_files
     "main.qml"
 )
 
-qt_add_resource(blitframebuffer-qml "blitframebuffer-qml"
+qt_internal_add_resource(blitframebuffer-qml "blitframebuffer-qml"
     PREFIX
         "/"
     FILES

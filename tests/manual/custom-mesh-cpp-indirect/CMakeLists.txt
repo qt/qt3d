@@ -4,7 +4,7 @@
 ## custom-mesh-cpp-indirect Binary:
 #####################################################################
 
-qt_add_manual_test(custom-mesh-cpp-indirect
+qt_internal_add_manual_test(custom-mesh-cpp-indirect
     GUI
     SOURCES
         main.cpp

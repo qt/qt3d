@@ -4,7 +4,7 @@
 ## tst_qshaderprogram Test:
 #####################################################################
 
-qt_add_test(tst_qshaderprogram
+qt_internal_add_test(tst_qshaderprogram
     SOURCES
         tst_qshaderprogram.cpp
     PUBLIC_LIBRARIES
@@ -23,7 +23,7 @@ set(shaders_resource_files
     "mainabsolute.frag"
 )
 
-qt_add_resource(tst_qshaderprogram "shaders"
+qt_internal_add_resource(tst_qshaderprogram "shaders"
     PREFIX
         "/"
     FILES

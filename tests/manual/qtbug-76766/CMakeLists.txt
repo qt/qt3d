@@ -4,7 +4,7 @@
 ## qtbug-76766 Binary:
 #####################################################################
 
-qt_add_manual_test(qtbug-76766
+qt_internal_add_manual_test(qtbug-76766
     GUI
     SOURCES
         main.cpp
@@ -25,7 +25,7 @@ set(qml_resource_files
     "main.qml"
 )
 
-qt_add_resource(qtbug-76766 "qml"
+qt_internal_add_resource(qtbug-76766 "qml"
     PREFIX
         "/"
     FILES
@@ -36,7 +36,7 @@ set(shaders_resource_files
     "shaders/shader.vert"
 )
 
-qt_add_resource(qtbug-76766 "shaders"
+qt_internal_add_resource(qtbug-76766 "shaders"
     PREFIX
         "/"
     FILES

@@ -4,7 +4,7 @@
 ## tst_qscheduler Test:
 #####################################################################
 
-qt_add_test(tst_qscheduler
+qt_internal_add_test(tst_qscheduler
     SOURCES
         tst_qscheduler.cpp
     PUBLIC_LIBRARIES

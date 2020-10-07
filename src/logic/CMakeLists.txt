@@ -4,7 +4,7 @@
 ## 3DLogic Module:
 #####################################################################
 
-qt_add_module(3DLogic
+qt_internal_add_module(3DLogic
     SOURCES
         callbackjob.cpp callbackjob_p.h
         executor.cpp executor_p.h
@@ -38,7 +38,7 @@ qt_add_module(3DLogic
 ## Scopes:
 #####################################################################
 
-qt_extend_target(3DLogic CONDITION gcov
+qt_internal_extend_target(3DLogic CONDITION gcov
     COMPILE_OPTIONS
         -fprofile-arcs
         -ftest-coverage

@@ -4,7 +4,7 @@
 ## rendercapture-qml Binary:
 #####################################################################
 
-qt_add_manual_test(rendercapture-qml
+qt_internal_add_manual_test(rendercapture-qml
     GUI
     SOURCES
         main.cpp
@@ -28,7 +28,7 @@ set(qml_resource_files
     "main.qml"
 )
 
-qt_add_resource(rendercapture-qml "qml"
+qt_internal_add_resource(rendercapture-qml "qml"
     PREFIX
         "/"
     FILES

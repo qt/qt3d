@@ -4,7 +4,7 @@
 ## simple-shaders-qml Binary:
 #####################################################################
 
-qt_add_manual_test(simple-shaders-qml
+qt_internal_add_manual_test(simple-shaders-qml
     GUI
     SOURCES
         main.cpp
@@ -26,7 +26,7 @@ set(simple-shaders-qml_resource_files
     "simple-shader.vert"
 )
 
-qt_add_resource(simple-shaders-qml "simple-shaders-qml"
+qt_internal_add_resource(simple-shaders-qml "simple-shaders-qml"
     PREFIX
         "/"
     FILES

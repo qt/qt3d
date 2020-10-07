@@ -4,7 +4,7 @@
 ## Qt::3DCore Module:
 #####################################################################
 
-qt_add_module(3DCore
+qt_internal_add_module(3DCore
     SOURCES
         aspect/qcoreaspect.cpp aspect/qcoreaspect.h aspect/qcoreaspect_p.h
         aspect/qcoresettings.cpp aspect/qcoresettings.h aspect/qcoresettings_p.h
@@ -99,7 +99,7 @@ qt_add_module(3DCore
         Qt::GuiPrivate
 )
 
-qt_extend_target(3DCore CONDITION gcov
+qt_internal_extend_target(3DCore CONDITION gcov
     COMPILE_OPTIONS
         -fprofile-arcs
         -ftest-coverage
@@ -178,7 +178,7 @@ if(QT_FEATURE_qt3d_simd_avx2)
     )
 endif()
 
-qt_extend_target(3DCore
+qt_internal_extend_target(3DCore
     CONDITION
         NOT QT_FEATURE_qt3d_simd_sse2 AND NOT QT_FEATURE_qt3d_simd_avx2
     SOURCES

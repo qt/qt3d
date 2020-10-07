@@ -4,7 +4,7 @@
 ## tst_logicaldevice Test:
 #####################################################################
 
-qt_add_test(tst_logicaldevice
+qt_internal_add_test(tst_logicaldevice
     SOURCES
         tst_logicaldevice.cpp
     INCLUDE_DIRECTORIES
@@ -24,7 +24,7 @@ qt_add_test(tst_logicaldevice
 ## Scopes:
 #####################################################################
 
-qt_extend_target(tst_logicaldevice CONDITION QT_FEATURE_private_tests
+qt_internal_extend_target(tst_logicaldevice CONDITION QT_FEATURE_private_tests
     SOURCES
         ../../core/common/qbackendnodetester.cpp ../../core/common/qbackendnodetester.h
         ../../core/common/testarbiter.h

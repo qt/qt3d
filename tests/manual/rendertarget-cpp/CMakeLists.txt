@@ -4,7 +4,7 @@
 ## rendertarget-cpp Binary:
 #####################################################################
 
-qt_add_manual_test(rendertarget-cpp
+qt_internal_add_manual_test(rendertarget-cpp
     GUI
     SOURCES
         main.cpp

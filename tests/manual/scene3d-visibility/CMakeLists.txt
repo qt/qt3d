@@ -4,7 +4,7 @@
 ## scene3d-visibility Binary:
 #####################################################################
 
-qt_add_manual_test(scene3d-visibility
+qt_internal_add_manual_test(scene3d-visibility
     GUI
     SOURCES
         main.cpp
@@ -20,7 +20,7 @@ set(scene3d-visibility_resource_files
     "main.qml"
 )
 
-qt_add_resource(scene3d-visibility "scene3d-visibility"
+qt_internal_add_resource(scene3d-visibility "scene3d-visibility"
     PREFIX
         "/"
     FILES

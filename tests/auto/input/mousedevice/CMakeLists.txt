@@ -4,7 +4,7 @@
 ## tst_mousedevice Test:
 #####################################################################
 
-qt_add_test(tst_mousedevice
+qt_internal_add_test(tst_mousedevice
     SOURCES
         tst_mousedevice.cpp
     INCLUDE_DIRECTORIES
@@ -24,7 +24,7 @@ qt_add_test(tst_mousedevice
 ## Scopes:
 #####################################################################
 
-qt_extend_target(tst_mousedevice CONDITION QT_FEATURE_private_tests
+qt_internal_extend_target(tst_mousedevice CONDITION QT_FEATURE_private_tests
     SOURCES
         ../../core/common/qbackendnodetester.cpp ../../core/common/qbackendnodetester.h
         ../../core/common/testarbiter.h

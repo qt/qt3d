@@ -4,7 +4,7 @@
 ## tst_qrendersettings Test:
 #####################################################################
 
-qt_add_test(tst_qrendersettings
+qt_internal_add_test(tst_qrendersettings
     SOURCES
         tst_qrendersettings.cpp
     PUBLIC_LIBRARIES

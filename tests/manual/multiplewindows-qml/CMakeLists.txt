@@ -4,7 +4,7 @@
 ## multiplewindows-qml Binary:
 #####################################################################
 
-qt_add_manual_test(multiplewindows-qml
+qt_internal_add_manual_test(multiplewindows-qml
     GUI
     SOURCES
         main.cpp
@@ -25,7 +25,7 @@ set(qml_resource_files
     "main.qml"
 )
 
-qt_add_resource(multiplewindows-qml "qml"
+qt_internal_add_resource(multiplewindows-qml "qml"
     PREFIX
         "/"
     FILES

@@ -4,7 +4,7 @@
 ## raycasting-qml Binary:
 #####################################################################
 
-qt_add_manual_test(raycasting-qml
+qt_internal_add_manual_test(raycasting-qml
     GUI
     SOURCES
         main.cpp
@@ -33,14 +33,14 @@ set(raycasting-shader_resource_files
     shaders/gl3/simpleColor.vert
 )
 
-qt_add_resource(raycasting-qml "raycasting-qml"
+qt_internal_add_resource(raycasting-qml "raycasting-qml"
     PREFIX
         "/"
     FILES
         ${raycasting-qml_resource_files}
 )
 
-qt_add_resource(raycasting-qml "shaders"
+qt_internal_add_resource(raycasting-qml "shaders"
     PREFIX
         "/"
     FILES

@@ -4,7 +4,7 @@
 ## qtquickscene2dplugin Plugin:
 #####################################################################
 
-qt_add_qml_module(qtquickscene2dplugin
+qt_internal_add_qml_module(qtquickscene2dplugin
     URI "QtQuick.Scene2D"
     VERSION "2.${CMAKE_PROJECT_VERSION_MINOR}"
     CLASSNAME QtQuickScene2DPlugin

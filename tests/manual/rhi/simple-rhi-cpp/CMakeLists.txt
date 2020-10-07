@@ -4,7 +4,7 @@
 ## simple-rhi-cpp Binary:
 #####################################################################
 
-qt_add_manual_test(simple-rhi-cpp
+qt_internal_add_manual_test(simple-rhi-cpp
     GUI
     SOURCES
         main.cpp
@@ -21,7 +21,7 @@ set(qmake_immediate_resource_files
     "qtlogo.png"
 )
 
-qt_add_resource(simple-rhi-cpp "qmake_immediate"
+qt_internal_add_resource(simple-rhi-cpp "qmake_immediate"
     PREFIX
         "/"
     FILES

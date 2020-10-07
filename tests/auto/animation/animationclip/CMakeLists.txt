@@ -4,7 +4,7 @@
 ## tst_animationclip Test:
 #####################################################################
 
-qt_add_test(tst_animationclip
+qt_internal_add_test(tst_animationclip
     SOURCES
         tst_animationclip.cpp
     PUBLIC_LIBRARIES

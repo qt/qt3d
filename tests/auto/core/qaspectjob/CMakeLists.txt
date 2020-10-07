@@ -4,7 +4,7 @@
 ## tst_qaspectjob Test:
 #####################################################################
 
-qt_add_test(tst_qaspectjob
+qt_internal_add_test(tst_qaspectjob
     SOURCES
         tst_qaspectjob.cpp
     PUBLIC_LIBRARIES

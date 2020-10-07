@@ -4,7 +4,7 @@
 ## tst_axis Test:
 #####################################################################
 
-qt_add_test(tst_axis
+qt_internal_add_test(tst_axis
     SOURCES
         tst_axis.cpp
     INCLUDE_DIRECTORIES
@@ -24,7 +24,7 @@ qt_add_test(tst_axis
 ## Scopes:
 #####################################################################
 
-qt_extend_target(tst_axis CONDITION QT_FEATURE_private_tests
+qt_internal_extend_target(tst_axis CONDITION QT_FEATURE_private_tests
     SOURCES
         ../../core/common/qbackendnodetester.cpp ../../core/common/qbackendnodetester.h
         ../../core/common/testarbiter.h

@@ -4,7 +4,7 @@
 ## tst_qcallbackmapping Test:
 #####################################################################
 
-qt_add_test(tst_qcallbackmapping
+qt_internal_add_test(tst_qcallbackmapping
     SOURCES
         tst_qcallbackmapping.cpp
     INCLUDE_DIRECTORIES
@@ -24,7 +24,7 @@ qt_add_test(tst_qcallbackmapping
 ## Scopes:
 #####################################################################
 
-qt_extend_target(tst_qcallbackmapping CONDITION QT_FEATURE_private_tests
+qt_internal_extend_target(tst_qcallbackmapping CONDITION QT_FEATURE_private_tests
     SOURCES
         ../../core/common/qbackendnodetester.cpp ../../core/common/qbackendnodetester.h
         ../../core/common/testarbiter.h

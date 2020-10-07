@@ -4,7 +4,7 @@
 ## tst_qmorphinganimation Test:
 #####################################################################
 
-qt_add_test(tst_qmorphinganimation
+qt_internal_add_test(tst_qmorphinganimation
     SOURCES
         tst_qmorphinganimation.cpp
     PUBLIC_LIBRARIES

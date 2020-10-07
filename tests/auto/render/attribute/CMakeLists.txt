@@ -4,7 +4,7 @@
 ## tst_attribute Test:
 #####################################################################
 
-qt_add_test(tst_attribute
+qt_internal_add_test(tst_attribute
     SOURCES
         tst_attribute.cpp
     PUBLIC_LIBRARIES

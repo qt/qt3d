@@ -38,7 +38,7 @@ set(simple-qml_resource_files
     "main.qml"
 )
 
-qt_add_resource(simple-qml "simple-qml"
+qt6_add_resources(simple-qml "simple-qml"
     PREFIX
         "/"
     FILES

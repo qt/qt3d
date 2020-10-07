@@ -4,7 +4,7 @@
 ## tst_texture Test:
 #####################################################################
 
-qt_add_test(tst_texture
+qt_internal_add_test(tst_texture
     SOURCES
         tst_texture.cpp
     PUBLIC_LIBRARIES

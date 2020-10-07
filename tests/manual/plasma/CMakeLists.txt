@@ -4,7 +4,7 @@
 ## plasma Binary:
 #####################################################################
 
-qt_add_manual_test(plasma
+qt_internal_add_manual_test(plasma
     GUI
     SOURCES
         main.cpp
@@ -25,7 +25,7 @@ set(plasma_resource_files
     "plasma.vert"
 )
 
-qt_add_resource(plasma "plasma"
+qt_internal_add_resource(plasma "plasma"
     PREFIX
         "/"
     FILES

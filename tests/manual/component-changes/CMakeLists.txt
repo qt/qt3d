@@ -4,7 +4,7 @@
 ## component-changes Binary:
 #####################################################################
 
-qt_add_manual_test(component-changes
+qt_internal_add_manual_test(component-changes
     GUI
     SOURCES
         main.cpp

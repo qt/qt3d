@@ -4,7 +4,7 @@
 ## tst_qtechnique Test:
 #####################################################################
 
-qt_add_test(tst_qtechnique
+qt_internal_add_test(tst_qtechnique
     SOURCES
         tst_qtechnique.cpp
     PUBLIC_LIBRARIES

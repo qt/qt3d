@@ -4,7 +4,7 @@
 ## custom-mesh-cpp Binary:
 #####################################################################
 
-qt_add_manual_test(custom-mesh-cpp
+qt_internal_add_manual_test(custom-mesh-cpp
     GUI
     SOURCES
         main.cpp

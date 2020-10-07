@@ -4,7 +4,7 @@
 ## texture_property_updates Binary:
 #####################################################################
 
-qt_add_manual_test(texture_property_updates
+qt_internal_add_manual_test(texture_property_updates
     GUI
     SOURCES
         main.cpp
@@ -27,7 +27,7 @@ set(texture_property_updates_resource_files
     "main.qml"
 )
 
-qt_add_resource(texture_property_updates "texture_property_updates"
+qt_internal_add_resource(texture_property_updates "texture_property_updates"
     PREFIX
         "/"
     FILES

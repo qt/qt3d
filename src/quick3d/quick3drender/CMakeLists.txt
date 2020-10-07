@@ -4,7 +4,7 @@
 ## Qt::3DQuickRender Module:
 #####################################################################
 
-qt_add_module(3DQuickRender
+qt_internal_add_module(3DQuickRender
     SOURCES
         items/quick3deffect.cpp items/quick3deffect_p.h
         items/quick3dlayerfilter.cpp items/quick3dlayerfilter_p.h
@@ -55,7 +55,7 @@ qt_add_module(3DQuickRender
 ## Scopes:
 #####################################################################
 
-qt_extend_target(3DQuickRender CONDITION gcov
+qt_internal_extend_target(3DQuickRender CONDITION gcov
     COMPILE_OPTIONS
         -fprofile-arcs
         -ftest-coverage

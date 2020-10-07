@@ -4,7 +4,7 @@
 ## quick3dinputplugin Plugin:
 #####################################################################
 
-qt_add_qml_module(quick3dinputplugin
+qt_internal_add_qml_module(quick3dinputplugin
     URI "Qt3D.Input"
     VERSION "2.${CMAKE_PROJECT_VERSION_MINOR}"
     CLASSNAME Qt3DQuick3DInputPlugin
@@ -31,7 +31,7 @@ qt_add_qml_module(quick3dinputplugin
 ## Scopes:
 #####################################################################
 
-qt_extend_target(quick3dinputplugin CONDITION TARGET Qt::Gamepad
+qt_internal_extend_target(quick3dinputplugin CONDITION TARGET Qt::Gamepad
     DEFINES
         HAVE_QGAMEPAD
 )

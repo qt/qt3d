@@ -4,7 +4,7 @@
 ## tst_material Test:
 #####################################################################
 
-qt_add_test(tst_material
+qt_internal_add_test(tst_material
     SOURCES
         tst_material.cpp
     PUBLIC_LIBRARIES

@@ -4,7 +4,7 @@
 ## tst_layerfiltering Test:
 #####################################################################
 
-qt_add_test(tst_layerfiltering
+qt_internal_add_test(tst_layerfiltering
     SOURCES
         tst_layerfiltering.cpp
     PUBLIC_LIBRARIES

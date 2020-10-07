@@ -4,7 +4,7 @@
 ## downloading Binary:
 #####################################################################
 
-qt_add_manual_test(downloading
+qt_internal_add_manual_test(downloading
     GUI
     SOURCES
         main.cpp
@@ -24,7 +24,7 @@ set(downloading_resource_files
     "main.qml"
 )
 
-qt_add_resource(downloading "downloading"
+qt_internal_add_resource(downloading "downloading"
     PREFIX
         "/"
     FILES

@@ -4,7 +4,7 @@
 ## tst_rendertarget Test:
 #####################################################################
 
-qt_add_test(tst_rendertarget
+qt_internal_add_test(tst_rendertarget
     SOURCES
         tst_rendertarget.cpp
     PUBLIC_LIBRARIES

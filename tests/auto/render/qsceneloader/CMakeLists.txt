@@ -4,7 +4,7 @@
 ## tst_qsceneloader Test:
 #####################################################################
 
-qt_add_test(tst_qsceneloader
+qt_internal_add_test(tst_qsceneloader
     SOURCES
         tst_qsceneloader.cpp
     PUBLIC_LIBRARIES

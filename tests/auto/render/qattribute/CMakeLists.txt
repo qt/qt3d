@@ -4,7 +4,7 @@
 ## tst_qattribute Test:
 #####################################################################
 
-qt_add_test(tst_qattribute
+qt_internal_add_test(tst_qattribute
     SOURCES
         tst_qattribute.cpp
     PUBLIC_LIBRARIES

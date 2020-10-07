@@ -4,7 +4,7 @@
 ## tst_qmorphtarget Test:
 #####################################################################
 
-qt_add_test(tst_qmorphtarget
+qt_internal_add_test(tst_qmorphtarget
     SOURCES
         tst_qmorphtarget.cpp
     PUBLIC_LIBRARIES

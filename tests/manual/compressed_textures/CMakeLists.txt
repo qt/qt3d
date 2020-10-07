@@ -4,7 +4,7 @@
 ## compressed_textures Binary:
 #####################################################################
 
-qt_add_manual_test(compressed_textures
+qt_internal_add_manual_test(compressed_textures
     GUI
     SOURCES
         main.cpp
@@ -27,7 +27,7 @@ set(compressed_textures_resource_files
     "main.qml"
 )
 
-qt_add_resource(compressed_textures "compressed_textures"
+qt_internal_add_resource(compressed_textures "compressed_textures"
     PREFIX
         "/"
     FILES

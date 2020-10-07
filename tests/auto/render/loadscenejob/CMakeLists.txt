@@ -4,7 +4,7 @@
 ## tst_loadscenejob Test:
 #####################################################################
 
-qt_add_test(tst_loadscenejob
+qt_internal_add_test(tst_loadscenejob
     SOURCES
         tst_loadscenejob.cpp
     PUBLIC_LIBRARIES

@@ -4,7 +4,7 @@
 ## scene3d-loader Binary:
 #####################################################################
 
-qt_add_manual_test(scene3d-loader
+qt_internal_add_manual_test(scene3d-loader
     GUI
     SOURCES
         main.cpp
@@ -25,7 +25,7 @@ set(scene3d-loader_resource_files
     "main.qml"
 )
 
-qt_add_resource(scene3d-loader "scene3d-loader"
+qt_internal_add_resource(scene3d-loader "scene3d-loader"
     PREFIX
         "/"
     FILES

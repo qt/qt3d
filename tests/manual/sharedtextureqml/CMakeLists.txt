@@ -4,7 +4,7 @@
 ## sharedtextureqml Binary:
 #####################################################################
 
-qt_add_manual_test(sharedtextureqml
+qt_internal_add_manual_test(sharedtextureqml
     GUI
     SOURCES
         ../sharedtexture/videoplayer.cpp ../sharedtexture/videoplayer.h
@@ -29,7 +29,7 @@ set(qml_resource_files
     "main.qml"
 )
 
-qt_add_resource(sharedtextureqml "qml"
+qt_internal_add_resource(sharedtextureqml "qml"
     PREFIX
         "/"
     FILES

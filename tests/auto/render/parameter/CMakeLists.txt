@@ -4,7 +4,7 @@
 ## tst_parameter Test:
 #####################################################################
 
-qt_add_test(tst_parameter
+qt_internal_add_test(tst_parameter
     SOURCES
         tst_parameter.cpp
     PUBLIC_LIBRARIES

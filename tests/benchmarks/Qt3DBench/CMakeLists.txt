@@ -4,7 +4,7 @@
 ## qt3dbench-qml Binary:
 #####################################################################
 
-qt_add_benchmark(qt3dbench-qml
+qt_internal_add_benchmark(qt3dbench-qml
     GUI
     SOURCES
         main.cpp
@@ -34,7 +34,7 @@ set(qt3dbench-qml_resource_files
     "shaders/shadowmap.vert"
 )
 
-qt_add_resource(qt3dbench-qml "qt3dbench-qml"
+qt_internal_add_resource(qt3dbench-qml "qt3dbench-qml"
     PREFIX
         "/"
     FILES

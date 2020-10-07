@@ -4,7 +4,7 @@
 ## tst_qlevelofdetail Test:
 #####################################################################
 
-qt_add_test(tst_qlevelofdetail
+qt_internal_add_test(tst_qlevelofdetail
     SOURCES
         tst_qlevelofdetail.cpp
     PUBLIC_LIBRARIES

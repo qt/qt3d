@@ -4,7 +4,7 @@
 ## tst_qvertexblendanimation Test:
 #####################################################################
 
-qt_add_test(tst_qvertexblendanimation
+qt_internal_add_test(tst_qvertexblendanimation
     SOURCES
         tst_qvertexblendanimation.cpp
     PUBLIC_LIBRARIES

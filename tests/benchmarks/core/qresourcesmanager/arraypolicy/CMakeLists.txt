@@ -4,7 +4,7 @@
 ## tst_bench_arraypolicy Binary:
 #####################################################################
 
-qt_add_benchmark(tst_bench_arraypolicy
+qt_internal_add_benchmark(tst_bench_arraypolicy
     SOURCES
         tst_bench_arraypolicy.cpp
     PUBLIC_LIBRARIES

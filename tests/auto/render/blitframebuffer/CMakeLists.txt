@@ -4,7 +4,7 @@
 ## tst_blitframebuffer Test:
 #####################################################################
 
-qt_add_test(tst_blitframebuffer
+qt_internal_add_test(tst_blitframebuffer
     SOURCES
         ../commons/testrenderer.cpp ../commons/testrenderer.h
         tst_blitframebuffer.cpp

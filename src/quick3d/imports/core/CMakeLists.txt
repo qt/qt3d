@@ -4,7 +4,7 @@
 ## quick3dcoreplugin Plugin:
 #####################################################################
 
-qt_add_qml_module(quick3dcoreplugin
+qt_internal_add_qml_module(quick3dcoreplugin
     URI "Qt3D.Core"
     VERSION "2.${CMAKE_PROJECT_VERSION_MINOR}"
     CLASSNAME Qt3DQuick3DCorePlugin

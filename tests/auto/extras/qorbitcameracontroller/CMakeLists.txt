@@ -4,7 +4,7 @@
 ## tst_qorbitcameracontroller Test:
 #####################################################################
 
-qt_add_test(tst_qorbitcameracontroller
+qt_internal_add_test(tst_qorbitcameracontroller
     SOURCES
         tst_qorbitcameracontroller.cpp
     PUBLIC_LIBRARIES

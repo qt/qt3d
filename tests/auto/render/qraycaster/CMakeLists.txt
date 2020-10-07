@@ -4,7 +4,7 @@
 ## tst_qraycaster Test:
 #####################################################################
 
-qt_add_test(tst_qraycaster
+qt_internal_add_test(tst_qraycaster
     SOURCES
         tst_qraycaster.cpp
     PUBLIC_LIBRARIES

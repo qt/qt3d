@@ -4,7 +4,7 @@
 ## tst_vector4d_sse Test:
 #####################################################################
 
-qt_add_test(tst_vector4d_sse
+qt_internal_add_test(tst_vector4d_sse
     SOURCES
         tst_vector4d_sse.cpp
     PUBLIC_LIBRARIES

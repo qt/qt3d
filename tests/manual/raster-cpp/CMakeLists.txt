@@ -4,7 +4,7 @@
 ## raster-cpp Binary:
 #####################################################################
 
-qt_add_manual_test(raster-cpp
+qt_internal_add_manual_test(raster-cpp
     GUI
     SOURCES
         main.cpp

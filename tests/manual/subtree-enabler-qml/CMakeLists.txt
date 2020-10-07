@@ -4,7 +4,7 @@
 ## subtree-enabler-qml Binary:
 #####################################################################
 
-qt_add_manual_test(subtree-enabler-qml
+qt_internal_add_manual_test(subtree-enabler-qml
     GUI
     SOURCES
         main.cpp
@@ -26,7 +26,7 @@ set(subtree-enabler-qml_resource_files
     "main.qml"
 )
 
-qt_add_resource(subtree-enabler-qml "subtree-enabler-qml"
+qt_internal_add_resource(subtree-enabler-qml "subtree-enabler-qml"
     PREFIX
         "/"
     FILES

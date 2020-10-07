@@ -4,7 +4,7 @@
 ## segmentvisitor Test:
 #####################################################################
 
-qt_add_test(tst_segmentvisitor
+qt_internal_add_test(tst_segmentvisitor
     SOURCES
         tst_segmentvisitor.cpp
     PUBLIC_LIBRARIES

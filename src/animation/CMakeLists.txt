@@ -4,7 +4,7 @@
 ## 3DAnimation Module:
 #####################################################################
 
-qt_add_module(3DAnimation
+qt_internal_add_module(3DAnimation
     SOURCES
         animationlogging.cpp animationlogging_p.h
         backend/abstractevaluateclipanimatorjob.cpp backend/abstractevaluateclipanimatorjob_p.h

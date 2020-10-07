@@ -4,7 +4,7 @@
 ## raster-qml Binary:
 #####################################################################
 
-qt_add_manual_test(raster-qml
+qt_internal_add_manual_test(raster-qml
     GUI
     SOURCES
         main.cpp
@@ -24,7 +24,7 @@ set(raster-qml_resource_files
     "main.qml"
 )
 
-qt_add_resource(raster-qml "raster-qml"
+qt_internal_add_resource(raster-qml "raster-qml"
     PREFIX
         "/"
     FILES

@@ -4,7 +4,7 @@
 ## tst_qabstractaxisinput Test:
 #####################################################################
 
-qt_add_test(tst_qabstractaxisinput
+qt_internal_add_test(tst_qabstractaxisinput
     SOURCES
         ../commons/testdevice.h
         ../commons/testdeviceproxy.h
@@ -27,7 +27,7 @@ qt_add_test(tst_qabstractaxisinput
 ## Scopes:
 #####################################################################
 
-qt_extend_target(tst_qabstractaxisinput CONDITION QT_FEATURE_private_tests
+qt_internal_extend_target(tst_qabstractaxisinput CONDITION QT_FEATURE_private_tests
     SOURCES
         ../../core/common/qbackendnodetester.cpp ../../core/common/qbackendnodetester.h
         ../../core/common/testarbiter.h

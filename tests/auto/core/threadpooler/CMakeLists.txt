@@ -4,7 +4,7 @@
 ## tst_threadpooler Test:
 #####################################################################
 
-qt_add_test(tst_threadpooler
+qt_internal_add_test(tst_threadpooler
     SOURCES
         tst_threadpooler.cpp
     PUBLIC_LIBRARIES

@@ -4,7 +4,7 @@
 ## tst_blendedclipanimator Test:
 #####################################################################
 
-qt_add_test(tst_blendedclipanimator
+qt_internal_add_test(tst_blendedclipanimator
     SOURCES
         tst_blendedclipanimator.cpp
     PUBLIC_LIBRARIES

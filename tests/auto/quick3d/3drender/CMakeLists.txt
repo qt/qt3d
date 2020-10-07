@@ -4,7 +4,7 @@
 ## tst_import3drender Test:
 #####################################################################
 
-qt_add_test(tst_import3drender
+qt_internal_add_test(tst_import3drender
     SOURCES
         ../../render/qmlscenereader/qmlscenereader.cpp ../../render/qmlscenereader/qmlscenereader.h
         tst_import3drender.cpp
@@ -26,7 +26,7 @@ set( 3drender_resource_files
     "3drender.qml"
 )
 
-qt_add_resource(tst_import3drender "3drender"
+qt_internal_add_resource(tst_import3drender "3drender"
     PREFIX
         "/"
     FILES

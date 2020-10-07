@@ -4,7 +4,7 @@
 ## tst_aspect Test:
 #####################################################################
 
-qt_add_test(tst_aspect
+qt_internal_add_test(tst_aspect
     SOURCES
         tst_aspect.cpp
     PUBLIC_LIBRARIES

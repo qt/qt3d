@@ -4,7 +4,7 @@
 ## tst_shaderbuilder Test:
 #####################################################################
 
-qt_add_test(tst_shaderbuilder
+qt_internal_add_test(tst_shaderbuilder
     SOURCES
         tst_shaderbuilder.cpp
     PUBLIC_LIBRARIES
@@ -26,7 +26,7 @@ set(shaderbuilder_resource_files
     "prototypes.json"
 )
 
-qt_add_resource(tst_shaderbuilder "shaderbuilder"
+qt_internal_add_resource(tst_shaderbuilder "shaderbuilder"
     PREFIX
         "/"
     FILES

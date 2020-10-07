@@ -4,7 +4,7 @@
 ## tst_raycastingjob Test:
 #####################################################################
 
-qt_add_test(tst_raycastingjob
+qt_internal_add_test(tst_raycastingjob
     SOURCES
         ../qmlscenereader/qmlscenereader.cpp ../qmlscenereader/qmlscenereader.h
         tst_raycastingjob.cpp
@@ -34,7 +34,7 @@ set(raycastingjob_resource_files
     "testscene_worldraycastingparentlayer.qml"
 )
 
-qt_add_resource(tst_raycastingjob "raycastingjob"
+qt_internal_add_resource(tst_raycastingjob "raycastingjob"
     PREFIX
         "/"
     FILES

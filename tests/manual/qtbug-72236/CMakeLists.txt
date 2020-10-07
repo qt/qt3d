@@ -4,7 +4,7 @@
 ## qtbug-72236 Binary:
 #####################################################################
 
-qt_add_manual_test(qtbug-72236
+qt_internal_add_manual_test(qtbug-72236
     GUI
     SOURCES
         main.cpp

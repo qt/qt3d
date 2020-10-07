@@ -10,7 +10,7 @@ file(GLOB_RECURSE test_data_glob
     data/*)
 list(APPEND test_data ${test_data_glob})
 
-qt_add_test(tst_qnodeinstantiator
+qt_internal_add_test(tst_qnodeinstantiator
     SOURCES
         ../../shared/util.cpp ../../shared/util.h
         stringmodel.h

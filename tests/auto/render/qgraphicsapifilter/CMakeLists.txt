@@ -4,7 +4,7 @@
 ## tst_qgraphicsapifilter Test:
 #####################################################################
 
-qt_add_test(tst_qgraphicsapifilter
+qt_internal_add_test(tst_qgraphicsapifilter
     SOURCES
         tst_qgraphicsapifilter.cpp
     PUBLIC_LIBRARIES

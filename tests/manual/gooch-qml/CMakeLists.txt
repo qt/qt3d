@@ -4,7 +4,7 @@
 ## gooch-qml Binary:
 #####################################################################
 
-qt_add_manual_test(gooch-qml
+qt_internal_add_manual_test(gooch-qml
     GUI
     SOURCES
         main.cpp
@@ -25,7 +25,7 @@ set(gooch-qml_resource_files
     "main.qml"
 )
 
-qt_add_resource(gooch-qml "gooch-qml"
+qt_internal_add_resource(gooch-qml "gooch-qml"
     PREFIX
         "/"
     FILES
@@ -54,7 +54,7 @@ set(obj_resource_files
     "assets/obj/trefoil.obj"
 )
 
-qt_add_resource(gooch-qml "obj"
+qt_internal_add_resource(gooch-qml "obj"
     PREFIX
         "/"
     BASE

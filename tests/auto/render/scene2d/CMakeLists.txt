@@ -4,7 +4,7 @@
 ## tst_scene2d Test:
 #####################################################################
 
-qt_add_test(tst_scene2d
+qt_internal_add_test(tst_scene2d
     SOURCES
         tst_scene2d.cpp
     PUBLIC_LIBRARIES

@@ -4,7 +4,7 @@
 ## quickwindow-switch Binary:
 #####################################################################
 
-qt_add_manual_test(quickwindow-switch
+qt_internal_add_manual_test(quickwindow-switch
     GUI
     SOURCES
         main.cpp
@@ -26,7 +26,7 @@ set(quickwindow-switch_resource_files
     "main.qml"
 )
 
-qt_add_resource(quickwindow-switch "quickwindow-switch"
+qt_internal_add_resource(quickwindow-switch "quickwindow-switch"
     PREFIX
         "/"
     FILES

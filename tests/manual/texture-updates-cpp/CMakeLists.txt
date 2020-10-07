@@ -4,7 +4,7 @@
 ## texture-updates-cpp Binary:
 #####################################################################
 
-qt_add_manual_test(texture-updates-cpp
+qt_internal_add_manual_test(texture-updates-cpp
     GUI
     SOURCES
         main.cpp

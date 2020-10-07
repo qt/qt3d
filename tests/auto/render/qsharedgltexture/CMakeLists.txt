@@ -4,7 +4,7 @@
 ## tst_qsharedgltexture Test:
 #####################################################################
 
-qt_add_test(tst_qsharedgltexture
+qt_internal_add_test(tst_qsharedgltexture
     SOURCES
         tst_qsharedgltexture.cpp
     PUBLIC_LIBRARIES

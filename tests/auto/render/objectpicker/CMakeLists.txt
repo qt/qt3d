@@ -4,7 +4,7 @@
 ## objectpicker Test:
 #####################################################################
 
-qt_add_test(tst_objectpicker
+qt_internal_add_test(tst_objectpicker
     SOURCES
         tst_objectpicker.cpp
     PUBLIC_LIBRARIES

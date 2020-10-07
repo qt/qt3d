@@ -4,7 +4,7 @@
 ## tst_buffer Test:
 #####################################################################
 
-qt_add_test(tst_buffer
+qt_internal_add_test(tst_buffer
     SOURCES
         tst_buffer.cpp
     PUBLIC_LIBRARIES

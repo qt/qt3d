@@ -4,7 +4,7 @@
 ## animation-keyframe-blendtree Binary:
 #####################################################################
 
-qt_add_manual_test(animation-keyframe-blendtree
+qt_internal_add_manual_test(animation-keyframe-blendtree
     GUI
     SOURCES
         main.cpp
@@ -22,7 +22,7 @@ set(main_resource_files
     "sliding-pulsing-cube.json"
 )
 
-qt_add_resource(animation-keyframe-blendtree "main"
+qt_internal_add_resource(animation-keyframe-blendtree "main"
     PREFIX
         "/"
     FILES

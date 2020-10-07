@@ -4,7 +4,7 @@
 ## sharedtexture Binary:
 #####################################################################
 
-qt_add_manual_test(sharedtexture
+qt_internal_add_manual_test(sharedtexture
     GUI
     SOURCES
         main.cpp

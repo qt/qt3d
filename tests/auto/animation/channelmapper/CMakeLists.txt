@@ -4,7 +4,7 @@
 ## tst_channelmapper Test:
 #####################################################################
 
-qt_add_test(tst_channelmapper
+qt_internal_add_test(tst_channelmapper
     SOURCES
         tst_channelmapper.cpp
     PUBLIC_LIBRARIES

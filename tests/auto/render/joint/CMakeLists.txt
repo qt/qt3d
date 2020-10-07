@@ -4,7 +4,7 @@
 ## tst_joint Test:
 #####################################################################
 
-qt_add_test(tst_joint
+qt_internal_add_test(tst_joint
     SOURCES
         tst_joint.cpp
     PUBLIC_LIBRARIES

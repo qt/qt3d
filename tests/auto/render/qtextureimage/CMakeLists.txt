@@ -4,7 +4,7 @@
 ## tst_qtextureimage Test:
 #####################################################################
 
-qt_add_test(tst_qtextureimage
+qt_internal_add_test(tst_qtextureimage
     SOURCES
         tst_qtextureimage.cpp
     PUBLIC_LIBRARIES

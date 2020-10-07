@@ -4,7 +4,7 @@
 ## tst_raycasting Test:
 #####################################################################
 
-qt_add_test(tst_raycasting
+qt_internal_add_test(tst_raycasting
     SOURCES
         tst_raycasting.cpp
     PUBLIC_LIBRARIES

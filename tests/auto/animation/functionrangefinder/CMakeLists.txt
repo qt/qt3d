@@ -4,7 +4,7 @@
 ## tst_sandwichfinder Test:
 #####################################################################
 
-qt_add_test(tst_sandwichfinder
+qt_internal_add_test(tst_sandwichfinder
     SOURCES
         tst_functionrangefinder.cpp
     PUBLIC_LIBRARIES

@@ -4,7 +4,7 @@
 ## tst_fcurve Test:
 #####################################################################
 
-qt_add_test(tst_fcurve
+qt_internal_add_test(tst_fcurve
     SOURCES
         tst_fcurve.cpp
     PUBLIC_LIBRARIES

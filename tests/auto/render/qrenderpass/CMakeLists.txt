@@ -4,7 +4,7 @@
 ## tst_qrenderpass Test:
 #####################################################################
 
-qt_add_test(tst_qrenderpass
+qt_internal_add_test(tst_qrenderpass
     SOURCES
         tst_qrenderpass.cpp
     PUBLIC_LIBRARIES

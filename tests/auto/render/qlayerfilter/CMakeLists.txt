@@ -4,7 +4,7 @@
 ## tst_qlayerfilter Test:
 #####################################################################
 
-qt_add_test(tst_qlayerfilter
+qt_internal_add_test(tst_qlayerfilter
     SOURCES
         tst_qlayerfilter.cpp
     PUBLIC_LIBRARIES

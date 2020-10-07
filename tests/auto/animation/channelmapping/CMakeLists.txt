@@ -4,7 +4,7 @@
 ## tst_channelmapping Test:
 #####################################################################
 
-qt_add_test(tst_channelmapping
+qt_internal_add_test(tst_channelmapping
     SOURCES
         tst_channelmapping.cpp
     INCLUDE_DIRECTORIES

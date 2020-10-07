@@ -4,7 +4,7 @@
 ## tst_additiveclipblend Test:
 #####################################################################
 
-qt_add_test(tst_additiveclipblend
+qt_internal_add_test(tst_additiveclipblend
     SOURCES
         tst_additiveclipblend.cpp
     PUBLIC_LIBRARIES

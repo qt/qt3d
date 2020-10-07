@@ -4,7 +4,7 @@
 ## tst_matrix4x4_sse Test:
 #####################################################################
 
-qt_add_test(tst_matrix4x4_sse
+qt_internal_add_test(tst_matrix4x4_sse
     SOURCES
         tst_matrix4x4_sse.cpp
     PUBLIC_LIBRARIES

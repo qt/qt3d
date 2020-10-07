@@ -4,7 +4,7 @@
 ## paintedtexture-cpp Binary:
 #####################################################################
 
-qt_add_manual_test(paintedtexture-cpp
+qt_internal_add_manual_test(paintedtexture-cpp
     GUI
     SOURCES
         main.cpp

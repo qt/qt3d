@@ -4,7 +4,7 @@
 ## transparency-qml-scene3d Binary:
 #####################################################################
 
-qt_add_manual_test(transparency-qml-scene3d
+qt_internal_add_manual_test(transparency-qml-scene3d
     GUI
     SOURCES
         main.cpp
@@ -25,7 +25,7 @@ set(transparency-qml-scene3d_resource_files
     "main.qml"
 )
 
-qt_add_resource(transparency-qml-scene3d "transparency-qml-scene3d"
+qt_internal_add_resource(transparency-qml-scene3d "transparency-qml-scene3d"
     PREFIX
         "/"
     FILES
@@ -66,7 +66,7 @@ set(cubemaps_resource_files
     "assets/cubemaps/miramar/miramar_posz.webp"
 )
 
-qt_add_resource(transparency-qml-scene3d "cubemaps"
+qt_internal_add_resource(transparency-qml-scene3d "cubemaps"
     PREFIX
         "/"
     BASE

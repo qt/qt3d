@@ -4,7 +4,7 @@
 ## Qt::3DQuick Module:
 #####################################################################
 
-qt_add_module(3DQuick
+qt_internal_add_module(3DQuick
     SOURCES
         items/quick3dbuffer.cpp items/quick3dbuffer_p.h
         items/quick3dentity.cpp items/quick3dentity_p.h
@@ -46,7 +46,7 @@ qt_add_module(3DQuick
 ## Scopes:
 #####################################################################
 
-qt_extend_target(3DQuick CONDITION gcov
+qt_internal_extend_target(3DQuick CONDITION gcov
     COMPILE_OPTIONS
         -fprofile-arcs
         -ftest-coverage

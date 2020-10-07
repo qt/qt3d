@@ -4,7 +4,7 @@
 ## tst_qtextureloader Test:
 #####################################################################
 
-qt_add_test(tst_qtextureloader
+qt_internal_add_test(tst_qtextureloader
     SOURCES
         tst_qtextureloader.cpp
     PUBLIC_LIBRARIES

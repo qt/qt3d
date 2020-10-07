@@ -4,7 +4,7 @@
 ## tst_qcameraselector Test:
 #####################################################################
 
-qt_add_test(tst_qcameraselector
+qt_internal_add_test(tst_qcameraselector
     SOURCES
         tst_qcameraselector.cpp
     PUBLIC_LIBRARIES

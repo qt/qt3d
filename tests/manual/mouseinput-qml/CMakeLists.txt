@@ -4,7 +4,7 @@
 ## mouseinput-qml Binary:
 #####################################################################
 
-qt_add_manual_test(mouseinput-qml
+qt_internal_add_manual_test(mouseinput-qml
     GUI
     SOURCES
         main.cpp
@@ -24,7 +24,7 @@ set(mouseinput-qml_resource_files
     "main.qml"
 )
 
-qt_add_resource(mouseinput-qml "mouseinput-qml"
+qt_internal_add_resource(mouseinput-qml "mouseinput-qml"
     PREFIX
         "/"
     FILES

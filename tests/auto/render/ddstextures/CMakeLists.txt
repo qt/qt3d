@@ -10,7 +10,7 @@ file(GLOB_RECURSE test_data_glob
     data/*)
 list(APPEND test_data ${test_data_glob})
 
-qt_add_test(tst_ddstextures
+qt_internal_add_test(tst_ddstextures
     SOURCES
         tst_ddstextures.cpp
     PUBLIC_LIBRARIES

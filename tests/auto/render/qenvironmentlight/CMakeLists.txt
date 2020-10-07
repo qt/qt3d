@@ -4,7 +4,7 @@
 ## tst_environmentlight Test:
 #####################################################################
 
-qt_add_test(tst_qenvironmentlight
+qt_internal_add_test(tst_qenvironmentlight
     SOURCES
         tst_qenvironmentlight.cpp
     PUBLIC_LIBRARIES

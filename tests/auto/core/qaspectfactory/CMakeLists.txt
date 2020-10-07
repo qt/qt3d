@@ -4,7 +4,7 @@
 ## tst_qaspectfactory Test:
 #####################################################################
 
-qt_add_test(tst_qaspectfactory
+qt_internal_add_test(tst_qaspectfactory
     SOURCES
         tst_qaspectfactory.cpp
     PUBLIC_LIBRARIES

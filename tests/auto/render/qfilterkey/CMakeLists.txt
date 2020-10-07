@@ -4,7 +4,7 @@
 ## tst_qfilterkey Test:
 #####################################################################
 
-qt_add_test(tst_qfilterkey
+qt_internal_add_test(tst_qfilterkey
     SOURCES
         tst_qfilterkey.cpp
     PUBLIC_LIBRARIES

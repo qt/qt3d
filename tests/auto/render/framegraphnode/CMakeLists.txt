@@ -4,7 +4,7 @@
 ## tst_framegraphnode Test:
 #####################################################################
 
-qt_add_test(tst_framegraphnode
+qt_internal_add_test(tst_framegraphnode
     SOURCES
         tst_framegraphnode.cpp
     PUBLIC_LIBRARIES

@@ -4,7 +4,7 @@
 ## tst_qskeletonmapping Test:
 #####################################################################
 
-qt_add_test(tst_qskeletonmapping
+qt_internal_add_test(tst_qskeletonmapping
     SOURCES
         tst_qskeletonmapping.cpp
     INCLUDE_DIRECTORIES
@@ -24,7 +24,7 @@ qt_add_test(tst_qskeletonmapping
 ## Scopes:
 #####################################################################
 
-qt_extend_target(tst_qskeletonmapping CONDITION QT_FEATURE_private_tests
+qt_internal_extend_target(tst_qskeletonmapping CONDITION QT_FEATURE_private_tests
     SOURCES
         ../../core/common/qbackendnodetester.cpp ../../core/common/qbackendnodetester.h
         ../../core/common/testarbiter.h

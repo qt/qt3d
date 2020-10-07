@@ -4,7 +4,7 @@
 ## tst_qchannelmapping Test:
 #####################################################################
 
-qt_add_test(tst_qchannelmapping
+qt_internal_add_test(tst_qchannelmapping
     SOURCES
         tst_qchannelmapping.cpp
     INCLUDE_DIRECTORIES
@@ -24,7 +24,7 @@ qt_add_test(tst_qchannelmapping
 ## Scopes:
 #####################################################################
 
-qt_extend_target(tst_qchannelmapping CONDITION QT_FEATURE_private_tests
+qt_internal_extend_target(tst_qchannelmapping CONDITION QT_FEATURE_private_tests
     SOURCES
         ../../core/common/qbackendnodetester.cpp ../../core/common/qbackendnodetester.h
         ../../core/common/testarbiter.h

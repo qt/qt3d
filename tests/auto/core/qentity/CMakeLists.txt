@@ -4,7 +4,7 @@
 ## tst_qentity Test:
 #####################################################################
 
-qt_add_test(tst_qentity
+qt_internal_add_test(tst_qentity
     SOURCES
         tst_qentity.cpp
     PUBLIC_LIBRARIES

@@ -4,7 +4,7 @@
 ## tst_framegraphvisitor Test:
 #####################################################################
 
-qt_add_test(tst_framegraphvisitor
+qt_internal_add_test(tst_framegraphvisitor
     SOURCES
         tst_framegraphvisitor.cpp
     PUBLIC_LIBRARIES

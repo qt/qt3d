@@ -4,7 +4,7 @@
 ## tst_entity Test:
 #####################################################################
 
-qt_add_test(tst_entity
+qt_internal_add_test(tst_entity
     SOURCES
         tst_entity.cpp
     PUBLIC_LIBRARIES

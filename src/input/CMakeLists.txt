@@ -4,7 +4,7 @@
 ## Qt::3DInput Module:
 #####################################################################
 
-qt_add_module(3DInput
+qt_internal_add_module(3DInput
     PLUGIN_TYPES Qt::3DInputdevices
     SOURCES
         backend/abstractactioninput.cpp backend/abstractactioninput_p.h
@@ -93,7 +93,7 @@ qt_add_module(3DInput
 ## Scopes:
 #####################################################################
 
-qt_extend_target(3DInput CONDITION TARGET Qt::Gamepad
+qt_internal_extend_target(3DInput CONDITION TARGET Qt::Gamepad
     SOURCES
         frontend/qgamepadinput.cpp frontend/qgamepadinput_p.h
     DEFINES

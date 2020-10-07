@@ -4,7 +4,7 @@
 ## Qt::3DQuickScene2D Module:
 #####################################################################
 
-qt_add_module(3DQuickScene2D
+qt_internal_add_module(3DQuickScene2D
     SOURCES
         items/qscene2d.cpp items/qscene2d.h items/qscene2d_p.h
         items/qt3dquick3dscene2d.cpp items/qt3dquick3dscene2d_p.h
@@ -41,7 +41,7 @@ qt_add_module(3DQuickScene2D
 ## Scopes:
 #####################################################################
 
-qt_extend_target(3DQuickScene2D CONDITION gcov
+qt_internal_extend_target(3DQuickScene2D CONDITION gcov
     COMPILE_OPTIONS
         -fprofile-arcs
         -ftest-coverage

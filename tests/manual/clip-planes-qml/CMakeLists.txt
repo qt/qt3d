@@ -4,7 +4,7 @@
 ## clip-planes-qml Binary:
 #####################################################################
 
-qt_add_manual_test(clip-planes-qml
+qt_internal_add_manual_test(clip-planes-qml
     GUI
     SOURCES
         main.cpp
@@ -39,7 +39,7 @@ set(clip-planes-qml_resource_files
     "light.inc.frag"
 )
 
-qt_add_resource(clip-planes-qml "clip-planes-qml"
+qt_internal_add_resource(clip-planes-qml "clip-planes-qml"
     PREFIX
         "/"
     FILES
@@ -68,7 +68,7 @@ set(obj_resource_files
     "assets/obj/trefoil.obj"
 )
 
-qt_add_resource(clip-planes-qml "obj"
+qt_internal_add_resource(clip-planes-qml "obj"
     PREFIX
         "/"
     BASE

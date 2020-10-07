@@ -4,7 +4,7 @@
 ## mesh-morphing Binary:
 #####################################################################
 
-qt_add_manual_test(mesh-morphing
+qt_internal_add_manual_test(mesh-morphing
     GUI
     SOURCES
         main.cpp

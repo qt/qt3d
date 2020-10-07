@@ -4,7 +4,7 @@
 ## boundingvolumes Binary:
 #####################################################################
 
-qt_add_manual_test(boundingvolumes
+qt_internal_add_manual_test(boundingvolumes
     GUI
     SOURCES
         main.cpp
@@ -21,7 +21,7 @@ set(boundingvolumes_resource_files
     "main.qml"
 )
 
-qt_add_resource(boundingvolumes "boundingvolumes"
+qt_internal_add_resource(boundingvolumes "boundingvolumes"
     PREFIX
         "/"
     FILES

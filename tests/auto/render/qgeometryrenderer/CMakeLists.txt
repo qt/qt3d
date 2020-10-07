@@ -4,7 +4,7 @@
 ## tst_qgeometryrenderer Test:
 #####################################################################
 
-qt_add_test(tst_qgeometryrenderer
+qt_internal_add_test(tst_qgeometryrenderer
     SOURCES
         tst_qgeometryrenderer.cpp
     PUBLIC_LIBRARIES

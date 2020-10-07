@@ -4,7 +4,7 @@
 ## boundingvolumedebug Test:
 #####################################################################
 
-qt_add_test(boundingvolumedebug
+qt_internal_add_test(boundingvolumedebug
     SOURCES
         ../commons/testrenderer.cpp ../commons/testrenderer.h
         tst_boundingvolumedebug.cpp
@@ -25,7 +25,7 @@ qt_add_test(boundingvolumedebug
 ## Scopes:
 #####################################################################
 
-qt_extend_target(boundingvolumedebug CONDITION useCommonTestAspect
+qt_internal_extend_target(boundingvolumedebug CONDITION useCommonTestAspect
     SOURCES
         ../commons/testaspect.cpp ../commons/testaspect.h
 )

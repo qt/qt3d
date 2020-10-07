@@ -4,7 +4,7 @@
 ## tst_qservicelocator Test:
 #####################################################################
 
-qt_add_test(tst_qservicelocator
+qt_internal_add_test(tst_qservicelocator
     SOURCES
         tst_qservicelocator.cpp
     PUBLIC_LIBRARIES

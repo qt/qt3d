@@ -4,7 +4,7 @@
 ## 3drender Module:
 #####################################################################
 
-qt_add_module(3DRender
+qt_internal_add_module(3DRender
     PLUGIN_TYPES sceneparsers geometryloaders renderplugins renderers
     SOURCES
         backend/abstractrenderer_p.h
@@ -314,7 +314,7 @@ set(materialsystem_resource_files
     "prototypes/default.json"
 )
 
-qt_add_resource(3DRender "materialsystem"
+qt_internal_add_resource(3DRender "materialsystem"
     PREFIX
         "/"
     BASE
@@ -341,7 +341,7 @@ if(NOT TARGET Threads::Threads)
 endif()
 # special case end
 
-qt_extend_target(3DRender CONDITION gcov
+qt_internal_extend_target(3DRender CONDITION gcov
     COMPILE_OPTIONS
         -fprofile-arcs
         -ftest-coverage
@@ -350,7 +350,7 @@ qt_extend_target(3DRender CONDITION gcov
         "-ftest-coverage"
 )
 
-qt_extend_target(3DRender CONDITION QT_FEATURE_vulkan
+qt_internal_extend_target(3DRender CONDITION QT_FEATURE_vulkan
     SOURCES
         surfaces/vulkaninstance.cpp surfaces/vulkaninstance_p.h
 )

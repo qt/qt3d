@@ -4,7 +4,7 @@
 ## transforms-qml Binary:
 #####################################################################
 
-qt_add_manual_test(transforms-qml
+qt_internal_add_manual_test(transforms-qml
     GUI
     SOURCES
         main.cpp
@@ -27,7 +27,7 @@ set(transforms-qml_resource_files
     "main.qml"
 )
 
-qt_add_resource(transforms-qml "transforms-qml"
+qt_internal_add_resource(transforms-qml "transforms-qml"
     PREFIX
         "/"
     FILES
@@ -56,7 +56,7 @@ set(obj_resource_files
     "assets/obj/trefoil.obj"
 )
 
-qt_add_resource(transforms-qml "obj"
+qt_internal_add_resource(transforms-qml "obj"
     PREFIX
         "/"
     BASE

@@ -2,7 +2,7 @@
 ## ubo Binary:
 #####################################################################
 
-qt_add_manual_test(ubo
+qt_internal_add_manual_test(ubo
     GUI
     SOURCES
         main.cpp
@@ -28,7 +28,7 @@ set(qmake_immediate_resource_files
     "main.qml"
 )
 
-qt_add_resource(ubo "qmake_immediate"
+qt_internal_add_resource(ubo "qmake_immediate"
     PREFIX
         "/"
     FILES

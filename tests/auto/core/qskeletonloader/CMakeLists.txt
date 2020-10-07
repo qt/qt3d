@@ -4,7 +4,7 @@
 ## tst_qskeletonloader Test:
 #####################################################################
 
-qt_add_test(tst_qskeletonloader
+qt_internal_add_test(tst_qskeletonloader
     SOURCES
         tst_qskeletonloader.cpp
     INCLUDE_DIRECTORIES
@@ -22,7 +22,7 @@ qt_add_test(tst_qskeletonloader
 ## Scopes:
 #####################################################################
 
-qt_extend_target(tst_qskeletonloader CONDITION QT_FEATURE_private_tests
+qt_internal_extend_target(tst_qskeletonloader CONDITION QT_FEATURE_private_tests
     SOURCES
         ../common/qbackendnodetester.cpp ../common/qbackendnodetester.h
         ../common/testarbiter.h

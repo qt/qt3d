@@ -4,7 +4,7 @@
 ## tst_gltexture Test:
 #####################################################################
 
-qt_add_test(tst_gltexture
+qt_internal_add_test(tst_gltexture
     SOURCES
         tst_gltexture.cpp
     PUBLIC_LIBRARIES
@@ -20,7 +20,7 @@ set(resources_resource_files
     "image.jpg"
 )
 
-qt_add_resource(tst_gltexture "resources"
+qt_internal_add_resource(tst_gltexture "resources"
     PREFIX
         "/"
     FILES

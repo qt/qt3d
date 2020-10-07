@@ -4,7 +4,7 @@
 ## tst_qwaitfence Test:
 #####################################################################
 
-qt_add_test(tst_qwaitfence
+qt_internal_add_test(tst_qwaitfence
     SOURCES
         tst_qwaitfence.cpp
     PUBLIC_LIBRARIES

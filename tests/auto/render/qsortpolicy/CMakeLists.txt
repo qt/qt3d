@@ -4,7 +4,7 @@
 ## tst_qsortmethod Test:
 #####################################################################
 
-qt_add_test(tst_qsortmethod
+qt_internal_add_test(tst_qsortmethod
     SOURCES
         tst_qsortpolicy.cpp
     PUBLIC_LIBRARIES

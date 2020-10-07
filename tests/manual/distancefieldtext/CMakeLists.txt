@@ -4,7 +4,7 @@
 ## distancefieldtext Binary:
 #####################################################################
 
-qt_add_manual_test(distancefieldtext
+qt_internal_add_manual_test(distancefieldtext
     GUI
     SOURCES
         main.cpp
@@ -25,7 +25,7 @@ set(distancefieldtext_resource_files
     "main.qml"
 )
 
-qt_add_resource(distancefieldtext "distancefieldtext"
+qt_internal_add_resource(distancefieldtext "distancefieldtext"
     PREFIX
         "/"
     FILES

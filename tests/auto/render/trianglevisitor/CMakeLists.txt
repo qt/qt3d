@@ -4,7 +4,7 @@
 ## trianglevisitor Test:
 #####################################################################
 
-qt_add_test(tst_trianglevisitor
+qt_internal_add_test(tst_trianglevisitor
     SOURCES
         tst_trianglevisitor.cpp
     PUBLIC_LIBRARIES

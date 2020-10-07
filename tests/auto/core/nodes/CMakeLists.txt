@@ -4,7 +4,7 @@
 ## tst_nodes Test:
 #####################################################################
 
-qt_add_test(tst_nodes
+qt_internal_add_test(tst_nodes
     SOURCES
         tst_nodes.cpp
     INCLUDE_DIRECTORIES
@@ -22,7 +22,7 @@ qt_add_test(tst_nodes
 ## Scopes:
 #####################################################################
 
-qt_extend_target(tst_nodes CONDITION QT_FEATURE_private_tests
+qt_internal_extend_target(tst_nodes CONDITION QT_FEATURE_private_tests
     SOURCES
         ../common/qbackendnodetester.cpp ../common/qbackendnodetester.h
         ../common/testarbiter.h

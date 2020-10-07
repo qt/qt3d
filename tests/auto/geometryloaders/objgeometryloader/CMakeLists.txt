@@ -4,7 +4,7 @@
 ## tst_objgeometryloader Test:
 #####################################################################
 
-qt_add_test(tst_objgeometryloader
+qt_internal_add_test(tst_objgeometryloader
     SOURCES
         tst_objgeometryloader.cpp
     PUBLIC_LIBRARIES
@@ -20,7 +20,7 @@ set(resources_resource_files
     "invalid_vertex_position.obj"
 )
 
-qt_add_resource(tst_objgeometryloader "resources"
+qt_internal_add_resource(tst_objgeometryloader "resources"
     PREFIX
         "/"
     FILES

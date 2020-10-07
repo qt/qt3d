@@ -4,7 +4,7 @@
 ## lod Binary:
 #####################################################################
 
-qt_add_manual_test(lod
+qt_internal_add_manual_test(lod
     GUI
     SOURCES
         main.cpp
@@ -28,7 +28,7 @@ set(lod_resource_files
     "main.qml"
 )
 
-qt_add_resource(lod "lod"
+qt_internal_add_resource(lod "lod"
     PREFIX
         "/"
     FILES
