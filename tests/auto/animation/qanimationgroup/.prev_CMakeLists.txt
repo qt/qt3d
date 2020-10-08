@@ -4,17 +4,15 @@
 ## tst_qanimationgroup Test:
 #####################################################################
 
-# special case begin
-qt_internal_add_test(tst_qt3d_qanimationgroup
-# special case end
+qt_internal_add_test(tst_qanimationgroup
     SOURCES
         tst_qanimationgroup.cpp
     PUBLIC_LIBRARIES
-        Qt::3DAnimation
-        Qt::3DCore
-        Qt::3DCorePrivate
-        Qt::3DRender
-        Qt::3DRenderPrivate
+        3danimation
+        3dcore
+        3dcorePrivate
+        3drender
+        3drenderPrivate
         Qt::Gui
 )
 
