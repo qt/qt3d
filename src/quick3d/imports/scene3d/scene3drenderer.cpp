@@ -332,7 +332,7 @@ void Scene3DRenderer::GLRenderer::beforeSynchronize(Scene3DRenderer *scene3DRend
         if (generateNewTexture) {
             m_finalFBO.reset(createFramebufferObject(m_lastSize));
             m_textureId = m_finalFBO->texture();
-            m_texture.reset(QPlatformInterface::QSGOpenGLTexture::fromNative(m_textureId, window, m_finalFBO->size(), QQuickWindow::TextureHasAlphaChannel));
+            m_texture.reset(QNativeInterface::QSGOpenGLTexture::fromNative(m_textureId, window, m_finalFBO->size(), QQuickWindow::TextureHasAlphaChannel));
         }
 
         // Set texture on node
