@@ -80,7 +80,8 @@ void Handler::setDirty(DirtyFlag flag, Qt3DCore::QNodeId nodeId)
     case AnimationClipDirty: {
         QMutexLocker lock(&m_mutex);
         const auto handle = m_animationClipLoaderManager->lookupHandle(nodeId);
-        m_dirtyAnimationClips.push_back(handle);
+        if (!m_dirtyAnimationClips.contains(handle))
+            m_dirtyAnimationClips.push_back(handle);
         break;
     }
 
@@ -91,14 +92,16 @@ void Handler::setDirty(DirtyFlag flag, Qt3DCore::QNodeId nodeId)
     case ClipAnimatorDirty: {
         QMutexLocker lock(&m_mutex);
         const auto handle = m_clipAnimatorManager->lookupHandle(nodeId);
-        m_dirtyClipAnimators.push_back(handle);
+        if (!m_dirtyClipAnimators.contains(handle))
+            m_dirtyClipAnimators.push_back(handle);
         break;
     }
 
     case BlendedClipAnimatorDirty: {
         QMutexLocker lock(&m_mutex);
         const HBlendedClipAnimator handle = m_blendedClipAnimatorManager->lookupHandle(nodeId);
-        m_dirtyBlendedAnimators.push_back(handle);
+        if (!m_dirtyBlendedAnimators.contains(handle))
+            m_dirtyBlendedAnimators.push_back(handle);
         break;
     }
     }
