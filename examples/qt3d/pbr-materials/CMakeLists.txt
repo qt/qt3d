@@ -25,7 +25,7 @@ find_package(Qt6 COMPONENTS Qml)
 find_package(Qt6 COMPONENTS Quick)
 find_package(Qt6 COMPONENTS 3DQuickExtras)
 
-add_qt_gui_executable(pbr-materials
+qt_add_executable(pbr-materials
     main.cpp
 )
 target_link_libraries(pbr-materials PUBLIC

@@ -25,7 +25,7 @@ find_package(Qt6 COMPONENTS 3DInput)
 find_package(Qt6 COMPONENTS 3DQuick)
 find_package(Qt6 COMPONENTS 3DQuickExtras)
 
-add_qt_gui_executable(lights
+qt_add_executable(lights
     main.cpp
 )
 target_link_libraries(lights PUBLIC

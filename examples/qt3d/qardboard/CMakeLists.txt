@@ -26,7 +26,7 @@ find_package(Qt6 COMPONENTS 3DQuick)
 find_package(Qt6 COMPONENTS 3DExtras)
 find_package(Qt6 COMPONENTS 3DQuickExtras)
 
-add_qt_gui_executable(qardboard
+qt_add_executable(qardboard
     abstractdeviceorientation.cpp abstractdeviceorientation.h
     dummydeviceorientation.cpp dummydeviceorientation.h
     main.cpp

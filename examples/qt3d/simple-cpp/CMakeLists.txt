@@ -22,7 +22,7 @@ find_package(Qt6 COMPONENTS 3DRender)
 find_package(Qt6 COMPONENTS 3DInput)
 find_package(Qt6 COMPONENTS 3DExtras)
 
-add_qt_gui_executable(simple-cpp
+qt_add_executable(simple-cpp
     main.cpp
     orbittransformcontroller.cpp orbittransformcontroller.h
 )

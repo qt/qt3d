@@ -23,7 +23,7 @@ find_package(Qt6 COMPONENTS Quick)
 find_package(Qt6 COMPONENTS QuickWidgets)
 find_package(Qt6 COMPONENTS 3DInput)
 
-add_qt_gui_executable(widgets-scene3d
+qt_add_executable(widgets-scene3d
     main.cpp
 )
 target_link_libraries(widgets-scene3d PUBLIC

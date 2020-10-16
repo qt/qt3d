@@ -22,7 +22,7 @@ find_package(Qt6 COMPONENTS 3DRender)
 find_package(Qt6 COMPONENTS 3DInput)
 find_package(Qt6 COMPONENTS 3DExtras)
 
-add_qt_gui_executable(3d-text
+qt_add_executable(3d-text
     main.cpp
 )
 target_link_libraries(3d-text PUBLIC

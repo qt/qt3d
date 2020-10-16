@@ -23,7 +23,7 @@ find_package(Qt6 COMPONENTS Qml)
 find_package(Qt6 COMPONENTS Quick)
 find_package(Qt6 COMPONENTS Multimedia)
 
-add_qt_gui_executable(audio-visualizer-qml
+qt_add_executable(audio-visualizer-qml
     main.cpp
     touchsettings.cpp touchsettings.h
 )

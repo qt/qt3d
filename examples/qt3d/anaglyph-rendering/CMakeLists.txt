@@ -26,7 +26,7 @@ find_package(Qt6 COMPONENTS 3DQuick)
 find_package(Qt6 COMPONENTS 3DExtras)
 find_package(Qt6 COMPONENTS 3DQuickExtras)
 
-add_qt_gui_executable(anaglyph-rendering
+qt_add_executable(anaglyph-rendering
     main.cpp
 )
 target_link_libraries(anaglyph-rendering PUBLIC

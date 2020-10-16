@@ -22,7 +22,7 @@ find_package(Qt6 COMPONENTS Quick)
 find_package(Qt6 COMPONENTS 3DQuick)
 find_package(Qt6 COMPONENTS 3DQuickExtras)
 
-add_qt_gui_executable(scene2dsample # special case
+qt_add_executable(scene2dsample # special case
     main.cpp
 )
 target_link_libraries(scene2dsample PUBLIC # special case

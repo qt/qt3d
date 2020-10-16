@@ -25,7 +25,7 @@ find_package(Qt6 COMPONENTS 3DQuickExtras)
 find_package(Qt6 COMPONENTS Qml)
 find_package(Qt6 COMPONENTS Quick)
 
-add_qt_gui_executable(qgltf
+qt_add_executable(qgltf
     main.cpp
 )
 target_link_libraries(qgltf PUBLIC

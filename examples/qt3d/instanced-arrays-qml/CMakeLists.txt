@@ -25,7 +25,7 @@ find_package(Qt6 COMPONENTS 3DInput)
 find_package(Qt6 COMPONENTS 3DQuick)
 find_package(Qt6 COMPONENTS 3DQuickExtras)
 
-add_qt_gui_executable(instanced-arrays-qml
+qt_add_executable(instanced-arrays-qml
     instancebuffer.cpp instancebuffer.h
     main.cpp
 )

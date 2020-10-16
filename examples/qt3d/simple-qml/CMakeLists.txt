@@ -26,7 +26,7 @@ find_package(Qt6 COMPONENTS Qml)
 find_package(Qt6 COMPONENTS Quick)
 find_package(Qt6 COMPONENTS 3DQuickExtras)
 
-add_qt_gui_executable(simple-qml
+qt_add_executable(simple-qml
     main.cpp
 )
 target_link_libraries(simple-qml PUBLIC

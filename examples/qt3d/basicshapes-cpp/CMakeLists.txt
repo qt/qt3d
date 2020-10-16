@@ -23,7 +23,7 @@ find_package(Qt6 COMPONENTS 3DInput)
 find_package(Qt6 COMPONENTS 3DExtras)
 find_package(Qt6 COMPONENTS Widgets)
 
-add_qt_gui_executable(basicshapes-cpp
+qt_add_executable(basicshapes-cpp
     main.cpp
     scenemodifier.cpp scenemodifier.h
 )

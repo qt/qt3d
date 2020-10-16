@@ -29,7 +29,7 @@ find_package(Qt6 COMPONENTS 3DQuickInput)
 find_package(Qt6 COMPONENTS 3DQuickExtras)
 find_package(Qt6 COMPONENTS Network)
 
-add_qt_gui_executable(planets-qml
+qt_add_executable(planets-qml
     main.cpp
     networkcontroller.cpp networkcontroller.h
 )

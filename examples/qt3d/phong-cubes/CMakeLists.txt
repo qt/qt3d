@@ -25,7 +25,7 @@ find_package(Qt6 COMPONENTS 3DInput)
 find_package(Qt6 COMPONENTS 3DQuick)
 find_package(Qt6 COMPONENTS 3DQuickExtras)
 
-add_qt_gui_executable(phong-cubes
+qt_add_executable(phong-cubes
     main.cpp
 )
 target_link_libraries(phong-cubes PUBLIC

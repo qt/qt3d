@@ -24,7 +24,7 @@ find_package(Qt6 COMPONENTS 3DInput)
 find_package(Qt6 COMPONENTS Quick)
 find_package(Qt6 COMPONENTS Qml)
 
-add_qt_gui_executable(compute-particles
+qt_add_executable(compute-particles
     main.cpp
 )
 target_link_libraries(compute-particles PUBLIC

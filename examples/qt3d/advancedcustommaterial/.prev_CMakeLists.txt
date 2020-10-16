@@ -20,7 +20,7 @@ find_package(Qt6 COMPONENTS Gui)
 find_package(Qt6 COMPONENTS Qml)
 find_package(Qt6 COMPONENTS Quick)
 
-add_qt_gui_executable(advancedcustommaterial
+qt_add_executable(advancedcustommaterial
     main.cpp
 )
 target_link_libraries(advancedcustommaterial PUBLIC
