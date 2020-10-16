@@ -17,6 +17,10 @@ set(INSTALL_EXAMPLEDIR "${INSTALL_EXAMPLESDIR}")
 
 find_package(Qt6 COMPONENTS Core)
 find_package(Qt6 COMPONENTS Gui)
+find_package(Qt6 COMPONENTS 3DCore)
+find_package(Qt6 COMPONENTS 3DRender)
+find_package(Qt6 COMPONENTS 3DInput)
+find_package(Qt6 COMPONENTS 3DExtras)
 find_package(Qt6 COMPONENTS Widgets)
 
 add_qt_gui_executable(basicshapes-cpp

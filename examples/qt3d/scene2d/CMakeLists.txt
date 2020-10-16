@@ -19,11 +19,13 @@ find_package(Qt6 COMPONENTS Core)
 find_package(Qt6 COMPONENTS Gui)
 find_package(Qt6 COMPONENTS Qml)
 find_package(Qt6 COMPONENTS Quick)
+find_package(Qt6 COMPONENTS 3DQuick)
+find_package(Qt6 COMPONENTS 3DQuickExtras)
 
-add_qt_gui_executable(scene2dsample
+add_qt_gui_executable(scene2dsample # special case
     main.cpp
 )
-target_link_libraries(scene2dsample PUBLIC
+target_link_libraries(scene2dsample PUBLIC # special case
     Qt::3DQuick
     Qt::3DQuickExtras
     Qt::Core
@@ -40,14 +42,14 @@ set(scene2d_resource_files
     "main.qml"
 )
 
-qt6_add_resources(scene2dsample "scene2d"
+qt6_add_resources(scene2dsample "scene2d" # special case
     PREFIX
         "/"
     FILES
         ${scene2d_resource_files}
 )
 
-install(TARGETS scene2dsample
+install(TARGETS scene2dsample # special case
     RUNTIME DESTINATION "${INSTALL_EXAMPLEDIR}"
     BUNDLE DESTINATION "${INSTALL_EXAMPLEDIR}"
     LIBRARY DESTINATION "${INSTALL_EXAMPLEDIR}"

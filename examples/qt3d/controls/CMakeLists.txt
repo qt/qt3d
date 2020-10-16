@@ -44,7 +44,10 @@ qt6_add_resources(controls "controls"
     FILES
         ${controls_resource_files}
 )
+
+# special case begin
 target_sources(controls PRIVATE ${controls_resources_files}) # just to show qml files in creator
+# special case end
 
 install(TARGETS controls
     RUNTIME DESTINATION "${INSTALL_EXAMPLEDIR}"

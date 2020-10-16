@@ -9,13 +9,24 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-set(INSTALL_EXAMPLEDIR "examples")
+if(NOT DEFINED INSTALL_EXAMPLESDIR)
+  set(INSTALL_EXAMPLESDIR "examples")
+endif()
+
+set(INSTALL_EXAMPLEDIR "${INSTALL_EXAMPLESDIR}")
 
 find_package(Qt6 COMPONENTS Core)
 find_package(Qt6 COMPONENTS Gui)
 find_package(Qt6 COMPONENTS Qml)
 find_package(Qt6 COMPONENTS Quick)
 find_package(Qt6 COMPONENTS Concurrent)
+find_package(Qt6 COMPONENTS 3DCore)
+find_package(Qt6 COMPONENTS 3DRender)
+find_package(Qt6 COMPONENTS 3DInput)
+find_package(Qt6 COMPONENTS 3DQuick)
+find_package(Qt6 COMPONENTS 3DQuickRender)
+find_package(Qt6 COMPONENTS 3DQuickInput)
+find_package(Qt6 COMPONENTS 3DQuickExtras)
 find_package(Qt6 COMPONENTS Network)
 
 add_qt_gui_executable(planets-qml

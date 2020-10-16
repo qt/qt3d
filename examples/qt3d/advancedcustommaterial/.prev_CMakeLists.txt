@@ -45,10 +45,6 @@ qt6_add_resources(advancedcustommaterial "qml"
     FILES
         ${qml_resource_files}
 )
-# special case begin
-target_sources(advancedcustommaterial PRIVATE ${qml_resource_files}) # just to show qml files in creator
-# special case end
-
 set(models_resource_files
     "models/waterPlane.obj"
 )

@@ -1,7 +1,7 @@
-# Generated from instanced-arrays-qml.pro.
+# Generated from scene2d.pro.
 
 cmake_minimum_required(VERSION 3.14)
-project(instanced-arrays-qml LANGUAGES CXX)
+project(scene2d LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -19,22 +19,15 @@ find_package(Qt6 COMPONENTS Core)
 find_package(Qt6 COMPONENTS Gui)
 find_package(Qt6 COMPONENTS Qml)
 find_package(Qt6 COMPONENTS Quick)
-find_package(Qt6 COMPONENTS 3DCore)
-find_package(Qt6 COMPONENTS 3DRender)
-find_package(Qt6 COMPONENTS 3DInput)
 find_package(Qt6 COMPONENTS 3DQuick)
 find_package(Qt6 COMPONENTS 3DQuickExtras)
 
-add_qt_gui_executable(instanced-arrays-qml
-    instancebuffer.cpp instancebuffer.h
+add_qt_gui_executable(scene2d
     main.cpp
 )
-target_link_libraries(instanced-arrays-qml PUBLIC
-    Qt::3DCore
-    Qt::3DInput
+target_link_libraries(scene2d PUBLIC
     Qt::3DQuick
     Qt::3DQuickExtras
-    Qt::3DRender
     Qt::Core
     Qt::Gui
     Qt::Qml
@@ -43,20 +36,20 @@ target_link_libraries(instanced-arrays-qml PUBLIC
 
 
 # Resources:
-set(instanced-arrays-qml_resource_files
-    "instanced.frag"
-    "instanced.vert"
+set(scene2d_resource_files
+    "LogoControls.qml"
+    "Qt_logo.obj"
     "main.qml"
 )
 
-qt6_add_resources(instanced-arrays-qml "instanced-arrays-qml"
+qt6_add_resources(scene2d "scene2d"
     PREFIX
         "/"
     FILES
-        ${instanced-arrays-qml_resource_files}
+        ${scene2d_resource_files}
 )
 
-install(TARGETS instanced-arrays-qml
+install(TARGETS scene2d
     RUNTIME DESTINATION "${INSTALL_EXAMPLEDIR}"
     BUNDLE DESTINATION "${INSTALL_EXAMPLEDIR}"
     LIBRARY DESTINATION "${INSTALL_EXAMPLEDIR}"

@@ -1,7 +1,7 @@
-# Generated from wave.pro.
+# Generated from simple-qml.pro.
 
 cmake_minimum_required(VERSION 3.14)
-project(wave LANGUAGES CXX)
+project(simple-qml LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -19,18 +19,20 @@ find_package(Qt6 COMPONENTS Core)
 find_package(Qt6 COMPONENTS Gui)
 find_package(Qt6 COMPONENTS 3DCore)
 find_package(Qt6 COMPONENTS 3DRender)
-find_package(Qt6 COMPONENTS 3DQuick)
 find_package(Qt6 COMPONENTS 3DInput)
+find_package(Qt6 COMPONENTS 3DQuick)
+find_package(Qt6 COMPONENTS 3DLogic)
 find_package(Qt6 COMPONENTS Qml)
 find_package(Qt6 COMPONENTS Quick)
 find_package(Qt6 COMPONENTS 3DQuickExtras)
 
-add_qt_gui_executable(wave
+add_qt_gui_executable(simple-qml
     main.cpp
 )
-target_link_libraries(wave PUBLIC
+target_link_libraries(simple-qml PUBLIC
     Qt::3DCore
     Qt::3DInput
+    Qt::3DLogic
     Qt::3DQuick
     Qt::3DQuickExtras
     Qt::3DRender
@@ -42,37 +44,19 @@ target_link_libraries(wave PUBLIC
 
 
 # Resources:
-set(wave_resource_files
-    "Background.qml"
-    "BackgroundEffect.qml"
-    "BasicCamera.qml"
-    "Wave.qml"
-    "WaveEffect.qml"
-    "WaveForwardRenderer.qml"
-    "WaveMaterial.qml"
+set(simple-qml_resource_files
     "main.qml"
-    "shaders/background.frag"
-    "shaders/background.vert"
-    "shaders/ribbon.frag"
-    "shaders/ribbon.vert"
-    "shaders/ribbonwireframe.frag"
-    "shaders/robustwireframe.geom"
 )
 
-qt6_add_resources(wave "wave"
+qt6_add_resources(simple-qml "simple-qml"
     PREFIX
         "/"
     FILES
-        ${wave_resource_files}
+        ${simple-qml_resource_files}
 )
 
-# special case begin
-target_sources(wave PRIVATE ${wave_resource_files})
-# special case end
-
-install(TARGETS wave
+install(TARGETS simple-qml
     RUNTIME DESTINATION "${INSTALL_EXAMPLEDIR}"
     BUNDLE DESTINATION "${INSTALL_EXAMPLEDIR}"
     LIBRARY DESTINATION "${INSTALL_EXAMPLEDIR}"
 )
-

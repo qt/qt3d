@@ -19,6 +19,12 @@ find_package(Qt6 COMPONENTS Core)
 find_package(Qt6 COMPONENTS Gui)
 find_package(Qt6 COMPONENTS Qml)
 find_package(Qt6 COMPONENTS Quick)
+find_package(Qt6 COMPONENTS 3DCore)
+find_package(Qt6 COMPONENTS 3DRender)
+find_package(Qt6 COMPONENTS 3DInput)
+find_package(Qt6 COMPONENTS 3DQuick)
+find_package(Qt6 COMPONENTS 3DExtras)
+find_package(Qt6 COMPONENTS 3DQuickExtras)
 
 add_qt_gui_executable(anaglyph-rendering
     main.cpp

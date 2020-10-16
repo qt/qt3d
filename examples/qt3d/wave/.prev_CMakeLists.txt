@@ -66,13 +66,8 @@ qt6_add_resources(wave "wave"
         ${wave_resource_files}
 )
 
-# special case begin
-target_sources(wave PRIVATE ${wave_resource_files})
-# special case end
-
 install(TARGETS wave
     RUNTIME DESTINATION "${INSTALL_EXAMPLEDIR}"
     BUNDLE DESTINATION "${INSTALL_EXAMPLEDIR}"
     LIBRARY DESTINATION "${INSTALL_EXAMPLEDIR}"
 )
-

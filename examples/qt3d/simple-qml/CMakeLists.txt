@@ -17,8 +17,14 @@ set(INSTALL_EXAMPLEDIR "${INSTALL_EXAMPLESDIR}")
 
 find_package(Qt6 COMPONENTS Core)
 find_package(Qt6 COMPONENTS Gui)
+find_package(Qt6 COMPONENTS 3DCore)
+find_package(Qt6 COMPONENTS 3DRender)
+find_package(Qt6 COMPONENTS 3DInput)
+find_package(Qt6 COMPONENTS 3DQuick)
+find_package(Qt6 COMPONENTS 3DLogic)
 find_package(Qt6 COMPONENTS Qml)
 find_package(Qt6 COMPONENTS Quick)
+find_package(Qt6 COMPONENTS 3DQuickExtras)
 
 add_qt_gui_executable(simple-qml
     main.cpp
@@ -26,7 +32,7 @@ add_qt_gui_executable(simple-qml
 target_link_libraries(simple-qml PUBLIC
     Qt::3DCore
     Qt::3DInput
-    3DLogic
+    Qt::3DLogic
     Qt::3DQuick
     Qt::3DQuickExtras
     Qt::3DRender
@@ -49,7 +55,9 @@ qt6_add_resources(simple-qml "simple-qml"
         ${simple-qml_resource_files}
 )
 
+# special case begin
 target_sources(simple-qml PRIVATE ${simple-qml_resource_files})
+# special case end
 
 install(TARGETS simple-qml
     RUNTIME DESTINATION "${INSTALL_EXAMPLEDIR}"

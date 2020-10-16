@@ -17,6 +17,11 @@ set(INSTALL_EXAMPLEDIR "${INSTALL_EXAMPLESDIR}")
 
 find_package(Qt6 COMPONENTS Core)
 find_package(Qt6 COMPONENTS Gui)
+find_package(Qt6 COMPONENTS 3DCore)
+find_package(Qt6 COMPONENTS 3DRender)
+find_package(Qt6 COMPONENTS 3DInput)
+find_package(Qt6 COMPONENTS 3DQuick)
+find_package(Qt6 COMPONENTS 3DQuickExtras)
 find_package(Qt6 COMPONENTS Qml)
 find_package(Qt6 COMPONENTS Quick)
 
@@ -25,8 +30,8 @@ add_qt_gui_executable(qgltf
 )
 target_link_libraries(qgltf PUBLIC
     Qt::3DCore
-    Qt::3DExtras
-    3dquick
+    Qt::3DInput
+    Qt::3DQuick
     Qt::3DQuickExtras
     Qt::3DRender
     Qt::Core

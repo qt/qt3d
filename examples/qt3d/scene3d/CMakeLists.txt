@@ -19,6 +19,7 @@ find_package(Qt6 COMPONENTS Core)
 find_package(Qt6 COMPONENTS Gui)
 find_package(Qt6 COMPONENTS Qml)
 find_package(Qt6 COMPONENTS Quick)
+find_package(Qt6 COMPONENTS 3DInput)
 
 add_qt_gui_executable(scene3d
     main.cpp
@@ -44,7 +45,10 @@ qt6_add_resources(scene3d "scene3d"
     FILES
         ${scene3d_resource_files}
 )
+
+# special case begin
 target_sources(scene3d PRIVATE ${scene3d_resource_files})
+# special case end
 
 install(TARGETS scene3d
     RUNTIME DESTINATION "${INSTALL_EXAMPLEDIR}"
