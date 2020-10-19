@@ -308,11 +308,13 @@ std::vector<QRhiShaderResourceBinding> PipelineUBOSet::resourceBindings(const Re
     }
 
     // Samplers
+    const std::vector<ShaderAttribute> &shaderSamplers = shader->samplers();
+    std::vector<int> samplersSetIds;
     for (const ShaderParameterPack::NamedResource &textureParameter : command.m_parameterPack.textures()) {
         const HRHITexture &handle = textureManager->getOrAcquireHandle(textureParameter.nodeId);
         const RHITexture *textureData = handle.data();
 
-        for (const ShaderAttribute &samplerAttribute : shader->samplers()) {
+        for (const ShaderAttribute &samplerAttribute : shaderSamplers) {
             if (samplerAttribute.m_nameId == textureParameter.glslNameId) {
                 const auto rhiTexture = textureData->getRhiTexture();
                 const auto rhiSampler = textureData->getRhiSampler();
@@ -320,9 +322,37 @@ std::vector<QRhiShaderResourceBinding> PipelineUBOSet::resourceBindings(const Re
                     bindings.push_back(QRhiShaderResourceBinding::sampledTexture(
                                            samplerAttribute.m_location,
                                            stages, rhiTexture, rhiSampler));
+                    samplersSetIds.push_back(samplerAttribute.m_nameId);
                 }
             }
         }
+    }
+
+    // Some backends (Vulkan) expect the number of bindings to be exactly the
+    // same between the set used to create the pipeline in resourceLayout and
+    // the set used to draw with said pipeline generated here.
+    // This can be problematic if no parameter is provided for that resource
+    const std::vector<ShaderAttribute> unsetSamplers = [&] () {
+        std::vector<ShaderAttribute> unset;
+        for (const ShaderAttribute &attr : shaderSamplers) {
+            const bool matchingSetNameIdFound =
+                    std::find_if(samplersSetIds.begin(),
+                                 samplersSetIds.end(),
+                                 [&attr] (int nameId) {
+                return attr.m_nameId == nameId;
+            }) != samplersSetIds.end();
+            if (!matchingSetNameIdFound)
+                unset.push_back(attr);
+        }
+        return unset;
+    }();
+
+    // Generate an empty binding for unset samplers
+    const int envLightIrradianceNameId = StringToInt::lookupId(QStringLiteral("envLight_irradiance"));
+    const int envLightSpecularNameId = StringToInt::lookupId(QStringLiteral("envLight_specular"));
+    for (const ShaderAttribute &sampler : unsetSamplers) {
+        if (sampler.m_nameId != envLightSpecularNameId && sampler.m_nameId != envLightIrradianceNameId)
+            qCWarning(Backend) << "Sampler" << sampler.m_name << "wasn't set on material. Rendering might not work as expected";
     }
 
     // SSBO
