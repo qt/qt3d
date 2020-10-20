@@ -752,7 +752,7 @@ void RHITexture::uploadRhiTextureData(SubmissionContext *ctx)
         // they are in a single blob. Hence QTextureImageData::data() is not suitable.
 
         const int layer = update.layer();
-        const int face = update.face();
+        const int face = int(update.face()) - QAbstractTexture::CubeMapPositiveX;
         filterLayerAndFace(layer, face, [&](int rhiLayer) {
             const QRhiTextureUploadEntry entry = createUploadEntry(
                     update.mipLevel(), rhiLayer, xOffset, yOffset, 0, bytes, imgData);
