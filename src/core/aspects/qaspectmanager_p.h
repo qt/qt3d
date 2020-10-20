@@ -52,7 +52,7 @@
 //
 
 #include <Qt3DCore/qaspectengine.h>
-#include <Qt3DCore/qabstractfrontendnodemanager.h>
+#include <Qt3DCore/private/qabstractfrontendnodemanager_p.h>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qnodeid.h>
 #include <QtCore/QList>

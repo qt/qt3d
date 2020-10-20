@@ -41,7 +41,7 @@
 #include "calcboundingvolumejob_p.h"
 
 #include <Qt3DCore/qboundingvolume.h>
-#include <Qt3DCore/qabstractfrontendnodemanager.h>
+#include <Qt3DCore/private/qabstractfrontendnodemanager_p.h>
 #include <Qt3DCore/private/qgeometry_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/entity_p.h>

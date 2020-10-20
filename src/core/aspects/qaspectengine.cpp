@@ -288,6 +288,16 @@ void QAspectEnginePrivate::exitSimulationLoop()
         m_aspectManager->exitSimulationLoop();
 }
 
+QNode *QAspectEnginePrivate::lookupNode(QNodeId id) const
+{
+    return m_scene ? m_scene->lookupNode(id) : nullptr;
+}
+
+QList<QNode *> QAspectEnginePrivate::lookupNodes(const QList<QNodeId> &ids) const
+{
+    return m_scene ? m_scene->lookupNodes(ids) : QList<QNode *>{};
+}
+
 /*!
  Registers a new \a aspect to the AspectManager. The QAspectEngine takes
  ownership of the aspect and will delete it when the aspect is unregistered.
@@ -442,13 +452,13 @@ void QAspectEngine::processFrame()
 QNode *QAspectEngine::lookupNode(QNodeId id) const
 {
     Q_D(const QAspectEngine);
-    return d->m_scene ? d->m_scene->lookupNode(id) : nullptr;
+    return d->lookupNode(id);
 }
 
 QList<QNode *> QAspectEngine::lookupNodes(const QList<QNodeId> &ids) const
 {
     Q_D(const QAspectEngine);
-    return d->m_scene ? d->m_scene->lookupNodes(ids) : QList<QNode *>{};
+    return d->lookupNodes(ids);
 }
 
 /*!

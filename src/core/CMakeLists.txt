@@ -41,7 +41,7 @@ qt_internal_add_module(3DCore
         nodes/qnode.cpp nodes/qnode.h nodes/qnode_p.h
         nodes/qnodeid.cpp nodes/qnodeid.h
         nodes/qnodevisitor.cpp nodes/qnodevisitor_p.h
-        qabstractfrontendnodemanager.cpp qabstractfrontendnodemanager.h
+        qabstractfrontendnodemanager.cpp qabstractfrontendnodemanager_p.h
         qchangearbiter.cpp qchangearbiter_p.h
         qscene.cpp qscene_p.h
         qscheduler.cpp qscheduler_p.h

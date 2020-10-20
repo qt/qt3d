@@ -41,7 +41,6 @@
 #define QT3DCORE_QASPECTENGINE_H
 
 #include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/qabstractfrontendnodemanager.h>
 #include <Qt3DCore/qnodeid.h>
 #include <QtCore/QList>
 #include <QtCore/QObject>
@@ -58,7 +57,7 @@ class QNode;
 
 typedef QSharedPointer<QEntity> QEntityPtr;
 
-class Q_3DCORESHARED_EXPORT QAspectEngine : public QObject, public QAbstractFrontEndNodeManager
+class Q_3DCORESHARED_EXPORT QAspectEngine : public QObject
 {
     Q_OBJECT
 public:
@@ -89,8 +88,8 @@ public:
 
     void processFrame();
 
-    QNode *lookupNode(QNodeId id) const override;
-    QList<QNode *> lookupNodes(const QList<QNodeId> &ids) const override;
+    QNode *lookupNode(QNodeId id) const;
+    QList<QNode *> lookupNodes(const QList<QNodeId> &ids) const;
 
 private:
     Q_DECLARE_PRIVATE(QAspectEngine)

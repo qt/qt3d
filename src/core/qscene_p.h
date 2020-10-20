@@ -54,7 +54,7 @@
 #include <QtCore/QScopedPointer>
 
 #include <Qt3DCore/qnode.h>
-#include <Qt3DCore/qabstractfrontendnodemanager.h>
+#include <Qt3DCore/private/qabstractfrontendnodemanager_p.h>
 #include <QtCore/qscopedpointer.h>
 #include <Qt3DCore/private/qt3dcore_global_p.h>
 

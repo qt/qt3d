@@ -56,6 +56,7 @@
 
 #include <Qt3DCore/private/qaspectfactory_p.h>
 #include <Qt3DCore/private/qaspectengine_p.h>
+#include <Qt3DCore/private/qabstractfrontendnodemanager_p.h>
 #include <QtCore/private/qobject_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -67,7 +68,7 @@ class QNode;
 class QAspectManager;
 class QScene;
 
-class Q_3DCORE_PRIVATE_EXPORT QAspectEnginePrivate : public QObjectPrivate
+class Q_3DCORE_PRIVATE_EXPORT QAspectEnginePrivate : public QObjectPrivate, public QAbstractFrontEndNodeManager
 {
 public:
     QAspectEnginePrivate();
@@ -94,6 +95,9 @@ public:
     void initEntity(QEntity *entity);
     void addNode(QNode *node);
     void removeNode(QNode *node);
+
+    QNode *lookupNode(QNodeId id) const override;
+    QList<QNode *> lookupNodes(const QList<QNodeId> &ids) const override;
 
     static QAspectEnginePrivate *get(QAspectEngine *engine);
 };

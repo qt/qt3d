@@ -32,7 +32,7 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
-#include <Qt3DCore/qabstractfrontendnodemanager.h>
+#include <Qt3DCore/private/qabstractfrontendnodemanager_p.h>
 #include <Qt3DCore/private/qaspectjobmanager_p.h>
 #include <Qt3DCore/private/qnodevisitor_p.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>

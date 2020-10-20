@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "qabstractfrontendnodemanager.h"
+#include "qabstractfrontendnodemanager_p.h"
 
 QT_BEGIN_NAMESPACE
 
