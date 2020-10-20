@@ -70,7 +70,6 @@ class QCamera;
 class QRenderAspect;
 class Scene3DRenderer;
 class Scene3DCleaner;
-class Scene3DView;
 class QFrameGraphNode;
 class QRenderSurfaceSelector;
 class AspectEngineDestroyer;

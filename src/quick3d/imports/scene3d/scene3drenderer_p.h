@@ -77,7 +77,6 @@ namespace Qt3DRender {
 class QRenderAspect;
 class Scene3DCleaner;
 class Scene3DSGNode;
-class Scene3DViews;
 
 namespace Render {
 class AbstractRenderer;

@@ -164,16 +164,7 @@ private:
     It is not recommended to instantiate more than a single Scene3D instance
     per application. The reason for this is that a Scene3D instance
     instantiates the entire Qt 3D engine (memory managers, thread pool, render
-    ...) under the scene. You should instead look into using \l Scene3DView
-    instances in conjunction with a single Scene3D instance.
-
-    When using Scene3D with Scene3DViews the following conditions are expected:
-    \list
-    \li The compositingMode is set to FBO
-    \li The Scene3D is sized to occupy the full window size
-    \li The Scene3D instance is instantiated prior to any Scene3DView
-    \li The Scene3D entity property is left unset
-    \endlist
+    ...) under the scene.
 
     \note Śetting the visibility of the Scene3D element to false will halt the
     Qt 3D simulation loop. This means that binding the visible property to an

@@ -30,7 +30,6 @@ qtHaveModule(quick) {
         compute-particles \
         phong-cubes \
         lights \
-        scene3dview \
         controlsunderlay \
         simplecustommaterial \
         qardboard \
