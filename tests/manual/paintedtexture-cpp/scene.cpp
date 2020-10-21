@@ -75,6 +75,8 @@ protected:
         int w = painter->device()->width();
         int h = painter->device()->height();
 
+        painter->setViewport(0, h, w, -h);
+
         // clear to white
         painter->fillRect(0, 0, w, h, QColor(255, 255, 255));
 
