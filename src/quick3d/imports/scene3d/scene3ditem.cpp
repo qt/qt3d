@@ -843,6 +843,9 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
                     m_framesToRender = ms_framesNeededToFlushPipeline;
                 },
                 Qt::DirectConnection);
+
+        // Give the window a nudge to trigger an update.
+        QMetaObject::invokeMethod(window(), "requestUpdate", Qt::QueuedConnection);
     }
 
     const bool usesFBO = m_compositingMode == FBO;
