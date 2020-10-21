@@ -60,6 +60,8 @@ namespace Qt3DExtras {
  * \instantiates Qt3DExtras::QExtrudedTextMesh
  * \inqmlmodule Qt3D.Extras
  * \brief A 3D extruded Text mesh.
+ *
+ * The origin of the mesh is the rear left end of the text's baseline.
  */
 
 /*!
@@ -88,6 +90,8 @@ namespace Qt3DExtras {
  * \inherits Qt3DRender::QGeometryRenderer
  *
  * \brief A 3D extruded Text mesh.
+ *
+ * The origin of the mesh is the rear left end of the text's baseline.
  */
 
 /*!
