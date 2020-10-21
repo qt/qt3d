@@ -199,8 +199,12 @@ void QPaintedTextureImage::setSize(QSize size)
 }
 
 /*!
-   Schedules the painted texture's paint() function to be called,
-   which in turn uploads the new image to the GPU.
+   Immediately triggers the painted texture's paint() function,
+   which in turn uploads the new image to the GPU. If you are
+   making multiple changes to a painted texture, consider waiting
+   until all changes are complete before calling update, in order
+   to minimize the number of repaints required.
+
    Parameter \a rect is currently unused.
 */
 void QPaintedTextureImage::update(const QRect &rect)
@@ -215,6 +219,15 @@ void QPaintedTextureImage::update(const QRect &rect)
     \fn Qt3DRender::QPaintedTextureImage::paint(QPainter *painter)
 
     Paints the texture image with the specified QPainter object \a painter.
+
+    QPainter considers the top-left corner of an image as its origin, while OpenGL considers
+    the bottom-left corner of a texture as its origin. An easy way to account for this difference
+    is to set a custom viewport on the painter before doing any other painting:
+
+    \code
+    painter->setViewport(0, height(), width(), -height());
+    ...
+    \endcode
 */
 QTextureImageDataGeneratorPtr QPaintedTextureImage::dataGenerator() const
 {
