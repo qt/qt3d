@@ -105,6 +105,9 @@ bool QShaderFormat::supports(const QShaderFormat &other) const noexcept
     if (m_api == OpenGLCoreProfile && m_api != other.m_api)
         return false;
 
+    if (m_api < VulkanFlavoredGLSL && other.m_api >= VulkanFlavoredGLSL)
+        return false;
+
     if (m_version < other.m_version)
         return false;
 
