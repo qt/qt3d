@@ -190,31 +190,33 @@ void Scene2D::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime)
     if (id != m_outputId)
         setOutput(id);
 
-    auto ids = Qt3DCore::qIdsForNodes(node->entities());
-    std::sort(std::begin(ids), std::end(ids));
-    Qt3DCore::QNodeIdVector addedEntities;
-    Qt3DCore::QNodeIdVector removedEntities;
-    std::set_difference(std::begin(ids), std::end(ids),
-                        std::begin(m_entities), std::end(m_entities),
-                        std::inserter(addedEntities, addedEntities.end()));
-    std::set_difference(std::begin(m_entities), std::end(m_entities),
-                        std::begin(ids), std::end(ids),
-                        std::inserter(removedEntities, removedEntities.end()));
-    for (const auto &id: addedEntities) {
-        Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>(dnode->m_scene->lookupNode(id));
-        if (!entity)
-            return;
+    if (m_mouseEnabled) {
+        auto ids = Qt3DCore::qIdsForNodes(node->entities());
+        std::sort(std::begin(ids), std::end(ids));
+        Qt3DCore::QNodeIdVector addedEntities;
+        Qt3DCore::QNodeIdVector removedEntities;
+        std::set_difference(std::begin(ids), std::end(ids),
+                            std::begin(m_entities), std::end(m_entities),
+                            std::inserter(addedEntities, addedEntities.end()));
+        std::set_difference(std::begin(m_entities), std::end(m_entities),
+                            std::begin(ids), std::end(ids),
+                            std::inserter(removedEntities, removedEntities.end()));
+        for (const auto &id: addedEntities) {
+            Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>(dnode->m_scene->lookupNode(id));
+            if (!entity)
+                return;
 
-        if (registerObjectPickerEvents(entity))
-            m_entities.push_back(id);
-        else
-            Qt3DCore::QNodePrivate::get(const_cast<Qt3DCore::QNode *>(frontEnd))->update();
+            if (registerObjectPickerEvents(entity))
+                m_entities.push_back(id);
+            else
+                Qt3DCore::QNodePrivate::get(const_cast<Qt3DCore::QNode *>(frontEnd))->update();
+        }
+        for (const auto &id: removedEntities) {
+            m_entities.removeOne(id);
+            unregisterObjectPickerEvents(id);
+        }
+        std::sort(std::begin(m_entities), std::end(m_entities));
     }
-    for (const auto &id: removedEntities) {
-        m_entities.removeOne(id);
-        unregisterObjectPickerEvents(id);
-    }
-    std::sort(std::begin(m_entities), std::end(m_entities));
 
     if (firstTime)
         setSharedObject(dnode->m_renderManager->m_sharedObject);
