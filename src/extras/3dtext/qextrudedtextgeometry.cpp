@@ -210,6 +210,8 @@ void QExtrudedTextGeometryPrivate::init()
  *
  * The ExtrudedTextGeometry type is most commonly used internally by the
  * ExtrudedTextMesh type but can also be used in custom GeometryRenderer types.
+ *
+ * The origin of the geometry is the rear left end of the text's baseline.
  */
 
 /*!
@@ -260,6 +262,8 @@ void QExtrudedTextGeometryPrivate::init()
  *
  * The QExtrudedTextGeometry class is most commonly used internally by the QText3DMesh
  * but can also be used in custom Qt3DRender::QGeometryRenderer subclasses.
+ *
+ * The origin of the geometry is the rear left end of the text's baseline.
  */
 
 /*!
