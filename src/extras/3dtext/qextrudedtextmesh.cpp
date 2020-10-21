@@ -74,6 +74,10 @@ namespace Qt3DExtras {
  * \qmlproperty QFont Qt3DExtras::ExtrudedTextMesh::font
  *
  * Holds the font of the text.
+
+ * The mesh geometry is normalized by the font's pointSize, so a larger pointSize
+ * will result in smoother, rather than larger, text. pixelSize should not
+ * be used.
  */
 
 /*!
@@ -140,6 +144,10 @@ QString QExtrudedTextMesh::text() const
  * \property QExtrudedTextMesh::font
  *
  * Holds the font of the text.
+ *
+ * The mesh geometry is normalized by the font's pointSize, so a larger pointSize
+ * will result in smoother, rather than larger, text. pixelSize should not
+ * be used.
  */
 QFont QExtrudedTextMesh::font() const
 {
