@@ -271,6 +271,7 @@ private slots:
     void shouldHandleEnabledLayersPropertyChange()
     {
         // GIVEN
+        qputenv("QT3D_DISABLE_SHADER_CACHE", "1");
         Qt3DRender::Render::ShaderBuilder backend;
         Qt3DRender::QShaderProgramBuilder frontend;
         TestRenderer renderer;
@@ -468,6 +469,7 @@ private slots:
     void shouldHandleShaderCodeGeneration()
     {
         // GIVEN
+        qputenv("QT3D_DISABLE_SHADER_CACHE", "1");
         Qt3DRender::Render::ShaderBuilder::setPrototypesFile(":/prototypes.json");
         QVERIFY(!Qt3DRender::Render::ShaderBuilder::getPrototypeNames().isEmpty());
 
@@ -555,8 +557,7 @@ private slots:
     void checkCodeUpdatedNotification()
     {
         // GIVEN
-        QSKIP("Disabled for Qt Base QShaderGenerator Integration");
-
+        qputenv("QT3D_DISABLE_SHADER_CACHE", "1");
         Qt3DRender::Render::ShaderBuilder::setPrototypesFile(":/prototypes.json");
         QVERIFY(!Qt3DRender::Render::ShaderBuilder::getPrototypeNames().isEmpty());
         QFETCH(Qt3DRender::QShaderProgram::ShaderType, type);
@@ -603,6 +604,202 @@ private slots:
         QCOMPARE(backend.shaderGraph(type), graphUrl);
         QVERIFY(!backend.isShaderCodeDirty(type));
         QCOMPARE(backend.shaderCode(type), gl3Code);
+    }
+
+    void checkFileCaching()
+    {
+        // GIVEN
+        QTemporaryDir cacheDir;
+
+        if (!cacheDir.isValid()) {
+            QSKIP("Unable to generate cache dir, skipping");
+            return;
+        }
+        const auto gl3Api = []{
+            auto api = Qt3DRender::GraphicsApiFilterData();
+            api.m_api = Qt3DRender::QGraphicsApiFilter::OpenGL;
+            api.m_profile = Qt3DRender::QGraphicsApiFilter::CoreProfile;
+            api.m_major = 3;
+            api.m_minor = 2;
+            return api;
+        }();
+        const auto gl2Api = []{
+            auto api = Qt3DRender::GraphicsApiFilterData();
+            api.m_api = Qt3DRender::QGraphicsApiFilter::OpenGL;
+            api.m_profile = Qt3DRender::QGraphicsApiFilter::NoProfile;
+            api.m_major = 2;
+            api.m_minor = 0;
+            return api;
+        }();
+        Qt3DRender::Render::ShaderBuilder::setPrototypesFile(":/prototypes.json");
+        qputenv("QT3D_WRITABLE_CACHE_PATH", cacheDir.path().toUtf8());
+
+        // THEN
+        QVERIFY(QDir(cacheDir.path()).entryList(QDir::Files).empty());
+        QByteArray hashKey;
+        {
+            // WHEN
+            Qt3DRender::Render::ShaderBuilder b;
+            b.setGraphicsApi(gl3Api);
+            const auto graphUrl = QUrl::fromEncoded("qrc:/input.json");
+            b.setShaderGraph(Qt3DRender::QShaderProgram::Vertex, graphUrl);
+            b.generateCode(Qt3DRender::QShaderProgram::Vertex);
+
+            // THEN
+            QCOMPARE(QDir(cacheDir.path()).entryList(QDir::Files).count(), 1);
+
+            hashKey = b.hashKeyForShaderGraph(Qt3DRender::QShaderProgram::Vertex);
+            QCOMPARE(hashKey.length(), 40);
+
+            QCOMPARE(QDir(cacheDir.path()).entryList(QDir::Files).first(),
+                     QString::fromUtf8(hashKey) + QLatin1String(".qt3d"));
+        }
+        {
+            // WHEN
+            Qt3DRender::Render::ShaderBuilder b;
+            b.setGraphicsApi(gl3Api);
+            const auto graphUrl = QUrl::fromEncoded("qrc:/input.json");
+            b.setShaderGraph(Qt3DRender::QShaderProgram::Vertex, graphUrl);
+            b.generateCode(Qt3DRender::QShaderProgram::Vertex);
+
+            // THEN
+            QCOMPARE(QDir(cacheDir.path()).entryList(QDir::Files).count(), 1);
+            QCOMPARE(QDir(cacheDir.path()).entryList(QDir::Files).first(),
+                     QString::fromUtf8(hashKey) + QLatin1String(".qt3d"));
+        }
+        {
+            // WHEN
+            Qt3DRender::Render::ShaderBuilder b;
+            b.setGraphicsApi(gl2Api);
+            const auto graphUrl = QUrl::fromEncoded("qrc:/input.json");
+            b.setShaderGraph(Qt3DRender::QShaderProgram::Vertex, graphUrl);
+            b.generateCode(Qt3DRender::QShaderProgram::Vertex);
+            QByteArray gl2HashKey = b.hashKeyForShaderGraph(Qt3DRender::QShaderProgram::Vertex);
+
+            // THEN
+            QCOMPARE(QDir(cacheDir.path()).entryList(QDir::Files).count(), 2);
+            QVERIFY(gl2HashKey != hashKey);
+        }
+    }
+
+    void checkRuntimeCaching()
+    {
+        // GIVEN
+        TestRenderer renderer;
+        QTemporaryDir cacheDir;
+
+        if (!cacheDir.isValid()) {
+            QSKIP("Unable to generate cache dir, skipping");
+            return;
+        }
+        const auto gl3Api = []{
+            auto api = Qt3DRender::GraphicsApiFilterData();
+            api.m_api = Qt3DRender::QGraphicsApiFilter::OpenGL;
+            api.m_profile = Qt3DRender::QGraphicsApiFilter::CoreProfile;
+            api.m_major = 3;
+            api.m_minor = 2;
+            return api;
+        }();
+        Qt3DRender::Render::ShaderBuilder::setPrototypesFile(":/prototypes.json");
+        qputenv("QT3D_WRITABLE_CACHE_PATH", cacheDir.path().toUtf8());
+
+        // THEN
+        QVERIFY(QDir(cacheDir.path()).entryList(QDir::Files).empty());
+
+        // WHEN
+        Qt3DRender::Render::ShaderBuilder b;
+        b.setGraphicsApi(gl3Api);
+        const auto graphUrl = QUrl::fromEncoded("qrc:/input.json");
+        b.setShaderGraph(Qt3DRender::QShaderProgram::Vertex, graphUrl);
+        b.generateCode(Qt3DRender::QShaderProgram::Vertex);
+
+        // THEN
+        QCOMPARE(QDir(cacheDir.path()).entryList(QDir::Files).count(), 1);
+
+        const QByteArray hashKey = b.hashKeyForShaderGraph(Qt3DRender::QShaderProgram::Vertex);
+        QCOMPARE(hashKey.length(), 40);
+
+        QCOMPARE(QDir(cacheDir.path()).entryList(QDir::Files).first(),
+                 QString::fromUtf8(hashKey) + QLatin1String(".qt3d"));
+
+        QVERIFY(!renderer.containsGeneratedShaderGraph(hashKey));
+
+        // WHEN
+        b.setRenderer(&renderer);
+        b.generateCode(Qt3DRender::QShaderProgram::Vertex);
+
+        // THEN
+        QVERIFY(renderer.containsGeneratedShaderGraph(hashKey));
+    }
+
+    void checkDontUseCache()
+    {
+        // GIVEN
+        QTemporaryDir cacheDir;
+
+        if (!cacheDir.isValid()) {
+            QSKIP("Unable to generate cache dir, skipping");
+            return;
+        }
+        const auto gl3Api = []{
+            auto api = Qt3DRender::GraphicsApiFilterData();
+            api.m_api = Qt3DRender::QGraphicsApiFilter::OpenGL;
+            api.m_profile = Qt3DRender::QGraphicsApiFilter::CoreProfile;
+            api.m_major = 3;
+            api.m_minor = 2;
+            return api;
+        }();
+        Qt3DRender::Render::ShaderBuilder::setPrototypesFile(":/prototypes.json");
+
+        // THEN
+        QVERIFY(QDir(cacheDir.path()).entryList(QDir::Files).empty());
+
+        // WHEN
+        qputenv("QT3D_DISABLE_SHADER_CACHE", "1");
+        Qt3DRender::Render::ShaderBuilder b;
+        b.setGraphicsApi(gl3Api);
+        const auto graphUrl = QUrl::fromEncoded("qrc:/input.json");
+        b.setShaderGraph(Qt3DRender::QShaderProgram::Vertex, graphUrl);
+        b.generateCode(Qt3DRender::QShaderProgram::Vertex);
+
+        // THEN
+        QCOMPARE(QDir(cacheDir.path()).entryList(QDir::Files).count(), 0);
+    }
+
+    void checkForceRebuildCache()
+    {
+        // GIVEN
+        QTemporaryDir cacheDir;
+
+        if (!cacheDir.isValid()) {
+            QSKIP("Unable to generate cache dir, skipping");
+            return;
+        }
+        const auto gl3Api = []{
+            auto api = Qt3DRender::GraphicsApiFilterData();
+            api.m_api = Qt3DRender::QGraphicsApiFilter::OpenGL;
+            api.m_profile = Qt3DRender::QGraphicsApiFilter::CoreProfile;
+            api.m_major = 3;
+            api.m_minor = 2;
+            return api;
+        }();
+        Qt3DRender::Render::ShaderBuilder::setPrototypesFile(":/prototypes.json");
+
+        // THEN
+        QVERIFY(QDir(cacheDir.path()).entryList(QDir::Files).empty());
+
+        // WHEN
+        qputenv("QT3D_WRITABLE_CACHE_PATH", cacheDir.path().toUtf8());
+        qputenv("QT3D_DISABLE_SHADER_CACHE", "1");
+        qputenv("QT3D_REBUILD_SHADER_CACHE", "1");
+        Qt3DRender::Render::ShaderBuilder b;
+        b.setGraphicsApi(gl3Api);
+        const auto graphUrl = QUrl::fromEncoded("qrc:/input.json");
+        b.setShaderGraph(Qt3DRender::QShaderProgram::Vertex, graphUrl);
+        b.generateCode(Qt3DRender::QShaderProgram::Vertex);
+
+        // THEN -> We have rebuilt the shader file (even if we don't use it)
+        QCOMPARE(QDir(cacheDir.path()).entryList(QDir::Files).count(), 1);
     }
 };
 

@@ -52,6 +52,10 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QUrl>
+#include <QCryptographicHash>
+#include <QDateTime>
+#include <QStandardPaths>
+#include <QDir>
 
 static void initResources()
 {
@@ -220,6 +224,53 @@ void ShaderBuilder::generateCode(QShaderProgram::ShaderType type)
         return;
     }
 
+    auto updateShaderCodeAndClearDirty = [&] (const QByteArray &shaderCode) {
+        m_codes.insert(type, shaderCode);
+        m_dirtyTypes.remove(type);
+        m_pendingUpdates.push_back({ peerId(),
+                                     type,
+                                     m_codes.value(type) });
+    };
+
+    const QByteArray cacheKey = hashKeyForShaderGraph(type);
+    const bool forceRegenerate = qEnvironmentVariableIsSet("QT3D_REBUILD_SHADER_CACHE");
+    const bool useCache = !qEnvironmentVariableIsSet("QT3D_DISABLE_SHADER_CACHE") || !forceRegenerate;
+    const QByteArray userProvidedPath = qgetenv("QT3D_WRITABLE_CACHE_PATH");
+    const QString cachedFilterPath = QDir(userProvidedPath.isEmpty() ?
+                                              QStandardPaths::writableLocation(QStandardPaths::TempLocation)
+                                            : QString::fromUtf8(userProvidedPath)).absoluteFilePath(QString::fromUtf8(cacheKey) + QLatin1String(".qt3d"));
+    QFile cachedShaderFile(cachedFilterPath);
+
+    // Check our runtime cache to see if we have already loaded the shader previously
+    if (useCache) {
+        // We check if we already have generated a shader previously for the
+        // given type, the given graph, the given API and the current set of layer
+        // If that's the case it's faster to load the pre generated shader file
+
+        if (m_renderer && m_renderer->containsGeneratedShaderGraph(cacheKey)) {
+            updateShaderCodeAndClearDirty(m_renderer->cachedGeneratedShaderGraph(cacheKey));
+            return;
+        }
+
+        // else check if a cachedShader file exists
+        if (cachedShaderFile.exists()) {
+            if (!cachedShaderFile.open(QFile::ReadOnly)) {
+                qWarning() << "Couldn't open cached shader file:" << graphPath;
+                // Too bad, we have to generate the shader below
+            } else {
+                // Use cached shader
+                const QByteArray shaderCode = cachedShaderFile.readAll();
+                updateShaderCodeAndClearDirty(shaderCode);
+
+                // Record to runtime cache
+                if (m_renderer)
+                    m_renderer->insertGeneratedShaderGraph(cacheKey, shaderCode);
+                return;
+            }
+        }
+    }
+
+    // Generate Shader and Cache the result for subsequent uses
     auto graphLoader = QShaderGraphLoader();
     graphLoader.setPrototypes(qt3dGlobalShaderPrototypes->prototypes());
     graphLoader.setDevice(&file);
@@ -247,12 +298,20 @@ void ShaderBuilder::generateCode(QShaderProgram::ShaderType type)
 
     const auto code = generator.createShaderCode(m_enabledLayers);
     const auto deincludified = QShaderProgramPrivate::deincludify(code, graphPath + QStringLiteral(".glsl"));
-    m_codes.insert(type, deincludified);
-    m_dirtyTypes.remove(type);
 
-    m_pendingUpdates.push_back({ peerId(),
-                                 type,
-                                 m_codes.value(type) });
+    updateShaderCodeAndClearDirty(deincludified);
+
+    // Record to runtime cache
+    if (useCache || forceRegenerate) {
+        if (m_renderer)
+            m_renderer->insertGeneratedShaderGraph(cacheKey, deincludified);
+
+        // Record to file cache
+        if (cachedShaderFile.open(QFile::WriteOnly))
+            cachedShaderFile.write(deincludified);
+        else
+            qWarning() << "Unable to write cached shader file";
+    }
 }
 
 void ShaderBuilder::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
@@ -295,6 +354,43 @@ void ShaderBuilder::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
             markDirty(AbstractRenderer::ShadersDirty);
         }
     }
+}
+
+QByteArray ShaderBuilder::hashKeyForShaderGraph(QShaderProgram::ShaderType type) const
+{
+    const auto graphPath = Qt3DCore::QUrlHelper::urlToLocalFileOrQrc(shaderGraph(type));
+    QFile file(graphPath);
+    if (!file.exists()) {
+        qWarning() << graphPath << "doesn't exist";
+        return {};
+    }
+
+    QCryptographicHash hashBuilder(QCryptographicHash::Sha1);
+    // Add graphPath
+    hashBuilder.addData(graphPath.toUtf8());
+    // Get TimeStamp and Graph file size
+    QFileInfo info(graphPath);
+    const QString fileInfo = QString::fromUtf8("%1_%2")
+            .arg(info.lastModified().toSecsSinceEpoch())
+            .arg(info.size());
+    hashBuilder.addData(fileInfo.toUtf8());
+
+    // Add Layers
+    for (const QString &layer : m_enabledLayers)
+        hashBuilder.addData(layer.toUtf8());
+
+    // Add GraphicsInfo
+    const QString graphicsInfo = QString::fromUtf8("API: %1 Profile: %2 Major: %3 Minor: %4")
+            .arg(int(m_graphicsApi.m_api))
+            .arg(int(m_graphicsApi.m_profile))
+            .arg(int(m_graphicsApi.m_major))
+            .arg(int(m_graphicsApi.m_minor));
+    hashBuilder.addData(graphicsInfo.toUtf8());
+
+    // Add Shader Type
+    hashBuilder.addData(QString::number(type).toUtf8());
+
+    return hashBuilder.result().toHex();
 }
 
 } // namespace Render
