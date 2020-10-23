@@ -165,7 +165,7 @@ public :
         }
 
     private:
-        QMutexLocker m_locker;
+        QMutexLocker<QMutex> m_locker;
     };
 
 private:
