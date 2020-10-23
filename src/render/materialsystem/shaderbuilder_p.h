@@ -97,6 +97,8 @@ public:
 
     QVector<ShaderBuilderUpdate> takePendingUpdates() { return std::move(m_pendingUpdates); }
 
+    QByteArray hashKeyForShaderGraph(QShaderProgram::ShaderType type) const;
+
 private:
     void setEnabledLayers(const QStringList &layers);
 

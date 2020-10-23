@@ -190,6 +190,15 @@ public:
     // These commands are executed in a dedicated command thread
     // More will be added later
     virtual void loadShader(Shader *shader, Qt3DRender::Render::HShader shaderHandle) = 0;
+
+    // Runtime Cache for Generated Shader Graph
+    bool containsGeneratedShaderGraph(const QByteArray &key) const { return m_cachedGeneratedShaderGraphes.contains(key); };
+    QByteArray cachedGeneratedShaderGraph(const QByteArray &key) const { return m_cachedGeneratedShaderGraphes.value(key); };
+    void insertGeneratedShaderGraph(const QByteArray &key, const QByteArray shaderCode) { m_cachedGeneratedShaderGraphes.insert(key, shaderCode); }
+    void removeGeneratedShaderGraph(const QByteArray &key) { m_cachedGeneratedShaderGraphes.remove(key); };
+
+private:
+    QHash<QByteArray, QByteArray> m_cachedGeneratedShaderGraphes;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(AbstractRenderer::BackendNodeDirtySet)
