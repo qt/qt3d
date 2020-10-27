@@ -1,0 +1,65 @@
+Qt 5.15.2 is a bug-fix release. It maintains both forward and backward
+compatibility (source and binary) with Qt 5.15.1.
+
+For more details, refer to the online documentation included in this
+distribution. The documentation is also available online:
+
+  https://doc.qt.io/qt-5.15/index.html
+
+The Qt version 5.15 series is binary compatible with the 5.14.x series.
+Applications compiled for 5.14 will continue to run with 5.15.
+
+Some of the changes listed in this file include issue tracking numbers
+corresponding to tasks in the Qt Bug Tracker:
+
+  https://bugreports.qt.io/
+
+Each of these identifiers can be entered in the bug tracker to obtain more
+information about a particular change.
+
+****************************************************************************
+*                   Important Behavior Changes                             *
+****************************************************************************
+
+****************************************************************************
+*                          Library                                         *
+****************************************************************************
+
+ - [QTBUG-85018] Update QShaderFormat matching logic to account for RHI shader snippets
+   OpenGLCompatibility/NoProfile should not match RHI shader snippets.
+   The bug was: [REG: 5.14->5.15] QOpenGLShader::compile(Fragment):
+   ERROR: 4:2: 'add' : syntax error syntax error
+ - [QTBUG-86436] Only set the format to 1.0 if it was not changed due to OpenGL
+   Since the userRequestedApi variable can be set when a second
+   Qt3DWindow is created (since the environment variable is set after the
+   first time). Then we should be sure to only set the format version to
+   1.0 if it was not already set due to OpenGL being used.
+   The bug was: Shader errors if there are multiple windows
+ - [QTBUG-86721] Only use surfaceSize if m_surfaceSize is not valid
+   This amends 2e3607aa120324f60832ca1cd42aaeaf22cc148d which made it
+   always use surfaceSize. But if m_surfaceSize->size() is valid then
+   this should be used as it will account for HighDPI setups.
+   The bug was: [Regression] Scene3D rendering with underlay composition
+   on HighDpi display is incorrect.
+ - [QTBUG-84847] Rework Scene3D to fix potential crash on shutdown
+   - Rework Scene3DRenderer/Scene3DItem to remove coupling and help
+   simplify the flow - Introduce a Scene3DManagerNode to manager lifetime
+   of the Scene3DRenderer. Rely on the Scene3DManagerNode dtor to know to
+   shutdown the Qt3D renderer in the proper thread. - Try to handle the
+   fact that destruction order between Item and SGNode is random by using
+   an AspectEngineDestroyer helper - Stop using a sharedptr to store the
+   QEntity on the Scene3DItem side. This can lead to crashes as the
+   AspectEngine assumes it is the sole owner of the Entity ptr.
+   Change-Id: I14915705eb9ab1195b2b783cbbb45076acc2ac1a
+   The bug was: Scene3D crashes on destruction
+
+Third-Party Code
+----------------
+
+ - Also document sub-projects that are part of the Assimp project: Clipper,
+   irrXML, Open3DGC, OpenDLL-Parser, Poly2Tri, RapidJSON, Unzip, Utf8Cpp, and
+   Zip.
+
+ - Fix issue in the documentation that caused attributions for imgui
+   third-party code to not show up.
+
