@@ -100,13 +100,31 @@ public:
         m_targetAllowed = targetCount;
     }
 
+    Qt3DCore::QAspectEngine *aspectEngine() const
+    {
+        if (children().empty())
+            return nullptr;
+        return qobject_cast<Qt3DCore::QAspectEngine *>(children().first());
+    }
+
+    bool releaseRootEntity() const { return m_releaseRootEntity; }
+    void setReleaseRootEntity(bool release) { m_releaseRootEntity = release; }
+
     void allowRelease()
     {
         ++m_allowed;
-        if (m_allowed == m_targetAllowed) {
-            if (QThread::currentThread() == thread())
+        const bool shouldSelfDestruct = m_allowed == m_targetAllowed;
+        if (QThread::currentThread() == thread()) {
+            // Force Backend Tree to be cleaned up
+            Qt3DCore::QAspectEngine *engine = aspectEngine();
+            // If used in the regular Scene3D, take this opportunity to release the root
+            // Entity which will release the backend entities of Qt3D
+            if (m_releaseRootEntity && engine && engine->rootEntity())
+                engine->setRootEntity(Qt3DCore::QEntityPtr());
+            if (shouldSelfDestruct)
                 delete this;
-            else
+        } else {
+            if (shouldSelfDestruct)
                 deleteLater();
         }
     }
@@ -118,6 +136,7 @@ private:
     int m_allowed = 0;
     int m_targetAllowed = 0;
     bool m_sgNodeAlive = false;
+    bool m_releaseRootEntity = true;
 };
 
 /*!
@@ -881,6 +900,12 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
     // If the render aspect wasn't created yet, do so now
     if (!managerNode->isInitialized()) {
         auto *rw = QQuickRenderControl::renderWindowFor(window());
+
+        // When using a RenderControl, the AspectEngineDestroyer shouldn't release the root entity
+        // as it could be reused if render control was moved to another window
+        if (rw)
+            m_aspectEngineDestroyer->setReleaseRootEntity(false);
+
         auto renderAspectPriv = static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(renderAspect));
         renderAspectPriv->m_screen = (rw ? rw->screen() : window()->screen());
         updateWindowSurface();
