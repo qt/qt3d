@@ -26,7 +26,7 @@ set(3dcore_resource_files
     "3dcore.qml"
 )
 
-qt_internal_add_resource(tst_import3dcore "Qt::3DCore"
+qt_internal_add_resource(tst_import3dcore "3dcore"
     PREFIX
         "/"
     FILES
