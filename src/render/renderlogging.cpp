@@ -57,6 +57,7 @@ Q_LOGGING_CATEGORY(Memory, "Qt3D.Renderer.Memory", QtWarningMsg)
 Q_LOGGING_CATEGORY(Shaders, "Qt3D.Renderer.Shaders", QtWarningMsg)
 Q_LOGGING_CATEGORY(RenderStates, "Qt3D.Renderer.RenderStates", QtWarningMsg)
 Q_LOGGING_CATEGORY(VSyncAdvanceService, "Qt3D.Renderer.VsyncAdvanceService", QtWarningMsg)
+Q_LOGGING_CATEGORY(ShaderCache, "Qt3D.Renderer.ShaderCache", QtWarningMsg)
 
 } // namespace Render
 
