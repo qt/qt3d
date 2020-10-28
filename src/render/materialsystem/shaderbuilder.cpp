@@ -48,6 +48,7 @@
 #include <Qt3DRender/private/qshadergraphloader_p.h>
 #include <Qt3DRender/private/qshadergenerator_p.h>
 #include <Qt3DRender/private/qshadernodesloader_p.h>
+#include <Qt3DRender/private/renderlogging_p.h>
 
 #include <QFile>
 #include <QFileInfo>
@@ -248,6 +249,7 @@ void ShaderBuilder::generateCode(QShaderProgram::ShaderType type)
         // If that's the case it's faster to load the pre generated shader file
 
         if (m_renderer && m_renderer->containsGeneratedShaderGraph(cacheKey)) {
+            qCDebug(ShaderCache) << "Using runtime cache for shader graph with key" << cacheKey;
             updateShaderCodeAndClearDirty(m_renderer->cachedGeneratedShaderGraph(cacheKey));
             return;
         }
@@ -255,16 +257,19 @@ void ShaderBuilder::generateCode(QShaderProgram::ShaderType type)
         // else check if a cachedShader file exists
         if (cachedShaderFile.exists()) {
             if (!cachedShaderFile.open(QFile::ReadOnly)) {
-                qWarning() << "Couldn't open cached shader file:" << graphPath;
+                qCWarning(ShaderCache) << "Couldn't open cached shader file:" << graphPath;
                 // Too bad, we have to generate the shader below
             } else {
                 // Use cached shader
+                qCDebug(ShaderCache) << "Using cached shader file" << cachedFilterPath;
                 const QByteArray shaderCode = cachedShaderFile.readAll();
                 updateShaderCodeAndClearDirty(shaderCode);
 
                 // Record to runtime cache
-                if (m_renderer)
+                if (m_renderer) {
+                    qCDebug(ShaderCache) << "Insert shader " << cacheKey << "into runtime cache";
                     m_renderer->insertGeneratedShaderGraph(cacheKey, shaderCode);
+                }
                 return;
             }
         }
@@ -303,14 +308,18 @@ void ShaderBuilder::generateCode(QShaderProgram::ShaderType type)
 
     // Record to runtime cache
     if (useCache || forceRegenerate) {
-        if (m_renderer)
+        if (m_renderer) {
+            qCDebug(ShaderCache) << "Insert shader " << cacheKey << "into runtime cache";
             m_renderer->insertGeneratedShaderGraph(cacheKey, deincludified);
+        }
 
         // Record to file cache
-        if (cachedShaderFile.open(QFile::WriteOnly))
+        if (cachedShaderFile.open(QFile::WriteOnly)) {
             cachedShaderFile.write(deincludified);
-        else
-            qWarning() << "Unable to write cached shader file";
+            qCDebug(ShaderCache) << "Saving cached shader file" << cachedFilterPath;
+        } else {
+            qCWarning(ShaderCache) << "Unable to write cached shader file";
+        }
     }
 }
 
