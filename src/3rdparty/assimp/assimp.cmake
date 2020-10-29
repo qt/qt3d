@@ -9,12 +9,12 @@ endif()
 
 function(qt3d_extend_target_for_assimp target)
     set(assimpDir ${PROJECT_SOURCE_DIR}/src/3rdparty/assimp)
-    qt_internal_extend_target(${target} CONDITION QT_FEATURE_system_assimp AND (NOT CMAKE_CROSSCOMPILING OR NOT host_build)
+    qt_internal_extend_target(${target} CONDITION QT_FEATURE_qt3d_system_assimp AND (NOT CMAKE_CROSSCOMPILING OR NOT host_build)
         LIBRARIES
             WrapAssimp::WrapAssimp
     )
 
-    qt_internal_extend_target(${target} CONDITION NOT QT_FEATURE_system_assimp OR (CMAKE_CROSSCOMPILING AND host_build)
+    qt_internal_extend_target(${target} CONDITION NOT QT_FEATURE_qt3d_system_assimp OR (CMAKE_CROSSCOMPILING AND host_build)
         SOURCES
             ${assimpDir}/src/code/3DS/3DSExporter.h
             ${assimpDir}/src/code/3DS/3DSHelper.h
@@ -507,33 +507,33 @@ function(qt3d_extend_target_for_assimp target)
             ${assimpDir}/unzip
     )
 
-    qt_internal_extend_target(${target} CONDITION CMAKE_BUILD_TYPE STREQUAL Debug AND (CMAKE_CROSSCOMPILING OR NOT QT_FEATURE_system_assimp) AND (host_build OR NOT QT_FEATURE_system_assimp)
+    qt_internal_extend_target(${target} CONDITION CMAKE_BUILD_TYPE STREQUAL Debug AND (CMAKE_CROSSCOMPILING OR NOT QT_FEATURE_qt3d_system_assimp) AND (host_build OR NOT QT_FEATURE_qt3d_system_assimp)
         DEFINES
             _DEBUG
     )
 
-    qt_internal_extend_target(${target} CONDITION WIN32 AND (CMAKE_CROSSCOMPILING OR NOT QT_FEATURE_system_assimp) AND (host_build OR NOT QT_FEATURE_system_assimp)
+    qt_internal_extend_target(${target} CONDITION WIN32 AND (CMAKE_CROSSCOMPILING OR NOT QT_FEATURE_qt3d_system_assimp) AND (host_build OR NOT QT_FEATURE_qt3d_system_assimp)
         DEFINES
             _CRT_SECURE_NO_WARNINGS
     )
 
-    qt_internal_extend_target(${target} CONDITION QT_FEATURE_system_zlib AND NOT QT_FEATURE_system_assimp AND (NOT CMAKE_CROSSCOMPILING OR NOT host_build)
+    qt_internal_extend_target(${target} CONDITION QT_FEATURE_system_zlib AND NOT QT_FEATURE_qt3d_system_assimp AND (NOT CMAKE_CROSSCOMPILING OR NOT host_build)
         LIBRARIES
             ZLIB::ZLIB
     )
 
-    qt_internal_extend_target(${target} CONDITION (CMAKE_CROSSCOMPILING OR NOT QT_FEATURE_system_assimp) AND (CMAKE_CROSSCOMPILING OR NOT QT_FEATURE_system_zlib) AND (host_build OR NOT QT_FEATURE_system_assimp) AND (host_build OR NOT QT_FEATURE_system_zlib)
+    qt_internal_extend_target(${target} CONDITION (CMAKE_CROSSCOMPILING OR NOT QT_FEATURE_qt3d_system_assimp) AND (CMAKE_CROSSCOMPILING OR NOT QT_FEATURE_system_zlib) AND (host_build OR NOT QT_FEATURE_qt3d_system_assimp) AND (host_build OR NOT QT_FEATURE_system_zlib)
         LIBRARIES
             Qt::ZlibPrivate
     )
 
     # special case begin
-    qt_internal_extend_target(${target} CONDITION ICC AND NOT QT_FEATURE_system_assimp AND (NOT CMAKE_CROSSCOMPILING OR NOT host_build)
+    qt_internal_extend_target(${target} CONDITION ICC AND NOT QT_FEATURE_qt3d_system_assimp AND (NOT CMAKE_CROSSCOMPILING OR NOT host_build)
         COMPILE_OPTIONS
             "-wd310" "-wd68" "-wd858"
     )
 
-    qt_internal_extend_target(${target} CONDITION (GCC OR CLANG) AND NOT QT_FEATURE_system_assimp AND (NOT CMAKE_CROSSCOMPILING OR NOT host_build)
+    qt_internal_extend_target(${target} CONDITION (GCC OR CLANG) AND NOT QT_FEATURE_qt3d_system_assimp AND (NOT CMAKE_CROSSCOMPILING OR NOT host_build)
         COMPILE_OPTIONS
             "-Wno-ignored-qualifiers"
             "-Wno-unused-parameter"
@@ -543,7 +543,7 @@ function(qt3d_extend_target_for_assimp target)
             "-Wno-reorder"
     )
 
-    qt_internal_extend_target(${target} CONDITION MSVC AND NOT QT_FEATURE_system_assimp AND (NOT CMAKE_CROSSCOMPILING OR NOT host_build)
+    qt_internal_extend_target(${target} CONDITION MSVC AND NOT QT_FEATURE_qt3d_system_assimp AND (NOT CMAKE_CROSSCOMPILING OR NOT host_build)
         COMPILE_OPTIONS
             "-wd4100"
             "-wd4189"
@@ -552,13 +552,13 @@ function(qt3d_extend_target_for_assimp target)
             "-wd4828"
     )
 
-    qt_internal_extend_target(${target} CONDITION CLANG AND NOT QT_FEATURE_system_assimp AND (NOT CMAKE_CROSSCOMPILING OR NOT host_build)
+    qt_internal_extend_target(${target} CONDITION CLANG AND NOT QT_FEATURE_qt3d_system_assimp AND (NOT CMAKE_CROSSCOMPILING OR NOT host_build)
         COMPILE_OPTIONS
             "-Wno-unused-private-field"
     )
     # special case end
 
-    qt_internal_extend_target(${target} CONDITION MSVC AND (CMAKE_CROSSCOMPILING OR NOT QT_FEATURE_system_assimp) AND (host_build OR NOT QT_FEATURE_system_assimp)
+    qt_internal_extend_target(${target} CONDITION MSVC AND (CMAKE_CROSSCOMPILING OR NOT QT_FEATURE_qt3d_system_assimp) AND (host_build OR NOT QT_FEATURE_qt3d_system_assimp)
         DEFINES
             _CRT_SECURE_NO_WARNINGS
             _SCL_SECURE_NO_WARNINGS
