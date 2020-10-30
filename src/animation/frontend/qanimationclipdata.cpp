@@ -114,30 +114,30 @@ void QAnimationClipData::clearChannels()
     d->m_channels.clear();
 }
 
-bool QAnimationClipData::isValid() const Q_DECL_NOTHROW
+bool QAnimationClipData::isValid() const noexcept
 {
     // TODO: Perform more thorough checks
     return !d->m_channels.isEmpty();
 }
 
-QAnimationClipData::const_iterator QAnimationClipData::begin() const Q_DECL_NOTHROW
+QAnimationClipData::const_iterator QAnimationClipData::begin() const noexcept
 {
     return d->m_channels.cbegin();
 }
 
-QAnimationClipData::const_iterator QAnimationClipData::end() const Q_DECL_NOTHROW
+QAnimationClipData::const_iterator QAnimationClipData::end() const noexcept
 {
     return d->m_channels.cend();
 }
 
 
-bool operator==(const QAnimationClipData &lhs, const QAnimationClipData &rhs) Q_DECL_NOTHROW
+bool operator==(const QAnimationClipData &lhs, const QAnimationClipData &rhs) noexcept
 {
     return lhs.d->m_name == rhs.d->m_name &&
            lhs.d->m_channels == rhs.d->m_channels;
 }
 
-bool operator!=(const QAnimationClipData &lhs, const QAnimationClipData &rhs) Q_DECL_NOTHROW
+bool operator!=(const QAnimationClipData &lhs, const QAnimationClipData &rhs) noexcept
 {
     return lhs.d->m_name != rhs.d->m_name ||
            lhs.d->m_channels != rhs.d->m_channels;

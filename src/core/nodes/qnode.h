@@ -98,7 +98,7 @@ private:
 
     // We only want setParent(QNode *) to be callable
     // when dealing with QNode objects
-    void setParent(QObject *) Q_DECL_EQ_DELETE;
+    void setParent(QObject *) = delete;
 
     Q_PRIVATE_SLOT(d_func(), void _q_postConstructorInit())
     Q_PRIVATE_SLOT(d_func(), void _q_addChild(Qt3DCore::QNode *))
@@ -129,12 +129,12 @@ inline QNodeIdVector qIdsForNodes(const T &nodes)
 
 struct QNodeIdTypePair
 {
-    QNodeIdTypePair() Q_DECL_NOTHROW
+    QNodeIdTypePair() noexcept
         : id()
         , type(nullptr)
     {}
 
-    explicit QNodeIdTypePair(QNodeId _id, const QMetaObject *_type) Q_DECL_NOTHROW
+    explicit QNodeIdTypePair(QNodeId _id, const QMetaObject *_type) noexcept
         : id(_id)
         , type(_type)
     {}

@@ -74,7 +74,7 @@ public:
 protected:
     explicit QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent = nullptr);
 
-    QNodeId rootEntityId() const Q_DECL_NOEXCEPT;
+    QNodeId rootEntityId() const noexcept;
 
     template<class Frontend>
     void registerBackendType(const QBackendNodeMapperPtr &functor);

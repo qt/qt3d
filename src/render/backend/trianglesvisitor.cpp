@@ -62,7 +62,7 @@ namespace Render {
 
 namespace {
 
-bool isTriangleBased(Qt3DRender::QGeometryRenderer::PrimitiveType type) Q_DECL_NOTHROW
+bool isTriangleBased(Qt3DRender::QGeometryRenderer::PrimitiveType type) noexcept
 {
     switch (type) {
     case Qt3DRender::QGeometryRenderer::Triangles:

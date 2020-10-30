@@ -56,7 +56,7 @@ QT_BEGIN_NAMESPACE
 
 namespace {
 
-Q_DECL_CONSTEXPR int signum(float v)
+constexpr int signum(float v)
 {
     return (v > 0.0f) - (v < 0.0f);
 }

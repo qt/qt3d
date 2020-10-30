@@ -59,40 +59,40 @@ public:
 
     QTextureImageData &operator=(const QTextureImageData &other);
 
-    void cleanup() Q_DECL_NOTHROW;
+    void cleanup() noexcept;
 
-    bool isCompressed() const Q_DECL_NOTHROW;
+    bool isCompressed() const noexcept;
 
-    int width() const Q_DECL_NOTHROW;
-    int height() const Q_DECL_NOTHROW;
-    int depth() const Q_DECL_NOTHROW;
+    int width() const noexcept;
+    int height() const noexcept;
+    int depth() const noexcept;
 
-    int layers() const Q_DECL_NOTHROW;
-    int mipLevels() const Q_DECL_NOTHROW;
-    int faces() const Q_DECL_NOTHROW;
+    int layers() const noexcept;
+    int mipLevels() const noexcept;
+    int faces() const noexcept;
 
-    void setWidth(int width) Q_DECL_NOTHROW;
-    void setHeight(int height) Q_DECL_NOTHROW;
-    void setDepth(int depth) Q_DECL_NOTHROW;
+    void setWidth(int width) noexcept;
+    void setHeight(int height) noexcept;
+    void setDepth(int depth) noexcept;
 
-    void setLayers(int layers) Q_DECL_NOTHROW;
-    void setMipLevels(int mipLevels) Q_DECL_NOTHROW;
-    void setFaces(int faces) Q_DECL_NOTHROW;
+    void setLayers(int layers) noexcept;
+    void setMipLevels(int mipLevels) noexcept;
+    void setFaces(int faces) noexcept;
 
-    int alignment() const Q_DECL_NOTHROW;
-    void setAlignment(int alignment) Q_DECL_NOTHROW;
+    int alignment() const noexcept;
+    void setAlignment(int alignment) noexcept;
 
-    QOpenGLTexture::Target target() const Q_DECL_NOTHROW;
-    QOpenGLTexture::TextureFormat format() const Q_DECL_NOTHROW;
+    QOpenGLTexture::Target target() const noexcept;
+    QOpenGLTexture::TextureFormat format() const noexcept;
 
-    QOpenGLTexture::PixelFormat pixelFormat() const Q_DECL_NOTHROW;
-    QOpenGLTexture::PixelType pixelType() const Q_DECL_NOTHROW;
+    QOpenGLTexture::PixelFormat pixelFormat() const noexcept;
+    QOpenGLTexture::PixelType pixelType() const noexcept;
 
-    void setTarget(QOpenGLTexture::Target target) Q_DECL_NOTHROW;
-    void setFormat(QOpenGLTexture::TextureFormat format) Q_DECL_NOTHROW;
+    void setTarget(QOpenGLTexture::Target target) noexcept;
+    void setFormat(QOpenGLTexture::TextureFormat format) noexcept;
 
-    void setPixelFormat(QOpenGLTexture::PixelFormat pixelFormat) Q_DECL_NOTHROW;
-    void setPixelType(QOpenGLTexture::PixelType pixelType) Q_DECL_NOTHROW;
+    void setPixelFormat(QOpenGLTexture::PixelFormat pixelFormat) noexcept;
+    void setPixelType(QOpenGLTexture::PixelType pixelType) noexcept;
 
     void setImage(const QImage &);
     void setData(const QByteArray &data,

@@ -71,11 +71,11 @@ public:
     void cleanup();
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
-    inline int x() const Q_DECL_NOTHROW { return m_workGroups[0]; }
-    inline int y() const Q_DECL_NOTHROW { return m_workGroups[1]; }
-    inline int z() const Q_DECL_NOTHROW { return m_workGroups[2]; }
-    inline int frameCount() const Q_DECL_NOTHROW { return m_frameCount; }
-    inline QComputeCommand::RunType runType() const Q_DECL_NOTHROW { return m_runType; }
+    inline int x() const noexcept { return m_workGroups[0]; }
+    inline int y() const noexcept { return m_workGroups[1]; }
+    inline int z() const noexcept { return m_workGroups[2]; }
+    inline int frameCount() const noexcept { return m_frameCount; }
+    inline QComputeCommand::RunType runType() const noexcept { return m_runType; }
 
     // Called from a job
     void updateFrameCount();

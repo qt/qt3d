@@ -60,7 +60,7 @@ QT_BEGIN_NAMESPACE
 
 namespace {
 
-inline Q_DECL_CONSTEXPR QRectF scaleRectF(const QRectF &rect, float scale)
+inline constexpr QRectF scaleRectF(const QRectF &rect, float scale)
 {
     return QRectF(rect.left() * scale, rect.top() * scale, rect.width() * scale, rect.height() * scale);
 }

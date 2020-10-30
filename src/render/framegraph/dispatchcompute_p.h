@@ -68,9 +68,9 @@ public:
 
     void cleanup();
 
-    inline int x() const Q_DECL_NOTHROW { return m_workGroups[0]; }
-    inline int y() const Q_DECL_NOTHROW { return m_workGroups[1]; }
-    inline int z() const Q_DECL_NOTHROW { return m_workGroups[2]; }
+    inline int x() const noexcept { return m_workGroups[0]; }
+    inline int y() const noexcept { return m_workGroups[1]; }
+    inline int z() const noexcept { return m_workGroups[2]; }
 
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 

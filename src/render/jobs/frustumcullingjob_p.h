@@ -77,15 +77,15 @@ public:
 
     QT3D_ALIGNED_MALLOC_AND_FREE()
 
-    inline void setRoot(Entity *root) Q_DECL_NOTHROW { m_root = root; }
-    inline void setManagers(NodeManagers *manager) Q_DECL_NOTHROW { m_manager = manager; }
-    inline void setActive(bool active) Q_DECL_NOTHROW { m_active = active; }
-    inline bool isActive() const Q_DECL_NOTHROW { return m_active; }
-    inline void setViewProjection(const Matrix4x4 &viewProjection) Q_DECL_NOTHROW { m_viewProjection = viewProjection; }
-    inline Matrix4x4 viewProjection() const Q_DECL_NOTHROW { return m_viewProjection; }
+    inline void setRoot(Entity *root) noexcept { m_root = root; }
+    inline void setManagers(NodeManagers *manager) noexcept { m_manager = manager; }
+    inline void setActive(bool active) noexcept { m_active = active; }
+    inline bool isActive() const noexcept { return m_active; }
+    inline void setViewProjection(const Matrix4x4 &viewProjection) noexcept { m_viewProjection = viewProjection; }
+    inline Matrix4x4 viewProjection() const noexcept { return m_viewProjection; }
     bool isRequired() override;
 
-    const std::vector<Entity *> &visibleEntities() const Q_DECL_NOTHROW { return m_visibleEntities; }
+    const std::vector<Entity *> &visibleEntities() const noexcept { return m_visibleEntities; }
 
     void run() final;
 

@@ -162,7 +162,7 @@ QAbstractAspect::~QAbstractAspect()
 /*!
  * \return root entity node id.
  */
-QNodeId QAbstractAspect::rootEntityId() const Q_DECL_NOEXCEPT
+QNodeId QAbstractAspect::rootEntityId() const noexcept
 {
     Q_D(const QAbstractAspect);
     return d->m_rootId;

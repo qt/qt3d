@@ -70,11 +70,11 @@ class Q_3DRENDERSHARED_PRIVATE_EXPORT FilterLayerEntityJob : public Qt3DCore::QA
 public:
     FilterLayerEntityJob();
 
-    inline void setManager(NodeManagers *manager) Q_DECL_NOEXCEPT { m_manager = manager; }
-    inline void setLayerFilters(const Qt3DCore::QNodeIdVector &layerIds) Q_DECL_NOEXCEPT { m_layerFilterIds = layerIds; }
-    inline std::vector<Entity *> &filteredEntities() Q_DECL_NOEXCEPT { return m_filteredEntities; }
+    inline void setManager(NodeManagers *manager) noexcept { m_manager = manager; }
+    inline void setLayerFilters(const Qt3DCore::QNodeIdVector &layerIds) noexcept { m_layerFilterIds = layerIds; }
+    inline std::vector<Entity *> &filteredEntities() noexcept { return m_filteredEntities; }
 
-    inline bool hasLayerFilter() const Q_DECL_NOTHROW { return !m_layerFilterIds.isEmpty(); }
+    inline bool hasLayerFilter() const noexcept { return !m_layerFilterIds.isEmpty(); }
     inline Qt3DCore::QNodeIdVector layerFilters() const { return m_layerFilterIds; }
 
     // QAspectJob interface

@@ -76,8 +76,8 @@ public:
     {
     }
 
-    inline void setRenderView(RenderView *rv) Q_DECL_NOTHROW { m_renderView = rv; }
-    inline void setRenderablesSubView(const EntityRenderCommandDataSubView<RenderCommand> &renderablesSubView) Q_DECL_NOTHROW
+    inline void setRenderView(RenderView *rv) noexcept { m_renderView = rv; }
+    inline void setRenderablesSubView(const EntityRenderCommandDataSubView<RenderCommand> &renderablesSubView) noexcept
     {
         m_renderablesSubView = renderablesSubView;
     }

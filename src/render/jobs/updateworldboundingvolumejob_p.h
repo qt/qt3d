@@ -67,7 +67,7 @@ class Q_3DRENDERSHARED_PRIVATE_EXPORT UpdateWorldBoundingVolumeJob : public Qt3D
 public:
     UpdateWorldBoundingVolumeJob();
 
-    inline void setManager(EntityManager *manager) Q_DECL_NOTHROW { m_manager = manager; }
+    inline void setManager(EntityManager *manager) noexcept { m_manager = manager; }
     void run() override;
 
 private:

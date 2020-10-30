@@ -71,9 +71,9 @@ public:
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     QSurface *surface() const { return m_surface; }
-    inline int width() const Q_DECL_NOTHROW { return m_width; }
-    inline int height() const Q_DECL_NOTHROW { return m_height; }
-    inline float devicePixelRatio() const Q_DECL_NOTHROW { return m_devicePixelRatio; }
+    inline int width() const noexcept { return m_width; }
+    inline int height() const noexcept { return m_height; }
+    inline float devicePixelRatio() const noexcept { return m_devicePixelRatio; }
 
 private:
     QObject *m_surfaceObj;

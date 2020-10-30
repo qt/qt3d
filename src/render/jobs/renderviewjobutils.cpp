@@ -215,12 +215,12 @@ ParameterInfo::ParameterInfo(const int nameId, const HParameter &handle)
     , handle(handle)
 {}
 
-bool ParameterInfo::operator<(const ParameterInfo &other) const Q_DECL_NOEXCEPT
+bool ParameterInfo::operator<(const ParameterInfo &other) const noexcept
 {
     return nameId < other.nameId;
 }
 
-bool ParameterInfo::operator<(const int otherNameId) const Q_DECL_NOEXCEPT
+bool ParameterInfo::operator<(const int otherNameId) const noexcept
 {
     return nameId < otherNameId;
 }

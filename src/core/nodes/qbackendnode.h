@@ -78,12 +78,12 @@ public:
     explicit QBackendNode(Mode mode = ReadOnly);
     virtual ~QBackendNode();
 
-    QNodeId peerId() const Q_DECL_NOEXCEPT;
+    QNodeId peerId() const noexcept;
 
-    void setEnabled(bool enabled) Q_DECL_NOEXCEPT;
-    bool isEnabled() const Q_DECL_NOEXCEPT;
+    void setEnabled(bool enabled) noexcept;
+    bool isEnabled() const noexcept;
 
-    Mode mode() const Q_DECL_NOEXCEPT;
+    Mode mode() const noexcept;
 
     virtual void syncFromFrontEnd(const QNode *frontEnd, bool firstTime);
 
@@ -95,7 +95,7 @@ protected:
 
 private:
     Q_DISABLE_COPY(QBackendNode)
-    void setPeerId(QNodeId id) Q_DECL_NOEXCEPT;
+    void setPeerId(QNodeId id) noexcept;
 
     friend class QAbstractAspectPrivate;
 #if defined(QT_BUILD_INTERNAL)

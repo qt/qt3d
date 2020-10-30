@@ -108,14 +108,14 @@ public:
 
     QCollisionQueryResult &operator=(const QCollisionQueryResult &);
 #ifdef Q_COMPILER_RVALUE_REFS
-    QCollisionQueryResult &operator=(QCollisionQueryResult &&other) Q_DECL_NOTHROW
+    QCollisionQueryResult &operator=(QCollisionQueryResult &&other) noexcept
     {
         swap(other);
         return *this;
     }
 #endif
 
-    void swap(QCollisionQueryResult &other) Q_DECL_NOTHROW
+    void swap(QCollisionQueryResult &other) noexcept
     {
         qSwap(d_ptr, other.d_ptr);
     }

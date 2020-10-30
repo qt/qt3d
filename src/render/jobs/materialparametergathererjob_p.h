@@ -75,15 +75,15 @@ class Q_3DRENDERSHARED_PRIVATE_EXPORT MaterialParameterGathererJob : public Qt3D
 public:
     MaterialParameterGathererJob();
 
-    inline void setNodeManagers(NodeManagers *manager) Q_DECL_NOTHROW { m_manager = manager; }
-    inline void setTechniqueFilter(TechniqueFilter *techniqueFilter) Q_DECL_NOTHROW { m_techniqueFilter = techniqueFilter; }
-    inline void setRenderPassFilter(RenderPassFilter *renderPassFilter) Q_DECL_NOTHROW { m_renderPassFilter = renderPassFilter; }
-    inline const MaterialParameterGathererData &materialToPassAndParameter() Q_DECL_NOTHROW { return m_parameters; }
-    inline void setHandles(std::vector<HMaterial> &&handles) Q_DECL_NOTHROW { m_handles = std::move(handles); }
-    inline void setHandles(const std::vector<HMaterial> &handles) Q_DECL_NOTHROW { m_handles = handles; }
+    inline void setNodeManagers(NodeManagers *manager) noexcept { m_manager = manager; }
+    inline void setTechniqueFilter(TechniqueFilter *techniqueFilter) noexcept { m_techniqueFilter = techniqueFilter; }
+    inline void setRenderPassFilter(RenderPassFilter *renderPassFilter) noexcept { m_renderPassFilter = renderPassFilter; }
+    inline const MaterialParameterGathererData &materialToPassAndParameter() noexcept { return m_parameters; }
+    inline void setHandles(std::vector<HMaterial> &&handles) noexcept { m_handles = std::move(handles); }
+    inline void setHandles(const std::vector<HMaterial> &handles) noexcept { m_handles = handles; }
 
-    inline TechniqueFilter *techniqueFilter() const Q_DECL_NOTHROW { return m_techniqueFilter; }
-    inline RenderPassFilter *renderPassFilter() const Q_DECL_NOTHROW { return m_renderPassFilter; }
+    inline TechniqueFilter *techniqueFilter() const noexcept { return m_techniqueFilter; }
+    inline RenderPassFilter *renderPassFilter() const noexcept { return m_renderPassFilter; }
 
     void run() final;
 

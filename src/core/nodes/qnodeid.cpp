@@ -101,7 +101,7 @@ namespace Qt3DCore {
 /*!
  * \return node id.
  */
-QNodeId QNodeId::createId() Q_DECL_NOTHROW
+QNodeId QNodeId::createId() noexcept
 {
     typedef
 #if defined(Q_ATOMIC_INT64_IS_SUPPORTED)

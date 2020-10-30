@@ -73,10 +73,10 @@ public:
     QAxisAccumulator::SourceAxisType sourceAxisType() const { return m_sourceAxisType; }
     float scale() const { return m_scale; }
 
-    float value() const Q_DECL_NOTHROW { return m_value; }
+    float value() const noexcept { return m_value; }
     void setValue(float value);
 
-    float velocity() const Q_DECL_NOTHROW { return  m_velocity; }
+    float velocity() const noexcept { return  m_velocity; }
     void setVelocity(float velocity);
 
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;

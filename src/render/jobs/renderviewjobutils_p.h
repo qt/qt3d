@@ -105,8 +105,8 @@ struct ParameterInfo
     int nameId;
     HParameter handle;
 
-    bool operator<(const int otherNameId) const Q_DECL_NOEXCEPT;
-    bool operator<(const ParameterInfo &other) const Q_DECL_NOEXCEPT;
+    bool operator<(const int otherNameId) const noexcept;
+    bool operator<(const ParameterInfo &other) const noexcept;
 };
 using ParameterInfoList = QList<ParameterInfo>;
 

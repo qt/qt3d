@@ -81,7 +81,7 @@ public:
     }
 
     inline void setRenderer(Renderer *renderer) { m_renderer = renderer; }
-    inline RenderView *renderView() const Q_DECL_NOTHROW { return m_renderView; }
+    inline RenderView *renderView() const noexcept { return m_renderView; }
 
     inline void setFrameGraphLeafNode(FrameGraphNode *fgLeaf)
     {

@@ -132,7 +132,7 @@ const QString COLOR_ATTRIBUTE_NAME = QAttribute::defaultColorAttributeName();
 /*
  * Returns a QMatrix4x4 from \a matrix;
  */
-QMatrix4x4 aiMatrix4x4ToQMatrix4x4(const aiMatrix4x4 &matrix) Q_DECL_NOTHROW
+QMatrix4x4 aiMatrix4x4ToQMatrix4x4(const aiMatrix4x4 &matrix) noexcept
 {
     return QMatrix4x4(matrix.a1, matrix.a2, matrix.a3, matrix.a4,
                       matrix.b1, matrix.b2, matrix.b3, matrix.b4,

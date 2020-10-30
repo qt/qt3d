@@ -71,7 +71,7 @@ public:
         SET_JOB_RUN_STAT_TYPE(this, JobTypes::RenderViewCommandBuilder, RenderViewCommandBuilderJob::renderViewInstanceCounter++)
     }
 
-    inline void setRenderView(RenderView *rv) Q_DECL_NOTHROW { m_renderView = rv; }
+    inline void setRenderView(RenderView *rv) noexcept { m_renderView = rv; }
     inline void setEntities(const Entity **entities, int offset, int count)
     {
         m_offset = offset;

@@ -110,14 +110,14 @@ public:
     void setBlendedClipAnimatorRunning(const HBlendedClipAnimator &handle, bool running);
     QList<HBlendedClipAnimator> runningBlenndedClipAnimators() const { return m_runningBlendedClipAnimators; }
 
-    AnimationClipLoaderManager *animationClipLoaderManager() const Q_DECL_NOTHROW { return m_animationClipLoaderManager.data(); }
-    ClockManager *clockManager() const Q_DECL_NOTHROW { return m_clockManager.data(); }
-    ClipAnimatorManager *clipAnimatorManager() const Q_DECL_NOTHROW { return m_clipAnimatorManager.data(); }
-    BlendedClipAnimatorManager *blendedClipAnimatorManager() const Q_DECL_NOTHROW { return m_blendedClipAnimatorManager.data(); }
-    ChannelMappingManager *channelMappingManager() const Q_DECL_NOTHROW { return m_channelMappingManager.data(); }
-    ChannelMapperManager *channelMapperManager() const Q_DECL_NOTHROW { return m_channelMapperManager.data(); }
-    ClipBlendNodeManager *clipBlendNodeManager() const Q_DECL_NOTHROW { return m_clipBlendNodeManager.data(); }
-    SkeletonManager *skeletonManager() const Q_DECL_NOTHROW { return m_skeletonManager.data(); }
+    AnimationClipLoaderManager *animationClipLoaderManager() const noexcept { return m_animationClipLoaderManager.data(); }
+    ClockManager *clockManager() const noexcept { return m_clockManager.data(); }
+    ClipAnimatorManager *clipAnimatorManager() const noexcept { return m_clipAnimatorManager.data(); }
+    BlendedClipAnimatorManager *blendedClipAnimatorManager() const noexcept { return m_blendedClipAnimatorManager.data(); }
+    ChannelMappingManager *channelMappingManager() const noexcept { return m_channelMappingManager.data(); }
+    ChannelMapperManager *channelMapperManager() const noexcept { return m_channelMapperManager.data(); }
+    ClipBlendNodeManager *clipBlendNodeManager() const noexcept { return m_clipBlendNodeManager.data(); }
+    SkeletonManager *skeletonManager() const noexcept { return m_skeletonManager.data(); }
 
     std::vector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time);
 

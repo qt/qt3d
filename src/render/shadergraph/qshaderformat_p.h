@@ -98,8 +98,8 @@ public:
     Q_3DRENDERSHARED_PRIVATE_EXPORT bool isValid() const noexcept;
     Q_3DRENDERSHARED_PRIVATE_EXPORT bool supports(const QShaderFormat &other) const noexcept;
 
-    Q_3DRENDERSHARED_PRIVATE_EXPORT ShaderType shaderType() const Q_DECL_NOTHROW;
-    Q_3DRENDERSHARED_PRIVATE_EXPORT void setShaderType(ShaderType shaderType) Q_DECL_NOTHROW;
+    Q_3DRENDERSHARED_PRIVATE_EXPORT ShaderType shaderType() const noexcept;
+    Q_3DRENDERSHARED_PRIVATE_EXPORT void setShaderType(ShaderType shaderType) noexcept;
 
 private:
     Api m_api;

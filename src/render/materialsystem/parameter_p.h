@@ -74,7 +74,7 @@ public:
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
     QString name() const;
-    int nameId() const Q_DECL_NOTHROW { return m_nameId; }
+    int nameId() const noexcept { return m_nameId; }
     const UniformValue &uniformValue() const { return m_uniformValue; }
     QVariant backendValue() const { return m_backendValue; }
 

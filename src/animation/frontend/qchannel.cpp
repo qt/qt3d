@@ -136,22 +136,22 @@ void QChannel::clearChannelComponents()
     d->m_channelComponents.clear();
 }
 
-QChannel::const_iterator QChannel::begin() const Q_DECL_NOTHROW
+QChannel::const_iterator QChannel::begin() const noexcept
 {
     return d->m_channelComponents.cbegin();
 }
 
-QChannel::const_iterator QChannel::end() const Q_DECL_NOTHROW
+QChannel::const_iterator QChannel::end() const noexcept
 {
     return d->m_channelComponents.cend();
 }
 
-bool operator==(const QChannel &lhs, const QChannel &rhs) Q_DECL_NOTHROW
+bool operator==(const QChannel &lhs, const QChannel &rhs) noexcept
 {
     return lhs.d->m_name == rhs.d->m_name && lhs.d->m_channelComponents == rhs.d->m_channelComponents;
 }
 
-bool operator!=(const QChannel &lhs, const QChannel &rhs) Q_DECL_NOTHROW
+bool operator!=(const QChannel &lhs, const QChannel &rhs) noexcept
 {
     return lhs.d->m_name != rhs.d->m_name || lhs.d->m_channelComponents != rhs.d->m_channelComponents;
 }

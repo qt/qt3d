@@ -75,7 +75,7 @@ public:
     ~QAspectFactory();
     QAspectFactory &operator=(const QAspectFactory &other);
 #ifdef Q_COMPILER_RVALUE_REFS
-    QAspectFactory &operator=(QAspectFactory &&other) Q_DECL_NOTHROW
+    QAspectFactory &operator=(QAspectFactory &&other) noexcept
     {
         m_factories.swap(other.m_factories);
         m_aspectNames.swap(other.m_aspectNames);
@@ -83,7 +83,7 @@ public:
     }
 #endif
 
-    inline void swap(QAspectFactory &other) Q_DECL_NOTHROW
+    inline void swap(QAspectFactory &other) noexcept
     {
         m_factories.swap(other.m_factories);
         m_aspectNames.swap(other.m_aspectNames);

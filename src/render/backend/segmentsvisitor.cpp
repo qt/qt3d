@@ -59,7 +59,7 @@ namespace Render {
 
 namespace {
 
-bool isSegmentBased(Qt3DRender::QGeometryRenderer::PrimitiveType type) Q_DECL_NOTHROW
+bool isSegmentBased(Qt3DRender::QGeometryRenderer::PrimitiveType type) noexcept
 {
     switch (type) {
     case Qt3DRender::QGeometryRenderer::Lines:

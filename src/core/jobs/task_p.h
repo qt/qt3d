@@ -108,7 +108,7 @@ public:
     int id() override { return m_id; }
     void setId(int id) override { m_id = id; }
 
-    RunnableType type() const Q_DECL_OVERRIDE { return RunnableType::AspectTask; }
+    RunnableType type() const override { return RunnableType::AspectTask; }
 
 public:
     QSharedPointer<QAspectJob> m_job;
@@ -140,7 +140,7 @@ public:
     int id() override { return m_id; }
     void setId(int id) override { m_id = id; }
 
-    RunnableType type() const Q_DECL_OVERRIDE { return RunnableType::SyncTask; }
+    RunnableType type() const override { return RunnableType::SyncTask; }
 
 private:
     QAbstractAspectJobManager::JobFunction m_func;

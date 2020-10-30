@@ -66,7 +66,7 @@ class QTextureAtlas : public Qt3DRender::QAbstractTexture
 
 public:
     typedef int TextureId;
-    static Q_CONSTEXPR TextureId InvalidTexture = -1;
+    static constexpr TextureId InvalidTexture = -1;
 
     QTextureAtlas(Qt3DCore::QNode *parent = nullptr);
     ~QTextureAtlas();

@@ -71,7 +71,7 @@ public:
         setFlag(Blending, m_texture ? m_texture->hasAlphaChannel() : false);
     }
 
-    QSGTexture *texture() const Q_DECL_NOTHROW { return m_texture; }
+    QSGTexture *texture() const noexcept { return m_texture; }
     QSGMaterialType *type() const final { return &Scene3DSGMaterialShader::type; }
     QSGMaterialShader *createShader(QSGRendererInterface::RenderMode renderMode) const final;
 

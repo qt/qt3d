@@ -69,7 +69,7 @@ class Q_3DRENDERSHARED_PRIVATE_EXPORT LightGatherer : public Qt3DCore::QAspectJo
 public:
     LightGatherer();
 
-    inline void setManager(EntityManager *manager) Q_DECL_NOTHROW { m_manager = manager; }
+    inline void setManager(EntityManager *manager) noexcept { m_manager = manager; }
     inline std::vector<LightSource> &lights() { return m_lights; }
     inline EnvironmentLight *environmentLight() const { return m_environmentLight; }
 

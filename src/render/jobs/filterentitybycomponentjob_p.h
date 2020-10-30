@@ -77,8 +77,8 @@ public:
         SET_JOB_RUN_STAT_TYPE(this, JobTypes::EntityComponentTypeFiltering, 0)
     }
 
-    inline void setManager(EntityManager *manager) Q_DECL_NOTHROW { m_manager = manager; }
-    inline std::vector<Entity *> &filteredEntities() Q_DECL_NOTHROW { return m_filteredEntities; }
+    inline void setManager(EntityManager *manager) noexcept { m_manager = manager; }
+    inline std::vector<Entity *> &filteredEntities() noexcept { return m_filteredEntities; }
 
     void run() override
     {

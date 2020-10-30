@@ -115,23 +115,23 @@ void QChannelComponent::clearKeyFrames()
     d->m_keyFrames.clear();
 }
 
-QChannelComponent::const_iterator QChannelComponent::begin() const Q_DECL_NOTHROW
+QChannelComponent::const_iterator QChannelComponent::begin() const noexcept
 {
     return d->m_keyFrames.cbegin();
 }
 
-QChannelComponent::const_iterator QChannelComponent::end() const Q_DECL_NOTHROW
+QChannelComponent::const_iterator QChannelComponent::end() const noexcept
 {
     return d->m_keyFrames.cend();
 }
 
-bool operator==(const QChannelComponent &lhs, const QChannelComponent &rhs) Q_DECL_NOTHROW
+bool operator==(const QChannelComponent &lhs, const QChannelComponent &rhs) noexcept
 {
     return lhs.d->m_name == rhs.d->m_name &&
            lhs.d->m_keyFrames == rhs.d->m_keyFrames;
 }
 
-bool operator!=(const QChannelComponent &lhs, const QChannelComponent &rhs) Q_DECL_NOTHROW
+bool operator!=(const QChannelComponent &lhs, const QChannelComponent &rhs) noexcept
 {
     return lhs.d->m_name != rhs.d->m_name ||
            lhs.d->m_keyFrames != rhs.d->m_keyFrames;

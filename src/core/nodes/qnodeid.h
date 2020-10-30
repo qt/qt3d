@@ -50,47 +50,47 @@ namespace Qt3DCore {
 
 class QNodeId
 {
-    Q_DECL_CONSTEXPR explicit QNodeId(quint64 i) Q_DECL_NOTHROW
+    constexpr explicit QNodeId(quint64 i) noexcept
         : m_id(i)
     {}
 public:
-    Q_DECL_CONSTEXPR QNodeId() Q_DECL_NOTHROW
+    constexpr QNodeId() noexcept
         : m_id(0)
     {}
 
-    Q_3DCORESHARED_EXPORT static QNodeId createId() Q_DECL_NOTHROW;
+    Q_3DCORESHARED_EXPORT static QNodeId createId() noexcept;
 
-    Q_DECL_CONSTEXPR bool isNull() const Q_DECL_NOTHROW
+    constexpr bool isNull() const noexcept
     {
         return m_id == 0;
     }
 
-    Q_DECL_CONSTEXPR bool operator ==(QNodeId other) const Q_DECL_NOTHROW
+    constexpr bool operator ==(QNodeId other) const noexcept
     {
         return other.m_id == m_id;
     }
 
-    Q_DECL_CONSTEXPR bool operator !=(QNodeId other) const Q_DECL_NOTHROW
+    constexpr bool operator !=(QNodeId other) const noexcept
     {
         return !operator ==(other);
     }
 
-    Q_DECL_CONSTEXPR bool operator <(QNodeId other) const Q_DECL_NOTHROW
+    constexpr bool operator <(QNodeId other) const noexcept
     {
         return m_id < other.m_id;
     }
 
-    Q_DECL_CONSTEXPR bool operator >(QNodeId other) const Q_DECL_NOTHROW
+    constexpr bool operator >(QNodeId other) const noexcept
     {
         return m_id > other.m_id;
     }
 
-    Q_DECL_CONSTEXPR quint64 id() const Q_DECL_NOTHROW
+    constexpr quint64 id() const noexcept
     {
         return m_id;
     }
 
-    Q_DECL_CONSTEXPR operator bool() const Q_DECL_NOTHROW
+    constexpr operator bool() const noexcept
     {
         return m_id != 0;
     }
@@ -106,7 +106,7 @@ using QNodeIdVector = QList<QNodeId>;
 Q_3DCORESHARED_EXPORT QDebug operator<<(QDebug d, QNodeId id);
 #endif
 
-inline Q_DECL_CONSTEXPR size_t qHash(QNodeId id, size_t seed = 0) Q_DECL_NOTHROW
+inline constexpr size_t qHash(QNodeId id, size_t seed = 0) noexcept
 {
     using QT_PREPEND_NAMESPACE(qHash);
     return qHash(id.id(), seed);
