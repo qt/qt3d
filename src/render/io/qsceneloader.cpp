@@ -343,6 +343,8 @@ QComponent *QSceneLoader::component(const QString &entityName,
                                     QSceneLoader::ComponentType componentType) const
 {
     QEntity *e = entity(entityName);
+    if (!e)
+        return nullptr;
     const QComponentVector components = e->components();
     for (auto component : components) {
         switch (componentType) {

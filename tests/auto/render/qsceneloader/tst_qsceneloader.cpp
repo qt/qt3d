@@ -180,6 +180,13 @@ private Q_SLOTS:
         QCOMPARE(loader.entity(e3Name), &e3);
         QCOMPARE(loader.entity(e4Name), &e4);
 
+        QCOMPARE(loader.component(e1Name, Qt3DRender::QSceneLoader::UnknownComponent), nullptr);
+        QCOMPARE(loader.component(e1Name, Qt3DRender::QSceneLoader::TransformComponent), nullptr);
+        QCOMPARE(loader.component(e1Name, Qt3DRender::QSceneLoader::GeometryRendererComponent), nullptr);
+        QCOMPARE(loader.component(e1Name, Qt3DRender::QSceneLoader::MaterialComponent), nullptr);
+        QCOMPARE(loader.component(e1Name, Qt3DRender::QSceneLoader::LightComponent), nullptr);
+        QCOMPARE(loader.component(e1Name, Qt3DRender::QSceneLoader::CameraLensComponent), nullptr);
+
         QCOMPARE(loader.component(e2Name, Qt3DRender::QSceneLoader::UnknownComponent), nullptr);
         QCOMPARE(loader.component(e2Name, Qt3DRender::QSceneLoader::TransformComponent), &trans);
         QCOMPARE(loader.component(e2Name, Qt3DRender::QSceneLoader::GeometryRendererComponent), nullptr);
