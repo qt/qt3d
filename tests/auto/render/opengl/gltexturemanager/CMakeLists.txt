@@ -1,0 +1,30 @@
+# Generated from gltexturemanager.pro.
+
+#####################################################################
+## tst_gltexturemanager Test:
+#####################################################################
+
+qt_internal_add_test(tst_gltexturemanager
+    SOURCES
+        tst_gltexturemanager.cpp
+)
+
+#### Keys ignored in scope 1:.:.:gltexturemanager.pro:<TRUE>:
+# TEMPLATE = "app"
+
+## Scopes:
+#####################################################################
+
+include(../../commons/commons.cmake)
+qt3d_setup_common_render_test(tst_gltexturemanager USE_TEST_ASPECT)
+include(${PROJECT_SOURCE_DIR}/src/plugins/renderers/opengl/opengl.cmake)
+qt3d_setup_opengl_renderer_target(tst_gltexturemanager)
+
+qt_internal_extend_target(tst_gltexturemanager CONDITION gcov
+    COMPILE_OPTIONS
+        -fprofile-arcs
+        -ftest-coverage
+    LINK_OPTIONS
+        "-fprofile-arcs"
+        "-ftest-coverage"
+)

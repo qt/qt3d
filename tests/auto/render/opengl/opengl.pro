@@ -13,7 +13,8 @@ SUBDIRS += \
         renderqueue \
         renderviewbuilder \
         qgraphicsutils \
-        computecommand
+        computecommand \
+        gltexturemanager
 
 qtHaveModule(quick) {
     SUBDIRS += \
