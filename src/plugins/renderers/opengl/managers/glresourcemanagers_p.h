@@ -133,6 +133,7 @@ private:
 } // Qt3DRender
 
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::OpenGL::OpenGLVertexArrayObject, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::OpenGL::GLTexture, Q_REQUIRES_CLEANUP)
 
 QT_END_NAMESPACE
 
