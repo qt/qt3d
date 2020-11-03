@@ -92,7 +92,7 @@ void uploadGLData(QOpenGLTexture *glTex,
                   const QByteArray &bytes, const QTextureImageDataPtr &data)
 {
     if (data->isCompressed()) {
-        qWarning() << Q_FUNC_INFO << "Uploading non full sized Compressed Data not supported yet";
+        Q_UNREACHABLE();
     } else {
         const auto alignment = QTextureImageDataPrivate::get(data.get())->m_alignment;
         QOpenGLPixelTransferOptions uploadOptions;
@@ -609,11 +609,28 @@ void GLTexture::uploadGLTextureData()
         // layer, face or mip level, unlike the QTextureGenerator case where
         // they are in a single blob. Hence QTextureImageData::data() is not suitable.
 
-        uploadGLData(m_gl,
-                     update.mipLevel(), update.layer(),
-                     static_cast<QOpenGLTexture::CubeMapFace>(update.face()),
-                     xOffset, yOffset, zOffset,
-                     bytes, imgData);
+        // Check if this is a full sized update
+        if (xOffset == 0 &&
+            yOffset == 0 &&
+            zOffset == 0 &&
+            xExtent == m_gl->width() &&
+            yExtent == m_gl->height() &&
+            zExtent == m_gl->depth()) {
+            uploadGLData(m_gl, update.mipLevel(), update.layer(),
+                         static_cast<QOpenGLTexture::CubeMapFace>(update.face()),
+                         bytes, imgData);
+        } else {
+            if (imgData->isCompressed()) {
+                qWarning() << Q_FUNC_INFO << "Uploading non full sized Compressed Data not supported yet";
+            } else {
+
+                uploadGLData(m_gl,
+                             update.mipLevel(), update.layer(),
+                             static_cast<QOpenGLTexture::CubeMapFace>(update.face()),
+                             xOffset, yOffset, zOffset,
+                             bytes, imgData);
+            }
+        }
     }
 }
 
