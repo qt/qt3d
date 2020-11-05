@@ -48,7 +48,8 @@
 **
 ****************************************************************************/
 
-#include <QCoreApplication>
+#include <QGuiApplication>
+#include <QFontDatabase>
 #include <Qt3DCore/Qt3DCore>
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DExtras/Qt3DExtras>
