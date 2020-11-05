@@ -127,6 +127,7 @@ void Texture::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
     p.generateMipMaps = node->generateMipMaps();
     p.layers = node->layers();
     p.samples = node->samples();
+    p.mipLevels = static_cast<const QAbstractTexturePrivate*>(QAbstractTexturePrivate::get(node))->m_mipmapLevels;
     if (p != m_properties) {
         m_properties = p;
         addDirtyFlag(DirtyProperties);
