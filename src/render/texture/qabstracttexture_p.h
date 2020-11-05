@@ -87,6 +87,7 @@ public :
     QList<QAbstractTextureImage *> m_textureImages;
     int m_layers;
     int m_samples;
+    int m_mipmapLevels;
 
     int m_sharedTextureId;
 
