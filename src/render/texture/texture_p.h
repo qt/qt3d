@@ -159,7 +159,8 @@ public:
     void cleanup();
 
     void addTextureDataUpdate(const QTextureDataUpdate &update);
-    std::vector<QTextureDataUpdate> &&takePendingTextureDataUpdates() { return std::move(m_pendingTextureDataUpdates); }
+    std::vector<QTextureDataUpdate> takePendingTextureDataUpdates() {
+        return std::exchange(m_pendingTextureDataUpdates, {}); }
 
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
