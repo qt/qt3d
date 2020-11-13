@@ -39,5 +39,33 @@
     In this topic we summarize those changes in Qt3D, and provide guidance
     to handle them.
 
-    \section1 ADD STUFF HERE
+    \section1 New rendering backend
+
+    Over the course of 5.14 and 5.15, the rendering backend was gradually
+    moved into a plugin.
+
+    Qt 6 release completes this work and introduces a new RHI based rendering
+    backend which will enable use of Vulkan, Metal or DirectX on the relevant
+    platforms.
+
+    The RHI backend is the default but this can be controlled by setting
+    environment variables as explained \l {Qt 3D Render C++ Classes} {here}.
+
+    \section1 Code changes
+
+    Some classes have changed modules. In particular, the QBuffer, QAttribute
+    and QGeometry classes (along with associated helper classes) have moved
+    from the Render module to the Core module.
+
+    \section1 New API
+
+    \list
+    \li \l {Qt3DCore::QGeometryView} provides all details for a mesh
+    \li \l {Qt3DCore::QBoundingVolume} provides a way of querying or overriding
+        the size of the axis aligned bounding box of a geometry
+    \li \l {Qt3DRender::QPickingProxy} provides a way of specifying an alternative
+        (usually simpler) geometry for picking
+    \li \l {Qt3DCore::QAbstractAspect} and \l {Qt3DCore::QAspectJobs} add methods
+        to facilitate and optimize the synchronization of backend operations.
+    \endlist
 */
