@@ -119,18 +119,19 @@
     }
     \endcode
 
-    \section2 GeometryRenderer
+    \section2 GeometryView
 
-    Qt3DRender::QGeometryRenderer is a QComponent which when aggregated by a
-    QEntity allows to draw the Qt3DCore::QGeometry it references. It provides
+    A Qt3DCore::QGeometryView takes a Qt3DCore::QGeometry. It provides
     properties to control the draw call such as the number of instances to be
     drawn, the starting instance, the type of
-    Qt3DRender::QGeometryRenderer::PrimitiveType to be used, etc. A
-    Qt3DRender::QGeometryRenderer is translated into a draw call to the
-    underlying graphics API.
+    Qt3DCore::QGeometryView::PrimitiveType to be used, etc.
+
+    It completely defines the details of a mesh so that operations such as
+    bounding volume computation and picking can be done on a mesh without
+    requiring it to be rendered.
 
     \code
-    GeometryRenderer {
+    GeometryView {
         instanceCount: 1
         indexOffset: 0
         firstInstance: 0
@@ -138,5 +139,22 @@
         geometry: Geometry { ... }
     }
     \endcode
+
+    \section2 GeometryRenderer
+
+    Qt3DRender::QGeometryRenderer is a QComponent which when aggregated by a
+    QEntity allows to draw the Qt3DCore::QGeometryView it references. A
+    Qt3DRender::QGeometryRenderer is translated into a draw call to the
+    underlying graphics API.
+
+    \code
+    GeometryRenderer {
+        view: GeometryView { ... }
+    }
+    \endcode
+
+    \note Prior to Qt 6, Qt3DRender::QGeometryRenderer included details that are
+    now intended to be provided by the view instance. The properties are still
+    there in Qt 6 but will be deprecated and then removed in Qt 7.
 
  */
