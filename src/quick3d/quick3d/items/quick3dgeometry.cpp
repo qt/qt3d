@@ -65,13 +65,13 @@ void Quick3DGeometry::appendAttribute(QQmlListProperty<Qt3DCore::QAttribute> *li
     geometry->parentGeometry()->addAttribute(attribute);
 }
 
-Qt3DCore::QAttribute *Quick3DGeometry::attributeAt(QQmlListProperty<Qt3DCore::QAttribute> *list, int index)
+Qt3DCore::QAttribute *Quick3DGeometry::attributeAt(QQmlListProperty<Qt3DCore::QAttribute> *list, qsizetype index)
 {
     Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
     return geometry->parentGeometry()->attributes().at(index);
 }
 
-int Quick3DGeometry::attributesCount(QQmlListProperty<Qt3DCore::QAttribute> *list)
+qsizetype Quick3DGeometry::attributesCount(QQmlListProperty<Qt3DCore::QAttribute> *list)
 {
     Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
     return geometry->parentGeometry()->attributes().count();

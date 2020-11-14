@@ -65,13 +65,13 @@ void Quick3DPhysicalDevice::appendAxisSetting(QQmlListProperty<QAxisSetting> *li
     device->parentPhysicalDevice()->addAxisSetting(axisSetting);
 }
 
-QAxisSetting *Quick3DPhysicalDevice::axisSettingAt(QQmlListProperty<QAxisSetting> *list, int index)
+QAxisSetting *Quick3DPhysicalDevice::axisSettingAt(QQmlListProperty<QAxisSetting> *list, qsizetype index)
 {
     Quick3DPhysicalDevice *device = qobject_cast<Quick3DPhysicalDevice *>(list->object);
     return device->parentPhysicalDevice()->axisSettings().at(index);
 }
 
-int Quick3DPhysicalDevice::axisSettingsCount(QQmlListProperty<QAxisSetting> *list)
+qsizetype Quick3DPhysicalDevice::axisSettingsCount(QQmlListProperty<QAxisSetting> *list)
 {
     Quick3DPhysicalDevice *device = qobject_cast<Quick3DPhysicalDevice *>(list->object);
     return device->parentPhysicalDevice()->axisSettings().count();

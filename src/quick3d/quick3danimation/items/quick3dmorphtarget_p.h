@@ -72,8 +72,8 @@ public:
 private:
 
     static void appendAttribute(QQmlListProperty<Qt3DCore::QAttribute> *list, Qt3DCore::QAttribute *bar);
-    static Qt3DCore::QAttribute *attributeAt(QQmlListProperty<Qt3DCore::QAttribute> *list, int index);
-    static int attributeCount(QQmlListProperty<Qt3DCore::QAttribute> *list);
+    static Qt3DCore::QAttribute *attributeAt(QQmlListProperty<Qt3DCore::QAttribute> *list, qsizetype index);
+    static qsizetype attributeCount(QQmlListProperty<Qt3DCore::QAttribute> *list);
     static void clearAttributes(QQmlListProperty<Qt3DCore::QAttribute> *list);
 };
 

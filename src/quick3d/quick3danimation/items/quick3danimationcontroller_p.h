@@ -76,8 +76,8 @@ public:
 private:
 
     static void appendAnimationGroup(QQmlListProperty<Qt3DAnimation::QAnimationGroup> *list, Qt3DAnimation::QAnimationGroup *bar);
-    static QAnimationGroup *animationGroupAt(QQmlListProperty<Qt3DAnimation::QAnimationGroup> *list, int index);
-    static int animationGroupCount(QQmlListProperty<Qt3DAnimation::QAnimationGroup> *list);
+    static QAnimationGroup *animationGroupAt(QQmlListProperty<Qt3DAnimation::QAnimationGroup> *list, qsizetype index);
+    static qsizetype animationGroupCount(QQmlListProperty<Qt3DAnimation::QAnimationGroup> *list);
     static void clearAnimationGroups(QQmlListProperty<Qt3DAnimation::QAnimationGroup> *list);
 };
 

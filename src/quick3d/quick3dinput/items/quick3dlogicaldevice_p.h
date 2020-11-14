@@ -78,13 +78,13 @@ public:
 
 private:
     static void appendAxis(QQmlListProperty<QAxis> *list, QAxis *axes);
-    static QAxis *axisAt(QQmlListProperty<QAxis> *list, int index);
-    static int axesCount(QQmlListProperty<QAxis> *list);
+    static QAxis *axisAt(QQmlListProperty<QAxis> *list, qsizetype index);
+    static qsizetype axesCount(QQmlListProperty<QAxis> *list);
     static void clearAxes(QQmlListProperty<QAxis> *list);
 
     static void appendAction(QQmlListProperty<QAction> *list, QAction *action);
-    static QAction *actionAt(QQmlListProperty<QAction> *list, int index);
-    static int actionCount(QQmlListProperty<QAction> *list);
+    static QAction *actionAt(QQmlListProperty<QAction> *list, qsizetype index);
+    static qsizetype actionCount(QQmlListProperty<QAction> *list);
     static void clearActions(QQmlListProperty<QAction> *list);
 };
 

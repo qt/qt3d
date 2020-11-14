@@ -78,7 +78,7 @@ void Quick3DRenderPassFilter::appendInclude(QQmlListProperty<QFilterKey> *list, 
     }
 }
 
-QFilterKey *Quick3DRenderPassFilter::includeAt(QQmlListProperty<QFilterKey> *list, int index)
+QFilterKey *Quick3DRenderPassFilter::includeAt(QQmlListProperty<QFilterKey> *list, qsizetype index)
 {
     Quick3DRenderPassFilter *filter = qobject_cast<Quick3DRenderPassFilter *>(list->object);
     if (filter)
@@ -86,7 +86,7 @@ QFilterKey *Quick3DRenderPassFilter::includeAt(QQmlListProperty<QFilterKey> *lis
     return 0;
 }
 
-int Quick3DRenderPassFilter::includesCount(QQmlListProperty<QFilterKey> *list)
+qsizetype Quick3DRenderPassFilter::includesCount(QQmlListProperty<QFilterKey> *list)
 {
     Quick3DRenderPassFilter *filter = qobject_cast<Quick3DRenderPassFilter *>(list->object);
     if (filter)
@@ -110,13 +110,13 @@ void Quick3DRenderPassFilter::appendParameter(QQmlListProperty<QParameter> *list
     rPassFilter->parentRenderPassFilter()->addParameter(param);
 }
 
-QParameter *Quick3DRenderPassFilter::parameterAt(QQmlListProperty<QParameter> *list, int index)
+QParameter *Quick3DRenderPassFilter::parameterAt(QQmlListProperty<QParameter> *list, qsizetype index)
 {
     Quick3DRenderPassFilter *rPassFilter = qobject_cast<Quick3DRenderPassFilter *>(list->object);
     return rPassFilter->parentRenderPassFilter()->parameters().at(index);
 }
 
-int Quick3DRenderPassFilter::parametersCount(QQmlListProperty<QParameter> *list)
+qsizetype Quick3DRenderPassFilter::parametersCount(QQmlListProperty<QParameter> *list)
 {
     Quick3DRenderPassFilter *rPassFilter = qobject_cast<Quick3DRenderPassFilter *>(list->object);
     return rPassFilter->parentRenderPassFilter()->parameters().count();

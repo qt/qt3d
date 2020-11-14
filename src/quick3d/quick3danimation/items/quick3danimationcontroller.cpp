@@ -63,7 +63,7 @@ void QQuick3DAnimationController::appendAnimationGroup(QQmlListProperty<QAnimati
         controller->parentAnimationController()->addAnimationGroup(bar);
 }
 
-int QQuick3DAnimationController::animationGroupCount(QQmlListProperty<QAnimationGroup> *list)
+qsizetype QQuick3DAnimationController::animationGroupCount(QQmlListProperty<QAnimationGroup> *list)
 {
     QQuick3DAnimationController *controller = qobject_cast<QQuick3DAnimationController *>(list->object);
     if (controller)
@@ -71,7 +71,7 @@ int QQuick3DAnimationController::animationGroupCount(QQmlListProperty<QAnimation
     return 0;
 }
 
-QAnimationGroup *QQuick3DAnimationController::animationGroupAt(QQmlListProperty<QAnimationGroup> *list, int index)
+QAnimationGroup *QQuick3DAnimationController::animationGroupAt(QQmlListProperty<QAnimationGroup> *list, qsizetype index)
 {
     QQuick3DAnimationController *controller = qobject_cast<QQuick3DAnimationController *>(list->object);
     if (controller)

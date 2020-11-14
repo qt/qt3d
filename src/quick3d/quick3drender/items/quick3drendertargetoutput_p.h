@@ -75,8 +75,8 @@ public:
 
 private:
     static void appendRenderAttachment(QQmlListProperty<QRenderTargetOutput> *list, QRenderTargetOutput *attachment);
-    static QRenderTargetOutput *renderAttachmentAt(QQmlListProperty<QRenderTargetOutput> *list, int index);
-    static int renderAttachmentCount(QQmlListProperty<QRenderTargetOutput> *list);
+    static QRenderTargetOutput *renderAttachmentAt(QQmlListProperty<QRenderTargetOutput> *list, qsizetype index);
+    static qsizetype renderAttachmentCount(QQmlListProperty<QRenderTargetOutput> *list);
     static void clearRenderAttachments(QQmlListProperty<QRenderTargetOutput> *list);
 };
 

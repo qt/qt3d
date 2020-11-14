@@ -71,7 +71,7 @@ void Quick3DLayerFilter::appendLayer(QQmlListProperty<QLayer> *list, QLayer *lay
     }
 }
 
-QLayer *Quick3DLayerFilter::layerAt(QQmlListProperty<QLayer> *list, int index)
+QLayer *Quick3DLayerFilter::layerAt(QQmlListProperty<QLayer> *list, qsizetype index)
 {
     Quick3DLayerFilter *filter = qobject_cast<Quick3DLayerFilter *>(list->object);
     if (filter) {
@@ -80,7 +80,7 @@ QLayer *Quick3DLayerFilter::layerAt(QQmlListProperty<QLayer> *list, int index)
     return 0;
 }
 
-int Quick3DLayerFilter::layerCount(QQmlListProperty<QLayer> *list)
+qsizetype Quick3DLayerFilter::layerCount(QQmlListProperty<QLayer> *list)
 {
     Quick3DLayerFilter *filter = qobject_cast<Quick3DLayerFilter *>(list->object);
     if (filter) {

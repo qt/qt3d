@@ -75,8 +75,8 @@ public:
 
 private:
     static void appendJoint(QQmlListProperty<Qt3DCore::QJoint> *list, Qt3DCore::QJoint *obj);
-    static QJoint *jointAt(QQmlListProperty<Qt3DCore::QJoint> *list, int index);
-    static int jointCount(QQmlListProperty<Qt3DCore::QJoint> *list);
+    static QJoint *jointAt(QQmlListProperty<Qt3DCore::QJoint> *list, qsizetype index);
+    static qsizetype jointCount(QQmlListProperty<Qt3DCore::QJoint> *list);
     static void clearJoints(QQmlListProperty<Qt3DCore::QJoint> *list);
 };
 

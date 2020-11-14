@@ -65,13 +65,13 @@ void Quick3DInputSequence::appendActionInput(QQmlListProperty<QAbstractActionInp
     action->parentSequence()->addSequence(input);
 }
 
-QAbstractActionInput *Quick3DInputSequence::actionInputAt(QQmlListProperty<QAbstractActionInput> *list, int index)
+QAbstractActionInput *Quick3DInputSequence::actionInputAt(QQmlListProperty<QAbstractActionInput> *list, qsizetype index)
 {
     Quick3DInputSequence *action = qobject_cast<Quick3DInputSequence *>(list->object);
     return action->parentSequence()->sequences().at(index);
 }
 
-int Quick3DInputSequence::actionInputCount(QQmlListProperty<QAbstractActionInput> *list)
+qsizetype Quick3DInputSequence::actionInputCount(QQmlListProperty<QAbstractActionInput> *list)
 {
     Quick3DInputSequence *action = qobject_cast<Quick3DInputSequence *>(list->object);
     return action->parentSequence()->sequences().count();

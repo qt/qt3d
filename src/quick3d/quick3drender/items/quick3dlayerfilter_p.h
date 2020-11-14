@@ -77,8 +77,8 @@ public:
 
 private:
     static void appendLayer(QQmlListProperty<QLayer> *list, QLayer *bar);
-    static QLayer *layerAt(QQmlListProperty<QLayer> *list, int index);
-    static int layerCount(QQmlListProperty<QLayer> *list);
+    static QLayer *layerAt(QQmlListProperty<QLayer> *list, qsizetype index);
+    static qsizetype layerCount(QQmlListProperty<QLayer> *list);
     static void clearLayers(QQmlListProperty<QLayer> *list);
 };
 

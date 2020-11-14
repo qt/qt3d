@@ -72,7 +72,7 @@ void Quick3DMaterial::appendParameter(QQmlListProperty<QParameter> *list, QParam
     }
 }
 
-QParameter *Quick3DMaterial::parameterAt(QQmlListProperty<QParameter> *list, int index)
+QParameter *Quick3DMaterial::parameterAt(QQmlListProperty<QParameter> *list, qsizetype index)
 {
     Quick3DMaterial *mat = qobject_cast<Quick3DMaterial *>(list->object);
     if (mat)
@@ -80,7 +80,7 @@ QParameter *Quick3DMaterial::parameterAt(QQmlListProperty<QParameter> *list, int
     return 0;
 }
 
-int Quick3DMaterial::parameterCount(QQmlListProperty<QParameter> *list)
+qsizetype Quick3DMaterial::parameterCount(QQmlListProperty<QParameter> *list)
 {
     Quick3DMaterial *mat = qobject_cast<Quick3DMaterial *>(list->object);
     if (mat)

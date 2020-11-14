@@ -76,8 +76,8 @@ public:
 
 private:
     static void appendAxisInput(QQmlListProperty<QAbstractAxisInput> *list, QAbstractAxisInput *input);
-    static QAbstractAxisInput *axisInputAt(QQmlListProperty<QAbstractAxisInput> *list, int index);
-    static int axesInputCount(QQmlListProperty<QAbstractAxisInput> *list);
+    static QAbstractAxisInput *axisInputAt(QQmlListProperty<QAbstractAxisInput> *list, qsizetype index);
+    static qsizetype axesInputCount(QQmlListProperty<QAbstractAxisInput> *list);
     static void clearAxisInputs(QQmlListProperty<QAbstractAxisInput> *list);
 };
 

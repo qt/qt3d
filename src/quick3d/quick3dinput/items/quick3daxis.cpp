@@ -65,13 +65,13 @@ void Quick3DAxis::appendAxisInput(QQmlListProperty<QAbstractAxisInput> *list, QA
     axis->parentAxis()->addInput(input);
 }
 
-QAbstractAxisInput *Quick3DAxis::axisInputAt(QQmlListProperty<QAbstractAxisInput> *list, int index)
+QAbstractAxisInput *Quick3DAxis::axisInputAt(QQmlListProperty<QAbstractAxisInput> *list, qsizetype index)
 {
     Quick3DAxis *axis = qobject_cast<Quick3DAxis *>(list->object);
     return axis->parentAxis()->inputs().at(index);
 }
 
-int Quick3DAxis::axesInputCount(QQmlListProperty<QAbstractAxisInput> *list)
+qsizetype Quick3DAxis::axesInputCount(QQmlListProperty<QAbstractAxisInput> *list)
 {
     Quick3DAxis *axis = qobject_cast<Quick3DAxis *>(list->object);
     return axis->parentAxis()->inputs().count();

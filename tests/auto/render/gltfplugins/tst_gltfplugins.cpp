@@ -160,6 +160,7 @@ void tst_gltfPlugins::initTestCase()
 
 void tst_gltfPlugins::init()
 {
+    m_sceneRoot1 = m_sceneRoot2 = nullptr;
     m_exportDir = new QTemporaryDir;
 #ifdef VISUAL_CHECK
     m_view1 = new Qt3DExtras::Qt3DWindow;
@@ -1146,6 +1147,7 @@ void tst_gltfPlugins::exportAndImport_data()
 
 void tst_gltfPlugins::exportAndImport()
 {
+    QSKIP("Crashes in JSON parser - see QTBUG-88588");
     QFETCH(bool, compactJson);
 
     createTestScene();

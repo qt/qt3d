@@ -79,8 +79,8 @@ private:
     static void appendKeyframe(QQmlListProperty<Qt3DCore::QTransform> *list,
                                Qt3DCore::QTransform *transform);
     static Qt3DCore::QTransform *keyframeAt(QQmlListProperty<Qt3DCore::QTransform> *list,
-                                            int index);
-    static int keyframeCount(QQmlListProperty<Qt3DCore::QTransform> *list);
+                                            qsizetype index);
+    static qsizetype keyframeCount(QQmlListProperty<Qt3DCore::QTransform> *list);
     static void clearKeyframes(QQmlListProperty<Qt3DCore::QTransform> *list);
 };
 

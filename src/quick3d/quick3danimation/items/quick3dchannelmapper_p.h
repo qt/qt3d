@@ -76,8 +76,8 @@ public:
 
 private:
     static void appendMapping(QQmlListProperty<QAbstractChannelMapping> *list, QAbstractChannelMapping *mapping);
-    static QAbstractChannelMapping *mappingAt(QQmlListProperty<QAbstractChannelMapping> *list, int index);
-    static int mappingCount(QQmlListProperty<QAbstractChannelMapping> *list);
+    static QAbstractChannelMapping *mappingAt(QQmlListProperty<QAbstractChannelMapping> *list, qsizetype index);
+    static qsizetype mappingCount(QQmlListProperty<QAbstractChannelMapping> *list);
     static void clearMappings(QQmlListProperty<QAbstractChannelMapping> *list);
 };
 
