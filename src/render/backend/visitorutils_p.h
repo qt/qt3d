@@ -132,7 +132,7 @@ void visitPrimitives(NodeManagers *manager, const GeometryProvider *renderer, Vi
     if (geom) {
         Qt3DRender::Render::Attribute *attribute = nullptr;
         const auto attrIds = geom->attributes();
-        for (const Qt3DCore::QNodeId attrId : attrIds) {
+        for (const Qt3DCore::QNodeId &attrId : attrIds) {
             attribute = manager->lookupResource<Attribute, AttributeManager>(attrId);
             if (attribute){
                 if (!positionAttribute && attribute->name() == Qt3DCore::QAttribute::defaultPositionAttributeName())

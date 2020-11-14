@@ -662,7 +662,7 @@ void GLTFExporter::parseMaterials()
             if (material->effect()) {
                 QList<QParameter *> parameters = material->effect()->parameters();
                 for (auto param : parameters) {
-                    if (param->value().type() == QVariant::Color) {
+                    if (param->value().metaType().id() == QMetaType::QColor) {
                         QColor color = param->value().value<QColor>();
                         if (param->name() == MATERIAL_AMBIENT_COLOR) {
                             matInfo.colors.insert(QStringLiteral("ambient"), color);
@@ -956,8 +956,8 @@ void GLTFExporter::parseMeshes()
                         qUtf16PrintableImpl(meshInfo.name), qUtf16PrintableImpl(meshInfo.originalName));
                 qCDebug(GLTFExporterLog, "    Vertex count: %i", vertexCount);
                 qCDebug(GLTFExporterLog, "    Bytes per vertex: %i", stride);
-                qCDebug(GLTFExporterLog, "    Vertex buffer size (bytes): %i", vertexBuf.size());
-                qCDebug(GLTFExporterLog, "    Index buffer size (bytes): %i", indexBuf.size());
+                qCDebug(GLTFExporterLog, "    Vertex buffer size (bytes): %lli", vertexBuf.size());
+                qCDebug(GLTFExporterLog, "    Index buffer size (bytes): %lli", indexBuf.size());
                 QStringList sl;
                 const auto views = meshInfo.views;
                 for (const auto &bv : views)
@@ -976,7 +976,7 @@ void GLTFExporter::parseMeshes()
         m_meshInfo.insert(mesh, meshInfo);
     }
 
-    qCDebug(GLTFExporterLog, "Total buffer size: %i", m_buffer.size());
+    qCDebug(GLTFExporterLog, "Total buffer size: %lli", m_buffer.size());
 }
 
 void GLTFExporter::parseCameras()
@@ -1799,7 +1799,7 @@ void GLTFExporter::exportParameter(QJsonObject &jsonObj, const QString &name,
         paramObj[typeStr] = GL_SAMPLER_2D;
         paramObj[valueStr] = m_textureIdMap.value(textureVariantToUrl(variant));
     } else {
-        switch (QMetaType::Type(variant.type())) {
+        switch (variant.metaType().id()) {
         case QMetaType::Bool:
             paramObj[typeStr] = GL_BOOL;
             paramObj[valueStr] = variant.toBool();
@@ -2071,7 +2071,7 @@ QString GLTFExporter::textureVariantToUrl(const QVariant &var)
 
 void GLTFExporter::setVarToJSonObject(QJsonObject &jsObj, const QString &key, const QVariant &var)
 {
-    switch (QMetaType::Type(var.type())) {
+    switch (var.metaType().id()) {
     case QMetaType::Bool:
         jsObj[key] = var.toBool();
         break;

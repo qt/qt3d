@@ -84,7 +84,7 @@ public:
     QModelIndex index(int row, int column, const QModelIndex &parent) const override
     {
         Q_UNUSED(column);
-        if (row>=0 && row<rowCount(parent))
+        if (row >= 0 && row < rowCount(parent))
             return createIndex(row,0);
         else
             return QModelIndex();
@@ -99,7 +99,7 @@ public:
     {
         int row = index.row();
         if ((row<0) || (row>=items.count()))
-            return QVariant::Invalid;
+            return int(QMetaType::UnknownType);
 
         switch (role) {
         case Qt::DisplayRole:

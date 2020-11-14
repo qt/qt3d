@@ -97,7 +97,7 @@ void jsonArrayToSqt(const QJsonArray &jsonArray, Qt3DCore::Sqt &sqt)
     QMatrix4x4 m;
     float *data = m.data();
     int i = 0;
-    for (const auto &element : jsonArray)
+    for (const auto element : jsonArray)
         *(data + i++) = static_cast<float>(element.toDouble());
 
     decomposeQMatrix4x4(m, sqt);
@@ -689,27 +689,27 @@ bool GLTFImporter::parseGLTF2()
 {
     bool success = true;
     const QJsonArray buffers = m_json.object().value(KEY_BUFFERS).toArray();
-    for (const auto &bufferValue : buffers)
+    for (const auto bufferValue : buffers)
         success &= processJSONBuffer(bufferValue.toObject());
 
     const QJsonArray bufferViews = m_json.object().value(KEY_BUFFER_VIEWS).toArray();
-    for (const auto &bufferViewValue : bufferViews)
+    for (const auto bufferViewValue : bufferViews)
         success &= processJSONBufferView(bufferViewValue.toObject());
 
     const QJsonArray accessors = m_json.object().value(KEY_ACCESSORS).toArray();
-    for (const auto &accessorValue : accessors)
+    for (const auto accessorValue : accessors)
         success &= processJSONAccessor(accessorValue.toObject());
 
     const QJsonArray skins = m_json.object().value(KEY_SKINS).toArray();
-    for (const auto &skinValue : skins)
+    for (const auto skinValue : skins)
         success &= processJSONSkin(skinValue.toObject());
 
     const QJsonArray animations = m_json.object().value(KEY_ANIMATIONS).toArray();
-    for (const auto &animationValue : animations)
+    for (const auto animationValue : animations)
         success &= processJSONAnimation(animationValue.toObject());
 
     const QJsonArray nodes = m_json.object().value(KEY_NODES).toArray();
-    for (const auto &nodeValue : nodes)
+    for (const auto nodeValue : nodes)
         success &= processJSONNode(nodeValue.toObject());
     setupNodeParentLinks();
 

@@ -74,21 +74,21 @@ int componentCountForType(int type, const QVariant &value)
 
     switch (type) {
     case QMetaType::Float:
-    case QVariant::Double:
+    case QMetaType::Double:
         return 1;
 
-    case QVariant::Vector2D:
+    case QMetaType::QVector2D:
         return 2;
 
-    case QVariant::Vector3D:
-    case QVariant::Color:
+    case QMetaType::QVector3D:
+    case QMetaType::QColor:
         return 3;
 
-    case QVariant::Vector4D:
-    case QVariant::Quaternion:
+    case QMetaType::QVector4D:
+    case QMetaType::QQuaternion:
         return 4;
 
-    case QVariant::List:
+    case QMetaType::QVariantList:
         return componentCountForValue<QVariantList>(value.toList());
 
     default:
@@ -105,7 +105,7 @@ QChannelMappingPrivate::QChannelMappingPrivate()
     , m_target(nullptr)
     , m_property()
     , m_propertyName(nullptr)
-    , m_type(static_cast<int>(QVariant::Invalid))
+    , m_type(static_cast<int>(QMetaType::UnknownType))
     , m_componentCount(0)
 {
     m_mappingType = ChannelMapping;
@@ -123,7 +123,7 @@ void QChannelMappingPrivate::updatePropertyNameTypeAndComponentCount()
     const char *propertyName = nullptr;
 
     if (!m_target || m_property.isNull()) {
-         type = QVariant::Invalid;
+         type = QMetaType::UnknownType;
     } else {
         const QMetaObject *mo = m_target->metaObject();
         const int propertyIndex = mo->indexOfProperty(m_property.toLocal8Bit());

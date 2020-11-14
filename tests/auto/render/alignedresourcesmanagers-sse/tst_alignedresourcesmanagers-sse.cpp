@@ -75,7 +75,7 @@ private Q_SLOTS:
         // Shouldn't crash
 
         const std::vector<HMatrix> &activeHandles = manager.activeHandles();
-        for (const HMatrix handle : activeHandles) {
+        for (const HMatrix &handle : activeHandles) {
             // WHEN
             Matrix4x4_SSE *mat = manager.data(handle);
             // THEN
@@ -109,7 +109,7 @@ private Q_SLOTS:
         // Shouldn't crash
 
         const std::vector<HCameraLens> &activeHandles = manager.activeHandles();
-        for (const HCameraLens handle : activeHandles) {
+        for (const HCameraLens &handle : activeHandles) {
             // WHEN
             Qt3DRender::Render::CameraLens *lens = manager.data(handle);
             // THEN

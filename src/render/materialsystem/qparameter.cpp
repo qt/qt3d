@@ -197,7 +197,7 @@ inline QVariant toBackendValue(const QVariant &v)
 
 void QParameterPrivate::setValue(const QVariant &v)
 {
-    if (v.type() == QVariant::List) {
+    if (v.metaType().id() == QMetaType::QVariantList) {
         QSequentialIterable iterable = v.value<QSequentialIterable>();
         QVariantList variants;
         variants.reserve(iterable.size());

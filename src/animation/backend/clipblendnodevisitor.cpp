@@ -106,7 +106,7 @@ void ClipBlendNodeVisitor::visitPreOrderAllNodes(ClipBlendNode *node,
 {
     visitFunction(node);
     const Qt3DCore::QNodeIdVector childIds = node->allDependencyIds();
-    for (const Qt3DCore::QNodeId childId: childIds) {
+    for (const Qt3DCore::QNodeId &childId: childIds) {
         ClipBlendNode *childNode = m_manager->lookupNode(childId);
         if (childNode != nullptr)
             visitPreOrderAllNodes(childNode, visitFunction);
@@ -122,7 +122,7 @@ void ClipBlendNodeVisitor::visitPostOrderAllNodes(ClipBlendNode *node,
                                                   const VisitFunction &visitFunction) const
 {
     const Qt3DCore::QNodeIdVector childIds = node->allDependencyIds();
-    for (const Qt3DCore::QNodeId childId: childIds) {
+    for (const Qt3DCore::QNodeId &childId: childIds) {
         ClipBlendNode *childNode = m_manager->lookupNode(childId);
         if (childNode != nullptr)
             visitPostOrderAllNodes(childNode, visitFunction);
@@ -140,7 +140,7 @@ void ClipBlendNodeVisitor::visitPreOrderDependencyNodes(ClipBlendNode *node,
 {
     visitFunction(node);
     const Qt3DCore::QNodeIdVector childIds = node->currentDependencyIds();
-    for (const Qt3DCore::QNodeId childId: childIds) {
+    for (const Qt3DCore::QNodeId &childId: childIds) {
         ClipBlendNode *childNode = m_manager->lookupNode(childId);
         if (childNode != nullptr)
             visitPreOrderDependencyNodes(childNode, visitFunction);
@@ -156,7 +156,7 @@ void ClipBlendNodeVisitor::visitPostOrderDependencyNodes(ClipBlendNode *node,
                                                          const VisitFunction &visitFunction) const
 {
     const Qt3DCore::QNodeIdVector childIds = node->currentDependencyIds();
-    for (const Qt3DCore::QNodeId childId: childIds) {
+    for (const Qt3DCore::QNodeId &childId: childIds) {
         ClipBlendNode *childNode = m_manager->lookupNode(childId);
         if (childNode != nullptr)
             visitPostOrderDependencyNodes(childNode, visitFunction);

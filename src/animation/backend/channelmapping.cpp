@@ -54,7 +54,7 @@ ChannelMapping::ChannelMapping()
     : BackendNode(ReadOnly)
     , m_channelName()
     , m_targetId()
-    , m_type(static_cast<int>(QVariant::Invalid))
+    , m_type(static_cast<int>(QMetaType::UnknownType))
     , m_componentCount(0)
     , m_propertyName(nullptr)
     , m_callback(nullptr)
@@ -68,7 +68,7 @@ void ChannelMapping::cleanup()
     setEnabled(false);
     m_channelName.clear();
     m_targetId = Qt3DCore::QNodeId();
-    m_type = static_cast<int>(QVariant::Invalid);
+    m_type = static_cast<int>(QMetaType::UnknownType);
     m_propertyName = nullptr;
     m_componentCount = 0;
     m_callback = nullptr;

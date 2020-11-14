@@ -83,7 +83,7 @@ private Q_SLOTS:
         {
             // WHEN
             auto newValue = new DummyCallback();
-            mapping.setCallback(QVariant::Quaternion, newValue);
+            mapping.setCallback(QMetaType::QQuaternion, newValue);
 
             // THEN - no signals for callback
             QCOMPARE(mapping.callback(), newValue);
@@ -117,7 +117,7 @@ private Q_SLOTS:
         {
             // WHEN
             auto callback = new DummyCallback();
-            mapping.setCallback(QVariant::Vector3D, callback, Qt3DAnimation::QAnimationCallback::OnThreadPool);
+            mapping.setCallback(QMetaType::QVector3D, callback, Qt3DAnimation::QAnimationCallback::OnThreadPool);
             QCoreApplication::processEvents();
 
             // THEN
@@ -127,7 +127,7 @@ private Q_SLOTS:
             arbiter.clear();
 
             // WHEN
-            mapping.setCallback(QVariant::Vector3D, callback, Qt3DAnimation::QAnimationCallback::OnThreadPool);
+            mapping.setCallback(QMetaType::QVector3D, callback, Qt3DAnimation::QAnimationCallback::OnThreadPool);
             QCoreApplication::processEvents();
 
             // THEN

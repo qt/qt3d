@@ -163,10 +163,10 @@ ComponentIndices channelComponentsToIndices(const Channel &channel,
     static const QList<char> colorSuffixesRGBA = { 'R', 'G', 'B', 'A' };
 
     switch (dataType) {
-    case QVariant::Quaternion:
+    case QMetaType::QQuaternion:
         return channelComponentsToIndicesHelper(channel, expectedComponentCount,
                                                 offset, quaternionSuffixes);
-    case QVariant::Color:
+    case QMetaType::QColor:
         if (expectedComponentCount == 3)
             return channelComponentsToIndicesHelper(channel, expectedComponentCount,
                                                     offset, colorSuffixesRGB);
@@ -184,7 +184,7 @@ ComponentIndices channelComponentsToIndicesHelper(const Channel &channel,
                                                   int offset,
                                                   const QList<char> &suffixes)
 {
-    const int actualComponentCount = channel.channelComponents.size();
+    const int actualComponentCount = int(channel.channelComponents.size());
     if (actualComponentCount != expectedComponentCount) {
         qWarning() << "Data type expects" << expectedComponentCount
                    << "but found" << actualComponentCount << "components in the animation clip";
@@ -351,24 +351,24 @@ QVariant buildPropertyValue(const MappingData &mappingData, const QList<float> &
 
     switch (mappingData.type) {
     case QMetaType::Float:
-    case QVariant::Double: {
+    case QMetaType::Double: {
         return QVariant::fromValue(channelResults[mappingData.channelIndices[0]]);
     }
 
-    case QVariant::Vector2D: {
+    case QMetaType::QVector2D: {
         const QVector2D vector(channelResults[mappingData.channelIndices[0]],
                 channelResults[mappingData.channelIndices[1]]);
         return QVariant::fromValue(vector);
     }
 
-    case QVariant::Vector3D: {
+    case QMetaType::QVector3D: {
         const QVector3D vector(channelResults[mappingData.channelIndices[0]],
                 channelResults[mappingData.channelIndices[1]],
                 channelResults[mappingData.channelIndices[2]]);
         return QVariant::fromValue(vector);
     }
 
-    case QVariant::Vector4D: {
+    case QMetaType::QVector4D: {
         const QVector4D vector(channelResults[mappingData.channelIndices[0]],
                 channelResults[mappingData.channelIndices[1]],
                 channelResults[mappingData.channelIndices[2]],
@@ -376,7 +376,7 @@ QVariant buildPropertyValue(const MappingData &mappingData, const QList<float> &
         return QVariant::fromValue(vector);
     }
 
-    case QVariant::Quaternion: {
+    case QMetaType::QQuaternion: {
         QQuaternion q(channelResults[mappingData.channelIndices[0]],
                 channelResults[mappingData.channelIndices[1]],
                 channelResults[mappingData.channelIndices[2]],
@@ -385,7 +385,7 @@ QVariant buildPropertyValue(const MappingData &mappingData, const QList<float> &
         return QVariant::fromValue(q);
     }
 
-    case QVariant::Color: {
+    case QMetaType::QColor: {
         // A color can either be a vec3 or a vec4
         const QColor color =
                 QColor::fromRgbF(channelResults[mappingData.channelIndices[0]],
@@ -395,11 +395,12 @@ QVariant buildPropertyValue(const MappingData &mappingData, const QList<float> &
         return QVariant::fromValue(color);
     }
 
-    case QVariant::List: {
+    case QMetaType::QVariantList: {
         const QVariantList results = mapChannelResultsToContainer<QVariantList>(
                     mappingData, channelResults);
         return QVariant::fromValue(results);
     }
+
     default:
         qWarning() << "Unhandled animation type" << mappingData.type;
         break;
@@ -528,7 +529,7 @@ QList<MappingData> buildPropertyMappings(const QList<ChannelMapping*> &channelMa
             mappingData.callback = mapping->callback();
             mappingData.callbackFlags = mapping->callbackFlags();
 
-            if (mappingData.type == static_cast<int>(QVariant::Invalid)) {
+            if (mappingData.type == static_cast<int>(QMetaType::UnknownType)) {
                 qWarning() << "Unknown type for node id =" << mappingData.targetId
                            << "and property =" << mapping->propertyName()
                            << "and callback =" << mapping->callback();
@@ -558,9 +559,9 @@ QList<MappingData> buildPropertyMappings(const QList<ChannelMapping*> &channelMa
 
         case ChannelMapping::SkeletonMappingType: {
             const QList<ChannelNameAndType> jointProperties
-                    = { { QLatin1String("Location"), static_cast<int>(QVariant::Vector3D), Translation },
-                        { QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion), Rotation },
-                        { QLatin1String("Scale"), static_cast<int>(QVariant::Vector3D), Scale } };
+                    = { { QLatin1String("Location"), static_cast<int>(QMetaType::QVector3D), Translation },
+                        { QLatin1String("Rotation"), static_cast<int>(QMetaType::QQuaternion), Rotation },
+                        { QLatin1String("Scale"), static_cast<int>(QMetaType::QVector3D), Scale } };
             const QHash<QString, const char *> channelNameToPropertyName
                     = { { QLatin1String("Location"), "translation" },
                         { QLatin1String("Rotation"), "rotation" },
@@ -636,7 +637,7 @@ QList<ChannelNameAndType> buildRequiredChannelsAndTypes(Handler *handler,
     // We could add them all then sort and remove duplicates. However, our approach has the
     // advantage of keeping the blend tree format more consistent with the mapping
     // orderings which will have better cache locality when generating events.
-    for (const Qt3DCore::QNodeId mappingId : mappingIds) {
+    for (const Qt3DCore::QNodeId &mappingId : mappingIds) {
         // Get the mapping object
         ChannelMapping *mapping = mappingManager->lookupResource(mappingId);
         Q_ASSERT(mapping);
@@ -661,9 +662,9 @@ QList<ChannelNameAndType> buildRequiredChannelsAndTypes(Handler *handler,
             // Add an entry for each scale/rotation/translation property of each joint index
             // of the target skeleton.
             const QList<ChannelNameAndType> jointProperties
-                    = { { QLatin1String("Location"), static_cast<int>(QVariant::Vector3D), Translation },
-                        { QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion), Rotation },
-                        { QLatin1String("Scale"), static_cast<int>(QVariant::Vector3D), Scale } };
+                    = { { QLatin1String("Location"), static_cast<int>(QMetaType::QVector3D), Translation },
+                        { QLatin1String("Rotation"), static_cast<int>(QMetaType::QQuaternion), Rotation },
+                        { QLatin1String("Scale"), static_cast<int>(QMetaType::QVector3D), Scale } };
             Skeleton *skeleton = handler->skeletonManager()->lookupResource(mapping->skeletonId());
             const int jointCount = skeleton->jointCount();
             for (int jointIndex = 0; jointIndex < jointCount; ++jointIndex) {
@@ -732,7 +733,7 @@ QList<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
             clipIds.append(blendNode->peerId());
 
         const auto dependencyIds = blendNode->currentDependencyIds();
-        for (const auto dependencyId : dependencyIds) {
+        for (const auto &dependencyId : dependencyIds) {
             // Look up the blend node and if it's a value type (clip),
             // add it to the set of value node ids that need to be evaluated
             ClipBlendNode *node = nodeManager->lookupNode(dependencyId);

@@ -81,7 +81,7 @@ void FilterLayerEntityJob::filterAcceptAnyMatchingLayers(Entity *entity,
 {
     const Qt3DCore::QNodeIdVector entityLayers = entity->layerIds();
 
-    for (const Qt3DCore::QNodeId id : entityLayers) {
+    for (const Qt3DCore::QNodeId &id : entityLayers) {
         const bool layerAccepted = layerIds.contains(id);
 
         if (layerAccepted) {
@@ -99,7 +99,7 @@ void FilterLayerEntityJob::filterAcceptAllMatchingLayers(Entity *entity,
     const Qt3DCore::QNodeIdVector entityLayers = entity->layerIds();
     int layersAccepted = 0;
 
-    for (const Qt3DCore::QNodeId id : entityLayers) {
+    for (const Qt3DCore::QNodeId &id : entityLayers) {
         if (layerIds.contains(id))
             ++layersAccepted;
     }
@@ -118,7 +118,7 @@ void FilterLayerEntityJob::filterDiscardAnyMatchingLayers(Entity *entity,
     const Qt3DCore::QNodeIdVector entityLayers = entity->layerIds();
     bool entityCanBeDiscarded = false;
 
-    for (const Qt3DCore::QNodeId id : entityLayers) {
+    for (const Qt3DCore::QNodeId &id : entityLayers) {
         if (layerIds.contains(id)) {
             entityCanBeDiscarded =  true;
             break;
@@ -140,7 +140,7 @@ void FilterLayerEntityJob::filterDiscardAllMatchingLayers(Entity *entity,
 
     int containedLayers = 0;
 
-    for (const Qt3DCore::QNodeId id : layerIds) {
+    for (const Qt3DCore::QNodeId &id : layerIds) {
         if (entityLayers.contains(id))
             ++containedLayers;
     }
@@ -167,7 +167,7 @@ void FilterLayerEntityJob::filterLayerAndEntity()
     FrameGraphManager *frameGraphManager = m_manager->frameGraphManager();
     LayerManager *layerManager = m_manager->layerManager();
 
-    for (const Qt3DCore::QNodeId layerFilterId : qAsConst(m_layerFilterIds)) {
+    for (const Qt3DCore::QNodeId &layerFilterId : qAsConst(m_layerFilterIds)) {
         LayerFilterNode *layerFilter = static_cast<LayerFilterNode *>(frameGraphManager->lookupNode(layerFilterId));
         Qt3DCore::QNodeIdVector layerIds = layerFilter->layerIds();
 

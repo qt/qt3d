@@ -76,7 +76,7 @@ void UpdateEntityLayersJob::run()
         Entity *entity = entityManager->data(handle);
         const Qt3DCore::QNodeIdVector entityLayers = entity->componentsUuid<Layer>();
 
-        for (const Qt3DCore::QNodeId layerId : entityLayers) {
+        for (const Qt3DCore::QNodeId &layerId : entityLayers) {
             Layer *layer = layerManager->lookupResource(layerId);
             if (layer->recursive()) {
                 // Find all children of the entity and add the layers to them

@@ -47,7 +47,7 @@ namespace Qt3DAnimation {
 QCallbackMappingPrivate::QCallbackMappingPrivate()
     : QAbstractChannelMappingPrivate()
     , m_channelName()
-    , m_type(static_cast<int>(QVariant::Invalid))
+    , m_type(static_cast<int>(QMetaType::UnknownType))
     , m_callback(nullptr)
 {
     m_mappingType = QAbstractChannelMappingPrivate::CallbackMapping;
@@ -107,8 +107,8 @@ void QCallbackMapping::setChannelName(const QString &channelName)
     on the gui/main thread, or directly on one of the thread pool's worker
     thread. This is controlled by \a flags.
 
-    \a type specifies the type (for example, QVariant::Vector3D,
-    QVariant::Color, or QMetaType::Float) of the animated value. When animating
+    \a type specifies the type (for example, QMetaType::QVector3D,
+    QMetaType::QColor, or QMetaType::Float) of the animated value. When animating
     node properties this does not need to be provided separately, however it
     becomes important to supply this when there is only a callback.
 

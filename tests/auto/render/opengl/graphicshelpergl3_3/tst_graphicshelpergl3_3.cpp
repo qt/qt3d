@@ -652,9 +652,8 @@ private Q_SLOTS:
         m_func->glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_FLOAT, colors.data());
         textures[3]->release();
 
-        for (const QVector4D c : colors) {
+        for (const QVector4D &c : colors)
             QVERIFY(c == clearValue1);
-        }
 
         // WHEN
         const QVector4D clearValue2 = QVector4D(0.4f, 0.5f, 0.4f, 1.0f);
@@ -664,9 +663,8 @@ private Q_SLOTS:
         textures[3]->bind();
         m_func->glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_FLOAT, colors.data());
         textures[3]->release();
-        for (const QVector4D c : colors) {
+        for (const QVector4D &c : colors)
             QVERIFY(c == clearValue2);
-        }
         // Restore
         m_func->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
         m_func->glDeleteFramebuffers(1, &fboId);

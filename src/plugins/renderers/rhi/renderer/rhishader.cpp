@@ -94,25 +94,6 @@ const std::vector<QByteArray> &RHIShader::shaderCode() const
 }
 
 namespace {
-static constexpr QRhiVertexInputAttribute::Format
-rhiInputType(QShaderDescription::VariableType type)
-{
-    switch (type) {
-    case QShaderDescription::Vec4:
-        return QRhiVertexInputAttribute::Float4;
-    case QShaderDescription::Vec3:
-        return QRhiVertexInputAttribute::Float3;
-    case QShaderDescription::Vec2:
-        return QRhiVertexInputAttribute::Float2;
-    case QShaderDescription::Float:
-        return QRhiVertexInputAttribute::Float;
-    default:
-        // TODO UNormByte4, UNormByte2, UNormByte
-        RHI_UNIMPLEMENTED;
-        return QRhiVertexInputAttribute::UNormByte;
-        break;
-    }
-}
 
 static constexpr int rhiTypeSize(QShaderDescription::VariableType type)
 {
