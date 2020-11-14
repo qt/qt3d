@@ -127,7 +127,7 @@ void ShaderData::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
 
             // We check if property is a Transformed property
             QString transformedPropertyName;
-            if (propertyValue.userType() == QVariant::Vector3D) {
+            if (propertyValue.userType() == QMetaType::QVector3D) {
                 // if there is a matching QShaderData::TransformType propertyTransformed
                 transformedPropertyName = propertyName + QLatin1String("Transformed");
                 isTransformed = propertyNames.contains(transformedPropertyName);

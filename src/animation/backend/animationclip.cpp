@@ -167,12 +167,12 @@ void AnimationClip::loadAnimation()
     // that the clip has changed and that they are now dirty
     {
         QMutexLocker lock(&m_mutex);
-        for (const Qt3DCore::QNodeId id : qAsConst(m_dependingAnimators)) {
+        for (const Qt3DCore::QNodeId &id : qAsConst(m_dependingAnimators)) {
             ClipAnimator *animator = m_handler->clipAnimatorManager()->lookupResource(id);
             if (animator)
                 animator->animationClipMarkedDirty();
         }
-        for (const Qt3DCore::QNodeId id : qAsConst(m_dependingBlendedAnimators)) {
+        for (const Qt3DCore::QNodeId &id : qAsConst(m_dependingBlendedAnimators)) {
             BlendedClipAnimator *animator = m_handler->blendedClipAnimatorManager()->lookupResource(id);
             if (animator)
                 animator->animationClipMarkedDirty();

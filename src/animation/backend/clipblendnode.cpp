@@ -134,7 +134,7 @@ void ClipBlendNode::blend(Qt3DCore::QNodeId animatorId)
     const int dependencyCount = dependencyNodeIds.size();
     QList<ClipResults> blendData;
     blendData.reserve(dependencyCount);
-    for (const auto dependencyId : dependencyNodeIds) {
+    for (const auto &dependencyId : dependencyNodeIds) {
         ClipBlendNode *dependencyNode = clipBlendNodeManager()->lookupNode(dependencyId);
         ClipResults blendDataElement = dependencyNode->clipResults(animatorId);
         blendData.push_back(blendDataElement);

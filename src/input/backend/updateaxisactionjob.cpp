@@ -93,12 +93,12 @@ void UpdateAxisActionJob::updateAction(LogicalDevice *device)
     const auto actionIds = device->actions();
     d->m_triggeredActions.reserve(actionIds.size());
 
-    for (const Qt3DCore::QNodeId actionId : actionIds) {
+    for (const Qt3DCore::QNodeId &actionId : actionIds) {
         bool actionTriggered = false;
         Action *action = m_handler->actionManager()->lookupResource(actionId);
 
         const auto actionInputIds = action->inputs();
-        for (const Qt3DCore::QNodeId actionInputId : actionInputIds)
+        for (const Qt3DCore::QNodeId &actionInputId : actionInputIds)
             actionTriggered |= processActionInput(actionInputId);
 
         if (action->isEnabled() && (action->actionTriggered() != actionTriggered)) {
@@ -121,12 +121,12 @@ void UpdateAxisActionJob::updateAxis(LogicalDevice *device)
     const auto axisIds = device->axes();
     d->m_triggeredAxis.reserve(axisIds.size());
 
-    for (const Qt3DCore::QNodeId axisId : axisIds) {
+    for (const Qt3DCore::QNodeId &axisId : axisIds) {
         Axis *axis = m_handler->axisManager()->lookupResource(axisId);
         float axisValue = 0.0f;
 
         const auto axisInputIds = axis->inputs();
-        for (const Qt3DCore::QNodeId axisInputId : axisInputIds)
+        for (const Qt3DCore::QNodeId &axisInputId : axisInputIds)
             axisValue += processAxisInput(axisInputId);
 
         // Clamp the axisValue -1/1

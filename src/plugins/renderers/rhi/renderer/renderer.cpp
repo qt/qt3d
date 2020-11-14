@@ -1969,7 +1969,7 @@ void Renderer::updateTexture(Texture *texture)
         std::vector<RHITexture::Image> images;
         images.reserve(textureImageIds.size());
         // TODO: Move this into RHITexture directly
-        for (const QNodeId textureImageId : textureImageIds) {
+        for (const QNodeId &textureImageId : textureImageIds) {
             const TextureImage *img =
                     m_nodesManager->textureImageManager()->lookupResource(textureImageId);
             if (img == nullptr) {
@@ -2963,7 +2963,7 @@ void Renderer::cleanGraphicsResources()
     // When Textures are cleaned up, their id is saved so that they can be
     // cleaned up in the render thread
     const QList<Qt3DCore::QNodeId> cleanedUpTextureIds = std::move(m_textureIdsToCleanup);
-    for (const Qt3DCore::QNodeId textureCleanedUpId : cleanedUpTextureIds)
+    for (const Qt3DCore::QNodeId &textureCleanedUpId : cleanedUpTextureIds)
         cleanupTexture(textureCleanedUpId);
 
     // Abandon GL shaders when a Shader node is destroyed Note: We are sure
@@ -2971,7 +2971,7 @@ void Renderer::cleanGraphicsResources()
     // shader nodes updated
     const QList<Qt3DCore::QNodeId> cleanedUpShaderIds =
             m_nodesManager->shaderManager()->takeShaderIdsToCleanup();
-    for (const Qt3DCore::QNodeId shaderCleanedUpId : cleanedUpShaderIds) {
+    for (const Qt3DCore::QNodeId &shaderCleanedUpId : cleanedUpShaderIds) {
         cleanupShader(m_nodesManager->shaderManager()->lookupResource(shaderCleanedUpId));
         // We can really release the texture at this point
         m_nodesManager->shaderManager()->releaseResource(shaderCleanedUpId);
@@ -2983,7 +2983,7 @@ void Renderer::cleanGraphicsResources()
 
     const QList<Qt3DCore::QNodeId> cleanedUpRenderTargetIds =
             m_nodesManager->renderTargetManager()->takeRenderTargetIdsToCleanup();
-    for (const Qt3DCore::QNodeId renderTargetCleanedUpId : cleanedUpRenderTargetIds) {
+    for (const Qt3DCore::QNodeId &renderTargetCleanedUpId : cleanedUpRenderTargetIds) {
         cleanupRenderTarget(renderTargetCleanedUpId);
         m_nodesManager->renderTargetManager()->releaseResource(renderTargetCleanedUpId);
         // Release pipelines that were referencing renderTarget

@@ -854,7 +854,7 @@ bool HierarchicalEntityPicker::collectHits(NodeManagers *manager, Entity *root)
 
         Qt3DCore::QNodeIdVector recursiveLayers;
         const Qt3DCore::QNodeIdVector entityLayers = current.entity->componentsUuid<Layer>();
-        for (const Qt3DCore::QNodeId layerId : entityLayers) {
+        for (const Qt3DCore::QNodeId &layerId : entityLayers) {
             Layer *layer = layerManager->lookupResource(layerId);
             if (layer->recursive())
                 recursiveLayers << layerId;

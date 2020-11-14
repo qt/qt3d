@@ -59,7 +59,7 @@ private Q_SLOTS:
         QVariant data = buf.readBinaryFile(QUrl::fromLocalFile(QLatin1String("this_should_not_exist.bin")));
 
         // THEN
-        QCOMPARE(data.userType(), static_cast<int>(QVariant::ByteArray));
+        QCOMPARE(data.userType(), static_cast<int>(QMetaType::QByteArray));
         QVERIFY(data.value<QByteArray>().isEmpty());
     }
 
@@ -80,7 +80,7 @@ private Q_SLOTS:
         QVariant data = buf.readBinaryFile(path);
 
         // THEN
-        QCOMPARE(data.userType(), static_cast<int>(QVariant::ByteArray));
+        QCOMPARE(data.userType(), static_cast<int>(QMetaType::QByteArray));
         const QByteArray byteArray = data.value<QByteArray>();
         QCOMPARE(byteArray.size(), bufferByteSize);
         QVERIFY(memcmp(byteArray, dataArray.constData(), bufferByteSize) == 0);

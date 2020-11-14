@@ -321,7 +321,7 @@ void GraphicsContext::loadShader(Shader *shaderNode,
         }
     } else {
         // Find an already loaded shader that shares the same QOpenGLShaderProgram
-        for (const Qt3DCore::QNodeId sharedShaderId : sharedShaderIds) {
+        for (const Qt3DCore::QNodeId &sharedShaderId : sharedShaderIds) {
             if (sharedShaderId != shaderNode->peerId()) {
                 Shader *refShader = shaderManager->lookupResource(sharedShaderId);
                 // We only introspect once per actual OpenGL shader program

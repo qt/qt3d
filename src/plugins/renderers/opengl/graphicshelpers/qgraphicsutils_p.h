@@ -96,7 +96,7 @@ public:
         static QVarLengthArray<char, 64> array(16 * byteSize);
         memset(array.data(), 0, array.size());
 
-        switch (static_cast<QMetaType::Type>(v.type())) {
+        switch (v.metaType().id()) {
 
         // 1 byte
         case QMetaType::Bool: {
@@ -332,7 +332,7 @@ public:
                 }
             }
             else
-                qWarning() << Q_FUNC_INFO << "QVariant type conversion not handled for " << v.type();
+                qWarning() << Q_FUNC_INFO << "QVariant type conversion not handled for " << v.metaType().id();
             break;
         }
 

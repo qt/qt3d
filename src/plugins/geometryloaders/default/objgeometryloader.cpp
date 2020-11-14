@@ -238,7 +238,7 @@ bool ObjGeometryLoader::doLoad(QIODevice *ioDev, const QString &subMesh)
     const int indexCount = faceIndexVector.size();
     m_indices.clear();
     m_indices.reserve(indexCount);
-    for (const FaceIndices faceIndices : qAsConst(faceIndexVector)) {
+    for (const FaceIndices &faceIndices : qAsConst(faceIndexVector)) {
         const unsigned int i = faceIndexMap.value(faceIndices);
         m_indices.append(i);
     }

@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
     auto *textMaterial = new Qt3DExtras::QPhongMaterial(root);
     { // text
         int i = 0;
-        const QStringList fonts = QFontDatabase().families();
+        const QStringList fonts = QFontDatabase::families();
 
         for (const QString &family : fonts)
         {

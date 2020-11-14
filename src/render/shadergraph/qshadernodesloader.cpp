@@ -123,7 +123,7 @@ void QShaderNodesLoader::load(const QJsonObject &prototypesObject)
         const QJsonValue inputsValue = nodeObject.value(QStringLiteral("inputs"));
         if (inputsValue.isArray()) {
             const QJsonArray inputsArray = inputsValue.toArray();
-            for (const QJsonValue &inputValue : inputsArray) {
+            for (const QJsonValue inputValue : inputsArray) {
                 if (!inputValue.isString()) {
                     qWarning() << "Non-string value in inputs";
                     hasError = true;
@@ -140,7 +140,7 @@ void QShaderNodesLoader::load(const QJsonObject &prototypesObject)
         const QJsonValue outputsValue = nodeObject.value(QStringLiteral("outputs"));
         if (outputsValue.isArray()) {
             const QJsonArray outputsArray = outputsValue.toArray();
-            for (const QJsonValue &outputValue : outputsArray) {
+            for (const QJsonValue outputValue : outputsArray) {
                 if (!outputValue.isString()) {
                     qWarning() << "Non-string value in outputs";
                     hasError = true;
@@ -162,13 +162,13 @@ void QShaderNodesLoader::load(const QJsonObject &prototypesObject)
                 if (parameterValue.isObject()) {
                     const QJsonObject parameterObject = parameterValue.toObject();
                     const QString type = parameterObject.value(QStringLiteral("type")).toString();
-                    const int typeId = QMetaType::type(type.toUtf8());
+                    const QMetaType typeId = QMetaType::fromName(type.toUtf8());
 
                     const QString value = parameterObject.value(QStringLiteral("value")).toString();
                     auto variant = QVariant(value);
 
-                    if (QMetaType::typeFlags(typeId) & QMetaType::IsEnumeration) {
-                        const QMetaObject *metaObject = QMetaType::metaObjectForType(typeId);
+                    if (typeId.flags() & QMetaType::IsEnumeration) {
+                        const QMetaObject *metaObject = typeId.metaObject();
                         const char *className = metaObject->className();
                         const QByteArray enumName = type.mid(static_cast<int>(qstrlen(className)) + 2).toUtf8();
                         const QMetaEnum metaEnum = metaObject->enumerator(metaObject->indexOfEnumerator(enumName));
@@ -188,7 +188,7 @@ void QShaderNodesLoader::load(const QJsonObject &prototypesObject)
         const QJsonValue rulesValue = nodeObject.value(QStringLiteral("rules"));
         if (rulesValue.isArray()) {
             const QJsonArray rulesArray = rulesValue.toArray();
-            for (const QJsonValue &ruleValue : rulesArray) {
+            for (const QJsonValue ruleValue : rulesArray) {
                 if (!ruleValue.isObject()) {
                     qWarning() << "Rules should be objects";
                     hasError = true;
