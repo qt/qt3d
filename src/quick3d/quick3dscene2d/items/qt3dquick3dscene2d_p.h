@@ -78,8 +78,8 @@ public:
 private:
 
     static void appendEntity(QQmlListProperty<Qt3DCore::QEntity> *list, Qt3DCore::QEntity *entity);
-    static Qt3DCore::QEntity *entityAt(QQmlListProperty<Qt3DCore::QEntity> *list, int index);
-    static int entityCount(QQmlListProperty<Qt3DCore::QEntity> *list);
+    static Qt3DCore::QEntity *entityAt(QQmlListProperty<Qt3DCore::QEntity> *list, qsizetype index);
+    static qsizetype entityCount(QQmlListProperty<Qt3DCore::QEntity> *list);
     static void clearEntities(QQmlListProperty<Qt3DCore::QEntity> *list);
 };
 

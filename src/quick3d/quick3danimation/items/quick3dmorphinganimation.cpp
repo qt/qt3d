@@ -63,7 +63,7 @@ void QQuick3DMorphingAnimation::appendMorphTarget(QQmlListProperty<Qt3DAnimation
         animation->parentMorphingAnimation()->addMorphTarget(morphTarget);
 }
 
-int QQuick3DMorphingAnimation::morphTargetCount(QQmlListProperty<Qt3DAnimation::QMorphTarget> *list)
+qsizetype QQuick3DMorphingAnimation::morphTargetCount(QQmlListProperty<Qt3DAnimation::QMorphTarget> *list)
 {
     QQuick3DMorphingAnimation *animation = qobject_cast<QQuick3DMorphingAnimation *>(list->object);
     if (animation)
@@ -72,7 +72,7 @@ int QQuick3DMorphingAnimation::morphTargetCount(QQmlListProperty<Qt3DAnimation::
 }
 
 Qt3DAnimation::QMorphTarget *QQuick3DMorphingAnimation::morphTargetAt(QQmlListProperty<Qt3DAnimation::QMorphTarget> *list,
-                                                                   int index)
+                                                                      qsizetype index)
 {
     QQuick3DMorphingAnimation *animation = qobject_cast<QQuick3DMorphingAnimation *>(list->object);
     if (animation) {

@@ -49,10 +49,10 @@ QQuick3DKeyframeAnimation::QQuick3DKeyframeAnimation(QObject *parent)
 QQmlListProperty<Qt3DCore::QTransform> QQuick3DKeyframeAnimation::keyframes()
 {
     return QQmlListProperty<Qt3DCore::QTransform>(this, 0,
-                                       &QQuick3DKeyframeAnimation::appendKeyframe,
-                                       &QQuick3DKeyframeAnimation::keyframeCount,
-                                       &QQuick3DKeyframeAnimation::keyframeAt,
-                                       &QQuick3DKeyframeAnimation::clearKeyframes);
+                                                  &QQuick3DKeyframeAnimation::appendKeyframe,
+                                                  &QQuick3DKeyframeAnimation::keyframeCount,
+                                                  &QQuick3DKeyframeAnimation::keyframeAt,
+                                                  &QQuick3DKeyframeAnimation::clearKeyframes);
 }
 
 void QQuick3DKeyframeAnimation::appendKeyframe(QQmlListProperty<Qt3DCore::QTransform> *list,
@@ -64,7 +64,7 @@ void QQuick3DKeyframeAnimation::appendKeyframe(QQmlListProperty<Qt3DCore::QTrans
         keyframeAnimation->parentKeyframeAnimation()->addKeyframe(transform);
 }
 
-int QQuick3DKeyframeAnimation::keyframeCount(QQmlListProperty<Qt3DCore::QTransform> *list)
+qsizetype QQuick3DKeyframeAnimation::keyframeCount(QQmlListProperty<Qt3DCore::QTransform> *list)
 {
     QQuick3DKeyframeAnimation *keyframeAnimation
             = qobject_cast<QQuick3DKeyframeAnimation *>(list->object);
@@ -74,7 +74,7 @@ int QQuick3DKeyframeAnimation::keyframeCount(QQmlListProperty<Qt3DCore::QTransfo
 }
 
 Qt3DCore::QTransform *QQuick3DKeyframeAnimation::keyframeAt(QQmlListProperty<Qt3DCore::QTransform> *list,
-                                                            int index)
+                                                            qsizetype index)
 {
     QQuick3DKeyframeAnimation *keyframeAnimation
             = qobject_cast<QQuick3DKeyframeAnimation *>(list->object);

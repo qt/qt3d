@@ -76,8 +76,8 @@ public:
 
 private:
     static void appendAxisSetting(QQmlListProperty<QAxisSetting> *list, QAxisSetting *axes);
-    static QAxisSetting *axisSettingAt(QQmlListProperty<QAxisSetting> *list, int index);
-    static int axisSettingsCount(QQmlListProperty<QAxisSetting> *list);
+    static QAxisSetting *axisSettingAt(QQmlListProperty<QAxisSetting> *list, qsizetype index);
+    static qsizetype axisSettingsCount(QQmlListProperty<QAxisSetting> *list);
     static void clearAxisSettings(QQmlListProperty<QAxisSetting> *list);
 };
 

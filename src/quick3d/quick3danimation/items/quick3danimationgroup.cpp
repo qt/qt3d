@@ -66,7 +66,7 @@ void QQuick3DAnimationGroup::appendAnimation(QQmlListProperty<Qt3DAnimation::QAb
         animationGroup->parentAnimationGroup()->addAnimation(animation);
 }
 
-int QQuick3DAnimationGroup::animationCount(QQmlListProperty<Qt3DAnimation::QAbstractAnimation> *list)
+qsizetype QQuick3DAnimationGroup::animationCount(QQmlListProperty<Qt3DAnimation::QAbstractAnimation> *list)
 {
     QQuick3DAnimationGroup *animationGroup = qobject_cast<QQuick3DAnimationGroup *>(list->object);
     if (animationGroup)
@@ -74,7 +74,7 @@ int QQuick3DAnimationGroup::animationCount(QQmlListProperty<Qt3DAnimation::QAbst
     return 0;
 }
 
-Qt3DAnimation::QAbstractAnimation *QQuick3DAnimationGroup::animationAt(QQmlListProperty<Qt3DAnimation::QAbstractAnimation> *list, int index)
+Qt3DAnimation::QAbstractAnimation *QQuick3DAnimationGroup::animationAt(QQmlListProperty<Qt3DAnimation::QAbstractAnimation> *list, qsizetype index)
 {
     QQuick3DAnimationGroup *animationGroup = qobject_cast<QQuick3DAnimationGroup *>(list->object);
     if (animationGroup) {

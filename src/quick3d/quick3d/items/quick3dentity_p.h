@@ -80,8 +80,8 @@ public:
 private:
 
     static void qmlAppendComponent(QQmlListProperty<Qt3DCore::QComponent> *list, Qt3DCore::QComponent *comp);
-    static QComponent *qmlComponentAt(QQmlListProperty<Qt3DCore::QComponent> *list, int index);
-    static int qmlComponentsCount(QQmlListProperty<Qt3DCore::QComponent> *list);
+    static QComponent *qmlComponentAt(QQmlListProperty<Qt3DCore::QComponent> *list, qsizetype index);
+    static qsizetype qmlComponentsCount(QQmlListProperty<Qt3DCore::QComponent> *list);
     static void qmlClearComponents(QQmlListProperty<Qt3DCore::QComponent> *list);
 
     QList<Qt3DCore::QComponent *> m_managedComponents;

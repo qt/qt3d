@@ -97,13 +97,13 @@ void Quick3DEntity::qmlAppendComponent(QQmlListProperty<QComponent> *list, QComp
     self->parentEntity()->addComponent(comp);
 }
 
-QComponent *Quick3DEntity::qmlComponentAt(QQmlListProperty<QComponent> *list, int index)
+QComponent *Quick3DEntity::qmlComponentAt(QQmlListProperty<QComponent> *list, qsizetype index)
 {
     Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
     return self->parentEntity()->components().at(index);
 }
 
-int Quick3DEntity::qmlComponentsCount(QQmlListProperty<QComponent> *list)
+qsizetype Quick3DEntity::qmlComponentsCount(QQmlListProperty<QComponent> *list)
 {
     Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
     return self->parentEntity()->components().count();

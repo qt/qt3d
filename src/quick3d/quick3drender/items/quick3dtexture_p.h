@@ -77,8 +77,8 @@ public:
 
 private:
     static void appendTextureImage(QQmlListProperty<QAbstractTextureImage> *list, QAbstractTextureImage *textureImage);
-    static QAbstractTextureImage *textureImageAt(QQmlListProperty<QAbstractTextureImage> *list, int index);
-    static int textureImageCount(QQmlListProperty<QAbstractTextureImage> *list);
+    static QAbstractTextureImage *textureImageAt(QQmlListProperty<QAbstractTextureImage> *list, qsizetype index);
+    static qsizetype textureImageCount(QQmlListProperty<QAbstractTextureImage> *list);
     static void clearTextureImageList(QQmlListProperty<QAbstractTextureImage> *list);
 };
 

@@ -74,8 +74,8 @@ public:
 
 private:
     static void appendActionInput(QQmlListProperty<QAbstractActionInput> *list, QAbstractActionInput *input);
-    static QAbstractActionInput *actionInputAt(QQmlListProperty<QAbstractActionInput> *list, int index);
-    static int actionInputCount(QQmlListProperty<QAbstractActionInput> *list);
+    static QAbstractActionInput *actionInputAt(QQmlListProperty<QAbstractActionInput> *list, qsizetype index);
+    static qsizetype actionInputCount(QQmlListProperty<QAbstractActionInput> *list);
     static void clearActionInputs(QQmlListProperty<QAbstractActionInput> *list);
 };
 

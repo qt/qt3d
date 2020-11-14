@@ -70,13 +70,13 @@ void Quick3DStateSet::appendRenderState(QQmlListProperty<QRenderState> *list, QR
     stateSet->parentStateSet()->addRenderState(state);
 }
 
-QRenderState *Quick3DStateSet::renderStateAt(QQmlListProperty<QRenderState> *list, int index)
+QRenderState *Quick3DStateSet::renderStateAt(QQmlListProperty<QRenderState> *list, qsizetype index)
 {
     Quick3DStateSet *stateSet = qobject_cast<Quick3DStateSet *>(list->object);
     return stateSet->parentStateSet()->renderStates().at(index);
 }
 
-int Quick3DStateSet::renderStateCount(QQmlListProperty<QRenderState> *list)
+qsizetype Quick3DStateSet::renderStateCount(QQmlListProperty<QRenderState> *list)
 {
     Quick3DStateSet *stateSet = qobject_cast<Quick3DStateSet *>(list->object);
     return stateSet->parentStateSet()->renderStates().count();

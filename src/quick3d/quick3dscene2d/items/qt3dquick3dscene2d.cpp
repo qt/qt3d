@@ -65,7 +65,7 @@ void QQuick3DScene2D::appendEntity(QQmlListProperty<Qt3DCore::QEntity> *list,
         scene2d->parentScene2D()->addEntity(entity);
 }
 
-int QQuick3DScene2D::entityCount(QQmlListProperty<Qt3DCore::QEntity> *list)
+qsizetype QQuick3DScene2D::entityCount(QQmlListProperty<Qt3DCore::QEntity> *list)
 {
     QQuick3DScene2D *scene2d = qobject_cast<QQuick3DScene2D *>(list->object);
     if (scene2d)
@@ -73,7 +73,7 @@ int QQuick3DScene2D::entityCount(QQmlListProperty<Qt3DCore::QEntity> *list)
     return 0;
 }
 
-Qt3DCore::QEntity *QQuick3DScene2D::entityAt(QQmlListProperty<Qt3DCore::QEntity> *list, int index)
+Qt3DCore::QEntity *QQuick3DScene2D::entityAt(QQmlListProperty<Qt3DCore::QEntity> *list, qsizetype index)
 {
     QQuick3DScene2D *scene2d = qobject_cast<QQuick3DScene2D *>(list->object);
     if (scene2d) {

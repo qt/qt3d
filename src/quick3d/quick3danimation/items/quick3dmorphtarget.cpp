@@ -62,7 +62,7 @@ void QQuick3DMorphTarget::appendAttribute(QQmlListProperty<Qt3DCore::QAttribute>
         target->parentMorphTarget()->addAttribute(bar);
 }
 
-int QQuick3DMorphTarget::attributeCount(QQmlListProperty<Qt3DCore::QAttribute> *list)
+qsizetype QQuick3DMorphTarget::attributeCount(QQmlListProperty<Qt3DCore::QAttribute> *list)
 {
     QQuick3DMorphTarget *target = qobject_cast<QQuick3DMorphTarget *>(list->object);
     if (target)
@@ -70,7 +70,7 @@ int QQuick3DMorphTarget::attributeCount(QQmlListProperty<Qt3DCore::QAttribute> *
     return 0;
 }
 
-Qt3DCore::QAttribute *QQuick3DMorphTarget::attributeAt(QQmlListProperty<Qt3DCore::QAttribute> *list, int index)
+Qt3DCore::QAttribute *QQuick3DMorphTarget::attributeAt(QQmlListProperty<Qt3DCore::QAttribute> *list, qsizetype index)
 {
     QQuick3DMorphTarget *target = qobject_cast<QQuick3DMorphTarget *>(list->object);
     if (target)

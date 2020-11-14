@@ -75,8 +75,8 @@ public:
 
 private:
     static void appendSprite(QQmlListProperty<Qt3DExtras::QSpriteSheetItem> *list, Qt3DExtras::QSpriteSheetItem *state);
-    static Qt3DExtras::QSpriteSheetItem *spriteAt(QQmlListProperty<Qt3DExtras::QSpriteSheetItem> *list, int index);
-    static int spriteCount(QQmlListProperty<Qt3DExtras::QSpriteSheetItem> *list);
+    static Qt3DExtras::QSpriteSheetItem *spriteAt(QQmlListProperty<Qt3DExtras::QSpriteSheetItem> *list, qsizetype index);
+    static qsizetype spriteCount(QQmlListProperty<Qt3DExtras::QSpriteSheetItem> *list);
     static void clearSprites(QQmlListProperty<Qt3DExtras::QSpriteSheetItem> *list);
 };
 

@@ -84,13 +84,13 @@ void Quick3DRenderPass::appendFilterKey(QQmlListProperty<QFilterKey> *list, QFil
     rPass->parentRenderPass()->addFilterKey(filterKey);
 }
 
-QFilterKey *Quick3DRenderPass::filterKeyAt(QQmlListProperty<QFilterKey> *list, int index)
+QFilterKey *Quick3DRenderPass::filterKeyAt(QQmlListProperty<QFilterKey> *list, qsizetype index)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
     return rPass->parentRenderPass()->filterKeys().at(index);
 }
 
-int Quick3DRenderPass::filterKeysCount(QQmlListProperty<QFilterKey> *list)
+qsizetype Quick3DRenderPass::filterKeysCount(QQmlListProperty<QFilterKey> *list)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
     return rPass->parentRenderPass()->filterKeys().count();
@@ -110,13 +110,13 @@ void Quick3DRenderPass::appendRenderState(QQmlListProperty<QRenderState> *list, 
     rPass->parentRenderPass()->addRenderState(state);
 }
 
-QRenderState *Quick3DRenderPass::renderStateAt(QQmlListProperty<QRenderState> *list, int index)
+QRenderState *Quick3DRenderPass::renderStateAt(QQmlListProperty<QRenderState> *list, qsizetype index)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
     return rPass->parentRenderPass()->renderStates().at(index);
 }
 
-int Quick3DRenderPass::renderStateCount(QQmlListProperty<QRenderState> *list)
+qsizetype Quick3DRenderPass::renderStateCount(QQmlListProperty<QRenderState> *list)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
     return rPass->parentRenderPass()->renderStates().count();
@@ -136,13 +136,13 @@ void Quick3DRenderPass::appendParameter(QQmlListProperty<QParameter> *list, QPar
     rPass->parentRenderPass()->addParameter(param);
 }
 
-QParameter *Quick3DRenderPass::parameterAt(QQmlListProperty<QParameter> *list, int index)
+QParameter *Quick3DRenderPass::parameterAt(QQmlListProperty<QParameter> *list, qsizetype index)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
     return rPass->parentRenderPass()->parameters().at(index);
 }
 
-int Quick3DRenderPass::parametersCount(QQmlListProperty<QParameter> *list)
+qsizetype Quick3DRenderPass::parametersCount(QQmlListProperty<QParameter> *list)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
     return rPass->parentRenderPass()->parameters().count();

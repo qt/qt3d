@@ -91,13 +91,13 @@ void Quick3DShaderDataArray::appendValue(QQmlListProperty<QShaderData> *list, QS
     static_cast<Quick3DShaderDataArrayPrivate *>(Quick3DShaderDataArrayPrivate::get(self))->m_values.append(bar);
 }
 
-QShaderData *Quick3DShaderDataArray::valueAt(QQmlListProperty<QShaderData> *list, int index)
+QShaderData *Quick3DShaderDataArray::valueAt(QQmlListProperty<QShaderData> *list, qsizetype index)
 {
     Quick3DShaderDataArray *self = static_cast<Quick3DShaderDataArray *>(list->object);
     return static_cast<Quick3DShaderDataArrayPrivate *>(Quick3DShaderDataArrayPrivate::get(self))->m_values.at(index);
 }
 
-int Quick3DShaderDataArray::valueCount(QQmlListProperty<QShaderData> *list)
+qsizetype Quick3DShaderDataArray::valueCount(QQmlListProperty<QShaderData> *list)
 {
     Quick3DShaderDataArray *self = static_cast<Quick3DShaderDataArray *>(list->object);
     return static_cast<Quick3DShaderDataArrayPrivate *>(Quick3DShaderDataArrayPrivate::get(self))->m_values.count();
