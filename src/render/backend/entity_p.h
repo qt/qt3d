@@ -269,7 +269,7 @@ private:
         Manager *manager = m_nodeManagers->manager<Type, Manager>(); \
         QList<Handle> entries; \
         entries.reserve(variable.size()); \
-        for (const QNodeId id : variable) \
+        for (const QNodeId &id : variable) \
             entries.push_back(manager->lookupHandle(id)); \
         return entries; \
         } \
@@ -280,7 +280,7 @@ private:
         Manager *manager = m_nodeManagers->manager<Type, Manager>(); \
         std::vector<Type *> entries; \
         entries.reserve(variable.size()); \
-        for (const QNodeId id : variable) \
+        for (const QNodeId &id : variable) \
             entries.push_back(manager->lookupResource(id)); \
         return entries; \
     } \

@@ -1002,7 +1002,7 @@ void Renderer::lookForDirtyTextures()
         const QNodeIdVector imageIds = texture->textureImageIds();
 
         // Does the texture reference any of the dirty texture images?
-        for (const QNodeId imageId: imageIds) {
+        for (const QNodeId &imageId: imageIds) {
             if (dirtyImageIds.contains(imageId)) {
                 texture->addDirtyFlag(Texture::DirtyImageGenerators);
                 break;
@@ -1354,7 +1354,7 @@ void Renderer::updateTexture(Texture *texture)
         std::vector<GLTexture::Image> images;
         images.reserve(textureImageIds.size());
         // TODO: Move this into GLTexture directly
-        for (const QNodeId textureImageId : textureImageIds) {
+        for (const QNodeId &textureImageId : textureImageIds) {
             const TextureImage *img = m_nodesManager->textureImageManager()->lookupResource(textureImageId);
             if (img == nullptr) {
                 qWarning() << Q_FUNC_INFO << "invalid TextureImage handle";
@@ -1502,7 +1502,7 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const std::vector
         // Insert Fence into command stream if needed
         const Qt3DCore::QNodeIdVector insertFenceIds = renderView->insertFenceIds();
         GLFenceManager *fenceManager = m_glResourceManagers->glFenceManager();
-        for (const Qt3DCore::QNodeId insertFenceId : insertFenceIds) {
+        for (const Qt3DCore::QNodeId &insertFenceId : insertFenceIds) {
             // If the fence is not in the manager, then it hasn't been inserted
             // into the command stream yet.
             if (fenceManager->find(insertFenceId) == fenceManager->end()) {
@@ -2218,7 +2218,7 @@ void Renderer::cleanGraphicsResources()
     // When Textures are cleaned up, their id is saved so that they can be
     // cleaned up in the render thread
     const QList<Qt3DCore::QNodeId> cleanedUpTextureIds = std::move(m_textureIdsToCleanup);
-    for (const Qt3DCore::QNodeId textureCleanedUpId: cleanedUpTextureIds)
+    for (const Qt3DCore::QNodeId &textureCleanedUpId: cleanedUpTextureIds)
         cleanupTexture(textureCleanedUpId);
 
     // Delete abandoned VAOs
@@ -2240,7 +2240,7 @@ void Renderer::cleanGraphicsResources()
     // that when this gets executed, all scene changes have been received and
     // shader nodes updated
     const QList<Qt3DCore::QNodeId> cleanedUpShaderIds = m_nodesManager->shaderManager()->takeShaderIdsToCleanup();
-    for (const Qt3DCore::QNodeId shaderCleanedUpId: cleanedUpShaderIds) {
+    for (const Qt3DCore::QNodeId &shaderCleanedUpId: cleanedUpShaderIds) {
         cleanupShader(m_nodesManager->shaderManager()->lookupResource(shaderCleanedUpId));
         // We can really release the texture at this point
         m_nodesManager->shaderManager()->releaseResource(shaderCleanedUpId);

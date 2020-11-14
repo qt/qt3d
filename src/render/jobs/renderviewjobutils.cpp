@@ -77,7 +77,7 @@ Technique *findTechniqueForEffect(NodeManagers *manager,
 
     // Iterate through the techniques in the effect
     const auto techniqueIds = effect->techniques();
-    for (const QNodeId techniqueId : techniqueIds) {
+    for (const QNodeId &techniqueId : techniqueIds) {
         Technique *technique = manager->techniqueManager()->lookupResource(techniqueId);
 
         // Should be valid, if not there likely a problem with node addition/destruction changes
@@ -117,7 +117,7 @@ RenderPassList findRenderPassesForTechnique(NodeManagers *manager,
 
     RenderPassList passes;
     const auto passIds = technique->renderPasses();
-    for (const QNodeId passId : passIds) {
+    for (const QNodeId &passId : passIds) {
         RenderPass *renderPass = manager->renderPassManager()->lookupResource(passId);
 
         if (renderPass && renderPass->isEnabled()) {
@@ -128,12 +128,12 @@ RenderPassList findRenderPassesForTechnique(NodeManagers *manager,
 
                 // Iterate through the filter criteria and look for render passes with criteria that satisfy them
                 const auto filterKeyIds = passFilter->filters();
-                for (const QNodeId filterKeyId : filterKeyIds) {
+                for (const QNodeId &filterKeyId : filterKeyIds) {
                     foundMatch = false;
                     FilterKey *filterFilterKey = manager->filterKeyManager()->lookupResource(filterKeyId);
 
                     const auto passFilterKeyIds = renderPass->filterKeys();
-                    for (const QNodeId passFilterKeyId : passFilterKeyIds) {
+                    for (const QNodeId &passFilterKeyId : passFilterKeyIds) {
                         FilterKey *passFilterKey = manager->filterKeyManager()->lookupResource(passFilterKeyId);
                         if ((foundMatch = (*passFilterKey == *filterFilterKey)))
                             break;
@@ -169,7 +169,7 @@ ParameterInfoList::const_iterator findParamInfo(ParameterInfoList *params, const
 void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
                          const Qt3DCore::QNodeIdVector &parameterIds)
 {
-    for (const QNodeId paramId : parameterIds) {
+    for (const QNodeId &paramId : parameterIds) {
         const HParameter parameterHandle = manager->lookupHandle(paramId);
         const Parameter *param = manager->data(parameterHandle);
         ParameterInfoList::iterator it = std::lower_bound(params->begin(), params->end(), param->nameId());

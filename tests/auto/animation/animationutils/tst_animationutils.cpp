@@ -289,34 +289,34 @@ private Q_SLOTS:
                                                        QLatin1String("Location"),
                                                        Qt3DCore::QNodeId::createId(),
                                                        "translation",
-                                                       static_cast<int>(QVariant::Vector3D),
+                                                       static_cast<int>(QMetaType::QVector3D),
                                                        3);
 
             const QList<ChannelMapping *> channelMappings = { channelMapping };
 
             // Create a few channels in the format description
             const ChannelNameAndType rotation = { QLatin1String("Rotation"),
-                                            static_cast<int>(QVariant::Quaternion),
+                                            static_cast<int>(QMetaType::QQuaternion),
                                             4,
                                             channelMapping->peerId() };
             const ChannelNameAndType location = { QLatin1String("Location"),
-                                            static_cast<int>(QVariant::Vector3D),
+                                            static_cast<int>(QMetaType::QVector3D),
                                             3,
                                             channelMapping->peerId() };
             const ChannelNameAndType baseColor = { QLatin1String("BaseColor"),
-                                            static_cast<int>(QVariant::Vector3D),
+                                            static_cast<int>(QMetaType::QVector3D),
                                             3,
                                             channelMapping->peerId() };
             const ChannelNameAndType metalness = { QLatin1String("Metalness"),
-                                            static_cast<int>(QVariant::Double),
+                                            static_cast<int>(QMetaType::Double),
                                             1,
                                             channelMapping->peerId() };
             const ChannelNameAndType roughness = { QLatin1String("Roughness"),
-                                            static_cast<int>(QVariant::Double),
+                                            static_cast<int>(QMetaType::Double),
                                             1,
                                             channelMapping->peerId() };
             const ChannelNameAndType morphTargetWeightsList = { QLatin1String("MorphTargetWeightsList"),
-                                            static_cast<int>(QVariant::List),
+                                            static_cast<int>(QMetaType::QVariantList),
                                             5,
                                             channelMapping->peerId() };
             const ChannelNameAndType morphTargetWeightsVec = { QLatin1String("MorphTargetWeightsVec"),
@@ -324,11 +324,11 @@ private Q_SLOTS:
                                             6,
                                             channelMapping->peerId() };
             const ChannelNameAndType rgbColor = { QLatin1String("rgbColor"),
-                                            static_cast<int>(QVariant::Color),
+                                            static_cast<int>(QMetaType::QColor),
                                             3,
                                             channelMapping->peerId() };
             const ChannelNameAndType rgbaColor = { QLatin1String("rgbaColor"),
-                                            static_cast<int>(QVariant::Color),
+                                            static_cast<int>(QMetaType::QColor),
                                             4,
                                             channelMapping->peerId() };
 
@@ -385,42 +385,42 @@ private Q_SLOTS:
                                                         QLatin1String("Location"),
                                                         Qt3DCore::QNodeId::createId(),
                                                         "translation",
-                                                        static_cast<int>(QVariant::Vector3D),
+                                                        static_cast<int>(QMetaType::QVector3D),
                                                         3);
 
             auto metalnessMapping = createChannelMapping(handler,
                                                          QLatin1String("Metalness"),
                                                          Qt3DCore::QNodeId::createId(),
                                                          "metalness",
-                                                         static_cast<int>(QVariant::Double),
+                                                         static_cast<int>(QMetaType::Double),
                                                          1);
 
             auto baseColorMapping = createChannelMapping(handler,
                                                          QLatin1String("BaseColor"),
                                                          Qt3DCore::QNodeId::createId(),
                                                          "baseColor",
-                                                         static_cast<int>(QVariant::Vector3D),
+                                                         static_cast<int>(QMetaType::QVector3D),
                                                          3);
 
             auto roughnessMapping = createChannelMapping(handler,
                                                          QLatin1String("Roughness"),
                                                          Qt3DCore::QNodeId::createId(),
                                                          "roughness",
-                                                         static_cast<int>(QVariant::Double),
+                                                         static_cast<int>(QMetaType::Double),
                                                          1);
 
             auto rotationMapping = createChannelMapping(handler,
                                                         QLatin1String("Rotation"),
                                                         Qt3DCore::QNodeId::createId(),
                                                         "rotation",
-                                                        static_cast<int>(QVariant::Quaternion),
+                                                        static_cast<int>(QMetaType::QQuaternion),
                                                         4);
 
             auto morphTargetMapping = createChannelMapping(handler,
                                                            QLatin1String("MorphTargetWeights"),
                                                            Qt3DCore::QNodeId::createId(),
                                                            "weights",
-                                                           static_cast<int>(QVariant::List),
+                                                           static_cast<int>(QMetaType::QVariantList),
                                                            5);
 
 
@@ -431,27 +431,27 @@ private Q_SLOTS:
 
             // Create a few channels in the format description
             const ChannelNameAndType rotation = { QLatin1String("Rotation"),
-                                            static_cast<int>(QVariant::Quaternion),
+                                            static_cast<int>(QMetaType::QQuaternion),
                                             4,
                                             rotationMapping->peerId() };
             const ChannelNameAndType location = { QLatin1String("Location"),
-                                            static_cast<int>(QVariant::Vector3D),
+                                            static_cast<int>(QMetaType::QVector3D),
                                             3,
                                             locationMapping->peerId() };
             const ChannelNameAndType baseColor = { QLatin1String("BaseColor"),
-                                             static_cast<int>(QVariant::Vector3D),
+                                             static_cast<int>(QMetaType::QVector3D),
                                              3,
                                              baseColorMapping->peerId() };
             const ChannelNameAndType metalness = { QLatin1String("Metalness"),
-                                             static_cast<int>(QVariant::Double),
+                                             static_cast<int>(QMetaType::Double),
                                              1,
                                              metalnessMapping->peerId() };
             const ChannelNameAndType roughness = { QLatin1String("Roughness"),
-                                             static_cast<int>(QVariant::Double),
+                                             static_cast<int>(QMetaType::Double),
                                              1,
                                              roughnessMapping->peerId() };
             const ChannelNameAndType morphTarget = { QLatin1String("MorphTargetWeights"),
-                                               static_cast<int>(QVariant::List),
+                                               static_cast<int>(QMetaType::QVariantList),
                                                5,
                                                morphTargetMapping->peerId() };
             const QList<ChannelNameAndType> channelNamesAndTypes
@@ -542,7 +542,7 @@ private Q_SLOTS:
             QList<ChannelNameAndType> channelNamesAndTypes;
             for (int i = 0; i < jointCount; ++i) {
                 ChannelNameAndType locationDescription = { QLatin1String("Location"),
-                                                           static_cast<int>(QVariant::Vector3D),
+                                                           static_cast<int>(QMetaType::QVector3D),
                                                            3,
                                                            channelMapping->peerId() };
                 locationDescription.jointIndex = i;
@@ -550,7 +550,7 @@ private Q_SLOTS:
                 channelNamesAndTypes.push_back(locationDescription);
 
                 ChannelNameAndType rotationDescription = { QLatin1String("Rotation"),
-                                                           static_cast<int>(QVariant::Quaternion),
+                                                           static_cast<int>(QMetaType::QQuaternion),
                                                            4,
                                                            channelMapping->peerId() };
                 rotationDescription.jointIndex = i;
@@ -558,7 +558,7 @@ private Q_SLOTS:
                 channelNamesAndTypes.push_back(rotationDescription);
 
                 ChannelNameAndType scaleDescription = { QLatin1String("Scale"),
-                                                        static_cast<int>(QVariant::Vector3D),
+                                                        static_cast<int>(QMetaType::QVector3D),
                                                         3,
                                                         channelMapping->peerId() };
                 scaleDescription.jointIndex = i;
@@ -593,21 +593,21 @@ private Q_SLOTS:
                 MappingData locationMapping;
                 locationMapping.targetId = channelMapping->skeletonId();
                 locationMapping.propertyName = "translation";
-                locationMapping.type = static_cast<int>(QVariant::Vector3D);
+                locationMapping.type = static_cast<int>(QMetaType::QVector3D);
                 locationMapping.channelIndices = channelComponentIndices[componentIndicesIndex++];
                 locationMapping.jointIndex = i;
 
                 MappingData rotationMapping;
                 rotationMapping.targetId = channelMapping->skeletonId();
                 rotationMapping.propertyName = "rotation";
-                rotationMapping.type = static_cast<int>(QVariant::Quaternion);
+                rotationMapping.type = static_cast<int>(QMetaType::QQuaternion);
                 rotationMapping.channelIndices = channelComponentIndices[componentIndicesIndex++];
                 rotationMapping.jointIndex = i;
 
                 MappingData scaleMapping;
                 scaleMapping.targetId = channelMapping->skeletonId();
                 scaleMapping.propertyName = "scale";
-                scaleMapping.type = static_cast<int>(QVariant::Vector3D);
+                scaleMapping.type = static_cast<int>(QMetaType::QVector3D);
                 scaleMapping.channelIndices = channelComponentIndices[componentIndicesIndex++];
                 scaleMapping.jointIndex = i;
 
@@ -809,7 +809,7 @@ private Q_SLOTS:
             MappingData mapping;
             mapping.targetId = Qt3DCore::QNodeId::createId();
             mapping.propertyName = "translation";
-            mapping.type = static_cast<int>(QVariant::Vector3D);
+            mapping.type = static_cast<int>(QMetaType::QVector3D);
             mapping.channelIndices = QList<int> { 0, 1, 2 };
             mappingData.push_back(mapping);
             channelResults = QList<float> { 1.0f, 2.0f, 3.0f };
@@ -837,14 +837,14 @@ private Q_SLOTS:
             MappingData translationMapping;
             translationMapping.targetId = Qt3DCore::QNodeId::createId();
             translationMapping.propertyName = "translation";
-            translationMapping.type = static_cast<int>(QVariant::Vector3D);
+            translationMapping.type = static_cast<int>(QMetaType::QVector3D);
             translationMapping.channelIndices = QList<int> { 0, 1, 2 };
             mappingData.push_back(translationMapping);
 
             MappingData scaleMapping;
             scaleMapping.targetId = Qt3DCore::QNodeId::createId();
             scaleMapping.propertyName = "scale";
-            scaleMapping.type = static_cast<int>(QVariant::Vector3D);
+            scaleMapping.type = static_cast<int>(QMetaType::QVector3D);
             scaleMapping.channelIndices = QList<int> { 3, 4, 5 };
             mappingData.push_back(scaleMapping);
 
@@ -875,7 +875,7 @@ private Q_SLOTS:
             MappingData mapping;
             mapping.targetId = Qt3DCore::QNodeId::createId();
             mapping.propertyName = "mass";
-            mapping.type = static_cast<int>(QVariant::Double);
+            mapping.type = static_cast<int>(QMetaType::Double);
             mapping.channelIndices = QList<int> { 0 };
             mappingData.push_back(mapping);
             channelResults = QList<float> { 3.5f };
@@ -897,7 +897,7 @@ private Q_SLOTS:
             MappingData mapping;
             mapping.targetId = Qt3DCore::QNodeId::createId();
             mapping.propertyName = "pos";
-            mapping.type = static_cast<int>(QVariant::Vector2D);
+            mapping.type = static_cast<int>(QMetaType::QVector2D);
             mapping.channelIndices = QList<int> { 0, 1 };
             mappingData.push_back(mapping);
             channelResults = QList<float> { 2.0f, 1.0f };
@@ -919,7 +919,7 @@ private Q_SLOTS:
             MappingData mapping;
             mapping.targetId = Qt3DCore::QNodeId::createId();
             mapping.propertyName = "foo";
-            mapping.type = static_cast<int>(QVariant::Vector4D);
+            mapping.type = static_cast<int>(QMetaType::QVector4D);
             mapping.channelIndices = QList<int> { 0, 1, 2, 3 };
             mappingData.push_back(mapping);
             channelResults = QList<float> { 4.0f, 3.0f, 2.0f, 1.0f };
@@ -941,7 +941,7 @@ private Q_SLOTS:
             MappingData mapping;
             mapping.targetId = Qt3DCore::QNodeId::createId();
             mapping.propertyName = "rotation";
-            mapping.type = static_cast<int>(QVariant::Quaternion);
+            mapping.type = static_cast<int>(QMetaType::QQuaternion);
             mapping.channelIndices = QList<int> { 0, 1, 2, 3 };
             mappingData.push_back(mapping);
             channelResults = QList<float> { 1.0f, 0.0f, 0.0f, 1.0f };
@@ -963,7 +963,7 @@ private Q_SLOTS:
             MappingData mapping;
             mapping.targetId = Qt3DCore::QNodeId::createId();
             mapping.propertyName = "color";
-            mapping.type = static_cast<int>(QVariant::Color);
+            mapping.type = static_cast<int>(QMetaType::QColor);
             mapping.channelIndices = QList<int> { 0, 1, 2 };
             mappingData.push_back(mapping);
             channelResults = QList<float> { 0.5f, 0.4f, 0.3f };
@@ -985,7 +985,7 @@ private Q_SLOTS:
             MappingData mapping;
             mapping.targetId = Qt3DCore::QNodeId::createId();
             mapping.propertyName = "color";
-            mapping.type = static_cast<int>(QVariant::Color);
+            mapping.type = static_cast<int>(QMetaType::QColor);
             mapping.channelIndices = QList<int> { 0, 1, 2, 3 };
             mappingData.push_back(mapping);
             channelResults = QList<float> { 0.5f, 0.4f, 0.3f, 0.2f };
@@ -1007,7 +1007,7 @@ private Q_SLOTS:
             MappingData mapping;
             mapping.targetId = Qt3DCore::QNodeId::createId();
             mapping.propertyName = "weights";
-            mapping.type = static_cast<int>(QVariant::List);
+            mapping.type = static_cast<int>(QMetaType::QVariantList);
             mapping.channelIndices = QList<int> { 0, 1, 2, 3, 4, 5, 6 };
             mappingData.push_back(mapping);
             channelResults = QList<float> { 0.5f, 0.4f, 0.3f, 0.0f, 1.0f, 0.6f, 0.9f };
@@ -1066,7 +1066,7 @@ private Q_SLOTS:
             MappingData mapping;
             mapping.targetId = Qt3DCore::QNodeId::createId();
             mapping.propertyName = "translation";
-            mapping.type = static_cast<int>(QVariant::Vector3D);
+            mapping.type = static_cast<int>(QMetaType::QVector3D);
             mapping.channelIndices = QList<int> { 0, 1, 2 };
             mapping.callback = &callback;
             mapping.callbackFlags = {};
@@ -1092,7 +1092,7 @@ private Q_SLOTS:
             MappingData mapping;
             mapping.targetId = Qt3DCore::QNodeId::createId();
             mapping.propertyName = "something";
-            mapping.type = static_cast<int>(QVariant::Double);
+            mapping.type = static_cast<int>(QMetaType::Double);
             mapping.channelIndices = QList<int> { 0 };
             mapping.callback = &callback;
             mapping.callbackFlags = {};
@@ -1425,7 +1425,7 @@ private Q_SLOTS:
             channel.channelComponents.resize(3);
             // leave 'name' empty
 
-            dataType = static_cast<int>(QVariant::Vector3D);
+            dataType = static_cast<int>(QMetaType::QVector3D);
             expectedChannelComponentCount = 3;
             offset = 0;
             // suffixes expected to be ignored
@@ -1454,7 +1454,7 @@ private Q_SLOTS:
             channel.channelComponents[1].name = QLatin1String("Location Y");
             channel.channelComponents[2].name = QLatin1String("Location Z");
 
-            dataType = static_cast<int>(QVariant::Vector3D);
+            dataType = static_cast<int>(QMetaType::QVector3D);
             expectedChannelComponentCount = 3;
             offset = 0;
             suffixes = QList<char> { 'X', 'Y', 'Z', 'W' };
@@ -1484,7 +1484,7 @@ private Q_SLOTS:
             channel.channelComponents[0].name = QLatin1String("pos X");
             channel.channelComponents[1].name = QLatin1String("pos Y");
 
-            dataType = static_cast<int>(QVariant::Vector2D);
+            dataType = static_cast<int>(QMetaType::QVector2D);
             expectedChannelComponentCount = 2;
             offset = 0;
             suffixes = QList<char> { 'X', 'Y', 'Z', 'W' };
@@ -1516,7 +1516,7 @@ private Q_SLOTS:
             channel.channelComponents[2].name = QLatin1String("foo Z");
             channel.channelComponents[3].name = QLatin1String("foo W");
 
-            dataType = static_cast<int>(QVariant::Vector4D);
+            dataType = static_cast<int>(QMetaType::QVector4D);
             expectedChannelComponentCount = 4;
             offset = 0;
             suffixes = QList<char> { 'X', 'Y', 'Z', 'W' };
@@ -1545,7 +1545,7 @@ private Q_SLOTS:
             channel.channelComponents.resize(1);
             channel.channelComponents[0].name = QLatin1String("Mass X");
 
-            dataType = static_cast<int>(QVariant::Double);
+            dataType = static_cast<int>(QMetaType::Double);
             expectedChannelComponentCount = 1;
             offset = 0;
             suffixes = QList<char> { 'X', 'Y', 'Z', 'W' };
@@ -1577,7 +1577,7 @@ private Q_SLOTS:
             channel.channelComponents[2].name = QLatin1String("Rotation Y");
             channel.channelComponents[3].name = QLatin1String("Rotation Z");
 
-            dataType = static_cast<int>(QVariant::Quaternion);
+            dataType = static_cast<int>(QMetaType::QQuaternion);
             expectedChannelComponentCount = 4;
             offset = 0;
             suffixes = QList<char> { 'W', 'X', 'Y', 'Z' };
@@ -1609,7 +1609,7 @@ private Q_SLOTS:
             channel.channelComponents[2].name = QLatin1String("Rotation Z");
             channel.channelComponents[3].name = QLatin1String("Rotation Y");
 
-            dataType = static_cast<int>(QVariant::Quaternion);
+            dataType = static_cast<int>(QMetaType::QQuaternion);
             expectedChannelComponentCount = 4;
             offset = 0;
             suffixes = QList<char> { 'W', 'X', 'Y', 'Z' };
@@ -1640,7 +1640,7 @@ private Q_SLOTS:
             channel.channelComponents[1].name = QLatin1String("Color G");
             channel.channelComponents[2].name = QLatin1String("Color B");
 
-            dataType = static_cast<int>(QVariant::Color);
+            dataType = static_cast<int>(QMetaType::QColor);
             expectedChannelComponentCount = 3;
             offset = 0;
             suffixes = QList<char> { 'R', 'G', 'B' };
@@ -1672,7 +1672,7 @@ private Q_SLOTS:
             channel.channelComponents[2].name = QLatin1String("Color B");
             channel.channelComponents[3].name = QLatin1String("Color A");
 
-            dataType = static_cast<int>(QVariant::Color);
+            dataType = static_cast<int>(QMetaType::QColor);
             expectedChannelComponentCount = 4;
             offset = 0;
             suffixes = QList<char> { 'R', 'G', 'B', 'A' };
@@ -1701,7 +1701,7 @@ private Q_SLOTS:
             channel.channelComponents.resize(6);
             // leave channel component names empty
 
-            dataType = static_cast<int>(QVariant::List);
+            dataType = static_cast<int>(QMetaType::QVariantList);
             expectedChannelComponentCount = 6;
             offset = 0;
             // suffixes expected to be ignored
@@ -1793,7 +1793,7 @@ private Q_SLOTS:
             channel.channelComponents[2].name = QLatin1String("Rotation Y");
             channel.channelComponents[3].name = QLatin1String("Rotation Z");
 
-            dataType = static_cast<int>(QVariant::Quaternion);
+            dataType = static_cast<int>(QMetaType::QQuaternion);
             componentCount = 4;
             offset = 0;
             expectedResults = QList<int> { 0, 1, 2, 3 };
@@ -1820,7 +1820,7 @@ private Q_SLOTS:
             channel.channelComponents[1].name = QLatin1String("Location Y");
             channel.channelComponents[2].name = QLatin1String("Location Z");
 
-            dataType = static_cast<int>(QVariant::Vector3D);
+            dataType = static_cast<int>(QMetaType::QVector3D);
             componentCount = 3;
             offset = 0;
             expectedResults = QList<int> { 0, 1, 2 };
@@ -1847,7 +1847,7 @@ private Q_SLOTS:
             channel.channelComponents[1].name = QLatin1String("Color G");
             channel.channelComponents[2].name = QLatin1String("Color B");
 
-            dataType = static_cast<int>(QVariant::Color);
+            dataType = static_cast<int>(QMetaType::QColor);
             componentCount = 3;
             offset = 0;
             expectedResults = QList<int> { 0, 1, 2 };
@@ -1874,7 +1874,7 @@ private Q_SLOTS:
             channel.channelComponents[2].name = QLatin1String("Color B");
             channel.channelComponents[3].name = QLatin1String("Color A");
 
-            dataType = static_cast<int>(QVariant::Color);
+            dataType = static_cast<int>(QMetaType::QColor);
             componentCount = 4;
             offset = 0;
             expectedResults = QList<int> { 0, 1, 2, 3 };
@@ -2648,14 +2648,14 @@ private Q_SLOTS:
                                                        QLatin1String("Location"),
                                                        Qt3DCore::QNodeId::createId(),
                                                        "translation",
-                                                       static_cast<int>(QVariant::Vector3D),
+                                                       static_cast<int>(QMetaType::QVector3D),
                                                        3);
             auto channelMapper = createChannelMapper(handler,
                                                      QList<Qt3DCore::QNodeId> { channelMapping->peerId() });
 
             const QList<ChannelNameAndType> expectedResults = {
                 { QLatin1String("Location"),
-                  static_cast<int>(QVariant::Vector3D),
+                  static_cast<int>(QMetaType::QVector3D),
                   3,
                   channelMapping->peerId() }
             };
@@ -2669,13 +2669,13 @@ private Q_SLOTS:
                                                         QLatin1String("Location"),
                                                         Qt3DCore::QNodeId::createId(),
                                                         "translation",
-                                                        static_cast<int>(QVariant::Vector3D),
+                                                        static_cast<int>(QMetaType::QVector3D),
                                                         3);
             auto channelMapping2 = createChannelMapping(handler,
                                                         QLatin1String("Rotation"),
                                                         Qt3DCore::QNodeId::createId(),
                                                         "rotation",
-                                                        static_cast<int>(QVariant::Quaternion),
+                                                        static_cast<int>(QMetaType::QQuaternion),
                                                         4);
 
             const QList<Qt3DCore::QNodeId> channelMappingIds
@@ -2684,11 +2684,11 @@ private Q_SLOTS:
 
             const QList<ChannelNameAndType> expectedResults = {
                 { QLatin1String("Location"),
-                  static_cast<int>(QVariant::Vector3D),
+                  static_cast<int>(QMetaType::QVector3D),
                   3,
                   channelMapping1->peerId() },
                 { QLatin1String("Rotation"),
-                  static_cast<int>(QVariant::Quaternion),
+                  static_cast<int>(QMetaType::QQuaternion),
                   4,
                   channelMapping2->peerId() }
             };
@@ -2702,25 +2702,25 @@ private Q_SLOTS:
                                                         QLatin1String("Location"),
                                                         Qt3DCore::QNodeId::createId(),
                                                         "translation",
-                                                        static_cast<int>(QVariant::Vector3D),
+                                                        static_cast<int>(QMetaType::QVector3D),
                                                         3);
             auto channelMapping2 = createChannelMapping(handler,
                                                         QLatin1String("Rotation"),
                                                         Qt3DCore::QNodeId::createId(),
                                                         "rotation",
-                                                        static_cast<int>(QVariant::Quaternion),
+                                                        static_cast<int>(QMetaType::QQuaternion),
                                                         4);
             auto channelMapping3 = createChannelMapping(handler,
                                                         QLatin1String("Location"),
                                                         Qt3DCore::QNodeId::createId(),
                                                         "translation",
-                                                        static_cast<int>(QVariant::Vector3D),
+                                                        static_cast<int>(QMetaType::QVector3D),
                                                         3);
             auto channelMapping4 = createChannelMapping(handler,
                                                         QLatin1String("Location"),
                                                         Qt3DCore::QNodeId::createId(),
                                                         "translation",
-                                                        static_cast<int>(QVariant::Vector3D),
+                                                        static_cast<int>(QMetaType::QVector3D),
                                                         3);
 
             const QList<Qt3DCore::QNodeId> channelMappingIds
@@ -2730,19 +2730,19 @@ private Q_SLOTS:
 
             QList<ChannelNameAndType> expectedResults = {
                 { QLatin1String("Location"),
-                  static_cast<int>(QVariant::Vector3D),
+                  static_cast<int>(QMetaType::QVector3D),
                   3,
                   channelMapping1->peerId() },
                 { QLatin1String("Rotation"),
-                  static_cast<int>(QVariant::Quaternion),
+                  static_cast<int>(QMetaType::QQuaternion),
                   4,
                   channelMapping2->peerId() },
                 { QLatin1String("Location"),
-                  static_cast<int>(QVariant::Vector3D),
+                  static_cast<int>(QMetaType::QVector3D),
                   3,
                   channelMapping3->peerId() },
                 { QLatin1String("Location"),
-                  static_cast<int>(QVariant::Vector3D),
+                  static_cast<int>(QMetaType::QVector3D),
                   3,
                   channelMapping4->peerId() }
             };
@@ -2761,7 +2761,7 @@ private Q_SLOTS:
             QList<ChannelNameAndType> expectedResults;
             for (int i = 0; i < jointCount; ++i) {
                 ChannelNameAndType locationDescription = { QLatin1String("Location"),
-                                                           static_cast<int>(QVariant::Vector3D),
+                                                           static_cast<int>(QMetaType::QVector3D),
                                                            3,
                                                            channelMapping->peerId() };
                 locationDescription.jointIndex = i;
@@ -2769,7 +2769,7 @@ private Q_SLOTS:
                 expectedResults.push_back(locationDescription);
 
                 ChannelNameAndType rotationDescription = { QLatin1String("Rotation"),
-                                                           static_cast<int>(QVariant::Quaternion),
+                                                           static_cast<int>(QMetaType::QQuaternion),
                                                            4,
                                                            channelMapping->peerId() };
                 rotationDescription.jointIndex = i;
@@ -2777,7 +2777,7 @@ private Q_SLOTS:
                 expectedResults.push_back(rotationDescription);
 
                 ChannelNameAndType scaleDescription = { QLatin1String("Scale"),
-                                                        static_cast<int>(QVariant::Vector3D),
+                                                        static_cast<int>(QMetaType::QVector3D),
                                                         3,
                                                         channelMapping->peerId() };
                 scaleDescription.jointIndex = i;
@@ -2815,7 +2815,7 @@ private Q_SLOTS:
 
         {
             const QList<ChannelNameAndType> allChannels = {
-                { QLatin1String("Location"), static_cast<int>(QVariant::Vector3D), 3 }
+                { QLatin1String("Location"), static_cast<int>(QMetaType::QVector3D), 3 }
             };
 
             const QList<ComponentIndices> expectedResults = { { 0, 1, 2 } };
@@ -2825,8 +2825,8 @@ private Q_SLOTS:
 
         {
             const QList<ChannelNameAndType> allChannels = {
-                { QLatin1String("Location"), static_cast<int>(QVariant::Vector3D), 3 },
-                { QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion), 4 }
+                { QLatin1String("Location"), static_cast<int>(QMetaType::QVector3D), 3 },
+                { QLatin1String("Rotation"), static_cast<int>(QMetaType::QQuaternion), 4 }
             };
 
             const QList<ComponentIndices> expectedResults = { { 0, 1, 2 },
@@ -2837,12 +2837,12 @@ private Q_SLOTS:
 
         {
             const QList<ChannelNameAndType> allChannels = {
-                { QLatin1String("Location"), static_cast<int>(QVariant::Vector3D), 3 },
-                { QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion), 4 },
-                { QLatin1String("BaseColor"), static_cast<int>(QVariant::Vector3D), 3 },
-                { QLatin1String("Metalness"), static_cast<int>(QVariant::Double), 1 },
-                { QLatin1String("Roughness"), static_cast<int>(QVariant::Double), 1 },
-                { QLatin1String("MorphWeights"), static_cast<int>(QVariant::List), 6 }
+                { QLatin1String("Location"), static_cast<int>(QMetaType::QVector3D), 3 },
+                { QLatin1String("Rotation"), static_cast<int>(QMetaType::QQuaternion), 4 },
+                { QLatin1String("BaseColor"), static_cast<int>(QMetaType::QVector3D), 3 },
+                { QLatin1String("Metalness"), static_cast<int>(QMetaType::Double), 1 },
+                { QLatin1String("Roughness"), static_cast<int>(QMetaType::Double), 1 },
+                { QLatin1String("MorphWeights"), static_cast<int>(QMetaType::QVariantList), 6 }
             };
 
             const QList<ComponentIndices> expectedResults = {
@@ -2860,15 +2860,15 @@ private Q_SLOTS:
             QList<ChannelNameAndType> allChannels;
             const int jointCount = 4;
             for (int i = 0; i < jointCount; ++i) {
-                ChannelNameAndType locationDescription = { QLatin1String("Location"), static_cast<int>(QVariant::Vector3D), 3 };
+                ChannelNameAndType locationDescription = { QLatin1String("Location"), static_cast<int>(QMetaType::QVector3D), 3 };
                 locationDescription.jointIndex = i;
                 allChannels.push_back(locationDescription);
 
-                ChannelNameAndType rotationDescription = { QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion), 4 };
+                ChannelNameAndType rotationDescription = { QLatin1String("Rotation"), static_cast<int>(QMetaType::QQuaternion), 4 };
                 rotationDescription.jointIndex = i;
                 allChannels.push_back(rotationDescription);
 
-                ChannelNameAndType scaleDescription = { QLatin1String("Scale"), static_cast<int>(QVariant::Vector3D), 3 };
+                ChannelNameAndType scaleDescription = { QLatin1String("Scale"), static_cast<int>(QMetaType::QVector3D), 3 };
                 scaleDescription.jointIndex = i;
                 allChannels.push_back(scaleDescription);
             }
@@ -2913,11 +2913,11 @@ private Q_SLOTS:
 
         {
             const QList<ChannelNameAndType> targetChannels = {
-                { QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion), 4 },
-                { QLatin1String("Location"), static_cast<int>(QVariant::Vector3D), 3 },
-                { QLatin1String("Base Color"), static_cast<int>(QVariant::Vector3D), 3 },
-                { QLatin1String("Metalness"), static_cast<int>(QVariant::Double), 1 },
-                { QLatin1String("Roughness"), static_cast<int>(QVariant::Double), 1 }
+                { QLatin1String("Rotation"), static_cast<int>(QMetaType::QQuaternion), 4 },
+                { QLatin1String("Location"), static_cast<int>(QMetaType::QVector3D), 3 },
+                { QLatin1String("Base Color"), static_cast<int>(QMetaType::QVector3D), 3 },
+                { QLatin1String("Metalness"), static_cast<int>(QMetaType::Double), 1 },
+                { QLatin1String("Roughness"), static_cast<int>(QMetaType::Double), 1 }
             };
 
             const QList<ComponentIndices> targetIndices = {
@@ -2953,11 +2953,11 @@ private Q_SLOTS:
 
         {
             const QList<ChannelNameAndType> targetChannels = {
-                { QLatin1String("Location"), static_cast<int>(QVariant::Vector3D), 3 },
-                { QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion), 4 },
-                { QLatin1String("Base Color"), static_cast<int>(QVariant::Vector3D), 3 },
-                { QLatin1String("Metalness"), static_cast<int>(QVariant::Double), 1 },
-                { QLatin1String("Roughness"), static_cast<int>(QVariant::Double), 1 }
+                { QLatin1String("Location"), static_cast<int>(QMetaType::QVector3D), 3 },
+                { QLatin1String("Rotation"), static_cast<int>(QMetaType::QQuaternion), 4 },
+                { QLatin1String("Base Color"), static_cast<int>(QMetaType::QVector3D), 3 },
+                { QLatin1String("Metalness"), static_cast<int>(QMetaType::Double), 1 },
+                { QLatin1String("Roughness"), static_cast<int>(QMetaType::Double), 1 }
             };
 
             const QList<ComponentIndices> targetIndices = {
@@ -2993,11 +2993,11 @@ private Q_SLOTS:
 
         {
             const QList<ChannelNameAndType> targetChannels = {
-                { QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion), 4 },
-                { QLatin1String("Location"), static_cast<int>(QVariant::Vector3D), 3 },
-                { QLatin1String("Albedo"), static_cast<int>(QVariant::Vector3D), 3 },
-                { QLatin1String("Metalness"), static_cast<int>(QVariant::Double), 1 },
-                { QLatin1String("Roughness"), static_cast<int>(QVariant::Double), 1 }
+                { QLatin1String("Rotation"), static_cast<int>(QMetaType::QQuaternion), 4 },
+                { QLatin1String("Location"), static_cast<int>(QMetaType::QVector3D), 3 },
+                { QLatin1String("Albedo"), static_cast<int>(QMetaType::QVector3D), 3 },
+                { QLatin1String("Metalness"), static_cast<int>(QMetaType::Double), 1 },
+                { QLatin1String("Roughness"), static_cast<int>(QMetaType::Double), 1 }
             };
 
             const QList<ComponentIndices> targetIndices = {
@@ -3033,11 +3033,11 @@ private Q_SLOTS:
 
         {
             const QList<ChannelNameAndType> targetChannels = {
-                { QLatin1String("Location"), static_cast<int>(QVariant::Vector3D), 3 },
-                { QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion), 4 },
-                { QLatin1String("Albedo"), static_cast<int>(QVariant::Vector3D), 3 },
-                { QLatin1String("Metalness"), static_cast<int>(QVariant::Double), 1 },
-                { QLatin1String("Roughness"), static_cast<int>(QVariant::Double), 1 }
+                { QLatin1String("Location"), static_cast<int>(QMetaType::QVector3D), 3 },
+                { QLatin1String("Rotation"), static_cast<int>(QMetaType::QQuaternion), 4 },
+                { QLatin1String("Albedo"), static_cast<int>(QMetaType::QVector3D), 3 },
+                { QLatin1String("Metalness"), static_cast<int>(QMetaType::Double), 1 },
+                { QLatin1String("Roughness"), static_cast<int>(QMetaType::Double), 1 }
             };
 
             const QList<ComponentIndices> targetIndices = {
@@ -3075,15 +3075,15 @@ private Q_SLOTS:
             QList<ChannelNameAndType> targetChannels;
             const int jointCount = 4;
             for (int i = 0; i < jointCount; ++i) {
-                ChannelNameAndType locationDescription = { QLatin1String("Location"), static_cast<int>(QVariant::Vector3D), 3 };
+                ChannelNameAndType locationDescription = { QLatin1String("Location"), static_cast<int>(QMetaType::QVector3D), 3 };
                 locationDescription.jointIndex = i;
                 targetChannels.push_back(locationDescription);
 
-                ChannelNameAndType rotationDescription = { QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion), 4 };
+                ChannelNameAndType rotationDescription = { QLatin1String("Rotation"), static_cast<int>(QMetaType::QQuaternion), 4 };
                 rotationDescription.jointIndex = i;
                 targetChannels.push_back(rotationDescription);
 
-                ChannelNameAndType scaleDescription = { QLatin1String("Scale"), static_cast<int>(QVariant::Vector3D), 3 };
+                ChannelNameAndType scaleDescription = { QLatin1String("Scale"), static_cast<int>(QMetaType::QVector3D), 3 };
                 scaleDescription.jointIndex = i;
                 targetChannels.push_back(scaleDescription);
             }
@@ -3179,11 +3179,11 @@ private Q_SLOTS:
                                                        QLatin1String("Location"),
                                                        Qt3DCore::QNodeId::createId(),
                                                        "translation",
-                                                       static_cast<int>(QVariant::Vector3D),
+                                                       static_cast<int>(QMetaType::QVector3D),
                                                        3);
             ChannelNameAndType channelDescription;
             channelDescription.mappingId = channelMapping->peerId();
-            channelDescription.type = static_cast<int>(QVariant::Vector3D);
+            channelDescription.type = static_cast<int>(QMetaType::QVector3D);
             channelDescription.name = QLatin1String("translation");
             const QList<float> expectedResults = { 0.0f, 0.0f, 0.0f };
             QTest::newRow("translation") << handler << channelDescription << expectedResults;
@@ -3195,11 +3195,11 @@ private Q_SLOTS:
                                                        QLatin1String("Rotation"),
                                                        Qt3DCore::QNodeId::createId(),
                                                        "rotation",
-                                                       static_cast<int>(QVariant::Quaternion),
+                                                       static_cast<int>(QMetaType::QQuaternion),
                                                        4);
             ChannelNameAndType channelDescription;
             channelDescription.mappingId = channelMapping->peerId();
-            channelDescription.type = static_cast<int>(QVariant::Quaternion);
+            channelDescription.type = static_cast<int>(QMetaType::QQuaternion);
             channelDescription.name = QLatin1String("rotation");
             const QList<float> expectedResults = { 1.0f, 0.0f, 0.0f, 0.0f };
             QTest::newRow("rotation") << handler << channelDescription << expectedResults;
@@ -3211,11 +3211,11 @@ private Q_SLOTS:
                                                        QLatin1String("Scale"),
                                                        Qt3DCore::QNodeId::createId(),
                                                        "scale",
-                                                       static_cast<int>(QVariant::Vector3D),
+                                                       static_cast<int>(QMetaType::QVector3D),
                                                        3);
             ChannelNameAndType channelDescription;
             channelDescription.mappingId = channelMapping->peerId();
-            channelDescription.type = static_cast<int>(QVariant::Vector3D);
+            channelDescription.type = static_cast<int>(QMetaType::QVector3D);
             channelDescription.name = QLatin1String("scale");
             const QList<float> expectedResults = { 1.0f, 1.0f, 1.0f };
             QTest::newRow("scale") << handler << channelDescription << expectedResults;
@@ -3230,7 +3230,7 @@ private Q_SLOTS:
             auto channelMapping = createChannelMapping(handler, skeleton->peerId());
             ChannelNameAndType channelDescription;
             channelDescription.mappingId = channelMapping->peerId();
-            channelDescription.type = static_cast<int>(QVariant::Vector3D);
+            channelDescription.type = static_cast<int>(QMetaType::QVector3D);
             channelDescription.jointIndex = 0;
             channelDescription.jointTransformComponent = Scale;
             const QList<float> expectedResults = { 2.0f, 3.0f, 4.0f };
@@ -3245,7 +3245,7 @@ private Q_SLOTS:
             auto channelMapping = createChannelMapping(handler, skeleton->peerId());
             ChannelNameAndType channelDescription;
             channelDescription.mappingId = channelMapping->peerId();
-            channelDescription.type = static_cast<int>(QVariant::Vector3D);
+            channelDescription.type = static_cast<int>(QMetaType::QVector3D);
             channelDescription.jointIndex = 0;
             channelDescription.jointTransformComponent = Rotation;
             const QList<float> expectedResults = { 1.0f, 0.0f, 0.0f, 0.0f };
@@ -3260,7 +3260,7 @@ private Q_SLOTS:
             auto channelMapping = createChannelMapping(handler, skeleton->peerId());
             ChannelNameAndType channelDescription;
             channelDescription.mappingId = channelMapping->peerId();
-            channelDescription.type = static_cast<int>(QVariant::Vector3D);
+            channelDescription.type = static_cast<int>(QMetaType::QVector3D);
             channelDescription.jointIndex = 0;
             channelDescription.jointTransformComponent = Translation;
             const QList<float> expectedResults = { 2.0f, 3.0f, 4.0f };
@@ -3275,7 +3275,7 @@ private Q_SLOTS:
             auto channelMapping = createChannelMapping(handler, skeleton->peerId());
             ChannelNameAndType channelDescription;
             channelDescription.mappingId = channelMapping->peerId();
-            channelDescription.type = static_cast<int>(QVariant::Vector3D);
+            channelDescription.type = static_cast<int>(QMetaType::QVector3D);
             channelDescription.jointIndex = 1;
             channelDescription.jointTransformComponent = Scale;
             const QList<float> expectedResults = { 20.0f, 30.0f, 40.0f };
@@ -3290,7 +3290,7 @@ private Q_SLOTS:
             auto channelMapping = createChannelMapping(handler, skeleton->peerId());
             ChannelNameAndType channelDescription;
             channelDescription.mappingId = channelMapping->peerId();
-            channelDescription.type = static_cast<int>(QVariant::Vector3D);
+            channelDescription.type = static_cast<int>(QMetaType::QVector3D);
             channelDescription.jointIndex = 1;
             channelDescription.jointTransformComponent = Rotation;
             const QList<float> expectedResults = { 1.0f, 0.0f, 0.0f, 0.0f };
@@ -3305,7 +3305,7 @@ private Q_SLOTS:
             auto channelMapping = createChannelMapping(handler, skeleton->peerId());
             ChannelNameAndType channelDescription;
             channelDescription.mappingId = channelMapping->peerId();
-            channelDescription.type = static_cast<int>(QVariant::Vector3D);
+            channelDescription.type = static_cast<int>(QMetaType::QVector3D);
             channelDescription.jointIndex = 1;
             channelDescription.jointTransformComponent = Translation;
             const QList<float> expectedResults = { 4.0f, 5.0f, 6.0f };

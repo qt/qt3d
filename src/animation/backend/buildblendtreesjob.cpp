@@ -107,7 +107,7 @@ void BuildBlendTreesJob::run()
         // a QList<QClipBlendValue*> as input.
         QList<ClipBlendValue *> valueNodes;
         valueNodes.reserve(valueNodeIds.size());
-        for (const auto valueNodeId : valueNodeIds) {
+        for (const auto &valueNodeId : valueNodeIds) {
             ClipBlendValue *valueNode
                     = static_cast<ClipBlendValue *>(m_handler->clipBlendNodeManager()->lookupNode(valueNodeId));
             Q_ASSERT(valueNode);
@@ -184,7 +184,7 @@ void BuildBlendTreesJob::run()
         const QList<Qt3DCore::QNodeId> channelMappingIds = mapper->mappingIds();
         QList<ChannelMapping *> channelMappings;
         channelMappings.reserve(channelMappingIds.size());
-        for (const auto mappingId : channelMappingIds) {
+        for (const auto &mappingId : channelMappingIds) {
             ChannelMapping *mapping = m_handler->channelMappingManager()->lookupResource(mappingId);
             Q_ASSERT(mapping);
             channelMappings.push_back(mapping);

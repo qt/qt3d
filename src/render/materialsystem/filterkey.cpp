@@ -92,7 +92,7 @@ bool FilterKey::operator ==(const FilterKey &other)
     // https://codereview.qt-project.org/#/c/204484/
     // and adding the following early comparison of the types should give
     // an equivalent performance gain:
-    return (other.value().type() == value().type() &&
+    return (other.value().metaType() == value().metaType() &&
             other.name() == name() &&
             other.value() == value());
 }

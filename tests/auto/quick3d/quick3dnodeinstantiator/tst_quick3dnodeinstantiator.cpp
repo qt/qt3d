@@ -237,11 +237,11 @@ void tst_quick3dnodeinstantiator::createAndRemove()
     StringModel *model = new StringModel("model1");
     engine.rootContext()->setContextProperty("model1", model);
     QObject *rootObject = component.create();
-    QVERIFY(rootObject != 0);
+    QVERIFY(rootObject != nullptr);
 
     Quick3DNodeInstantiator *instantiator =
         qobject_cast<Quick3DNodeInstantiator*>(rootObject->findChild<QObject*>("instantiator1"));
-    QVERIFY(instantiator != 0);
+    QVERIFY(instantiator != nullptr);
     model->drop(1);
     const QList<QString> names = { "Beta", "Gamma", "Delta" };
     for (int i = 0; i < 3; i++) {

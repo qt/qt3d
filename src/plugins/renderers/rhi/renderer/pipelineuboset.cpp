@@ -391,6 +391,7 @@ void PipelineUBOSet::uploadUBOs(SubmissionContext *ctx, RenderView *rv)
 }
 
 namespace {
+/*
 void printUpload(const UniformValue &value, const QShaderDescription::BlockVariable &member, int arrayOffset)
 {
     switch (member.type) {
@@ -423,6 +424,7 @@ void printUpload(const UniformValue &value, const QShaderDescription::BlockVaria
         break;
     }
 }
+//*/
 
 inline void uploadDataToUBO(const QByteArray rawData,
                             const PipelineUBOSet::MultiUBOBufferWithBindingAndBlockSize *ubo,

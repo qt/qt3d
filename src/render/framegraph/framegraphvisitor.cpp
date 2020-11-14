@@ -96,7 +96,7 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
     // initiate a rendering from the current camera
     const QList<Qt3DCore::QNodeId> fgChildIds = node->childrenIds();
 
-    for (const Qt3DCore::QNodeId fgChildId : fgChildIds)
+    for (const Qt3DCore::QNodeId &fgChildId : fgChildIds)
         visit(m_manager->lookupNode(fgChildId));
 
     // Leaf node - create a RenderView ready to be populated

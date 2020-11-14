@@ -252,7 +252,7 @@ private Q_SLOTS:
 
         // Check at least one technique is valid
         bool foundValid = false;
-        for (const auto handle: handles) {
+        for (const auto &handle: handles) {
             Qt3DRender::Render::Technique *technique = testAspect.nodeManagers()->techniqueManager()->data(handle);
             foundValid |= technique->isCompatibleWithRenderer();
         }

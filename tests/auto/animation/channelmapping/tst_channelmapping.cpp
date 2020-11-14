@@ -82,7 +82,7 @@ private Q_SLOTS:
         QVERIFY(qstrcmp(backendMapping.propertyName(), mapping.property().toLatin1().constData()) == 0);
         QVERIFY(qstrcmp(backendMapping.propertyName(), "foo") == 0);
         QCOMPARE(backendMapping.componentCount(), 2);
-        QCOMPARE(backendMapping.type(), static_cast<int>(QVariant::Vector2D));
+        QCOMPARE(backendMapping.type(), static_cast<int>(QMetaType::QVector2D));
         QCOMPARE(backendMapping.mappingType(), Qt3DAnimation::Animation::ChannelMapping::ChannelMappingType);
 
         // GIVEN
@@ -116,7 +116,7 @@ private Q_SLOTS:
         QCOMPARE(backendMapping.targetId(), Qt3DCore::QNodeId());
         QCOMPARE(backendMapping.propertyName(), nullptr);
         QCOMPARE(backendMapping.componentCount(), 0);
-        QCOMPARE(backendMapping.type(), static_cast<int>(QVariant::Invalid));
+        QCOMPARE(backendMapping.type(), static_cast<int>(QMetaType::UnknownType));
         QCOMPARE(backendMapping.skeletonId(), Qt3DCore::QNodeId());
         QCOMPARE(backendMapping.mappingType(), Qt3DAnimation::Animation::ChannelMapping::ChannelMappingType);
 
@@ -138,7 +138,7 @@ private Q_SLOTS:
         QCOMPARE(backendMapping.targetId(), Qt3DCore::QNodeId());
         QCOMPARE(backendMapping.propertyName(), nullptr);
         QCOMPARE(backendMapping.componentCount(), 0);
-        QCOMPARE(backendMapping.type(), static_cast<int>(QVariant::Invalid));
+        QCOMPARE(backendMapping.type(), static_cast<int>(QMetaType::UnknownType));
         QCOMPARE(backendMapping.skeletonId(), Qt3DCore::QNodeId());
         QCOMPARE(backendMapping.mappingType(), Qt3DAnimation::Animation::ChannelMapping::ChannelMappingType);
     }
@@ -175,7 +175,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendMapping.targetId(), target->id());
-        QCOMPARE(backendMapping.type(), static_cast<int>(QVariant::Vector3D));
+        QCOMPARE(backendMapping.type(), static_cast<int>(QMetaType::QVector3D));
         QCOMPARE(backendMapping.componentCount(), 3);
 
         const char *testName = "translation";

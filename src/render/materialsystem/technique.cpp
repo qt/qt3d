@@ -176,12 +176,12 @@ bool Technique::isCompatibleWithFilters(const QNodeIdVector &filterKeyIds)
 
     // Iterate through the filter criteria and for each one search for a criteria on the
     // technique that satisfies it
-    for (const QNodeId filterKeyId : filterKeyIds) {
+    for (const QNodeId &filterKeyId : filterKeyIds) {
         FilterKey *filterKey = m_nodeManager->filterKeyManager()->lookupResource(filterKeyId);
 
         bool foundMatch = false;
 
-        for (const QNodeId techniqueFilterKeyId : qAsConst(m_filterKeyList)) {
+        for (const QNodeId &techniqueFilterKeyId : qAsConst(m_filterKeyList)) {
             FilterKey *techniqueFilterKey = m_nodeManager->filterKeyManager()->lookupResource(techniqueFilterKeyId);
             if ((foundMatch = (*techniqueFilterKey == *filterKey)))
                 break;

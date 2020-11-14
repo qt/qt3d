@@ -495,7 +495,7 @@ Qt3DCore::QEntity* GLTFImporter::node(const QString &id)
             }
         } else {
             const auto meshes = meshesValue.toArray();
-            for (const QJsonValue &mesh : meshes) {
+            for (const QJsonValue mesh : meshes) {
                 const QString meshName = mesh.toString();
                 const auto geometryRenderers = qAsConst(m_meshDict).equal_range(meshName);
                 if (Q_UNLIKELY(geometryRenderers.first == geometryRenderers.second)) {
@@ -556,7 +556,7 @@ Qt3DCore::QEntity* GLTFImporter::node(const QString &id)
 
     // recursively retrieve children
     const auto children = jsonObj.value(KEY_CHILDREN).toArray();
-    for (const QJsonValue &c : children) {
+    for (const QJsonValue c : children) {
         QEntity* child = node((m_majorVersion > 1) ? QString::number(c.toInt()) : c.toString());
         if (!child)
             continue;
@@ -660,7 +660,7 @@ Qt3DCore::QEntity* GLTFImporter::scene(const QString &id)
         const QJsonObject sceneObj = sceneVal.toObject();
         sceneEntity = new QEntity;
         const auto nodes = sceneObj.value(KEY_NODES).toArray();
-        for (const QJsonValue &n : nodes) {
+        for (const QJsonValue n : nodes) {
             QEntity* child = node(QString::number(n.toInt()));
             if (!child)
                 continue;
@@ -679,7 +679,7 @@ Qt3DCore::QEntity* GLTFImporter::scene(const QString &id)
         const QJsonObject sceneObj = sceneVal.toObject();
         sceneEntity = new QEntity;
         const auto nodes = sceneObj.value(KEY_NODES).toArray();
-        for (const QJsonValue &nnv : nodes) {
+        for (const QJsonValue nnv : nodes) {
             QString nodeName = nnv.toString();
             QEntity* child = node(nodeName);
             if (!child)
@@ -1680,7 +1680,7 @@ void GLTFImporter::processJSONTechnique(const QString &id, const QJsonObject &js
         t->graphicsApiFilter()->setVendor(gabifilter.value(KEY_VENDOR).toString());
         QStringList extensionList;
         QJsonArray extArray = gabifilter.value(KEY_EXTENSIONS).toArray();
-        for (const QJsonValue &extValue : extArray)
+        for (const QJsonValue extValue : extArray)
             extensionList << extValue.toString();
         t->graphicsApiFilter()->setExtensions(extensionList);
 
@@ -1698,7 +1698,7 @@ void GLTFImporter::processJSONTechnique(const QString &id, const QJsonObject &js
 
         // Render passes
         const QJsonArray passArray = jsonObject.value(KEY_RENDERPASSES).toArray();
-        for (const QJsonValue &passValue : passArray) {
+        for (const QJsonValue passValue : passArray) {
             const QString passName = passValue.toString();
             QRenderPass *pass = m_renderPasses.value(passName);
             if (pass) {
@@ -1725,7 +1725,7 @@ void GLTFImporter::processJSONMesh(const QString &id, const QJsonObject &json)
     if (meshType.isEmpty()) {
         // Custom mesh
         const QJsonArray primitivesArray = json.value(KEY_PRIMITIVES).toArray();
-        for (const QJsonValue &primitiveValue : primitivesArray) {
+        for (const QJsonValue primitiveValue : primitivesArray) {
             const QJsonObject primitiveObject = primitiveValue.toObject();
             const QJsonValue type = primitiveObject.value(KEY_MODE);
             const QJsonValue matValue = primitiveObject.value(KEY_MATERIAL);
@@ -1855,8 +1855,8 @@ void GLTFImporter::processJSONMesh(const QString &id, const QJsonObject &json)
                         target->setProperty(propName.constData(), QVariant(size));
                     }
                 } else {
-                    const QVariant::Type propType = target->property(propName.constData()).type();
-                    if (propType == QVariant::Int) {
+                    const QMetaType propType = target->property(propName.constData()).metaType();
+                    if (propType.id() == QMetaType::Int) {
                         target->setProperty(propName.constData(), QVariant(it.value().toInt()));
                     } else {
                         target->setProperty(propName.constData(),
@@ -2017,7 +2017,7 @@ void GLTFImporter::processJSONEffect(const QString &id, const QJsonObject &jsonO
         effect->addParameter(buildParameter(it.key(), it.value().toObject()));
 
     const QJsonArray techArray = jsonObject.value(KEY_TECHNIQUES).toArray();
-    for (const QJsonValue &techValue : techArray) {
+    for (const QJsonValue techValue : techArray) {
         const QString techName = techValue.toString();
         QTechnique *tech = m_techniques.value(techName);
         if (tech) {
@@ -2513,7 +2513,7 @@ void GLTFImporter::populateRenderStates(QRenderPass *pass, const QJsonObject &st
     // Process states to enable
     const QJsonArray enableStatesArray = states.value(KEY_ENABLE).toArray();
     QList<int> enableStates;
-    for (const QJsonValue &enableValue : enableStatesArray)
+    for (const QJsonValue enableValue : enableStatesArray)
         enableStates.append(enableValue.toInt());
 
     // Process the list of state functions

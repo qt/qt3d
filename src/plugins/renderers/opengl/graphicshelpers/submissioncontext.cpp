@@ -1292,7 +1292,7 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack, GLShad
 
     // Bind Shader Storage block to SSBO and update SSBO
     const std::vector<BlockToSSBO> &blockToSSBOs = parameterPack.shaderStorageBuffers();
-    for (const BlockToSSBO b : blockToSSBOs) {
+    for (const BlockToSSBO &b : blockToSSBOs) {
         Buffer *cpuBuffer = m_renderer->nodeManagers()->bufferManager()->lookupResource(b.m_bufferID);
         GLBuffer *ssbo = glBufferForRenderBuffer(cpuBuffer);
         // bindShaderStorageBlock

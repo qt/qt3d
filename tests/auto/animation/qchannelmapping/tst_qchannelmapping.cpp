@@ -95,7 +95,7 @@ private Q_SLOTS:
             static_cast<const Qt3DAnimation::QChannelMappingPrivate *>(
                 Qt3DAnimation::QChannelMappingPrivate::get(&mapping));
 
-        QCOMPARE(d->m_type, static_cast<int>(QVariant::Invalid));
+        QCOMPARE(d->m_type, static_cast<int>(QMetaType::UnknownType));
         QCOMPARE(d->m_componentCount, 0);
     }
 
@@ -237,13 +237,13 @@ private Q_SLOTS:
         QTest::addColumn<int>("expectedComponentCount");
 
         QTest::newRow("float") << QByteArrayLiteral("floatProperty") << QVariant(1.0f) << static_cast<int>(QMetaType::Float) << 1;
-        QTest::newRow("vec2") << QByteArrayLiteral("vec2Property") << QVariant(QVector2D(1.0f, 1.0f)) << static_cast<int>(QVariant::Vector2D) << 2;
-        QTest::newRow("vec3") << QByteArrayLiteral("vec3Property") << QVariant(QVector3D(1.0f, 1.0f, 1.0f)) << static_cast<int>(QVariant::Vector3D) << 3;
-        QTest::newRow("vec4") << QByteArrayLiteral("vec4Property") << QVariant(QVector4D(1.0f, 1.0f, 1.0f, 1.0f)) << static_cast<int>(QVariant::Vector4D) << 4;
-        QTest::newRow("quaternion") << QByteArrayLiteral("quaternionProperty") << QVariant(QQuaternion(1.0f, 1.0f, 1.0f, 1.0f)) << static_cast<int>(QVariant::Quaternion) << 4;
+        QTest::newRow("vec2") << QByteArrayLiteral("vec2Property") << QVariant(QVector2D(1.0f, 1.0f)) << static_cast<int>(QMetaType::QVector2D) << 2;
+        QTest::newRow("vec3") << QByteArrayLiteral("vec3Property") << QVariant(QVector3D(1.0f, 1.0f, 1.0f)) << static_cast<int>(QMetaType::QVector3D) << 3;
+        QTest::newRow("vec4") << QByteArrayLiteral("vec4Property") << QVariant(QVector4D(1.0f, 1.0f, 1.0f, 1.0f)) << static_cast<int>(QMetaType::QVector4D) << 4;
+        QTest::newRow("quaternion") << QByteArrayLiteral("quaternionProperty") << QVariant(QQuaternion(1.0f, 1.0f, 1.0f, 1.0f)) << static_cast<int>(QMetaType::QQuaternion) << 4;
 
         QVariantList list = QVariantList() << QVariant(1.0f) << QVariant(1.0) << QVariant(1.0f) << QVariant(1.0f) << QVariant(1.0f);
-        QTest::newRow("variantlist") << QByteArrayLiteral("listProperty") << QVariant::fromValue(list) << static_cast<int>(QVariant::List) << 5;
+        QTest::newRow("variantlist") << QByteArrayLiteral("listProperty") << QVariant::fromValue(list) << static_cast<int>(QMetaType::QVariantList) << 5;
 
         QList<float> vec(8);
         QTest::newRow("vector") << QByteArrayLiteral("vecProperty") << QVariant::fromValue(vec) << qMetaTypeId<decltype(vec)>() << 8;

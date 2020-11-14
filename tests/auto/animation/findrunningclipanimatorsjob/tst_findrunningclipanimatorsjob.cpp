@@ -140,7 +140,7 @@ private Q_SLOTS:
                                                        QLatin1String("Location"),
                                                        Qt3DCore::QNodeId::createId(),
                                                        "translation",
-                                                       static_cast<int>(QVariant::Vector3D),
+                                                       static_cast<int>(QMetaType::QVector3D),
                                                        3);
             channelMapper = createChannelMapper(handler, QList<Qt3DCore::QNodeId> { channelMapping->peerId() });
             animator->setMapperId(channelMapper->peerId());
@@ -181,7 +181,7 @@ private Q_SLOTS:
                                                        QLatin1String("Location"),
                                                        Qt3DCore::QNodeId::createId(),
                                                        "translation",
-                                                       static_cast<int>(QVariant::Vector3D),
+                                                       static_cast<int>(QMetaType::QVector3D),
                                                        3);
             channelMapper = createChannelMapper(handler, QList<Qt3DCore::QNodeId> { channelMapping->peerId() });
             animator->setMapperId(channelMapper->peerId());

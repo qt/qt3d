@@ -147,7 +147,7 @@ void QShaderGraphLoader::load()
     }
 
     const QJsonArray nodes = nodesValue.toArray();
-    for (const QJsonValue &nodeValue : nodes) {
+    for (const QJsonValue nodeValue : nodes) {
         if (!nodeValue.isObject()) {
             qWarning() << "Invalid node found";
             hasError = true;
@@ -173,9 +173,8 @@ void QShaderGraphLoader::load()
 
         const QJsonArray layersArray = nodeObject.value(QStringLiteral("layers")).toArray();
         auto layers = QStringList();
-        for (const QJsonValue &layerValue : layersArray) {
+        for (const QJsonValue layerValue : layersArray)
             layers.append(layerValue.toString());
-        }
 
         QShaderNode node = m_prototypes.value(type);
         node.setUuid(uuid);
@@ -189,13 +188,13 @@ void QShaderGraphLoader::load()
                 if (parameterValue.isObject()) {
                     const QJsonObject parameterObject = parameterValue.toObject();
                     const QString type = parameterObject.value(QStringLiteral("type")).toString();
-                    const int typeId = QMetaType::type(type.toUtf8());
+                    const QMetaType typeId = QMetaType::fromName(type.toUtf8());
 
                     const QString value = parameterObject.value(QStringLiteral("value")).toString();
                     auto variant = QVariant(value);
 
-                    if (QMetaType::typeFlags(typeId) & QMetaType::IsEnumeration) {
-                        const QMetaObject *metaObject = QMetaType::metaObjectForType(typeId);
+                    if (typeId.flags() & QMetaType::IsEnumeration) {
+                        const QMetaObject *metaObject = typeId.metaObject();
                         const char *className = metaObject->className();
                         const QByteArray enumName = type.mid(static_cast<int>(qstrlen(className)) + 2).toUtf8();
                         const QMetaEnum metaEnum = metaObject->enumerator(metaObject->indexOfEnumerator(enumName));
@@ -216,7 +215,7 @@ void QShaderGraphLoader::load()
     }
 
     const QJsonArray edges = edgesValue.toArray();
-    for (const QJsonValue &edgeValue : edges) {
+    for (const QJsonValue edgeValue : edges) {
         if (!edgeValue.isObject()) {
             qWarning() << "Invalid edge found";
             hasError = true;
@@ -247,9 +246,8 @@ void QShaderGraphLoader::load()
 
         const QJsonArray layersArray = edgeObject.value(QStringLiteral("layers")).toArray();
         auto layers = QStringList();
-        for (const QJsonValue &layerValue : layersArray) {
+        for (const QJsonValue layerValue : layersArray)
             layers.append(layerValue.toString());
-        }
 
         auto edge = QShaderGraph::Edge();
         edge.sourceNodeUuid = sourceUuid;
