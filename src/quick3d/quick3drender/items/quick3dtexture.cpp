@@ -68,7 +68,7 @@ void Quick3DTextureExtension::appendTextureImage(QQmlListProperty<QAbstractTextu
         self->parentTexture()->addTextureImage(textureImage);
 }
 
-QAbstractTextureImage *Quick3DTextureExtension::textureImageAt(QQmlListProperty<QAbstractTextureImage> *list, int index)
+QAbstractTextureImage *Quick3DTextureExtension::textureImageAt(QQmlListProperty<QAbstractTextureImage> *list, qsizetype index)
 {
     Quick3DTextureExtension *self = qobject_cast<Quick3DTextureExtension *>(list->object);
     if (self)
@@ -76,7 +76,7 @@ QAbstractTextureImage *Quick3DTextureExtension::textureImageAt(QQmlListProperty<
     return nullptr;
 }
 
-int Quick3DTextureExtension::textureImageCount(QQmlListProperty<QAbstractTextureImage> *list)
+qsizetype Quick3DTextureExtension::textureImageCount(QQmlListProperty<QAbstractTextureImage> *list)
 {
     Quick3DTextureExtension *self = qobject_cast<Quick3DTextureExtension *>(list->object);
     if (self)

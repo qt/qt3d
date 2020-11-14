@@ -78,7 +78,7 @@ void Quick3DEffect::appendTechnique(QQmlListProperty<QTechnique> *list, QTechniq
 }
 
 // TO DO : Return a QAbstractTechnique once properly defined
-QTechnique *Quick3DEffect::techniqueAt(QQmlListProperty<QTechnique> *list, int index)
+QTechnique *Quick3DEffect::techniqueAt(QQmlListProperty<QTechnique> *list, qsizetype index)
 {
     Quick3DEffect *eff = qobject_cast<Quick3DEffect*>(list->object);
     if (eff)
@@ -86,7 +86,7 @@ QTechnique *Quick3DEffect::techniqueAt(QQmlListProperty<QTechnique> *list, int i
     return nullptr;
 }
 
-int Quick3DEffect::techniqueCount(QQmlListProperty<QTechnique> *list)
+qsizetype Quick3DEffect::techniqueCount(QQmlListProperty<QTechnique> *list)
 {
     Quick3DEffect *eff = qobject_cast<Quick3DEffect*>(list->object);
     if (eff)
@@ -112,13 +112,13 @@ void Quick3DEffect::appendParameter(QQmlListProperty<QParameter> *list, QParamet
     qobject_cast<QEffect *>(effect->parentEffect())->addParameter(param);
 }
 
-QParameter *Quick3DEffect::parameterAt(QQmlListProperty<QParameter> *list, int index)
+QParameter *Quick3DEffect::parameterAt(QQmlListProperty<QParameter> *list, qsizetype index)
 {
     Quick3DEffect *effect = qobject_cast<Quick3DEffect *>(list->object);
     return qobject_cast<QEffect *>(effect->parentEffect())->parameters().at(index);
 }
 
-int Quick3DEffect::parametersCount(QQmlListProperty<QParameter> *list)
+qsizetype Quick3DEffect::parametersCount(QQmlListProperty<QParameter> *list)
 {
     Quick3DEffect *effect = qobject_cast<Quick3DEffect *>(list->object);
     return qobject_cast<QEffect *>(effect->parentEffect())->parameters().count();

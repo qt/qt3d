@@ -72,13 +72,13 @@ void Quick3DSpriteSheet::appendSprite(QQmlListProperty<Qt3DExtras::QSpriteSheetI
     spritesheet->parentSpriteSheet()->addSprite(sprite);
 }
 
-Qt3DExtras::QSpriteSheetItem *Quick3DSpriteSheet::spriteAt(QQmlListProperty<Qt3DExtras::QSpriteSheetItem> *list, int index)
+Qt3DExtras::QSpriteSheetItem *Quick3DSpriteSheet::spriteAt(QQmlListProperty<Qt3DExtras::QSpriteSheetItem> *list, qsizetype index)
 {
     Quick3DSpriteSheet *spritesheet = qobject_cast<Quick3DSpriteSheet *>(list->object);
     return spritesheet->parentSpriteSheet()->sprites().at(index);
 }
 
-int Quick3DSpriteSheet::spriteCount(QQmlListProperty<Qt3DExtras::QSpriteSheetItem> *list)
+qsizetype Quick3DSpriteSheet::spriteCount(QQmlListProperty<Qt3DExtras::QSpriteSheetItem> *list)
 {
     Quick3DSpriteSheet *spritesheet = qobject_cast<Quick3DSpriteSheet *>(list->object);
     return spritesheet->parentSpriteSheet()->sprites().count();

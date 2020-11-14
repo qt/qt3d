@@ -75,8 +75,8 @@ public:
 
 private:
     static void appendRenderState(QQmlListProperty<QRenderState> *list, QRenderState *state);
-    static QRenderState *renderStateAt(QQmlListProperty<QRenderState> *list, int index);
-    static int renderStateCount(QQmlListProperty<QRenderState> *list);
+    static QRenderState *renderStateAt(QQmlListProperty<QRenderState> *list, qsizetype index);
+    static qsizetype renderStateCount(QQmlListProperty<QRenderState> *list);
     static void clearRenderStates(QQmlListProperty<QRenderState> *list);
 };
 

@@ -65,13 +65,13 @@ void Quick3DChannelMapper::appendMapping(QQmlListProperty<QAbstractChannelMappin
     extension->parentMapper()->addMapping(mapping);
 }
 
-QAbstractChannelMapping *Quick3DChannelMapper::mappingAt(QQmlListProperty<QAbstractChannelMapping> *list, int index)
+QAbstractChannelMapping *Quick3DChannelMapper::mappingAt(QQmlListProperty<QAbstractChannelMapping> *list, qsizetype index)
 {
     Quick3DChannelMapper *extension = qobject_cast<Quick3DChannelMapper *>(list->object);
     return extension->parentMapper()->mappings().at(index);
 }
 
-int Quick3DChannelMapper::mappingCount(QQmlListProperty<QAbstractChannelMapping> *list)
+qsizetype Quick3DChannelMapper::mappingCount(QQmlListProperty<QAbstractChannelMapping> *list)
 {
     Quick3DChannelMapper *extension = qobject_cast<Quick3DChannelMapper *>(list->object);
     return extension->parentMapper()->mappings().count();

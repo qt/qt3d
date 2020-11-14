@@ -77,7 +77,7 @@ void Quick3DTechniqueFilter::appendRequire(QQmlListProperty<QFilterKey> *list, Q
     }
 }
 
-QFilterKey *Quick3DTechniqueFilter::requireAt(QQmlListProperty<QFilterKey> *list, int index)
+QFilterKey *Quick3DTechniqueFilter::requireAt(QQmlListProperty<QFilterKey> *list, qsizetype index)
 {
     Quick3DTechniqueFilter *filter = qobject_cast<Quick3DTechniqueFilter *>(list->object);
     if (filter)
@@ -85,7 +85,7 @@ QFilterKey *Quick3DTechniqueFilter::requireAt(QQmlListProperty<QFilterKey> *list
     return 0;
 }
 
-int Quick3DTechniqueFilter::requiresCount(QQmlListProperty<QFilterKey> *list)
+qsizetype Quick3DTechniqueFilter::requiresCount(QQmlListProperty<QFilterKey> *list)
 {
     Quick3DTechniqueFilter *filter = qobject_cast<Quick3DTechniqueFilter *>(list->object);
     if (filter)
@@ -109,13 +109,13 @@ void Quick3DTechniqueFilter::appendParameter(QQmlListProperty<QParameter> *list,
     techniqueFilter->parentTechniqueFilter()->addParameter(param);
 }
 
-QParameter *Quick3DTechniqueFilter::parameterAt(QQmlListProperty<QParameter> *list, int index)
+QParameter *Quick3DTechniqueFilter::parameterAt(QQmlListProperty<QParameter> *list, qsizetype index)
 {
     Quick3DTechniqueFilter *techniqueFilter = qobject_cast<Quick3DTechniqueFilter *>(list->object);
     return techniqueFilter->parentTechniqueFilter()->parameters().at(index);
 }
 
-int Quick3DTechniqueFilter::parametersCount(QQmlListProperty<QParameter> *list)
+qsizetype Quick3DTechniqueFilter::parametersCount(QQmlListProperty<QParameter> *list)
 {
     Quick3DTechniqueFilter *techniqueFilter = qobject_cast<Quick3DTechniqueFilter *>(list->object);
     return techniqueFilter->parentTechniqueFilter()->parameters().count();

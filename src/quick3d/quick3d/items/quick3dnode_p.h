@@ -77,13 +77,13 @@ public:
 
 private:
     static void appendData(QQmlListProperty<QObject> *list, QObject *obj);
-    static QObject *dataAt(QQmlListProperty<QObject> *list, int index);
-    static int dataCount(QQmlListProperty<QObject> *list);
+    static QObject *dataAt(QQmlListProperty<QObject> *list, qsizetype index);
+    static qsizetype dataCount(QQmlListProperty<QObject> *list);
     static void clearData(QQmlListProperty<QObject> *list);
 
     static void appendChild(QQmlListProperty<Qt3DCore::QNode> *list, Qt3DCore::QNode *obj);
-    static QNode *childAt(QQmlListProperty<Qt3DCore::QNode> *list, int index);
-    static int childCount(QQmlListProperty<Qt3DCore::QNode> *list);
+    static QNode *childAt(QQmlListProperty<Qt3DCore::QNode> *list, qsizetype index);
+    static qsizetype childCount(QQmlListProperty<Qt3DCore::QNode> *list);
     static void clearChildren(QQmlListProperty<Qt3DCore::QNode> *list);
 
 private Q_SLOTS:

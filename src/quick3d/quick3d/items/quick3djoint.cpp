@@ -69,13 +69,13 @@ void Quick3DJoint::appendJoint(QQmlListProperty<QJoint> *list, QJoint *joint)
     jointExtension->parentJoint()->addChildJoint(joint);
 }
 
-QJoint *Quick3DJoint::jointAt(QQmlListProperty<QJoint> *list, int index)
+QJoint *Quick3DJoint::jointAt(QQmlListProperty<QJoint> *list, qsizetype index)
 {
     Quick3DJoint *jointExtension = qobject_cast<Quick3DJoint *>(list->object);
     return jointExtension->parentJoint()->childJoints().at(index);
 }
 
-int Quick3DJoint::jointCount(QQmlListProperty<QJoint> *list)
+qsizetype Quick3DJoint::jointCount(QQmlListProperty<QJoint> *list)
 {
     Quick3DJoint *jointExtension = qobject_cast<Quick3DJoint *>(list->object);
     return jointExtension->parentJoint()->childJoints().count();

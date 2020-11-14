@@ -80,13 +80,13 @@ public:
 
 private:
     static void appendInclude(QQmlListProperty<QFilterKey> *list, QFilterKey *criterion);
-    static QFilterKey *includeAt(QQmlListProperty<QFilterKey> *list, int index);
-    static int includesCount(QQmlListProperty<QFilterKey> *list);
+    static QFilterKey *includeAt(QQmlListProperty<QFilterKey> *list, qsizetype index);
+    static qsizetype includesCount(QQmlListProperty<QFilterKey> *list);
     static void clearIncludes(QQmlListProperty<QFilterKey> *list);
 
     static void appendParameter(QQmlListProperty<QParameter> *list, QParameter *param);
-    static QParameter *parameterAt(QQmlListProperty<QParameter> *list, int index);
-    static int parametersCount(QQmlListProperty<QParameter> *list);
+    static QParameter *parameterAt(QQmlListProperty<QParameter> *list, qsizetype index);
+    static qsizetype parametersCount(QQmlListProperty<QParameter> *list);
     static void clearParameterList(QQmlListProperty<QParameter> *list);
 };
 

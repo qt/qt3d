@@ -82,8 +82,8 @@ public:
 
 private:
     static void appendValue(QQmlListProperty<QShaderData> *list, QShaderData *bar);
-    static QShaderData *valueAt(QQmlListProperty<QShaderData> *list, int index);
-    static int valueCount(QQmlListProperty<QShaderData> *list);
+    static QShaderData *valueAt(QQmlListProperty<QShaderData> *list, qsizetype index);
+    static qsizetype valueCount(QQmlListProperty<QShaderData> *list);
     static void clearValues(QQmlListProperty<QShaderData> *list);
     Q_DECLARE_PRIVATE(Quick3DShaderDataArray)
 };

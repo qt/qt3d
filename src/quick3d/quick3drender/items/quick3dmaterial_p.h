@@ -83,8 +83,8 @@ public:
 private:
     // FIXME - remove when we have a custom QML parser
     static void appendParameter(QQmlListProperty<QParameter> *list, QParameter *bar);
-    static QParameter *parameterAt(QQmlListProperty<QParameter> *list, int index);
-    static int parameterCount(QQmlListProperty<QParameter> *list);
+    static QParameter *parameterAt(QQmlListProperty<QParameter> *list, qsizetype index);
+    static qsizetype parameterCount(QQmlListProperty<QParameter> *list);
     static void clearParameters(QQmlListProperty<QParameter> *list);
 };
 

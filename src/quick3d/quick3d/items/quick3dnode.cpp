@@ -97,13 +97,13 @@ void Quick3DNode::appendData(QQmlListProperty<QObject> *list, QObject *obj)
     self->childAppended(0, obj);
 }
 
-QObject *Quick3DNode::dataAt(QQmlListProperty<QObject> *list, int index)
+QObject *Quick3DNode::dataAt(QQmlListProperty<QObject> *list, qsizetype index)
 {
     Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
     return self->parentNode()->children().at(index);
 }
 
-int Quick3DNode::dataCount(QQmlListProperty<QObject> *list)
+qsizetype Quick3DNode::dataCount(QQmlListProperty<QObject> *list)
 {
     Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
     return self->parentNode()->children().count();
@@ -127,13 +127,13 @@ void Quick3DNode::appendChild(QQmlListProperty<Qt3DCore::QNode> *list, Qt3DCore:
     self->childAppended(0, obj);
 }
 
-Qt3DCore::QNode *Quick3DNode::childAt(QQmlListProperty<Qt3DCore::QNode> *list, int index)
+Qt3DCore::QNode *Quick3DNode::childAt(QQmlListProperty<Qt3DCore::QNode> *list, qsizetype index)
 {
     Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
     return qobject_cast<QNode *>(self->parentNode()->children().at(index));
 }
 
-int Quick3DNode::childCount(QQmlListProperty<Qt3DCore::QNode> *list)
+qsizetype Quick3DNode::childCount(QQmlListProperty<Qt3DCore::QNode> *list)
 {
     Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
     return self->parentNode()->children().count();

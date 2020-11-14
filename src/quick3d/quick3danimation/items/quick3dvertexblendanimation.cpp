@@ -65,7 +65,7 @@ void QQuick3DVertexBlendAnimation::appendMorphTarget(
         animation->parentVertexBlendAnimation()->addMorphTarget(morphTarget);
 }
 
-int QQuick3DVertexBlendAnimation::morphTargetCount(
+qsizetype QQuick3DVertexBlendAnimation::morphTargetCount(
                                             QQmlListProperty<Qt3DAnimation::QMorphTarget> *list)
 {
     QQuick3DVertexBlendAnimation *animation
@@ -77,7 +77,7 @@ int QQuick3DVertexBlendAnimation::morphTargetCount(
 
 Qt3DAnimation::QMorphTarget *QQuick3DVertexBlendAnimation::morphTargetAt(
                                             QQmlListProperty<Qt3DAnimation::QMorphTarget> *list,
-                                            int index)
+                                            qsizetype index)
 {
     QQuick3DVertexBlendAnimation *animation
             = qobject_cast<QQuick3DVertexBlendAnimation *>(list->object);

@@ -79,13 +79,13 @@ public:
 
 private:
     static void appendTechnique(QQmlListProperty<QTechnique> *list, QTechnique *bar);
-    static QTechnique *techniqueAt(QQmlListProperty<QTechnique> *list, int index);
-    static int techniqueCount(QQmlListProperty<QTechnique> *list);
+    static QTechnique *techniqueAt(QQmlListProperty<QTechnique> *list, qsizetype index);
+    static qsizetype techniqueCount(QQmlListProperty<QTechnique> *list);
     static void clearTechniqueList(QQmlListProperty<QTechnique> *list);
 
     static void appendParameter(QQmlListProperty<QParameter> *list, QParameter *param);
-    static QParameter *parameterAt(QQmlListProperty<QParameter> *list, int index);
-    static int parametersCount(QQmlListProperty<QParameter> *list);
+    static QParameter *parameterAt(QQmlListProperty<QParameter> *list, qsizetype index);
+    static qsizetype parametersCount(QQmlListProperty<QParameter> *list);
     static void clearParameterList(QQmlListProperty<QParameter> *list);
 };
 

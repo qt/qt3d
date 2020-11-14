@@ -74,13 +74,13 @@ void Quick3DTechnique::appendParameter(QQmlListProperty<QParameter> *list, QPara
     technique->parentTechnique()->addParameter(param);
 }
 
-QParameter *Quick3DTechnique::parameterAt(QQmlListProperty<QParameter> *list, int index)
+QParameter *Quick3DTechnique::parameterAt(QQmlListProperty<QParameter> *list, qsizetype index)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     return technique->parentTechnique()->parameters().at(index);
 }
 
-int Quick3DTechnique::parametersCount(QQmlListProperty<QParameter> *list)
+qsizetype Quick3DTechnique::parametersCount(QQmlListProperty<QParameter> *list)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     return technique->parentTechnique()->parameters().count();
@@ -102,7 +102,7 @@ void Quick3DTechnique::appendRenderPass(QQmlListProperty<QRenderPass> *list, QRe
     }
 }
 
-QRenderPass *Quick3DTechnique::renderPassAt(QQmlListProperty<QRenderPass> *list, int index)
+QRenderPass *Quick3DTechnique::renderPassAt(QQmlListProperty<QRenderPass> *list, qsizetype index)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique)
@@ -110,7 +110,7 @@ QRenderPass *Quick3DTechnique::renderPassAt(QQmlListProperty<QRenderPass> *list,
     return 0;
 }
 
-int Quick3DTechnique::renderPassCount(QQmlListProperty<QRenderPass> *list)
+qsizetype Quick3DTechnique::renderPassCount(QQmlListProperty<QRenderPass> *list)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique)
@@ -147,7 +147,7 @@ void Quick3DTechnique::appendFilterKey(QQmlListProperty<QFilterKey> *list, QFilt
     }
 }
 
-QFilterKey *Quick3DTechnique::filterKeyAt(QQmlListProperty<QFilterKey> *list, int index)
+QFilterKey *Quick3DTechnique::filterKeyAt(QQmlListProperty<QFilterKey> *list, qsizetype index)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique)
@@ -155,7 +155,7 @@ QFilterKey *Quick3DTechnique::filterKeyAt(QQmlListProperty<QFilterKey> *list, in
     return 0;
 }
 
-int Quick3DTechnique::filterKeyCount(QQmlListProperty<QFilterKey> *list)
+qsizetype Quick3DTechnique::filterKeyCount(QQmlListProperty<QFilterKey> *list)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique)

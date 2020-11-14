@@ -74,13 +74,13 @@ void Quick3DLogicalDevice::appendAxis(QQmlListProperty<QAxis> *list, QAxis *axes
     device->parentLogicalDevice()->addAxis(axes);
 }
 
-QAxis *Quick3DLogicalDevice::axisAt(QQmlListProperty<QAxis> *list, int index)
+QAxis *Quick3DLogicalDevice::axisAt(QQmlListProperty<QAxis> *list, qsizetype index)
 {
     Quick3DLogicalDevice *device = qobject_cast<Quick3DLogicalDevice *>(list->object);
     return device->parentLogicalDevice()->axes().at(index);
 }
 
-int Quick3DLogicalDevice::axesCount(QQmlListProperty<QAxis> *list)
+qsizetype Quick3DLogicalDevice::axesCount(QQmlListProperty<QAxis> *list)
 {
     Quick3DLogicalDevice *device = qobject_cast<Quick3DLogicalDevice *>(list->object);
     return device->parentLogicalDevice()->axes().count();
@@ -100,13 +100,13 @@ void Quick3DLogicalDevice::appendAction(QQmlListProperty<QAction> *list, QAction
     device->parentLogicalDevice()->addAction(action);
 }
 
-QAction *Quick3DLogicalDevice::actionAt(QQmlListProperty<QAction> *list, int index)
+QAction *Quick3DLogicalDevice::actionAt(QQmlListProperty<QAction> *list, qsizetype index)
 {
     Quick3DLogicalDevice *device = qobject_cast<Quick3DLogicalDevice *>(list->object);
     return device->parentLogicalDevice()->actions().at(index);
 }
 
-int Quick3DLogicalDevice::actionCount(QQmlListProperty<QAction> *list)
+qsizetype Quick3DLogicalDevice::actionCount(QQmlListProperty<QAction> *list)
 {
     Quick3DLogicalDevice *device = qobject_cast<Quick3DLogicalDevice *>(list->object);
     return device->parentLogicalDevice()->actions().count();

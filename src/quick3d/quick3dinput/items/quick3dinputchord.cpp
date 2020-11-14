@@ -53,10 +53,10 @@ Quick3DInputChord::Quick3DInputChord(QObject *parent)
 QQmlListProperty<QAbstractActionInput> Quick3DInputChord::qmlActionInputs()
 {
     return QQmlListProperty<QAbstractActionInput>(this, 0,
-                                        &Quick3DInputChord::appendActionInput,
-                                        &Quick3DInputChord::actionInputCount,
-                                        &Quick3DInputChord::actionInputAt,
-                                        &Quick3DInputChord::clearActionInputs);
+                                                  &Quick3DInputChord::appendActionInput,
+                                                  &Quick3DInputChord::actionInputCount,
+                                                  &Quick3DInputChord::actionInputAt,
+                                                  &Quick3DInputChord::clearActionInputs);
 }
 
 void Quick3DInputChord::appendActionInput(QQmlListProperty<QAbstractActionInput> *list, QAbstractActionInput *input)
@@ -65,13 +65,13 @@ void Quick3DInputChord::appendActionInput(QQmlListProperty<QAbstractActionInput>
     action->parentChord()->addChord(input);
 }
 
-QAbstractActionInput *Quick3DInputChord::actionInputAt(QQmlListProperty<QAbstractActionInput> *list, int index)
+QAbstractActionInput *Quick3DInputChord::actionInputAt(QQmlListProperty<QAbstractActionInput> *list, qsizetype index)
 {
     Quick3DInputChord *action = qobject_cast<Quick3DInputChord *>(list->object);
     return action->parentChord()->chords().at(index);
 }
 
-int Quick3DInputChord::actionInputCount(QQmlListProperty<QAbstractActionInput> *list)
+qsizetype Quick3DInputChord::actionInputCount(QQmlListProperty<QAbstractActionInput> *list)
 {
     Quick3DInputChord *action = qobject_cast<Quick3DInputChord *>(list->object);
     return action->parentChord()->chords().count();

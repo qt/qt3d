@@ -65,13 +65,13 @@ void Quick3DAction::appendActionInput(QQmlListProperty<QAbstractActionInput> *li
     action->parentAction()->addInput(input);
 }
 
-QAbstractActionInput *Quick3DAction::actionInputAt(QQmlListProperty<QAbstractActionInput> *list, int index)
+QAbstractActionInput *Quick3DAction::actionInputAt(QQmlListProperty<QAbstractActionInput> *list, qsizetype index)
 {
     Quick3DAction *action = qobject_cast<Quick3DAction *>(list->object);
     return action->parentAction()->inputs().at(index);
 }
 
-int Quick3DAction::actionInputCount(QQmlListProperty<QAbstractActionInput> *list)
+qsizetype Quick3DAction::actionInputCount(QQmlListProperty<QAbstractActionInput> *list)
 {
     Quick3DAction *action = qobject_cast<Quick3DAction *>(list->object);
     return action->parentAction()->inputs().count();

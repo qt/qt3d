@@ -56,7 +56,7 @@ void Quick3DRayCasterPrivate::appendLayer(QQmlListProperty<QLayer> *list, QLayer
         filter->addLayer(layer);
 }
 
-QLayer *Quick3DRayCasterPrivate::layerAt(QQmlListProperty<QLayer> *list, int index)
+QLayer *Quick3DRayCasterPrivate::layerAt(QQmlListProperty<QLayer> *list, qsizetype index)
 {
     QAbstractRayCaster *filter = qobject_cast<QAbstractRayCaster *>(list->object);
     if (filter)
@@ -64,7 +64,7 @@ QLayer *Quick3DRayCasterPrivate::layerAt(QQmlListProperty<QLayer> *list, int ind
     return nullptr;
 }
 
-int Quick3DRayCasterPrivate::layerCount(QQmlListProperty<QLayer> *list)
+qsizetype Quick3DRayCasterPrivate::layerCount(QQmlListProperty<QLayer> *list)
 {
     QAbstractRayCaster *filter = qobject_cast<QAbstractRayCaster *>(list->object);
     if (filter)

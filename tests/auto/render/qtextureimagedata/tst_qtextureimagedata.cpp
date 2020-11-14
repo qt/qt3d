@@ -65,6 +65,9 @@ private Q_SLOTS:
     void checkTextureDataUsesFunctor() {
         Qt3DRender::QTextureImageData *tid = new Qt3DRender::QTextureImageData();
 
+        tid->setLayers(1);
+        tid->setFaces(1);
+        tid->setMipLevels(1);
         tid->setData({}, [](QByteArray, int, int, int) {
             return QByteArray("a");
         }, false);

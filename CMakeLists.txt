@@ -13,17 +13,17 @@ project(Qt3D # special case
 # Make sure we only use latest private CMake API, aka no compatibility wrappers.
 set(QT_NO_INTERNAL_COMPATIBILITY_FUNCTIONS TRUE)
 
-find_package(Qt6 ${PROJECT_VERSION} CONFIG REQUIRED COMPONENTS BuildInternals Core Gui)
-find_package(Qt6 ${PROJECT_VERSION} QUIET CONFIG
-             OPTIONAL_COMPONENTS Concurrent Widgets Qml Quick Gamepad OpenGL ShaderTools)
+find_package(Qt6 ${PROJECT_VERSION} CONFIG REQUIRED COMPONENTS BuildInternals Core)
+find_package(Qt6 ${PROJECT_VERSION} QUIET CONFIG OPTIONAL_COMPONENTS
+                                    Concurrent Widgets Qml Quick Gamepad OpenGL ShaderTools)
 # special case end
 
 if(NOT TARGET Qt::Gui)
-    message(FATAL_ERROR "Skipping the build as the condition \"TARGET Qt::Gui\" is not met.")
+    message(NOTICE "Skipping the build as the condition \"TARGET Qt::Gui\" is not met.")
     return()
 endif()
 if(WASM OR NOT QT_FEATURE_opengl)
-    message(FATAL_ERROR "Skipping the build as the condition \"QT_FEATURE_opengl AND NOT WASM\" is not met.")
+    message(NOTICE "Skipping the build as the condition \"QT_FEATURE_opengl AND NOT WASM\" is not met.")
     return()
 endif()
 
