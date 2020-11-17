@@ -8,7 +8,7 @@
 
     "commandline": {
         "options": {
-            "assimp": { "type": "enum", "values": [ "qt", "system", "no" ] },
+            "qt3d-assimp": { "type": "enum", "values": [ "qt", "system", "no" ] },
             "qt3d-profile-jobs": "boolean",
             "qt3d-profile-gl": "boolean",
             "qt3d-render": "boolean",
@@ -21,7 +21,7 @@
     },
 
     "libraries": {
-        "assimp": {
+        "qt3d-assimp": {
             "label": "Assimp",
             "test": "assimp",
             "sources": [
@@ -32,15 +32,15 @@
     },
 
     "features": {
-        "assimp": {
+        "qt3d-assimp": {
             "label": "Assimp",
             "output": [ "privateFeature", "feature" ]
         },
-        "system-assimp": {
+        "qt3d-system-assimp": {
             "label": "System Assimp",
             "enable": "input.assimp == 'system'",
             "disable": "input.assimp == 'qt'",
-            "condition": "features.assimp && libs.assimp",
+            "condition": "features.qt3d-assimp && libs.qt3d-assimp",
             "output": [ "privateFeature" ]
         },
         "qt3d-profile-jobs": {
@@ -110,8 +110,8 @@
         {
             "section": "Qt 3D",
             "entries": [
-                "assimp",
-                "system-assimp",
+                "qt3d-assimp",
+                "qt3d-system-assimp",
                 "qt3d-profile-gl",
                 "qt3d-simd-sse2",
                 "qt3d-simd-avx2",
