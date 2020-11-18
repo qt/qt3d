@@ -104,6 +104,8 @@ public:
     // Pick volumes job
     QVector<RayCasting::QBoundingVolume *> triangleData() const;
 
+    float sortIndex() const { return m_sortIndex; }
+
 private:
     Qt3DCore::QNodeId m_geometryId;
     int m_instanceCount;
@@ -120,6 +122,7 @@ private:
     QGeometryFactoryPtr m_geometryFactory;
     GeometryRendererManager *m_manager;
     QVector<RayCasting::QBoundingVolume *> m_triangleVolumes;
+    float m_sortIndex;
 };
 
 class GeometryRendererFunctor : public Qt3DCore::QBackendNodeMapper

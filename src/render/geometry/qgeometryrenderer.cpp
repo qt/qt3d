@@ -48,6 +48,28 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
+/*
+    \internal
+
+    sortIndex property: overrides the sorting index when depth sorting is enabled.
+
+    If depth sorting is enabled on the frame graph, the renderer will sort
+    objects based on how far the center of the bounding volume is from
+    the camera and render objects from the furthest to the closest.
+
+    This property can be used to override the depth index and precisely
+    control the order in which objects are rendered. This is useful when
+    all objects are at the same physical distance from the camera.
+
+    The actual values are not significant, only that they define an order
+    to sort the objects. These are sorted such as the object with the
+    smallest value is drawn first, then the second smallest, and so on.
+
+    \note Setting this to -1.f will disable the explicit sorting for this
+    entity and revert to using the distance from the center of the bounding
+    volume.
+*/
+
 QGeometryRendererPrivate::QGeometryRendererPrivate()
     : QComponentPrivate()
     , m_instanceCount(1)
@@ -61,6 +83,7 @@ QGeometryRendererPrivate::QGeometryRendererPrivate()
     , m_primitiveRestart(false)
     , m_geometry(nullptr)
     , m_primitiveType(QGeometryRenderer::Triangles)
+    , m_sortIndex(-1.f)
 {
 }
 
@@ -193,7 +216,6 @@ QGeometryRendererPrivate::~QGeometryRendererPrivate()
     \endlist
     \sa Qt3DRender::QGeometryRenderer::PrimitiveType
  */
-
 
 /*!
     Constructs a new QGeometryRenderer with \a parent.

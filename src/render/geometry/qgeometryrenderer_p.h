@@ -82,6 +82,7 @@ public:
     QGeometry *m_geometry;
     QGeometryRenderer::PrimitiveType m_primitiveType;
     QGeometryFactoryPtr m_geometryFactory;
+    float m_sortIndex;
 };
 
 struct QGeometryRendererData

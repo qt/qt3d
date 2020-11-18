@@ -826,6 +826,10 @@ void RenderView::updateRenderCommand(EntityRenderCommandData *renderCommandData,
             command.m_depth = Vector3D::dotProduct(
                     entity->worldBoundingVolume()->center() - m_data.m_eyePos, m_data.m_eyeViewDir);
 
+            auto geometryRenderer = m_manager->geometryRendererManager()->data(command.m_geometryRenderer);
+            if (geometryRenderer && !qFuzzyCompare(geometryRenderer->sortIndex(), -1.f))
+                command.m_depth = geometryRenderer->sortIndex();
+
             environmentLight = m_environmentLight;
             lightSources = m_lightSources;
 
