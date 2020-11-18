@@ -65,6 +65,7 @@ class Q_3DRENDERSHARED_EXPORT QGeometryRenderer : public Qt3DCore::QBoundingVolu
     Q_PROPERTY(bool primitiveRestartEnabled READ primitiveRestartEnabled WRITE setPrimitiveRestartEnabled NOTIFY primitiveRestartEnabledChanged)
     Q_PROPERTY(Qt3DCore::QGeometry* geometry READ geometry WRITE setGeometry NOTIFY geometryChanged)
     Q_PROPERTY(PrimitiveType primitiveType READ primitiveType WRITE setPrimitiveType NOTIFY primitiveTypeChanged)
+    Q_PROPERTY(float sortIndex READ sortIndex WRITE setSortIndex NOTIFY sortIndexChanged)
 public:
     explicit QGeometryRenderer(Qt3DCore::QNode *parent = nullptr);
     ~QGeometryRenderer();
@@ -99,6 +100,7 @@ public:
     bool primitiveRestartEnabled() const;
     Qt3DCore::QGeometry *geometry() const;
     PrimitiveType primitiveType() const;
+    float sortIndex() const;
 
 public Q_SLOTS:
     void setInstanceCount(int instanceCount);
@@ -112,6 +114,7 @@ public Q_SLOTS:
     void setPrimitiveRestartEnabled(bool enabled);
     void setGeometry(Qt3DCore::QGeometry *geometry);
     void setPrimitiveType(PrimitiveType primitiveType);
+    void setSortIndex(float sortIndex);
 
 Q_SIGNALS:
     void instanceCountChanged(int instanceCount);
@@ -126,11 +129,14 @@ Q_SIGNALS:
     void geometryChanged(Qt3DCore::QGeometry *geometry);
     void primitiveTypeChanged(PrimitiveType primitiveType);
 
+    void sortIndexChanged(float sortIndex);
+
 protected:
     explicit QGeometryRenderer(QGeometryRendererPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QGeometryRenderer)
+    float m_sortIndex;
 };
 
 } // namespace Qt3DRender

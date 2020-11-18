@@ -162,6 +162,16 @@ private Q_SLOTS:
         QCOMPARE(arbiter.dirtyNodes().front(), geometryRenderer.data());
 
         arbiter.clear();
+
+        // WHEN
+        geometryRenderer->setSortIndex(42.f);
+        QCoreApplication::processEvents();
+
+        // THEN
+        QCOMPARE(arbiter.dirtyNodes().size(), 1);
+        QCOMPARE(arbiter.dirtyNodes().front(), geometryRenderer.data());
+
+        arbiter.clear();
     }
 
     void checkGeometryBookkeeping()

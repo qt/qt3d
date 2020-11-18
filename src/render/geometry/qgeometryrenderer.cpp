@@ -61,6 +61,7 @@ QGeometryRendererPrivate::QGeometryRendererPrivate()
     , m_primitiveRestart(false)
     , m_geometry(nullptr)
     , m_primitiveType(QGeometryRenderer::Triangles)
+    , m_sortIndex(-1.f)
 {
     m_primaryProvider = false;
 }
@@ -221,6 +222,30 @@ void QGeometryRendererPrivate::setView(QGeometryView *view)
     \endlist
     \sa Qt3DRender::QGeometryRenderer::PrimitiveType
  */
+/*!
+    \qmlproperty float GeometryRenderer::sortIndex
+    \since 6.0
+
+    Overrides the sorting index when depth sorting is enabled.
+
+    If depth sorting is enabled on the frame graph, the renderer will sort
+    objects based on how far the center of the bounding volume is from
+    the camera and render objects from the furthest to the closest.
+
+    This property can be used to override the depth index and precisely
+    control the order in which objects are rendered. This is useful when
+    all objects are at the same physical distance from the camera.
+
+    The actual values are not significant, only that they define an order
+    to sort the objects. These are sorted such as the object with the
+    smallest value is drawn first, then the second smallest, and so on.
+
+    \note Setting this to -1.f will disable the explicit sorting for this
+    entity and revert to using the distance from the center of the bounding
+    volume.
+
+    \sa SortPolicy
+*/
 
 
 /*!
@@ -367,6 +392,36 @@ QGeometryRenderer::PrimitiveType QGeometryRenderer::primitiveType() const
     return d->m_primitiveType;
 }
 
+/*!
+    \property QGeometryRenderer::sortIndex
+    \since 6.0
+
+    Overrides the sorting index when depth sorting is enabled.
+
+    If depth sorting is enabled on the frame graph, the renderer will sort
+    objects based on how far the center of the bounding volume is from
+    the camera and render objects from the furthest to the closest.
+
+    This property can be used to override the depth index and precisely
+    control the order in which objects are rendered. This is useful when
+    all objects are at the same physical distance from the camera.
+
+    The actual values are not significant, only that they define an order
+    to sort the objects. These are sorted such as the object with the
+    smallest value is drawn first, then the second smallest, and so on.
+
+    \note Setting this to -1.f will disable the explicit sorting for this
+    entity and revert to using the distance from the center of the bounding
+    volume.
+
+    \sa Qt3DRender::QSortPolicy
+*/
+float QGeometryRenderer::sortIndex() const
+{
+    Q_D(const QGeometryRenderer);
+    return d->m_sortIndex;
+}
+
 void QGeometryRenderer::setInstanceCount(int instanceCount)
 {
     Q_D(QGeometryRenderer);
@@ -485,6 +540,16 @@ void QGeometryRenderer::setPrimitiveType(QGeometryRenderer::PrimitiveType primit
 
     d->m_primitiveType = primitiveType;
     emit primitiveTypeChanged(primitiveType);
+}
+
+void QGeometryRenderer::setSortIndex(float sortIndex)
+{
+    Q_D(QGeometryRenderer);
+    if (qFuzzyCompare(d->m_sortIndex, sortIndex))
+        return;
+
+    d->m_sortIndex = sortIndex;
+    emit sortIndexChanged(d->m_sortIndex);
 }
 
 } // namespace Qt3DRender

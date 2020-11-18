@@ -99,6 +99,7 @@ public:
     inline Qt3DCore::QGeometryFactoryPtr geometryFactory() const { return m_geometryFactory; }
     void unsetDirty();
     bool hasView() const { return m_hasView; }
+    float sortIndex() const { return m_sortIndex; }
 
 private:
     Qt3DCore::QNodeId m_geometryId;
@@ -116,6 +117,7 @@ private:
     bool m_hasView;
     Qt3DCore::QGeometryFactoryPtr m_geometryFactory;
     GeometryRendererManager *m_manager;
+    float m_sortIndex;
 };
 
 class GeometryRendererFunctor : public Qt3DCore::QBackendNodeMapper

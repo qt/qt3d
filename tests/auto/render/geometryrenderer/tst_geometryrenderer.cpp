@@ -67,6 +67,7 @@ private Q_SLOTS:
         geometryRenderer.setPrimitiveType(Qt3DRender::QGeometryRenderer::Patches);
         geometryRenderer.setGeometry(&geometry);
         geometryRenderer.setEnabled(false);
+        geometryRenderer.setSortIndex(42.f);
 
         // WHEN
         renderGeometryRenderer.setRenderer(&renderer);
@@ -86,6 +87,8 @@ private Q_SLOTS:
         QCOMPARE(renderGeometryRenderer.primitiveType(), geometryRenderer.primitiveType());
         QCOMPARE(renderGeometryRenderer.geometryId(), geometry.id());
         QCOMPARE(renderGeometryRenderer.isEnabled(), false);
+        QCOMPARE(renderGeometryRenderer.sortIndex(), geometryRenderer.sortIndex());
+        QCOMPARE(renderGeometryRenderer.sortIndex(), 42.f);
     }
 
     void checkInitialAndCleanedUpState()
@@ -108,6 +111,7 @@ private Q_SLOTS:
         QCOMPARE(renderGeometryRenderer.primitiveType(), Qt3DRender::QGeometryRenderer::Triangles);
         QVERIFY(renderGeometryRenderer.geometryFactory().isNull());
         QVERIFY(!renderGeometryRenderer.isEnabled());
+        QCOMPARE(renderGeometryRenderer.sortIndex(), -1.f);
 
         // GIVEN
         Qt3DRender::QGeometryRenderer geometryRenderer;
@@ -124,6 +128,7 @@ private Q_SLOTS:
         geometryRenderer.setPrimitiveType(Qt3DRender::QGeometryRenderer::Patches);
         geometryRenderer.setGeometry(&geometry);
         geometryRenderer.setEnabled(true);
+        geometryRenderer.setSortIndex(42.f);
 
         // WHEN
         renderGeometryRenderer.setRenderer(&renderer);
@@ -143,6 +148,7 @@ private Q_SLOTS:
         QCOMPARE(renderGeometryRenderer.primitiveRestartEnabled(), false);
         QCOMPARE(renderGeometryRenderer.primitiveType(), Qt3DRender::QGeometryRenderer::Triangles);
         QVERIFY(!renderGeometryRenderer.isEnabled());
+        QCOMPARE(renderGeometryRenderer.sortIndex(), -1.f);
     }
 
     void checkPropertyChanges()
@@ -302,6 +308,14 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backEndRenderer.isEnabled(), true);
+        QVERIFY(!backEndRenderer.isDirty());
+
+        // WHEN
+        frontEndRenderer.setSortIndex(42.f);
+        backEndRenderer.syncFromFrontEnd(&frontEndRenderer, false);
+
+        // THEN
+        QCOMPARE(backEndRenderer.sortIndex(), 42.f);
         QVERIFY(!backEndRenderer.isDirty());
     }
 

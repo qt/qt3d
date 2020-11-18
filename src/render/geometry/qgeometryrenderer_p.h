@@ -83,6 +83,7 @@ public:
     Qt3DCore::QGeometry *m_geometry;
     QGeometryRenderer::PrimitiveType m_primitiveType;
     Qt3DCore::QGeometryFactoryPtr m_geometryFactory;
+    float m_sortIndex;
 };
 
 } // namespace Qt3DRender

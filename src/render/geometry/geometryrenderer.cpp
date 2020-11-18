@@ -69,6 +69,7 @@ GeometryRenderer::GeometryRenderer()
     , m_primitiveType(QGeometryRenderer::Triangles)
     , m_dirty(false)
     , m_manager(nullptr)
+    , m_sortIndex(-1.f)
 {
 }
 
@@ -92,6 +93,7 @@ void GeometryRenderer::cleanup()
     m_geometryId = Qt3DCore::QNodeId();
     m_dirty = false;
     m_geometryFactory.reset();
+    m_sortIndex = -1.f;
 }
 
 void GeometryRenderer::setManager(GeometryRendererManager *manager)
@@ -161,6 +163,8 @@ void GeometryRenderer::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
             }
         }
     }
+
+    m_sortIndex = node->sortIndex();
 
     markDirty(AbstractRenderer::GeometryDirty);
 }
