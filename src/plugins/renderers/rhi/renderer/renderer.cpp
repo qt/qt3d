@@ -1731,7 +1731,7 @@ bool Renderer::prepareGeometryInputBindings(const Geometry *geometry, const RHIS
 
         const auto attributeType = rhiAttributeType(attrib);
         if (!attributeType) {
-            qCWarning(Backend) << "An attribute type is not supported";
+            qCWarning(Backend) << "An attribute type is not supported" << attrib->name() << attrib->vertexBaseType();
             return false;
         }
 
