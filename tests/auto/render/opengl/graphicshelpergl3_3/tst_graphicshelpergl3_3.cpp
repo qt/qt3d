@@ -32,7 +32,9 @@
 #include <Qt3DRender/private/attachmentpack_p.h>
 #include <graphicshelpergl3_3_p.h>
 #include <QOpenGLBuffer>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QOpenGLVersionFunctionsFactory>
+#endif
 #include <QOpenGLFunctions_3_3_Core>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLVertexArrayObject>
@@ -208,7 +210,11 @@ private Q_SLOTS:
             return;
         }
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         if ((m_func = QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_3_3_Core>()) != nullptr) {
+#else
+        if ((m_func = m_glContext.versionFunctions<QOpenGLFunctions_3_3_Core>())) {
+#endif
             m_glHelper.initializeHelper(&m_glContext, m_func);
             m_initializationSuccessful = true;
         }
@@ -647,7 +653,7 @@ private Q_SLOTS:
         QVERIFY(error == 0);
 
         // THEN
-        QList<QVector4D> colors(512 * 512);
+        QVector<QVector4D> colors(512 * 512);
         textures[3]->bind();
         m_func->glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_FLOAT, colors.data());
         textures[3]->release();
