@@ -379,15 +379,20 @@ QList<QFrameGraphNode *> QFrameGraphNodePrivate::childFrameGraphNodes() const
     Q_Q(const QFrameGraphNode);
     QList<QFrameGraphNode *> result;
     QQueue<QNode *> queue;
-    queue.append(q->childNodes().toList());
+    const auto childNodes = q->childNodes();
+    for (auto c: childNodes)
+        queue.append(c);
     result.reserve(queue.size());
     while (!queue.isEmpty()) {
         auto *child = queue.dequeue();
         auto *childFGNode = qobject_cast<QFrameGraphNode *>(child);
         if (childFGNode != nullptr)
             result.push_back(childFGNode);
-        else
-            queue.append(child->childNodes().toList());
+        else {
+            const auto childNodes = child->childNodes();
+            for (auto c: childNodes)
+                queue.append(c);
+        }
     }
     return result;
 }

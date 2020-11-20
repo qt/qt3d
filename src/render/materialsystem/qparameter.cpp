@@ -41,8 +41,10 @@
 #include "qparameter_p.h"
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/qtexture.h>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QtCore/qiterable.h>
 #include <QtCore/qsequentialiterable.h>
+#endif
 
 /*!
     \qmltype Parameter

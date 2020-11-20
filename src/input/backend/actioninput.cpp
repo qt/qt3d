@@ -53,7 +53,6 @@ namespace Input {
 
 ActionInput::ActionInput()
     : AbstractActionInput()
-    , m_buttons(0)
 {
 }
 

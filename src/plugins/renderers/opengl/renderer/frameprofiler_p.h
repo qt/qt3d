@@ -141,8 +141,8 @@ public:
     {
 #ifdef QT3D_SUPPORTS_GL_MONITOR
         if (m_monitor.isResultAvailable()) {
-            const QList<GLuint64> samples = m_monitor.waitForSamples();
-            Q_ASSERT(samples.count() >= 2 * m_recordings.count());
+            const auto &samples = m_monitor.waitForSamples();
+            Q_ASSERT(samples.size() >= 2 * m_recordings.size());
 
             Qt3DCore::QSystemInformationServicePrivate *dservice = Qt3DCore::QSystemInformationServicePrivate::get(m_service);
 

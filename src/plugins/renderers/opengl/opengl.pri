@@ -1,5 +1,7 @@
 QT += core-private gui-private 3dcore 3dcore-private 3drender 3drender-private opengl-private
 
+CONFIG += c++17
+
 # Qt3D is free of Q_FOREACH - make sure it stays that way:
 DEFINES += QT_NO_FOREACH
 DEFINES += BUILD_QT3D_MODULE

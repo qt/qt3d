@@ -4,6 +4,7 @@ MODULE   = 3drender
 QT = core-private 3dcore-private opengl
 QT_FOR_PRIVATE = concurrent
 DEFINES += BUILD_QT3D_MODULE
+CONFIG += c++17
 
 include (backend/render-backend.pri)
 include (geometry/geometry.pri)

@@ -354,7 +354,7 @@ void AnimationClip::clearData()
 float AnimationClip::findDuration()
 {
     // Iterate over the contained fcurves and find the longest one
-    double tMax = 0.0;
+    float tMax = 0.f;
     for (const Channel &channel : qAsConst(m_channels)) {
         for (const ChannelComponent &channelComponent : qAsConst(channel.channelComponents)) {
             const float t = channelComponent.fcurve.endTime();

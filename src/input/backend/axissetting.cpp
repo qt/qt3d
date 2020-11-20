@@ -51,7 +51,6 @@ namespace Input {
 AxisSetting::AxisSetting()
     : BackendNode()
     , m_deadZoneRadius(0.0f)
-    , m_axes(0)
     , m_smooth(false)
 {
 }

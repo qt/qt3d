@@ -11,8 +11,7 @@ SUBDIRS += \
     deferred-renderer-cpp \
     raster-cpp \
     qtbug-72236 \
-    manual-renderloop \
-    boundingvolumes
+    manual-renderloop
 
 QT_FOR_CONFIG += 3drender-private
 qtConfig(qt3d-rhi-renderer): {
@@ -101,6 +100,7 @@ qtHaveModule(quick) {
         qtbug-76766 \
         scene3d-in-sync \
         compressed_textures \
+        boundingvolumes
 }
 
 qtHaveModule(quickwidgets): SUBDIRS += quickwidget-switch
