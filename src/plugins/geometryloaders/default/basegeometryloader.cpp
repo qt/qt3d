@@ -72,10 +72,10 @@ bool BaseGeometryLoader::load(QIODevice *ioDev, const QString &subMesh)
     if (!doLoad(ioDev, subMesh))
         return false;
 
-    if (m_normals.isEmpty())
+    if (m_normals.empty())
         generateAveragedNormals(m_points, m_normals, m_indices);
 
-    if (m_generateTangents && !m_texCoords.isEmpty())
+    if (m_generateTangents && !m_texCoords.empty())
         generateTangents(m_points, m_normals, m_indices, m_texCoords, m_tangents);
 
     if (m_centerMesh)
@@ -93,14 +93,14 @@ bool BaseGeometryLoader::load(QIODevice *ioDev, const QString &subMesh)
     return true;
 }
 
-void BaseGeometryLoader::generateAveragedNormals(const QList<QVector3D> &points,
-                                                 QList<QVector3D> &normals,
-                                                 const QList<unsigned int> &faces) const
+void BaseGeometryLoader::generateAveragedNormals(const std::vector<QVector3D> &points,
+                                                 std::vector<QVector3D> &normals,
+                                                 const std::vector<unsigned int> &faces) const
 {
-    for (int i = 0; i < points.size(); ++i)
-        normals.append(QVector3D());
+    for (size_t i = 0; i < points.size(); ++i)
+        normals.push_back(QVector3D());
 
-    for (int i = 0; i < faces.size(); i += 3) {
+    for (size_t i = 0; i < faces.size(); i += 3) {
         const QVector3D &p1 = points[ faces[i]   ];
         const QVector3D &p2 = points[ faces[i+1] ];
         const QVector3D &p3 = points[ faces[i+2] ];
@@ -114,22 +114,22 @@ void BaseGeometryLoader::generateAveragedNormals(const QList<QVector3D> &points,
         normals[ faces[i+2] ] += n;
     }
 
-    for (int i = 0; i < normals.size(); ++i)
+    for (size_t i = 0; i < normals.size(); ++i)
         normals[i].normalize();
 }
 
 void BaseGeometryLoader::generateGeometry()
 {
     QByteArray bufferBytes;
-    const int count = m_points.size();
+    const size_t count = m_points.size();
     const quint32 elementSize = 3 + (hasTextureCoordinates() ? 2 : 0)
-            + (hasNormals() ? 3 : 0)
-            + (hasTangents() ? 4 : 0);
+        + (hasNormals() ? 3 : 0)
+        + (hasTangents() ? 4 : 0);
     const quint32 stride = elementSize * sizeof(float);
     bufferBytes.resize(stride * count);
     float *fptr = reinterpret_cast<float*>(bufferBytes.data());
 
-    for (int index = 0; index < count; ++index) {
+    for (size_t index = 0; index < count; ++index) {
         *fptr++ = m_points.at(index).x();
         *fptr++ = m_points.at(index).y();
         *fptr++ = m_points.at(index).z();
@@ -206,22 +206,22 @@ void BaseGeometryLoader::generateGeometry()
     m_geometry->addAttribute(indexAttribute);
 }
 
-void BaseGeometryLoader::generateTangents(const QList<QVector3D> &points,
-                                          const QList<QVector3D> &normals,
-                                          const QList<unsigned  int> &faces,
-                                          const QList<QVector2D> &texCoords,
-                                          QList<QVector4D> &tangents) const
+void BaseGeometryLoader::generateTangents(const std::vector<QVector3D> &points,
+                                          const std::vector<QVector3D> &normals,
+                                          const std::vector<unsigned int> &faces,
+                                          const std::vector<QVector2D> &texCoords,
+                                          std::vector<QVector4D> &tangents) const
 {
     tangents.clear();
-    QList<QVector3D> tan1Accum;
-    QList<QVector3D> tan2Accum;
+    std::vector<QVector3D> tan1Accum;
+    std::vector<QVector3D> tan2Accum;
 
     tan1Accum.resize(points.size());
     tan2Accum.resize(points.size());
     tangents.resize(points.size());
 
     // Compute the tangent vector
-    for (int i = 0; i < faces.size(); i += 3) {
+    for (size_t i = 0; i < faces.size(); i += 3) {
         const QVector3D &p1 = points[ faces[i] ];
         const QVector3D &p2 = points[ faces[i+1] ];
         const QVector3D &p3 = points[ faces[i+2] ];
@@ -249,7 +249,7 @@ void BaseGeometryLoader::generateTangents(const QList<QVector3D> &points,
         tan2Accum[ faces[i+2] ] += tan2;
     }
 
-    for (int i = 0; i < points.size(); ++i) {
+    for (size_t i = 0; i < points.size(); ++i) {
         const QVector3D &n = normals[i];
         const QVector3D &t1 = tan1Accum[i];
         const QVector3D &t2 = tan2Accum[i];
@@ -262,16 +262,16 @@ void BaseGeometryLoader::generateTangents(const QList<QVector3D> &points,
     }
 }
 
-void BaseGeometryLoader::center(QList<QVector3D> &points)
+void BaseGeometryLoader::center(std::vector<QVector3D> &points)
 {
-    if (points.isEmpty())
+    if (points.empty())
         return;
 
     const QAxisAlignedBoundingBox bb(points);
     const QVector3D center = bb.center();
 
     // Translate center of the AABB to the origin
-    for (int i = 0; i < points.size(); ++i) {
+    for (size_t i = 0; i < points.size(); ++i) {
         QVector3D &point = points[i];
         point = point - center;
     }

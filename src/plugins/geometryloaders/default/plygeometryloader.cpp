@@ -406,21 +406,21 @@ bool PlyGeometryLoader::parseMesh(QIODevice *ioDev)
             }
 
             if (element.type == ElementVertex) {
-                m_points.append(point);
+                m_points.push_back(point);
 
                 if (m_hasNormals)
-                    m_normals.append(normal);
+                    m_normals.push_back(normal);
 
                 if (m_hasTexCoords)
-                    m_texCoords.append(texCoord);
+                    m_texCoords.push_back(texCoord);
             } else if (element.type == ElementFace) {
                 if (faceIndices.size() >= 3) {
                     // decompose face into triangle fan
 
                     for (int j = 1; j < faceIndices.size() - 1; ++j) {
-                        m_indices.append(faceIndices[0]);
-                        m_indices.append(faceIndices[j]);
-                        m_indices.append(faceIndices[j + 1]);
+                        m_indices.push_back(faceIndices[0]);
+                        m_indices.push_back(faceIndices[j]);
+                        m_indices.push_back(faceIndices[j + 1]);
                     }
                 }
             }

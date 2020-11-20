@@ -89,8 +89,8 @@ bool StlGeometryLoader::loadAscii(QIODevice *ioDev)
                 const float x = tokens.floatAt(1);
                 const float y = tokens.floatAt(2);
                 const float z = tokens.floatAt(3);
-                m_points.append(QVector3D(x, y, z));
-                m_indices.append(m_indices.size());
+                m_points.push_back(QVector3D(x, y, z));
+                m_indices.push_back(m_indices.size());
             }
         }
     }
@@ -127,9 +127,8 @@ bool StlGeometryLoader::loadBinary(QIODevice *ioDev)
         for (int j = 0; j < 3; ++j) {
             QVector3D point;
             stream >> point;
-            m_points.append(point);
-
-            m_indices.append((i * 3) + j);
+            m_points.push_back(point);
+            m_indices.push_back((i * 3) + j);
         }
 
         quint16 attributeCount;

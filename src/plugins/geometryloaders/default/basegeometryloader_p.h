@@ -52,13 +52,14 @@
 //
 
 #include <QtCore/QObject>
-#include <QtCore/QList>
 
 #include <QtGui/QVector2D>
 #include <QtGui/QVector3D>
 #include <QtGui/QVector4D>
 
 #include <Qt3DRender/private/qgeometryloaderinterface_p.h>
+
+#include <vector>
 
 #include <private/qlocale_tools_p.h>
 
@@ -88,15 +89,15 @@ public:
     void setMeshCenteringEnabled(bool b) { m_centerMesh = b; }
     bool isMeshCenteringEnabled() const { return m_centerMesh; }
 
-    bool hasNormals() const { return !m_normals.isEmpty(); }
-    bool hasTextureCoordinates() const { return !m_texCoords.isEmpty(); }
-    bool hasTangents() const { return !m_tangents.isEmpty(); }
+    bool hasNormals() const { return !m_normals.empty(); }
+    bool hasTextureCoordinates() const { return !m_texCoords.empty(); }
+    bool hasTangents() const { return !m_tangents.empty(); }
 
-    QList<QVector3D> vertices() const { return m_points; }
-    QList<QVector3D> normals() const { return m_normals; }
-    QList<QVector2D> textureCoordinates() const { return m_texCoords; }
-    QList<QVector4D> tangents() const { return m_tangents; }
-    QList<unsigned int> indices() const { return m_indices; }
+    const std::vector<QVector3D> &vertices() const { return m_points; }
+    const std::vector<QVector3D> &normals() const { return m_normals; }
+    const std::vector<QVector2D> &textureCoordinates() const { return m_texCoords; }
+    const std::vector<QVector4D> &tangents() const { return m_tangents; }
+    const std::vector<unsigned int> &indices() const { return m_indices; }
 
     Qt3DCore::QGeometry *geometry() const override;
 
@@ -105,26 +106,26 @@ public:
 protected:
     virtual bool doLoad(QIODevice *ioDev, const QString &subMesh = QString()) = 0;
 
-    void generateAveragedNormals(const QList<QVector3D>& points,
-                                 QList<QVector3D>& normals,
-                                 const QList<unsigned int>& faces) const;
+    void generateAveragedNormals(const std::vector<QVector3D>& points,
+                                 std::vector<QVector3D>& normals,
+                                 const std::vector<unsigned int>& faces) const;
     void generateGeometry();
-    void generateTangents(const QList<QVector3D>& points,
-                          const QList<QVector3D>& normals,
-                          const QList<unsigned int>& faces,
-                          const QList<QVector2D>& texCoords,
-                          QList<QVector4D>& tangents) const;
-    void center(QList<QVector3D>& points);
+    void generateTangents(const std::vector<QVector3D>& points,
+                          const std::vector<QVector3D>& normals,
+                          const std::vector<unsigned int>& faces,
+                          const std::vector<QVector2D>& texCoords,
+                          std::vector<QVector4D>& tangents) const;
+    void center(std::vector<QVector3D>& points);
 
     bool m_loadTextureCoords;
     bool m_generateTangents;
     bool m_centerMesh;
 
-    QList<QVector3D> m_points;
-    QList<QVector3D> m_normals;
-    QList<QVector2D> m_texCoords;
-    QList<QVector4D> m_tangents;
-    QList<unsigned int> m_indices;
+    std::vector<QVector3D> m_points;
+    std::vector<QVector3D> m_normals;
+    std::vector<QVector2D> m_texCoords;
+    std::vector<QVector4D> m_tangents;
+    std::vector<unsigned int> m_indices;
 
     Qt3DCore::QGeometry *m_geometry;
 };

@@ -240,7 +240,7 @@ bool ObjGeometryLoader::doLoad(QIODevice *ioDev, const QString &subMesh)
     m_indices.reserve(indexCount);
     for (const FaceIndices &faceIndices : qAsConst(faceIndexVector)) {
         const unsigned int i = faceIndexMap.value(faceIndices);
-        m_indices.append(i);
+        m_indices.push_back(i);
     }
 
     return true;

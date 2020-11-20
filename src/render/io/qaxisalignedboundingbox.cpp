@@ -46,9 +46,9 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-void QAxisAlignedBoundingBox::update(const QList<QVector3D> &points)
+void QAxisAlignedBoundingBox::update(const std::vector<QVector3D> &points)
 {
-    if (points.isEmpty()) {
+    if (points.empty()) {
         m_center = QVector3D();
         m_radii = QVector3D();
         return;
@@ -57,8 +57,7 @@ void QAxisAlignedBoundingBox::update(const QList<QVector3D> &points)
     QVector3D minPoint = points.at( 0 );
     QVector3D maxPoint = points.at( 0 );
 
-    for (int i = 1; i < points.size(); ++i)
-    {
+    for (size_t i = 1; i < points.size(); ++i) {
         const QVector3D &point = points.at(i);
         if (point.x() > maxPoint.x())
             maxPoint.setX(point.x());
