@@ -72,7 +72,12 @@ bool PickEventFilter::eventFilter(QObject *obj, QEvent *e)
     case QEvent::HoverMove: {
         QHoverEvent *he = static_cast<QHoverEvent *>(e);
         auto mouseEvent = QMouseEvent(QEvent::MouseMove,
-                                      he->position(), Qt::NoButton, Qt::NoButton,
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+                                      he->position(),
+#else
+                                      he->pos(),
+#endif
+                                      Qt::NoButton, Qt::NoButton,
                                       he->modifiers());
         return m_aspect->processMouseEvent(obj, &mouseEvent);
         }

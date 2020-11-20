@@ -417,9 +417,14 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent *event,
                     localIntersection = entity->worldTransform()->inverted() * hit.m_intersection;
 
                 QPickEventPtr pickEvent;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+                const auto eventPos = event->position();
+#else
+                const auto eventPos = event->pos();
+#endif
                 switch (hit.m_type) {
                 case QCollisionQueryResult::Hit::Triangle:
-                    pickEvent.reset(new QPickTriangleEvent(event->position(),
+                    pickEvent.reset(new QPickTriangleEvent(eventPos,
                                                            convertToQVector3D(hit.m_intersection),
                                                            convertToQVector3D(localIntersection),
                                                            hit.m_distance,
@@ -432,7 +437,7 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent *event,
                                                            convertToQVector3D(hit.m_uvw)));
                     break;
                 case QCollisionQueryResult::Hit::Edge:
-                    pickEvent.reset(new QPickLineEvent(event->position(),
+                    pickEvent.reset(new QPickLineEvent(eventPos,
                                                        convertToQVector3D(hit.m_intersection),
                                                        convertToQVector3D(localIntersection),
                                                        hit.m_distance,
@@ -441,7 +446,7 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent *event,
                                                        eventButton, eventButtons, eventModifiers));
                     break;
                 case QCollisionQueryResult::Hit::Point:
-                    pickEvent.reset(new QPickPointEvent(event->position(),
+                    pickEvent.reset(new QPickPointEvent(eventPos,
                                                         convertToQVector3D(hit.m_intersection),
                                                         convertToQVector3D(localIntersection),
                                                         hit.m_distance,
@@ -449,7 +454,7 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent *event,
                                                         eventButton, eventButtons, eventModifiers));
                     break;
                 case QCollisionQueryResult::Hit::Entity:
-                    pickEvent.reset(new QPickEvent(event->position(),
+                    pickEvent.reset(new QPickEvent(eventPos,
                                                    convertToQVector3D(hit.m_intersection),
                                                    convertToQVector3D(localIntersection),
                                                    hit.m_distance,
