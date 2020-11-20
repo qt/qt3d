@@ -102,15 +102,15 @@ public:
     QString name() const { return m_name; }
 
     int jointCount() const { return m_skeletonData.joints.size(); }
-    QList<JointInfo> joints() const { return m_skeletonData.joints; }
-    QList<QString> jointNames() const { return m_skeletonData.jointNames; }
-    QList<Qt3DCore::Sqt> localPoses() const { return m_skeletonData.localPoses; }
+    QVector<JointInfo> joints() const { return m_skeletonData.joints; }
+    QVector<QString> jointNames() const { return m_skeletonData.jointNames; }
+    QVector<Qt3DCore::Sqt> localPoses() const { return m_skeletonData.localPoses; }
 
     Qt3DCore::QNodeId rootJointId() const { return m_rootJointId; }
 
     // Called from jobs
     void setLocalPose(HJoint jointHandle, const Qt3DCore::Sqt &localPose);
-    QList<QMatrix4x4> calculateSkinningMatrixPalette();
+    QVector<QMatrix4x4> calculateSkinningMatrixPalette();
 
     void clearData();
     void setSkeletonData(const SkeletonData &data);
@@ -124,7 +124,7 @@ public:
 #endif
 
 private:
-    QList<QMatrix4x4> m_skinningPalette;
+    QVector<QMatrix4x4> m_skinningPalette;
 
     // QSkeletonLoader Properties
     QUrl m_source;

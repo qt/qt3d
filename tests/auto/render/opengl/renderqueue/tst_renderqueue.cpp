@@ -101,7 +101,7 @@ void tst_RenderQueue::checkOrder()
     // GIVEN
     Qt3DRender::Render::RenderQueue<Qt3DRender::Render::OpenGL::RenderView> renderQueue;
     renderQueue.setTargetRenderViewCount(7);
-    QList<Qt3DRender::Render::OpenGL::RenderView *> renderViews(7);
+    QVector<Qt3DRender::Render::OpenGL::RenderView *> renderViews(7);
 
     // WHEN
     for (int i = 0; i < 7; ++i) {
@@ -122,7 +122,7 @@ void tst_RenderQueue::checkTimeToSubmit()
     // GIVEN
     Qt3DRender::Render::RenderQueue<Qt3DRender::Render::OpenGL::RenderView> renderQueue;
     renderQueue.setTargetRenderViewCount(7);
-    QList<Qt3DRender::Render::OpenGL::RenderView *> renderViews(7);
+    QVector<Qt3DRender::Render::OpenGL::RenderView *> renderViews(7);
 
     // WHEN
     for (int i = 0; i < 7; i++) {
@@ -222,7 +222,7 @@ void tst_RenderQueue::resetQueue()
         QVERIFY(renderQueue.currentRenderViewCount() == 0);
 
         // WHEN
-        QList<Qt3DRender::Render::OpenGL::RenderView *> renderViews(5);
+        QVector<Qt3DRender::Render::OpenGL::RenderView *> renderViews(5);
         for (int i = 0; i < 5; ++i) {
             renderQueue.queueRenderView(renderViews.at(i), i);
         }

@@ -55,7 +55,7 @@ BuildBlendTreesJob::BuildBlendTreesJob()
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::BuildBlendTree, 0)
 }
 
-void BuildBlendTreesJob::setBlendedClipAnimators(const QList<HBlendedClipAnimator> &blendedClipAnimatorHandles)
+void BuildBlendTreesJob::setBlendedClipAnimators(const QVector<HBlendedClipAnimator> &blendedClipAnimatorHandles)
 {
     m_blendedClipAnimatorHandles = blendedClipAnimatorHandles;
     BlendedClipAnimatorManager *blendedClipAnimatorManager = m_handler->blendedClipAnimatorManager();
@@ -89,17 +89,17 @@ void BuildBlendTreesJob::run()
         const ChannelMapper *mapper = m_handler->channelMapperManager()->lookupResource(blendClipAnimator->mapperId());
         if (!mapper)
             continue;
-        const QList<ChannelNameAndType> channelNamesAndTypes
+        const QVector<ChannelNameAndType> channelNamesAndTypes
                 = buildRequiredChannelsAndTypes(m_handler, mapper);
-        const QList<ComponentIndices> channelComponentIndices
+        const QVector<ComponentIndices> channelComponentIndices
                 = assignChannelComponentIndices(channelNamesAndTypes);
 
         // Find the leaf value nodes of the blend tree and for each of them
         // create a set of format indices that can later be used to map the
         // raw ClipResults resulting from evaluating an animation clip to the
         // layout used by the blend tree for this animator
-        QList<QBitArray> blendTreeChannelMask;
-        const QList<Qt3DCore::QNodeId> valueNodeIds
+        QVector<QBitArray> blendTreeChannelMask;
+        const QVector<Qt3DCore::QNodeId> valueNodeIds
                 = gatherValueNodesToEvaluate(m_handler, blendClipAnimator->blendTreeRootId());
 
         // Store the clip value nodes to avoid further lookups below.
@@ -166,8 +166,8 @@ void BuildBlendTreesJob::run()
                 // If we get to here then we need to obtain a default value
                 // for this channel and store it for later application to any
                 // missing components of this channel.
-                const QList<float> defaultValue = defaultValueForChannel(m_handler,
-                                                                         f.namesAndTypes[i]);
+                const QVector<float> defaultValue = defaultValueForChannel(m_handler,
+                                                                           f.namesAndTypes[i]);
 
                 // Find the indices where we later need to inject these default
                 // values and store them in the format.
@@ -181,8 +181,8 @@ void BuildBlendTreesJob::run()
         // Finally, build the mapping data vector for this blended clip animator. This
         // gets used during the final stage of evaluation when sending the property changes
         // out to the targets of the animation. We do the costly work once up front.
-        const QList<Qt3DCore::QNodeId> channelMappingIds = mapper->mappingIds();
-        QList<ChannelMapping *> channelMappings;
+        const Qt3DCore::QNodeIdVector channelMappingIds = mapper->mappingIds();
+        QVector<ChannelMapping *> channelMappings;
         channelMappings.reserve(channelMappingIds.size());
         for (const auto &mappingId : channelMappingIds) {
             ChannelMapping *mapping = m_handler->channelMappingManager()->lookupResource(mappingId);
@@ -190,11 +190,10 @@ void BuildBlendTreesJob::run()
             channelMappings.push_back(mapping);
         }
 
-        const QList<MappingData> mappingDataVec
-                = buildPropertyMappings(channelMappings,
-                                        channelNamesAndTypes,
-                                        channelComponentIndices,
-                                        blendTreeChannelMask);
+        const QVector<MappingData> mappingDataVec = buildPropertyMappings(channelMappings,
+                                                                          channelNamesAndTypes,
+                                                                          channelComponentIndices,
+                                                                          blendTreeChannelMask);
         blendClipAnimator->setMappingData(mappingDataVec);
     }
 }

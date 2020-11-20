@@ -47,10 +47,10 @@ private Q_SLOTS:
         // GIVEN
         PackUniformHash pack;
 
-        QList<int> randKeys(64);
+        std::vector<int> randKeys(64);
         QRandomGenerator gen;
 
-        for (int i = 0; i < 64; ++i)
+        for (size_t i = 0; i < 64; ++i)
             randKeys[i] = gen.generate();
 
         QBENCHMARK {

@@ -211,8 +211,8 @@ float QText2DEntityPrivate::computeActualScale() const
 
 struct RenderData {
     int vertexCount = 0;
-    QList<float> vertex;
-    QList<quint16> index;
+    QVector<float> vertex;
+    QVector<quint16> index;
 };
 
 void QText2DEntityPrivate::setCurrentGlyphRuns(const QList<QGlyphRun> &runs)
@@ -224,8 +224,8 @@ void QText2DEntityPrivate::setCurrentGlyphRuns(const QList<QGlyphRun> &runs)
 
     // process glyph runs
     for (const QGlyphRun &run : runs) {
-        const QList<quint32> glyphs = run.glyphIndexes();
-        const QList<QPointF> pos = run.positions();
+        const auto glyphs = run.glyphIndexes();
+        const auto pos = run.positions();
 
         Q_ASSERT(glyphs.size() == pos.size());
 

@@ -105,10 +105,10 @@ public:
     void setDirty(DirtyFlag flag, Qt3DCore::QNodeId nodeId);
 
     void setClipAnimatorRunning(const HClipAnimator &handle, bool running);
-    QList<HClipAnimator> runningClipAnimators() const { return m_runningClipAnimators; }
+    QVector<HClipAnimator> runningClipAnimators() const { return m_runningClipAnimators; }
 
     void setBlendedClipAnimatorRunning(const HBlendedClipAnimator &handle, bool running);
-    QList<HBlendedClipAnimator> runningBlenndedClipAnimators() const { return m_runningBlendedClipAnimators; }
+    QVector<HBlendedClipAnimator> runningBlenndedClipAnimators() const { return m_runningBlendedClipAnimators; }
 
     AnimationClipLoaderManager *animationClipLoaderManager() const noexcept { return m_animationClipLoaderManager.data(); }
     ClockManager *clockManager() const noexcept { return m_clockManager.data(); }
@@ -121,9 +121,9 @@ public:
 
     std::vector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time);
 
-    void cleanupHandleList(QList<HAnimationClip> *clips);
-    void cleanupHandleList(QList<HClipAnimator> *animators);
-    void cleanupHandleList(QList<HBlendedClipAnimator> *animators);
+    void cleanupHandleList(QVector<HAnimationClip> *clips);
+    void cleanupHandleList(QVector<HClipAnimator> *animators);
+    void cleanupHandleList(QVector<HBlendedClipAnimator> *animators);
 
 private:
     QMutex m_mutex;
@@ -136,17 +136,17 @@ private:
     QScopedPointer<ClipBlendNodeManager> m_clipBlendNodeManager;
     QScopedPointer<SkeletonManager> m_skeletonManager;
 
-    QList<HAnimationClip> m_dirtyAnimationClips;
-    QList<HClipAnimator> m_dirtyClipAnimators;
-    QList<HBlendedClipAnimator> m_dirtyBlendedAnimators;
+    QVector<HAnimationClip> m_dirtyAnimationClips;
+    QVector<HClipAnimator> m_dirtyClipAnimators;
+    QVector<HBlendedClipAnimator> m_dirtyBlendedAnimators;
 
-    QList<HClipAnimator> m_runningClipAnimators;
-    QList<HBlendedClipAnimator> m_runningBlendedClipAnimators;
+    QVector<HClipAnimator> m_runningClipAnimators;
+    QVector<HBlendedClipAnimator> m_runningBlendedClipAnimators;
 
     QSharedPointer<LoadAnimationClipJob> m_loadAnimationClipJob;
     QSharedPointer<FindRunningClipAnimatorsJob> m_findRunningClipAnimatorsJob;
-    QList<QSharedPointer<EvaluateClipAnimatorJob>> m_evaluateClipAnimatorJobs;
-    QList<EvaluateBlendClipAnimatorJobPtr> m_evaluateBlendClipAnimatorJobs;
+    QVector<QSharedPointer<EvaluateClipAnimatorJob>> m_evaluateClipAnimatorJobs;
+    QVector<EvaluateBlendClipAnimatorJobPtr> m_evaluateBlendClipAnimatorJobs;
     BuildBlendTreesJobPtr m_buildBlendTreesJob;
 
     qint64 m_simulationTime;

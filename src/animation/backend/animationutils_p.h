@@ -72,7 +72,7 @@ class AnimationClip;
 class ChannelMapper;
 class ChannelMapping;
 
-using ComponentIndices = QList<int>;
+using ComponentIndices = QVector<int>;
 
 enum JointTransformComponent {
     NoTransformComponent = 0,
@@ -125,7 +125,7 @@ struct ClipEvaluationData
     bool isFinalFrame;
 };
 
-using ClipResults = QList<float>;
+using ClipResults = QVector<float>;
 
 struct ChannelNameAndType
 {
@@ -226,10 +226,10 @@ struct ClipFormat
     // formattedComponentIndices in flat vectors. This will require a
     // way to look up the offset and number of elements for each channel.
     ComponentIndices sourceClipIndices;
-    QList<QBitArray> sourceClipMask;
-    QList<ComponentIndices> formattedComponentIndices;
-    QList<ChannelNameAndType> namesAndTypes;
-    QList<ComponentValue> defaultComponentValues;
+    QVector<QBitArray> sourceClipMask;
+    QVector<ComponentIndices> formattedComponentIndices;
+    QVector<ChannelNameAndType> namesAndTypes;
+    QVector<ComponentValue> defaultComponentValues;
 };
 
 #ifndef QT_NO_DEBUG_STREAM
@@ -279,15 +279,15 @@ struct AnimationRecord {
 
     Qt3DCore::QNodeId animatorId;
     QList<TargetChange> targetChanges;
-    QList<QPair<Qt3DCore::QNodeId, QList<Qt3DCore::Sqt>>> skeletonChanges;
+    QList<QPair<Qt3DCore::QNodeId, QVector<Qt3DCore::Sqt>>> skeletonChanges;
     float normalizedTime = -1.f;
     bool finalFrame = false;
 };
 
 Q_AUTOTEST_EXPORT
 AnimationRecord prepareAnimationRecord(Qt3DCore::QNodeId animatorId,
-                                       const QList<MappingData> &mappingDataVec,
-                                       const QList<float> &channelResults,
+                                       const QVector<MappingData> &mappingDataVec,
+                                       const QVector<float> &channelResults,
                                        bool finalFrame,
                                        float normalizedLocalTime);
 
@@ -359,21 +359,21 @@ ClipResults evaluateClipAtPhase(AnimationClip *clip,
                                 float phase);
 
 Q_AUTOTEST_EXPORT
-QList<AnimationCallbackAndValue> prepareCallbacks(const QList<MappingData> &mappingDataVec,
-                                                  const QList<float> &channelResults);
+QVector<AnimationCallbackAndValue> prepareCallbacks(const QVector<MappingData> &mappingDataVec,
+                                                    const QVector<float> &channelResults);
 
 Q_AUTOTEST_EXPORT
-QList<MappingData> buildPropertyMappings(const QList<ChannelMapping *> &channelMappings,
-                                         const QList<ChannelNameAndType> &channelNamesAndTypes,
-                                         const QList<ComponentIndices> &channelComponentIndices,
-                                         const QList<QBitArray> &sourceClipMask);
+QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping *> &channelMappings,
+                                           const QVector<ChannelNameAndType> &channelNamesAndTypes,
+                                           const QVector<ComponentIndices> &channelComponentIndices,
+                                           const QVector<QBitArray> &sourceClipMask);
 
 Q_AUTOTEST_EXPORT
-QList<ChannelNameAndType> buildRequiredChannelsAndTypes(Handler *handler,
-                                                        const ChannelMapper *mapper);
+QVector<ChannelNameAndType> buildRequiredChannelsAndTypes(Handler *handler,
+                                                          const ChannelMapper *mapper);
 
 Q_AUTOTEST_EXPORT
-QList<ComponentIndices> assignChannelComponentIndices(const QList<ChannelNameAndType> &namesAndTypes);
+QVector<ComponentIndices> assignChannelComponentIndices(const QVector<ChannelNameAndType> &namesAndTypes);
 
 Q_AUTOTEST_EXPORT
 double localTimeFromElapsedTime(double t_current_local, double t_elapsed_global,
@@ -386,12 +386,12 @@ double phaseFromElapsedTime(double t_current_local, double t_elapsed_global,
                            int loopCount, int &currentLoop);
 
 Q_AUTOTEST_EXPORT
-QList<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
+QVector<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
                                                       Qt3DCore::QNodeId blendTreeRootId);
 
 Q_AUTOTEST_EXPORT
-ClipFormat generateClipFormatIndices(const QList<ChannelNameAndType> &targetChannels,
-                                     const QList<ComponentIndices> &targetIndices,
+ClipFormat generateClipFormatIndices(const QVector<ChannelNameAndType> &targetChannels,
+                                     const QVector<ComponentIndices> &targetIndices,
                                      const AnimationClip *clip);
 
 Q_AUTOTEST_EXPORT
@@ -404,10 +404,10 @@ ClipResults evaluateBlendTree(Handler *handler,
                               Qt3DCore::QNodeId blendNodeId);
 
 Q_AUTOTEST_EXPORT
-QList<float> defaultValueForChannel(Handler *handler, const ChannelNameAndType &channelDescription);
+QVector<float> defaultValueForChannel(Handler *handler, const ChannelNameAndType &channelDescription);
 
 Q_AUTOTEST_EXPORT
-void applyComponentDefaultValues(const QList<ComponentValue> &componentDefaults,
+void applyComponentDefaultValues(const QVector<ComponentValue> &componentDefaults,
                                  ClipResults &formattedClipResults);
 
 } // Animation

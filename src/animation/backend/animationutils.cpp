@@ -60,12 +60,12 @@ const auto slerpThreshold = 0.01f;
 namespace Qt3DAnimation {
 namespace Animation {
 
-inline QList<float> valueToVector(const QVector3D &value)
+inline QVector<float> valueToVector(const QVector3D &value)
 {
     return { value.x(), value.y(), value.z() };
 }
 
-inline QList<float> valueToVector(const QQuaternion &value)
+inline QVector<float> valueToVector(const QQuaternion &value)
 {
     return { value.scalar(), value.x(), value.y(), value.z() };
 }
@@ -227,14 +227,14 @@ ComponentIndices channelComponentsToIndicesHelper(const Channel &channel,
 
 ClipResults evaluateClipAtLocalTime(AnimationClip *clip, float localTime)
 {
-    QList<float> channelResults;
+    QVector<float> channelResults;
     Q_ASSERT(clip);
 
     // Ensure we have enough storage to hold the evaluations
     channelResults.resize(clip->channelCount());
 
     // Iterate over channels and evaluate the fcurves
-    const QList<Channel> &channels = clip->channels();
+    const auto &channels = clip->channels();
     int i = 0;
     for (const Channel &channel : channels) {
         if (channel.name.contains(QStringLiteral("Rotation")) &&
@@ -330,7 +330,7 @@ ClipResults evaluateClipAtPhase(AnimationClip *clip, float phase)
 
 template<typename Container>
 Container mapChannelResultsToContainer(const MappingData &mappingData,
-                                       const QList<float> &channelResults)
+                                       const QVector<float> &channelResults)
 {
     Container r;
     r.reserve(channelResults.size());
@@ -342,7 +342,7 @@ Container mapChannelResultsToContainer(const MappingData &mappingData,
     return r;
 }
 
-QVariant buildPropertyValue(const MappingData &mappingData, const QList<float> &channelResults)
+QVariant buildPropertyValue(const MappingData &mappingData, const QVector<float> &channelResults)
 {
     const int vectorOfFloatType = qMetaTypeId<QList<float>>();
 
@@ -410,8 +410,8 @@ QVariant buildPropertyValue(const MappingData &mappingData, const QList<float> &
 }
 
 AnimationRecord prepareAnimationRecord(Qt3DCore::QNodeId animatorId,
-                                       const QList<MappingData> &mappingDataVec,
-                                       const QList<float> &channelResults,
+                                       const QVector<MappingData> &mappingDataVec,
+                                       const QVector<float> &channelResults,
                                        bool finalFrame,
                                        float normalizedLocalTime)
 {
@@ -469,10 +469,10 @@ AnimationRecord prepareAnimationRecord(Qt3DCore::QNodeId animatorId,
     return record;
 }
 
-QList<AnimationCallbackAndValue> prepareCallbacks(const QList<MappingData> &mappingDataVec,
-                                                  const QList<float> &channelResults)
+QVector<AnimationCallbackAndValue> prepareCallbacks(const QVector<MappingData> &mappingDataVec,
+                                                    const QVector<float> &channelResults)
 {
-    QList<AnimationCallbackAndValue> callbacks;
+    QVector<AnimationCallbackAndValue> callbacks;
     for (const MappingData &mappingData : mappingDataVec) {
         if (!mappingData.callback)
             continue;
@@ -492,10 +492,10 @@ QList<AnimationCallbackAndValue> prepareCallbacks(const QList<MappingData> &mapp
 // buildRequiredChannelsAndTypes() and assignChannelComponentIndices(). We are
 // currently repeating the iteration over mappings and extracting/generating
 // channel names, types and joint indices.
-QList<MappingData> buildPropertyMappings(const QList<ChannelMapping*> &channelMappings,
-                                         const QList<ChannelNameAndType> &channelNamesAndTypes,
-                                         const QList<ComponentIndices> &channelComponentIndices,
-                                         const QList<QBitArray> &sourceClipMask)
+QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping *> &channelMappings,
+                                           const QVector<ChannelNameAndType> &channelNamesAndTypes,
+                                           const QVector<ComponentIndices> &channelComponentIndices,
+                                           const QVector<QBitArray> &sourceClipMask)
 {
     // Accumulate the required number of mappings
     int maxMappingDatas = 0;
@@ -513,7 +513,7 @@ QList<MappingData> buildPropertyMappings(const QList<ChannelMapping*> &channelMa
         }
         }
     }
-    QList<MappingData> mappingDataVec;
+    QVector<MappingData> mappingDataVec;
     mappingDataVec.reserve(maxMappingDatas);
 
     // Iterate over the mappings
@@ -622,15 +622,15 @@ QList<MappingData> buildPropertyMappings(const QList<ChannelMapping*> &channelMa
     return mappingDataVec;
 }
 
-QList<ChannelNameAndType> buildRequiredChannelsAndTypes(Handler *handler,
+QVector<ChannelNameAndType> buildRequiredChannelsAndTypes(Handler *handler,
                                                           const ChannelMapper *mapper)
 {
     ChannelMappingManager *mappingManager = handler->channelMappingManager();
-    const QList<Qt3DCore::QNodeId> mappingIds = mapper->mappingIds();
+    const auto mappingIds = mapper->mappingIds();
 
     // Reserve enough storage assuming each mapping is for a different channel.
     // May be overkill but avoids potential for multiple allocations
-    QList<ChannelNameAndType> namesAndTypes;
+    QVector<ChannelNameAndType> namesAndTypes;
     namesAndTypes.reserve(mappingIds.size());
 
     // Iterate through the mappings and add ones not already used by an earlier mapping.
@@ -690,9 +690,9 @@ QList<ChannelNameAndType> buildRequiredChannelsAndTypes(Handler *handler,
     return namesAndTypes;
 }
 
-QList<ComponentIndices> assignChannelComponentIndices(const QList<ChannelNameAndType> &namesAndTypes)
+QVector<ComponentIndices> assignChannelComponentIndices(const QVector<ChannelNameAndType> &namesAndTypes)
 {
-    QList<ComponentIndices> channelComponentIndices;
+    QVector<ComponentIndices> channelComponentIndices;
     channelComponentIndices.reserve(namesAndTypes.size());
 
     int baseIndex = 0;
@@ -712,7 +712,7 @@ QList<ComponentIndices> assignChannelComponentIndices(const QList<ChannelNameAnd
     return channelComponentIndices;
 }
 
-QList<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
+QVector<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
                                                       Qt3DCore::QNodeId blendTreeRootId)
 {
     Q_ASSERT(handler);
@@ -722,7 +722,7 @@ QList<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
     ClipBlendNodeManager *nodeManager = handler->clipBlendNodeManager();
 
     // Visit the tree in a pre-order manner and collect the dependencies
-    QList<Qt3DCore::QNodeId> clipIds;
+    QVector<Qt3DCore::QNodeId> clipIds;
     ClipBlendNodeVisitor visitor(nodeManager,
                                  ClipBlendNodeVisitor::PreOrder,
                                  ClipBlendNodeVisitor::VisitOnlyDependencies);
@@ -750,8 +750,8 @@ QList<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
     return clipIds;
 }
 
-ClipFormat generateClipFormatIndices(const QList<ChannelNameAndType> &targetChannels,
-                                     const QList<ComponentIndices> &targetIndices,
+ClipFormat generateClipFormatIndices(const QVector<ChannelNameAndType> &targetChannels,
+                                     const QVector<ComponentIndices> &targetIndices,
                                      const AnimationClip *clip)
 {
     Q_ASSERT(targetChannels.size() == targetIndices.size());
@@ -865,10 +865,10 @@ ClipResults evaluateBlendTree(Handler *handler,
     return blendTreeRootNode->clipResults(animatorId);
 }
 
-QList<float> defaultValueForChannel(Handler *handler,
+QVector<float> defaultValueForChannel(Handler *handler,
                                       const ChannelNameAndType &channelDescription)
 {
-    QList<float> result;
+    QVector<float> result;
 
     // Does the channel repesent a joint in a skeleton or is it a general channel?
     ChannelMappingManager *mappingManager = handler->channelMappingManager();
@@ -915,7 +915,7 @@ QList<float> defaultValueForChannel(Handler *handler,
 
         // Everything else gets all zeros
         const int componentCount = mapping->componentCount();
-        result = QList<float>(componentCount, 0.0f);
+        result = QVector<float>(componentCount, 0.0f);
         break;
     }
 
@@ -924,7 +924,7 @@ QList<float> defaultValueForChannel(Handler *handler,
     return result;
 }
 
-void applyComponentDefaultValues(const QList<ComponentValue> &componentDefaults,
+void applyComponentDefaultValues(const QVector<ComponentValue> &componentDefaults,
                                  ClipResults &formattedClipResults)
 {
     for (const auto &componentDefault : componentDefaults)

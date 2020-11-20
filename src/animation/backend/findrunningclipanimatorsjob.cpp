@@ -53,7 +53,7 @@ FindRunningClipAnimatorsJob::FindRunningClipAnimatorsJob()
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::FindRunningClipAnimator, 0)
 }
 
-void FindRunningClipAnimatorsJob::setDirtyClipAnimators(const QList<HClipAnimator> &clipAnimatorHandles)
+void FindRunningClipAnimatorsJob::setDirtyClipAnimators(const QVector<HClipAnimator> &clipAnimatorHandles)
 {
     m_clipAnimatorHandles = clipAnimatorHandles;
 }
@@ -85,11 +85,11 @@ void FindRunningClipAnimatorsJob::run()
         // blended clip animator for consistency and ease of maintenance.
         const ChannelMapper *mapper = m_handler->channelMapperManager()->lookupResource(clipAnimator->mapperId());
         Q_ASSERT(mapper);
-        const QList<ChannelMapping *> channelMappings = mapper->mappings();
+        const QVector<ChannelMapping *> channelMappings = mapper->mappings();
 
-        const QList<ChannelNameAndType> channelNamesAndTypes
+        const QVector<ChannelNameAndType> channelNamesAndTypes
                 = buildRequiredChannelsAndTypes(m_handler, mapper);
-        const QList<ComponentIndices> channelComponentIndices
+        const QVector<ComponentIndices> channelComponentIndices
                 = assignChannelComponentIndices(channelNamesAndTypes);
 
         const AnimationClip *clip = m_handler->animationClipLoaderManager()->lookupResource(clipAnimator->clipId());
@@ -99,7 +99,7 @@ void FindRunningClipAnimatorsJob::run()
                                                             clip);
         clipAnimator->setClipFormat(format);
 
-        const QList<MappingData> mappingData = buildPropertyMappings(channelMappings,
+        const QVector<MappingData> mappingData = buildPropertyMappings(channelMappings,
                                                                        channelNamesAndTypes,
                                                                        format.formattedComponentIndices,
                                                                        format.sourceClipMask);

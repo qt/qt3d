@@ -1117,10 +1117,10 @@ void tst_Nodes::removingMultipleChildNodesFromNode()
     QVERIFY(Qt3DCore::QNodePrivate::get(root.data())->scene() != nullptr);
 
     // WHEN
-    Qt3DCore::QNodeIdVector childIds(10);
+    Qt3DCore::QNodeIdVector childIds;
     for (int i = 0; i < 10; i++) {
         auto child = new MyQNode(root.data());
-        childIds[i] = child->id();
+        childIds.push_back(child->id());
     }
 
     QCoreApplication::processEvents();

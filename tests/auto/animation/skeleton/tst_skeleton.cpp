@@ -75,7 +75,7 @@ private Q_SLOTS:
     {
         // GIVEN
         Skeleton backendSkeleton;
-        const QList<QString> jointNames = { QLatin1String("rootJoint"),
+        const QVector<QString> jointNames = { QLatin1String("rootJoint"),
                                               QLatin1String("child1Joint"),
                                               QLatin1String("child2Joint") };
 
@@ -103,10 +103,10 @@ private Q_SLOTS:
         QCOMPARE(backendSkeleton.jointLocalPoses().size(), 0);
 
         // GIVEN
-        const QList<QString> names = { QLatin1String("root"),
-                                       QLatin1String("child1"),
-                                       QLatin1String("child2") };
-        const QList<Sqt> localPoses = { Sqt(), Sqt(), Sqt() };
+        const QVector<QString> names = { QLatin1String("root"),
+                                         QLatin1String("child1"),
+                                         QLatin1String("child2") };
+        const QVector<Sqt> localPoses = { Sqt(), Sqt(), Sqt() };
 
         // WHEN
         backendSkeleton.setJointNames(names);

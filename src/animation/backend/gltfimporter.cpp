@@ -546,7 +546,7 @@ GLTFImporter::AnimationNameAndChannels GLTFImporter::createAnimationData(int ani
         // Get the key frame times first as these are common to all components of the
         // key frame values.
         const int keyFrameCount = inputAccessor.count;
-        QList<float> keyframeTimes(keyFrameCount);
+        QVector<float> keyframeTimes(keyFrameCount);
         for (int i = 0; i < keyFrameCount; ++i) {
             const auto rawTimestamp = accessorData(sampler.inputAccessorIndex, i);
             keyframeTimes[i] = *reinterpret_cast<const float*>(rawTimestamp.data);

@@ -133,7 +133,7 @@ private Q_SLOTS:
             QMatrix4x4 m4;
             m4.translate(1.0f, 2.0f, 3.0f);
 
-            const QList<QMatrix4x4> matrices = { m1, m2, m3, m4 };
+            const QVector<QMatrix4x4> matrices = { m1, m2, m3, m4 };
             UniformValue v(matrices);
 
             // THEN
@@ -389,11 +389,11 @@ private Q_SLOTS:
         QMatrix4x4 m4;
         m4.translate(1.0f, 2.0f, 3.0f);
 
-        const QList<QMatrix4x4> matrices1 = { m1, m2, m3, m4 };
+        const QVector<QMatrix4x4> matrices1 = { m1, m2, m3, m4 };
         UniformValue v(matrices1);
 
         // WHEN
-        const QList<QMatrix4x4> matrices2 = { m4, m3, m2, m1, m4 };
+        const QVector<QMatrix4x4> matrices2 = { m4, m3, m2, m1, m4 };
         v.setData(matrices2);
 
         // THEN
@@ -405,7 +405,7 @@ private Q_SLOTS:
 
         // GIVEN
         const int positionCount = 10;
-        QList<QVector3D> positions(positionCount);
+        QVector<QVector3D> positions(positionCount);
         for (int i = 0; i < positionCount; ++i) {
             const QVector3D p(float(i), 10.0f * i, 100.0f * i);
             positions[i] = p;

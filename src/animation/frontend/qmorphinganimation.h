@@ -54,7 +54,7 @@ class QMorphingAnimationPrivate;
 class Q_3DANIMATIONSHARED_EXPORT QMorphingAnimation : public QAbstractAnimation
 {
     Q_OBJECT
-    Q_PROPERTY(QList<float> targetPositions READ targetPositions WRITE setTargetPositions NOTIFY targetPositionsChanged)
+    Q_PROPERTY(QVector<float> targetPositions READ targetPositions WRITE setTargetPositions NOTIFY targetPositionsChanged)
     Q_PROPERTY(float interpolator READ interpolator NOTIFY interpolatorChanged)
     Q_PROPERTY(Qt3DRender::QGeometryRenderer *target READ target WRITE setTarget NOTIFY targetChanged)
     Q_PROPERTY(QString targetName READ targetName WRITE setTargetName NOTIFY targetNameChanged)
@@ -71,31 +71,31 @@ public:
 
     explicit QMorphingAnimation(QObject *parent = nullptr);
 
-    QList<float> targetPositions() const;
+    QVector<float> targetPositions() const;
     float interpolator() const;
     Qt3DRender::QGeometryRenderer *target() const;
     QString targetName() const;
     QMorphingAnimation::Method method() const;
     QEasingCurve easing() const;
 
-    void setMorphTargets(const QList<Qt3DAnimation::QMorphTarget *> &targets);
+    void setMorphTargets(const QVector<Qt3DAnimation::QMorphTarget *> &targets);
     void addMorphTarget(Qt3DAnimation::QMorphTarget *target);
     void removeMorphTarget(Qt3DAnimation::QMorphTarget *target);
 
-    void setWeights(int positionIndex, const QList<float> &weights);
-    QList<float> getWeights(int positionIndex);
+    void setWeights(int positionIndex, const QVector<float> &weights);
+    QVector<float> getWeights(int positionIndex);
 
-    QList<Qt3DAnimation::QMorphTarget *> morphTargetList();
+    QVector<Qt3DAnimation::QMorphTarget *> morphTargetList();
 
 public Q_SLOTS:
-    void setTargetPositions(const QList<float> &targetPositions);
+    void setTargetPositions(const QVector<float> &targetPositions);
     void setTarget(Qt3DRender::QGeometryRenderer *target);
     void setTargetName(const QString name);
     void setMethod(QMorphingAnimation::Method method);
     void setEasing(const QEasingCurve &easing);
 
 Q_SIGNALS:
-    void targetPositionsChanged(const QList<float> &targetPositions);
+    void targetPositionsChanged(const QVector<float> &targetPositions);
     void interpolatorChanged(float interpolator);
     void targetChanged(Qt3DRender::QGeometryRenderer *target);
     void targetNameChanged(const QString &name);

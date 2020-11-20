@@ -185,7 +185,7 @@ public:
     struct AnimationNameAndChannels
     {
         QString name;
-        QList<Qt3DAnimation::Animation::Channel> channels;
+        QVector<Qt3DAnimation::Animation::Channel> channels;
     };
     AnimationNameAndChannels createAnimationData(int animationIndex, const QString &animationName = QString()) const;
 

@@ -161,8 +161,8 @@ private:
         QHash<QString, QColor> colors;
         QHash<QString, QString> textures;
         QHash<QString, QVariant> values;
-        QList<int> blendArguments;
-        QList<int> blendEquations;
+        QVector<int> blendArguments;
+        QVector<int> blendEquations;
     };
 
     struct ProgramInfo {

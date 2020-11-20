@@ -149,7 +149,7 @@ struct Channel
 {
     QString name;
     int jointIndex = -1;
-    QList<ChannelComponent> channelComponents;
+    QVector<ChannelComponent> channelComponents;
 
     void read(const QJsonObject &json);
     void setFromQChannel(const QChannel &qch);

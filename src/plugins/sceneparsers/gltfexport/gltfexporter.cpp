@@ -132,7 +132,7 @@ inline QJsonArray col2jsvec(const QColor &color, bool alpha = false)
 }
 
 template <typename T>
-inline QJsonArray vec2jsvec(const QList<T> &v)
+inline QJsonArray vec2jsvec(const QVector<T> &v)
 {
     QJsonArray arr;
     for (int i = 0; i < v.count(); ++i)

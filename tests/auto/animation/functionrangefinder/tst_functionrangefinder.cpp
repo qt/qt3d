@@ -56,7 +56,7 @@ private Q_SLOTS:
         QTest::addColumn<int>("correlationThreshold");
         QTest::addColumn<bool>("ascending");
 
-        QList<float> data = { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f };
+        QVector<float> data = { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f };
         int correlationThreshold = 1;
         bool ascending = true;
         QTest::newRow("10 entries, ascending") << data << correlationThreshold << ascending;
@@ -101,9 +101,9 @@ private Q_SLOTS:
         QTest::addColumn<QList<float>>("needles");
         QTest::addColumn<QList<int>>("lowerBounds");
 
-        QList<float> data = { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f };
-        QList<float> needles = { 2.5f };
-        QList<int> lowerBounds = { 1 };
+        QVector<float> data = { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f };
+        QVector<float> needles = { 2.5f };
+        QVector<int> lowerBounds = { 1 };
         QTest::newRow("10 entries, ascending") << data << needles << lowerBounds;
         data.clear();
         needles.clear();

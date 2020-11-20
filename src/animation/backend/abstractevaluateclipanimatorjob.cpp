@@ -54,7 +54,7 @@ public:
     void postFrame(Qt3DCore::QAspectManager *manager) override;
 
     AnimationRecord m_record;
-    QList<AnimationCallbackAndValue> m_callbacks;
+    QVector<AnimationCallbackAndValue> m_callbacks;
 };
 
 AbstractEvaluateClipAnimatorJob::AbstractEvaluateClipAnimatorJob()
@@ -62,7 +62,7 @@ AbstractEvaluateClipAnimatorJob::AbstractEvaluateClipAnimatorJob()
 {
 }
 
-void AbstractEvaluateClipAnimatorJob::setPostFrameData(const AnimationRecord &record, const QList<AnimationCallbackAndValue> &callbacks)
+void AbstractEvaluateClipAnimatorJob::setPostFrameData(const AnimationRecord &record, const QVector<AnimationCallbackAndValue> &callbacks)
 {
     auto mainThreadCB = callbacks;
     mainThreadCB.erase(std::remove_if(mainThreadCB.begin(), mainThreadCB.end(), [](const AnimationCallbackAndValue &callback) {

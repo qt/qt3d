@@ -168,7 +168,7 @@ void tst_QGraphicsUtils::fillScalarWithOffsets()
     intUniform.m_matrixStride = 0;
     intUniform.m_offset = 48;
 
-    QList<GLfloat> data(16);
+    QVector<GLfloat> data(16);
     void *innerData = data.data();
 
     Qt3DRender::Render::OpenGL::QGraphicsUtils::fillDataArray(innerData,

@@ -71,13 +71,13 @@ public:
     void setHandler(Handler *handler) { m_handler = handler; }
     Handler *handler() const { return m_handler; }
 
-    void setDirtyClipAnimators(const QList<HClipAnimator> &animationClipHandles);
+    void setDirtyClipAnimators(const QVector<HClipAnimator> &animationClipHandles);
 
 protected:
     void run() override;
 
 private:
-    QList<HClipAnimator> m_clipAnimatorHandles;
+    QVector<HClipAnimator> m_clipAnimatorHandles;
     Handler *m_handler;
 
 #if defined(QT_BUILD_INTERNAL)

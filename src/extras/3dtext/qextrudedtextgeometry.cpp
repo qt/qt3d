@@ -75,10 +75,10 @@ struct TriangulationData {
         int end;
     };
 
-    QList<QVector3D> vertices;
-    QList<IndexType> indices;
-    QList<Outline> outlines;
-    QList<IndexType> outlineIndices;
+    QVector<QVector3D> vertices;
+    QVector<IndexType> indices;
+    QVector<Outline> outlines;
+    QVector<IndexType> outlineIndices;
     bool inverted;
 };
 
@@ -107,7 +107,7 @@ TriangulationData triangulate(const QString &text, const QFont &font)
 
     // Extract polylines out of the path, this allows us to retrieve indices for each glyph outline
     QPolylineSet polylines = qPolyline(path);
-    QList<IndexType> tmpIndices;
+    QVector<IndexType> tmpIndices;
     tmpIndices.resize(polylines.indices.size());
     memcpy(tmpIndices.data(), polylines.indices.data(), polylines.indices.size() * sizeof(IndexType));
 
@@ -315,8 +315,8 @@ void QExtrudedTextGeometryPrivate::update()
         QVector3D normal;
     };
 
-    QList<IndexType> indices;
-    QList<Vertex> vertices;
+    QVector<IndexType> indices;
+    QVector<Vertex> vertices;
 
     // TODO: keep 'vertices.size()' small when extruding
     vertices.reserve(data.vertices.size() * 2);

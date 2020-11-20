@@ -69,7 +69,7 @@ LoadAnimationClipJob::LoadAnimationClipJob()
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::LoadAnimationClip, 0)
 }
 
-void LoadAnimationClipJob::addDirtyAnimationClips(const QList<HAnimationClip> &animationClipHandles)
+void LoadAnimationClipJob::addDirtyAnimationClips(const QVector<HAnimationClip> &animationClipHandles)
 {
     for (const auto &handle : animationClipHandles) {
         if (!m_animationClipHandles.contains(handle))

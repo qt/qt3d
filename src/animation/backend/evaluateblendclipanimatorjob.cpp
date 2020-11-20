@@ -77,7 +77,7 @@ void EvaluateBlendClipAnimatorJob::run()
     }
 
     Qt3DCore::QNodeId blendTreeRootId = blendedClipAnimator->blendTreeRootId();
-    const QList<Qt3DCore::QNodeId> valueNodeIdsToEvaluate = gatherValueNodesToEvaluate(m_handler, blendTreeRootId);
+    const QVector<Qt3DCore::QNodeId> valueNodeIdsToEvaluate = gatherValueNodesToEvaluate(m_handler, blendTreeRootId);
 
     // Calculate the resulting duration of the blend tree based upon its current state
     ClipBlendNodeManager *blendNodeManager = m_handler->clipBlendNodeManager();
@@ -129,7 +129,7 @@ void EvaluateBlendClipAnimatorJob::run()
 
     // Prepare the change record
     const bool finalFrame = isFinalFrame(localTime, duration, animatorData.currentLoop, animatorData.loopCount, animatorData.playbackRate);
-    const QList<MappingData> mappingData = blendedClipAnimator->mappingData();
+    const QVector<MappingData> mappingData = blendedClipAnimator->mappingData();
     auto record = prepareAnimationRecord(blendedClipAnimator->peerId(),
                                          mappingData,
                                          blendedResults,

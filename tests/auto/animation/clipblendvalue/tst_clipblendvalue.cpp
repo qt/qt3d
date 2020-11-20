@@ -211,7 +211,7 @@ private Q_SLOTS:
                 blendNode->setClipFormat(animatorId, clipFormat);
             }
 
-            QList<int> indexes(animatorCount);
+            QVector<int> indexes(animatorCount);
             std::iota(indexes.begin(), indexes.end(), 0);
 
             QTest::newRow("multiple entries, ordered")
@@ -238,7 +238,7 @@ private Q_SLOTS:
             }
 
             // Shuffle the animatorIds to randomise the lookups
-            QList<int> indexes(animatorCount);
+            QVector<int> indexes(animatorCount);
             std::iota(indexes.begin(), indexes.end(), 0);
             std::random_device rd;
             std::mt19937 generator(rd());

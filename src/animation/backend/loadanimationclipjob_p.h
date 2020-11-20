@@ -69,7 +69,7 @@ public:
     void setHandler(Handler *handler) { m_handler = handler; }
     Handler *handler() const { return m_handler; }
 
-    void addDirtyAnimationClips(const QList<HAnimationClip> &animationClipHandles);
+    void addDirtyAnimationClips(const QVector<HAnimationClip> &animationClipHandles);
     void clearDirtyAnimationClips();
 
 protected:
@@ -78,7 +78,7 @@ protected:
 private:
     Q_DECLARE_PRIVATE(LoadAnimationClipJob)
 
-    QList<HAnimationClip> m_animationClipHandles;
+    QVector<HAnimationClip> m_animationClipHandles;
     Handler *m_handler;
 };
 

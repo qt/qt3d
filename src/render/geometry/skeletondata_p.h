@@ -86,9 +86,9 @@ struct Q_AUTOTEST_EXPORT SkeletonData
 
     void reserve(int size);
 
-    QList<JointInfo> joints;
-    QList<Qt3DCore::Sqt> localPoses;
-    QList<QString> jointNames;
+    QVector<JointInfo> joints;
+    QVector<Qt3DCore::Sqt> localPoses;
+    QVector<QString> jointNames;
     QHash<HJoint, int> jointIndices;
 };
 

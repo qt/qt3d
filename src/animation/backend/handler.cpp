@@ -146,7 +146,7 @@ void Handler::setBlendedClipAnimatorRunning(const HBlendedClipAnimator &handle, 
 // The vectors may get outdated when the application removes/deletes an
 // animator component in the meantime. Recognize this. This should be
 // relatively infrequent so in most cases the vectors will not change at all.
-void Handler::cleanupHandleList(QList<HAnimationClip> *clips)
+void Handler::cleanupHandleList(QVector<HAnimationClip> *clips)
 {
     for (auto it = clips->begin(); it != clips->end(); ) {
         if (!m_animationClipLoaderManager->data(*it))
@@ -156,7 +156,7 @@ void Handler::cleanupHandleList(QList<HAnimationClip> *clips)
     }
 }
 
-void Handler::cleanupHandleList(QList<HClipAnimator> *animators)
+void Handler::cleanupHandleList(QVector<HClipAnimator> *animators)
 {
     for (auto it = animators->begin(); it != animators->end(); ) {
         if (!m_clipAnimatorManager->data(*it))
@@ -166,7 +166,7 @@ void Handler::cleanupHandleList(QList<HClipAnimator> *animators)
     }
 }
 
-void Handler::cleanupHandleList(QList<HBlendedClipAnimator> *animators)
+void Handler::cleanupHandleList(QVector<HBlendedClipAnimator> *animators)
 {
     for (auto it = animators->begin(); it != animators->end(); ) {
         if (!m_blendedClipAnimatorManager->data(*it))
@@ -218,7 +218,7 @@ std::vector<Qt3DCore::QAspectJobPtr> Handler::jobsToExecute(qint64 time)
     // Rebuild blending trees if a blend tree is dirty
     const bool hasBuildBlendTreesJob = !m_dirtyBlendedAnimators.isEmpty();
     if (hasBuildBlendTreesJob) {
-        const QList<HBlendedClipAnimator> dirtyBlendedAnimators = std::move(m_dirtyBlendedAnimators);
+        const QVector<HBlendedClipAnimator> dirtyBlendedAnimators = std::move(m_dirtyBlendedAnimators);
         m_buildBlendTreesJob->setBlendedClipAnimators(dirtyBlendedAnimators);
         jobs.push_back(m_buildBlendTreesJob);
     }

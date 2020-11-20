@@ -78,7 +78,7 @@ public:
     void addDependingBlendedClipAnimator(const Qt3DCore::QNodeId &id);
 
     QString name() const { return m_name; }
-    const QList<Channel> &channels() const { return m_channels; }
+    const QVector<Channel> &channels() const { return m_channels; }
 
     // Called from jobs
     void loadAnimation();
@@ -117,7 +117,7 @@ private:
     ClipDataType m_dataType;
 
     QString m_name;
-    QList<Channel> m_channels;
+    QVector<Channel> m_channels;
     float m_duration;
     int m_channelComponentCount;
 
@@ -134,10 +134,9 @@ inline QDebug operator<<(QDebug dbg, const AnimationClip &animationClip)
         << "Duration: " << animationClip.duration() << Qt::endl
         << "Channels:" << Qt::endl;
 
-    const QList<Channel> channels = animationClip.channels();
-    for (const auto &channel : channels) {
+    const auto &channels = animationClip.channels();
+    for (const auto &channel : channels)
         dbg << channel;
-    }
 
     return dbg;
 }

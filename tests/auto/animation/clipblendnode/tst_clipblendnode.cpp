@@ -221,7 +221,7 @@ private Q_SLOTS:
                 blendNode->setClipResults(animatorId, clipResults);
             }
 
-            QList<int> indexes(animatorCount);
+            QVector<int> indexes(animatorCount);
             std::iota(indexes.begin(), indexes.end(), 0);
 
             QTest::newRow("multiple entries, ordered")
@@ -248,7 +248,7 @@ private Q_SLOTS:
             }
 
             // Shuffle the animatorIds to randomise the lookups
-            QList<int> indexes(animatorCount);
+            QVector<int> indexes(animatorCount);
             std::iota(indexes.begin(), indexes.end(), 0);
             std::random_device rd;
             std::mt19937 generator(rd());
@@ -263,7 +263,7 @@ private Q_SLOTS:
     {
         // GIVEN
         QFETCH(TestClipBlendNode *, blendNode);
-        QFETCH(QList<int>, indexes);
+        QFETCH(QVector<int>, indexes);
         QFETCH(QList<Qt3DCore::QNodeId>, animatorIds);
         QFETCH(QList<ClipResults>, expectedClipResults);
 

@@ -71,10 +71,10 @@ public:
 
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
-    void setMappingIds(const QList<Qt3DCore::QNodeId> &mappingIds) { m_mappingIds = mappingIds; }
-    QList<Qt3DCore::QNodeId> mappingIds() const { return m_mappingIds; }
+    void setMappingIds(const Qt3DCore::QNodeIdVector &mappingIds) { m_mappingIds = mappingIds; }
+    Qt3DCore::QNodeIdVector mappingIds() const { return m_mappingIds; }
 
-    QList<ChannelMapping*> mappings() const
+    QVector<ChannelMapping*> mappings() const
     {
         if (m_isDirty)
             updateMappings();
@@ -84,10 +84,10 @@ public:
 private:
     void updateMappings() const;
 
-    QList<Qt3DCore::QNodeId> m_mappingIds;
+    Qt3DCore::QNodeIdVector m_mappingIds;
 
     // Cached data
-    mutable QList<ChannelMapping*> m_mappings;
+    mutable QVector<ChannelMapping*> m_mappings;
     mutable bool m_isDirty;
 };
 

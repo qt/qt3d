@@ -341,7 +341,7 @@ QList<QDistanceFieldGlyphCache::Glyph> QDistanceFieldGlyphCache::refGlyphs(const
     DistanceFieldFont *dff = getOrCreateDistanceFieldFont(run.rawFont());
     QList<QDistanceFieldGlyphCache::Glyph> ret;
 
-    const QList<quint32> glyphs = run.glyphIndexes();
+    const auto glyphs = run.glyphIndexes();
     for (quint32 glyph : glyphs)
         ret << refAndGetGlyph(dff, glyph);
 
@@ -357,7 +357,7 @@ void QDistanceFieldGlyphCache::derefGlyphs(const QGlyphRun &run)
 {
     DistanceFieldFont *dff = getOrCreateDistanceFieldFont(run.rawFont());
 
-    const QList<quint32> glyphs = run.glyphIndexes();
+    const auto glyphs = run.glyphIndexes();
     for (quint32 glyph : glyphs)
         dff->derefGlyph(glyph);
 }

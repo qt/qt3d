@@ -186,14 +186,14 @@ private Q_SLOTS:
         morphingAnimation.addMorphTarget(mt2);
         morphingAnimation.addMorphTarget(mt3);
 
-        const QList<float> positions = { 0.0f, 1.0f, 2.0f, 3.0f, 4.0f };
+        const QVector<float> positions = { 0.0f, 1.0f, 2.0f, 3.0f, 4.0f };
         morphingAnimation.setTargetPositions(positions);
 
-        morphingAnimation.setWeights(0, QList<float> { 1.0f, 0.0f, 0.0f });
-        morphingAnimation.setWeights(1, QList<float> { 0.0f, 0.0f, 0.0f });
-        morphingAnimation.setWeights(2, QList<float> { 0.0f, 1.0f, 0.0f });
-        morphingAnimation.setWeights(3, QList<float> { 0.0f, 0.0f, 0.0f });
-        morphingAnimation.setWeights(4, QList<float> { 0.0f, 0.0f, 1.0f });
+        morphingAnimation.setWeights(0, QVector<float> { 1.0f, 0.0f, 0.0f });
+        morphingAnimation.setWeights(1, QVector<float> { 0.0f, 0.0f, 0.0f });
+        morphingAnimation.setWeights(2, QVector<float> { 0.0f, 1.0f, 0.0f });
+        morphingAnimation.setWeights(3, QVector<float> { 0.0f, 0.0f, 0.0f });
+        morphingAnimation.setWeights(4, QVector<float> { 0.0f, 0.0f, 1.0f });
 
         morphingAnimation.setMethod(Qt3DAnimation::QMorphingAnimation::Relative);
         {

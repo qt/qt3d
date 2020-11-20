@@ -73,7 +73,7 @@ private:
     unsigned int m_sampleCount;
     unsigned int m_currentSample;
     float m_total;
-    QList<float> m_samples;
+    QVector<float> m_samples;
 };
 
 } // Input

@@ -245,7 +245,7 @@ private Q_SLOTS:
         QVariantList list = QVariantList() << QVariant(1.0f) << QVariant(1.0) << QVariant(1.0f) << QVariant(1.0f) << QVariant(1.0f);
         QTest::newRow("variantlist") << QByteArrayLiteral("listProperty") << QVariant::fromValue(list) << static_cast<int>(QMetaType::QVariantList) << 5;
 
-        QList<float> vec(8);
+        QVector<float> vec(8);
         QTest::newRow("vector") << QByteArrayLiteral("vecProperty") << QVariant::fromValue(vec) << qMetaTypeId<decltype(vec)>() << 8;
     }
 

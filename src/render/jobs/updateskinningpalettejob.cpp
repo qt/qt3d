@@ -95,7 +95,7 @@ void UpdateSkinningPaletteJob::run()
         auto skeleton = skeletonManager->lookupResource(skeletonId);
         Q_ASSERT(skeleton);
 
-        const QList<QMatrix4x4> skinningPalette = skeleton->calculateSkinningMatrixPalette();
+        const QVector<QMatrix4x4> &skinningPalette = skeleton->calculateSkinningMatrixPalette();
         armature->skinningPaletteUniform().setData(skinningPalette);
     }
 }

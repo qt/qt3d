@@ -303,7 +303,7 @@ int main(int argc, char* argv[])
         Qt3DCore::QBuffer *indirectDrawDataBuffer = new Qt3DCore::QBuffer(customGeometry);
 
 
-        QList<QVector3D> orderedPositionVertices;
+        QVector<QVector3D> orderedPositionVertices;
         // 12 vertices with position, normal, color
         orderedPositionVertices.reserve(12 * (1 + 1 + 1));
 

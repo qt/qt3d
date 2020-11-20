@@ -79,7 +79,7 @@ private Q_SLOTS:
         float c = 0.0f;
         float d = 0.0f;
         int rootCount = 1;
-        QList<float> roots = { 0.0f };
+        QVector<float> roots = { 0.0f };
         QTest::newRow("a=1, b=0, c=0, d=0") << a << b << c << d << rootCount << roots;
         roots.clear();
 

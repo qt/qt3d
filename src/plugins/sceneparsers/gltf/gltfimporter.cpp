@@ -2134,8 +2134,8 @@ QVariant GLTFImporter::parameterValueFromJSON(int type, const QJsonValue &value)
         QVector2D vector2D;
         QVector3D vector3D;
         QVector4D vector4D;
-        QList<float> dataMat2(4, 0.0f);
-        QList<float> dataMat3(9, 0.0f);
+        QVector<float> dataMat2(4, 0.0f);
+        QVector<float> dataMat3(9, 0.0f);
 
         switch (type) {
         case GL_BYTE:

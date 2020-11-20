@@ -46,9 +46,9 @@
 using namespace Qt3DAnimation::Animation;
 
 Q_DECLARE_METATYPE(Qt3DAnimation::Animation::Handler*)
-Q_DECLARE_METATYPE(QList<Qt3DAnimation::Animation::HClipAnimator>)
+Q_DECLARE_METATYPE(QVector<Qt3DAnimation::Animation::HClipAnimator>)
 
-using MappingDataResults = QHash<ClipAnimator *, QList<Qt3DAnimation::Animation::MappingData>>;
+using MappingDataResults = QHash<ClipAnimator *, QVector<Qt3DAnimation::Animation::MappingData>>;
 Q_DECLARE_METATYPE(MappingDataResults)
 
 class tst_FindRunningClipAnimatorsJob: public Qt3DCore::QBackendNodeTester
@@ -116,7 +116,7 @@ private Q_SLOTS:
     void checkJob_data()
     {
         QTest::addColumn<Handler *>("handler");
-        QTest::addColumn<QList<HClipAnimator>>("dirtyClipAnimators");
+        QTest::addColumn<QVector<HClipAnimator>>("dirtyClipAnimators");
         QTest::addColumn<MappingDataResults>("expectedResults");
 
 
@@ -133,7 +133,7 @@ private Q_SLOTS:
             const int loops = 1;
             animator = createClipAnimator(handler, globalStartTimeNS, loops);
             animator->setClipId(clip->peerId());
-            const QList<HClipAnimator> dirtyClipAnimators
+            const QVector<HClipAnimator> dirtyClipAnimators
                     = { handler->clipAnimatorManager()->getOrAcquireHandle(animator->peerId()) };
 
             auto channelMapping = createChannelMapping(handler,
@@ -153,7 +153,7 @@ private Q_SLOTS:
             expectedMapping.propertyName = channelMapping->propertyName();
             expectedMapping.type = channelMapping->type();
             expectedMapping.channelIndices = locationIndices;
-            expectedResults.insert(animator, QList<MappingData> { expectedMapping });
+            expectedResults.insert(animator, QVector<MappingData> { expectedMapping });
 
             QTest::newRow("single mapping")
                             << handler
@@ -174,7 +174,7 @@ private Q_SLOTS:
             const int loops = 1;
             animator = createClipAnimator(handler, globalStartTimeNS, loops);
             animator->setClipId(clip->peerId());
-            const QList<HClipAnimator> dirtyClipAnimators
+            const QVector<HClipAnimator> dirtyClipAnimators
                     = { handler->clipAnimatorManager()->getOrAcquireHandle(animator->peerId()) };
 
             auto channelMapping = createChannelMapping(handler,
@@ -199,7 +199,7 @@ private Q_SLOTS:
     {
         // GIVEN
         QFETCH(Handler *, handler);
-        QFETCH(QList<HClipAnimator>, dirtyClipAnimators);
+        QFETCH(QVector<HClipAnimator>, dirtyClipAnimators);
         QFETCH(MappingDataResults, expectedResults);
         FindRunningClipAnimatorsJob job;
 
@@ -211,8 +211,8 @@ private Q_SLOTS:
         // THEN - check the resulting MappingData on the animator matches the expected results
         for (const auto &dirtyClipAnimator : dirtyClipAnimators) {
             const auto animator = handler->clipAnimatorManager()->data(dirtyClipAnimator);
-            const QList<MappingData> actualMappingData = animator->mappingData();
-            const QList<MappingData> expectedMappingData = expectedResults[animator];
+            const QVector<MappingData> actualMappingData = animator->mappingData();
+            const QVector<MappingData> expectedMappingData = expectedResults[animator];
 
             QCOMPARE(expectedMappingData.size(), actualMappingData.size());
             for (int i = 0; i < actualMappingData.size(); ++i) {

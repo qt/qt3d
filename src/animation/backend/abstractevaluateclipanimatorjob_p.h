@@ -63,7 +63,7 @@ class AbstractEvaluateClipAnimatorJob : public Qt3DCore::QAspectJob
 protected:
     AbstractEvaluateClipAnimatorJob();
 
-    void setPostFrameData(const AnimationRecord &record, const QList<AnimationCallbackAndValue> &callbacks);
+    void setPostFrameData(const AnimationRecord &record, const QVector<AnimationCallbackAndValue> &callbacks);
 
 private:
     Q_DECLARE_PRIVATE(AbstractEvaluateClipAnimatorJob)

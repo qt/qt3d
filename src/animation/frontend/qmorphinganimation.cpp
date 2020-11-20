@@ -179,7 +179,7 @@ QMorphingAnimationPrivate::QMorphingAnimationPrivate()
 
 QMorphingAnimationPrivate::~QMorphingAnimationPrivate()
 {
-    for (QList<float> *weights : qAsConst(m_weights))
+    for (QVector<float> *weights : qAsConst(m_weights))
         delete weights;
 }
 
@@ -189,7 +189,7 @@ void QMorphingAnimationPrivate::updateAnimation(float position)
     if (!m_target || !m_target->geometry())
         return;
 
-    QList<int> relevantValues;
+    QVector<int> relevantValues;
     float sum = 0.0f;
     float interpolator = 0.0f;
     m_morphKey.resize(m_morphTargets.size());
@@ -282,7 +282,7 @@ QMorphingAnimation::QMorphingAnimation(QObject *parent)
                                                this, &QMorphingAnimation::updateAnimation);
 }
 
-QList<float> QMorphingAnimation::targetPositions() const
+QVector<float> QMorphingAnimation::targetPositions() const
 {
     Q_D(const QMorphingAnimation);
     return d->m_targetPositions;
@@ -321,7 +321,7 @@ QEasingCurve QMorphingAnimation::easing() const
 /*!
     Set morph \a targets to animation. Old targets are cleared.
 */
-void QMorphingAnimation::setMorphTargets(const QList<Qt3DAnimation::QMorphTarget *> &targets)
+void QMorphingAnimation::setMorphTargets(const QVector<Qt3DAnimation::QMorphTarget *> &targets)
 {
     Q_D(QMorphingAnimation);
     d->m_morphTargets = targets;
@@ -353,7 +353,7 @@ void QMorphingAnimation::removeMorphTarget(Qt3DAnimation::QMorphTarget *target)
     d->m_position = -1.0f;
 }
 
-void QMorphingAnimation::setTargetPositions(const QList<float> &targetPositions)
+void QMorphingAnimation::setTargetPositions(const QVector<float> &targetPositions)
 {
     Q_D(QMorphingAnimation);
     d->m_targetPositions = targetPositions;
@@ -365,7 +365,7 @@ void QMorphingAnimation::setTargetPositions(const QList<float> &targetPositions)
         d->m_weights.resize(targetPositions.size());
         for (int i = 0; i < d->m_weights.size(); ++i) {
             if (d->m_weights[i] == nullptr)
-                d->m_weights[i] = new QList<float>();
+                d->m_weights[i] = new QVector<float>();
         }
     }
     d->m_position = -1.0f;
@@ -384,13 +384,13 @@ void QMorphingAnimation::setTarget(Qt3DRender::QGeometryRenderer *target)
 /*!
     Sets morph \a weights at \a positionIndex.
 */
-void QMorphingAnimation::setWeights(int positionIndex, const QList<float> &weights)
+void QMorphingAnimation::setWeights(int positionIndex, const QVector<float> &weights)
 {
     Q_D(QMorphingAnimation);
     if (d->m_weights.size() < positionIndex)
         d->m_weights.resize(positionIndex + 1);
     if (d->m_weights[positionIndex] == nullptr)
-        d->m_weights[positionIndex] = new QList<float>();
+        d->m_weights[positionIndex] = new QVector<float>();
     *d->m_weights[positionIndex] = weights;
     d->m_position = -1.0f;
 }
@@ -398,7 +398,7 @@ void QMorphingAnimation::setWeights(int positionIndex, const QList<float> &weigh
 /*!
     Return morph weights at \a positionIndex.
 */
-QList<float> QMorphingAnimation::getWeights(int positionIndex)
+QVector<float> QMorphingAnimation::getWeights(int positionIndex)
 {
     Q_D(QMorphingAnimation);
     return *d->m_weights[positionIndex];
@@ -407,7 +407,7 @@ QList<float> QMorphingAnimation::getWeights(int positionIndex)
 /*!
     Return morph target list.
 */
-QList<Qt3DAnimation::QMorphTarget *> QMorphingAnimation::morphTargetList()
+QVector<QMorphTarget *> QMorphingAnimation::morphTargetList()
 {
     Q_D(QMorphingAnimation);
     return d->m_morphTargets;
