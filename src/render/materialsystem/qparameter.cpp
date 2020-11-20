@@ -199,7 +199,11 @@ inline QVariant toBackendValue(const QVariant &v)
 
 void QParameterPrivate::setValue(const QVariant &v)
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     if (v.metaType().id() == QMetaType::QVariantList) {
+#else
+    if (v.type() == QVariant::List) {
+#endif
         QSequentialIterable iterable = v.value<QSequentialIterable>();
         QVariantList variants;
         variants.reserve(iterable.size());
