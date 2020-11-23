@@ -48,51 +48,43 @@ QQuick3DKeyframeAnimation::QQuick3DKeyframeAnimation(QObject *parent)
 
 QQmlListProperty<Qt3DCore::QTransform> QQuick3DKeyframeAnimation::keyframes()
 {
-    return QQmlListProperty<Qt3DCore::QTransform>(this, 0,
-                                                  &QQuick3DKeyframeAnimation::appendKeyframe,
-                                                  &QQuick3DKeyframeAnimation::keyframeCount,
-                                                  &QQuick3DKeyframeAnimation::keyframeAt,
-                                                  &QQuick3DKeyframeAnimation::clearKeyframes);
-}
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    using qt_size_type = qsizetype;
+#else
+    using qt_size_type = int;
+#endif
 
-void QQuick3DKeyframeAnimation::appendKeyframe(QQmlListProperty<Qt3DCore::QTransform> *list,
-                                               Qt3DCore::QTransform *transform)
-{
-    QQuick3DKeyframeAnimation *keyframeAnimation
+    using ListContentType = Qt3DCore::QTransform;
+    auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *transform) {
+        QQuick3DKeyframeAnimation *keyframeAnimation
             = qobject_cast<QQuick3DKeyframeAnimation *>(list->object);
-    if (keyframeAnimation)
-        keyframeAnimation->parentKeyframeAnimation()->addKeyframe(transform);
-}
+        if (keyframeAnimation)
+            keyframeAnimation->parentKeyframeAnimation()->addKeyframe(transform);
+    };
+    auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
+        QQuick3DKeyframeAnimation *keyframeAnimation
+            = qobject_cast<QQuick3DKeyframeAnimation *>(list->object);
+        if (keyframeAnimation)
+            return keyframeAnimation->parentKeyframeAnimation()->keyframeList().count();
+        return 0;
+    };
+    auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
+        QQuick3DKeyframeAnimation *keyframeAnimation
+            = qobject_cast<QQuick3DKeyframeAnimation *>(list->object);
+        if (keyframeAnimation)
+            return qobject_cast<Qt3DCore::QTransform *>(keyframeAnimation->parentKeyframeAnimation()->keyframeList().at(index));
+        return nullptr;
+    };
+    auto clearFunction = [](QQmlListProperty<ListContentType> *list) {
+        QQuick3DKeyframeAnimation *keyframeAnimation
+            = qobject_cast<QQuick3DKeyframeAnimation *>(list->object);
+        if (keyframeAnimation) {
+            QList<Qt3DCore::QTransform *> emptyList;
+            keyframeAnimation->parentKeyframeAnimation()->setKeyframes(emptyList);
+        }
+    };
 
-qsizetype QQuick3DKeyframeAnimation::keyframeCount(QQmlListProperty<Qt3DCore::QTransform> *list)
-{
-    QQuick3DKeyframeAnimation *keyframeAnimation
-            = qobject_cast<QQuick3DKeyframeAnimation *>(list->object);
-    if (keyframeAnimation)
-        return keyframeAnimation->parentKeyframeAnimation()->keyframeList().count();
-    return 0;
-}
-
-Qt3DCore::QTransform *QQuick3DKeyframeAnimation::keyframeAt(QQmlListProperty<Qt3DCore::QTransform> *list,
-                                                            qsizetype index)
-{
-    QQuick3DKeyframeAnimation *keyframeAnimation
-            = qobject_cast<QQuick3DKeyframeAnimation *>(list->object);
-    if (keyframeAnimation) {
-        return qobject_cast<Qt3DCore::QTransform *>(
-                    keyframeAnimation->parentKeyframeAnimation()->keyframeList().at(index));
-    }
-    return nullptr;
-}
-
-void QQuick3DKeyframeAnimation::clearKeyframes(QQmlListProperty<Qt3DCore::QTransform> *list)
-{
-    QQuick3DKeyframeAnimation *keyframeAnimation
-            = qobject_cast<QQuick3DKeyframeAnimation *>(list->object);
-    if (keyframeAnimation) {
-        QList<Qt3DCore::QTransform *> emptyList;
-        keyframeAnimation->parentKeyframeAnimation()->setKeyframes(emptyList);
-    }
+    return QQmlListProperty<ListContentType>(this, nullptr, appendFunction, countFunction, atFunction, clearFunction);
 }
 
 } // namespace Quick

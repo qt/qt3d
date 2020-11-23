@@ -81,41 +81,38 @@ Quick3DEntity::Quick3DEntity(QObject *parent)
 
 QQmlListProperty<QComponent> Quick3DEntity::componentList()
 {
-    return QQmlListProperty<Qt3DCore::QComponent>(this, 0,
-                                             Quick3DEntity::qmlAppendComponent,
-                                             Quick3DEntity::qmlComponentsCount,
-                                             Quick3DEntity::qmlComponentAt,
-                                             Quick3DEntity::qmlClearComponents);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    using qt_size_type = qsizetype;
+#else
+    using qt_size_type = int;
+#endif
+
+    using ListContentType = Qt3DCore::QComponent;
+    auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *comp) {
+        if (comp == nullptr)
+            return;
+        Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
+        self->m_managedComponents.push_back(comp);
+        self->parentEntity()->addComponent(comp);
+    };
+    auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
+        Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
+        return self->parentEntity()->components().count();
+    };
+    auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
+        Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
+        return self->parentEntity()->components().at(index);
+    };
+    auto clearFunction = [](QQmlListProperty<ListContentType> *list) {
+        Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
+        for (QComponent *comp : qAsConst(self->m_managedComponents))
+            self->parentEntity()->removeComponent(comp);
+        self->m_managedComponents.clear();
+    };
+
+    return QQmlListProperty<ListContentType>(this, nullptr, appendFunction, countFunction, atFunction, clearFunction);
 }
 
-void Quick3DEntity::qmlAppendComponent(QQmlListProperty<QComponent> *list, QComponent *comp)
-{
-    if (comp == nullptr)
-        return;
-    Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
-    self->m_managedComponents.push_back(comp);
-    self->parentEntity()->addComponent(comp);
-}
-
-QComponent *Quick3DEntity::qmlComponentAt(QQmlListProperty<QComponent> *list, qsizetype index)
-{
-    Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
-    return self->parentEntity()->components().at(index);
-}
-
-qsizetype Quick3DEntity::qmlComponentsCount(QQmlListProperty<QComponent> *list)
-{
-    Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
-    return self->parentEntity()->components().count();
-}
-
-void Quick3DEntity::qmlClearComponents(QQmlListProperty<QComponent> *list)
-{
-    Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
-    for (QComponent *comp : qAsConst(self->m_managedComponents))
-        self->parentEntity()->removeComponent(comp);
-    self->m_managedComponents.clear();
-}
 
 } // namespace Quick
 } // namespace Qt3DCore

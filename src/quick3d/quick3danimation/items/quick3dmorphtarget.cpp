@@ -48,43 +48,39 @@ QQuick3DMorphTarget::QQuick3DMorphTarget(QObject *parent)
 
 QQmlListProperty<Qt3DCore::QAttribute> QQuick3DMorphTarget::attributes()
 {
-    return QQmlListProperty<Qt3DCore::QAttribute>(this, 0,
-                                       &QQuick3DMorphTarget::appendAttribute,
-                                       &QQuick3DMorphTarget::attributeCount,
-                                       &QQuick3DMorphTarget::attributeAt,
-                                       &QQuick3DMorphTarget::clearAttributes);
-}
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    using qt_size_type = qsizetype;
+#else
+    using qt_size_type = int;
+#endif
 
-void QQuick3DMorphTarget::appendAttribute(QQmlListProperty<Qt3DCore::QAttribute> *list, Qt3DCore::QAttribute *bar)
-{
-    QQuick3DMorphTarget *target = qobject_cast<QQuick3DMorphTarget *>(list->object);
-    if (target)
-        target->parentMorphTarget()->addAttribute(bar);
-}
+    using ListContentType = Qt3DCore::QAttribute;
+    auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *bar) {
+        QQuick3DMorphTarget *target = qobject_cast<QQuick3DMorphTarget *>(list->object);
+        if (target)
+            target->parentMorphTarget()->addAttribute(bar);
+    };
+    auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
+        QQuick3DMorphTarget *target = qobject_cast<QQuick3DMorphTarget *>(list->object);
+        if (target)
+            return target->parentMorphTarget()->attributeList().count();
+        return 0;
+    };
+    auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
+        QQuick3DMorphTarget *target = qobject_cast<QQuick3DMorphTarget *>(list->object);
+        if (target)
+            return qobject_cast<Qt3DCore::QAttribute *>(target->parentMorphTarget()->attributeList().at(index));
+        return nullptr;
+    };
+    auto clearFunction = [](QQmlListProperty<ListContentType> *list) {
+        QQuick3DMorphTarget *target = qobject_cast<QQuick3DMorphTarget *>(list->object);
+        if (target) {
+            QList<Qt3DCore::QAttribute *> emptyList;
+            target->parentMorphTarget()->setAttributes(emptyList);
+        }
+    };
 
-qsizetype QQuick3DMorphTarget::attributeCount(QQmlListProperty<Qt3DCore::QAttribute> *list)
-{
-    QQuick3DMorphTarget *target = qobject_cast<QQuick3DMorphTarget *>(list->object);
-    if (target)
-        return target->parentMorphTarget()->attributeList().count();
-    return 0;
-}
-
-Qt3DCore::QAttribute *QQuick3DMorphTarget::attributeAt(QQmlListProperty<Qt3DCore::QAttribute> *list, qsizetype index)
-{
-    QQuick3DMorphTarget *target = qobject_cast<QQuick3DMorphTarget *>(list->object);
-    if (target)
-        return qobject_cast<Qt3DCore::QAttribute *>(target->parentMorphTarget()->attributeList().at(index));
-    return nullptr;
-}
-
-void QQuick3DMorphTarget::clearAttributes(QQmlListProperty<Qt3DCore::QAttribute> *list)
-{
-    QQuick3DMorphTarget *target = qobject_cast<QQuick3DMorphTarget *>(list->object);
-    if (target) {
-        QList<Qt3DCore::QAttribute *> emptyList;
-        target->parentMorphTarget()->setAttributes(emptyList);
-    }
+    return QQmlListProperty<ListContentType>(this, nullptr, appendFunction, countFunction, atFunction, clearFunction);
 }
 
 } // namespace Quick

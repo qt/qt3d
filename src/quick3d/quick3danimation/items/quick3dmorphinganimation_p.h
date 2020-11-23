@@ -73,15 +73,6 @@ public:
     }
 
     QQmlListProperty<Qt3DAnimation::QMorphTarget> morphTargets();
-
-private:
-
-    static void appendMorphTarget(QQmlListProperty<Qt3DAnimation::QMorphTarget> *list,
-                                  Qt3DAnimation::QMorphTarget *morphTarget);
-    static Qt3DAnimation::QMorphTarget *morphTargetAt(QQmlListProperty<Qt3DAnimation::QMorphTarget> *list,
-                                                      qsizetype index);
-    static qsizetype morphTargetCount(QQmlListProperty<Qt3DAnimation::QMorphTarget> *list);
-    static void clearMorphTargets(QQmlListProperty<Qt3DAnimation::QMorphTarget> *list);
 };
 
 } // namespace Quick

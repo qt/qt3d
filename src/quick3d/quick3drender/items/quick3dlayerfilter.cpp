@@ -56,47 +56,41 @@ Quick3DLayerFilter::Quick3DLayerFilter(QObject *parent)
 
 QQmlListProperty<QLayer> Quick3DLayerFilter::qmlLayers()
 {
-    return QQmlListProperty<QLayer>(this, 0,
-                                    &Quick3DLayerFilter::appendLayer,
-                                    &Quick3DLayerFilter::layerCount,
-                                    &Quick3DLayerFilter::layerAt,
-                                    &Quick3DLayerFilter::clearLayers);
-}
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    using qt_size_type = qsizetype;
+#else
+    using qt_size_type = int;
+#endif
 
-void Quick3DLayerFilter::appendLayer(QQmlListProperty<QLayer> *list, QLayer *layer)
-{
-    Quick3DLayerFilter *filter = qobject_cast<Quick3DLayerFilter *>(list->object);
-    if (filter) {
-        filter->parentFilter()->addLayer(layer);
-    }
-}
+    using ListContentType = QLayer;
+    auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *layer) {
+        Quick3DLayerFilter *filter = qobject_cast<Quick3DLayerFilter *>(list->object);
+        if (filter) {
+            filter->parentFilter()->addLayer(layer);
+        }
+    };
+    auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
+        Quick3DLayerFilter *filter = qobject_cast<Quick3DLayerFilter *>(list->object);
+        if (filter)
+            return filter->parentFilter()->layers().count();
+        return 0;
+    };
+    auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
+        Quick3DLayerFilter *filter = qobject_cast<Quick3DLayerFilter *>(list->object);
+        if (filter)
+            return filter->parentFilter()->layers().at(index);
+        return nullptr;
+    };
+    auto clearFunction = [](QQmlListProperty<ListContentType> *list) {
+        Quick3DLayerFilter *filter = qobject_cast<Quick3DLayerFilter *>(list->object);
+        if (filter) {
+            const auto layers = filter->parentFilter()->layers();
+            for (QLayer *layer : layers)
+                filter->parentFilter()->removeLayer(layer);
+        }
+    };
 
-QLayer *Quick3DLayerFilter::layerAt(QQmlListProperty<QLayer> *list, qsizetype index)
-{
-    Quick3DLayerFilter *filter = qobject_cast<Quick3DLayerFilter *>(list->object);
-    if (filter) {
-        return filter->parentFilter()->layers().at(index);
-    }
-    return 0;
-}
-
-qsizetype Quick3DLayerFilter::layerCount(QQmlListProperty<QLayer> *list)
-{
-    Quick3DLayerFilter *filter = qobject_cast<Quick3DLayerFilter *>(list->object);
-    if (filter) {
-        return filter->parentFilter()->layers().count();
-    }
-    return 0;
-}
-
-void Quick3DLayerFilter::clearLayers(QQmlListProperty<QLayer> *list)
-{
-    Quick3DLayerFilter *filter = qobject_cast<Quick3DLayerFilter *>(list->object);
-    if (filter) {
-        const auto layers = filter->parentFilter()->layers();
-        for (QLayer *layer : layers)
-            filter->parentFilter()->removeLayer(layer);
-    }
+    return QQmlListProperty<ListContentType>(this, nullptr, appendFunction, countFunction, atFunction, clearFunction);
 }
 
 } // Quick

@@ -72,12 +72,6 @@ public:
 
     QQmlListProperty<Qt3DExtras::QSpriteSheetItem> sprites();
     inline QSpriteSheet *parentSpriteSheet() const { return qobject_cast<QSpriteSheet *>(parent()); }
-
-private:
-    static void appendSprite(QQmlListProperty<Qt3DExtras::QSpriteSheetItem> *list, Qt3DExtras::QSpriteSheetItem *state);
-    static Qt3DExtras::QSpriteSheetItem *spriteAt(QQmlListProperty<Qt3DExtras::QSpriteSheetItem> *list, qsizetype index);
-    static qsizetype spriteCount(QQmlListProperty<Qt3DExtras::QSpriteSheetItem> *list);
-    static void clearSprites(QQmlListProperty<Qt3DExtras::QSpriteSheetItem> *list);
 };
 
 } // namespace Quick

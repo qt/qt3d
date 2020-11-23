@@ -56,38 +56,33 @@ Quick3DStateSet::~Quick3DStateSet()
 
 QQmlListProperty<QRenderState> Quick3DStateSet::renderStateList()
 {
-    return QQmlListProperty<QRenderState>(this, 0,
-                                          &Quick3DStateSet::appendRenderState,
-                                          &Quick3DStateSet::renderStateCount,
-                                          &Quick3DStateSet::renderStateAt,
-                                          &Quick3DStateSet::clearRenderStates);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    using qt_size_type = qsizetype;
+#else
+    using qt_size_type = int;
+#endif
 
-}
+    using ListContentType = QRenderState;
+    auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *state) {
+        Quick3DStateSet *stateSet = qobject_cast<Quick3DStateSet *>(list->object);
+        stateSet->parentStateSet()->addRenderState(state);
+    };
+    auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
+        Quick3DStateSet *stateSet = qobject_cast<Quick3DStateSet *>(list->object);
+        return stateSet->parentStateSet()->renderStates().count();
+    };
+    auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
+        Quick3DStateSet *stateSet = qobject_cast<Quick3DStateSet *>(list->object);
+        return stateSet->parentStateSet()->renderStates().at(index);
+    };
+    auto clearFunction = [](QQmlListProperty<ListContentType> *list) {
+        Quick3DStateSet *stateSet = qobject_cast<Quick3DStateSet *>(list->object);
+        const auto states = stateSet->parentStateSet()->renderStates();
+        for (QRenderState *s : states)
+            stateSet->parentStateSet()->removeRenderState(s);
+    };
 
-void Quick3DStateSet::appendRenderState(QQmlListProperty<QRenderState> *list, QRenderState *state)
-{
-    Quick3DStateSet *stateSet = qobject_cast<Quick3DStateSet *>(list->object);
-    stateSet->parentStateSet()->addRenderState(state);
-}
-
-QRenderState *Quick3DStateSet::renderStateAt(QQmlListProperty<QRenderState> *list, qsizetype index)
-{
-    Quick3DStateSet *stateSet = qobject_cast<Quick3DStateSet *>(list->object);
-    return stateSet->parentStateSet()->renderStates().at(index);
-}
-
-qsizetype Quick3DStateSet::renderStateCount(QQmlListProperty<QRenderState> *list)
-{
-    Quick3DStateSet *stateSet = qobject_cast<Quick3DStateSet *>(list->object);
-    return stateSet->parentStateSet()->renderStates().count();
-}
-
-void Quick3DStateSet::clearRenderStates(QQmlListProperty<QRenderState> *list)
-{
-    Quick3DStateSet *stateSet = qobject_cast<Quick3DStateSet *>(list->object);
-    const auto states = stateSet->parentStateSet()->renderStates();
-    for (QRenderState *s : states)
-        stateSet->parentStateSet()->removeRenderState(s);
+    return QQmlListProperty<ListContentType>(this, nullptr, appendFunction, countFunction, atFunction, clearFunction);
 }
 
 } // namespace Quick

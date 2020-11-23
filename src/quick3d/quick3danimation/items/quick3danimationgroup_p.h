@@ -74,13 +74,6 @@ public:
     }
 
     QQmlListProperty<Qt3DAnimation::QAbstractAnimation> animations();
-
-private:
-
-    static void appendAnimation(QQmlListProperty<Qt3DAnimation::QAbstractAnimation> *list, Qt3DAnimation::QAbstractAnimation *animation);
-    static Qt3DAnimation::QAbstractAnimation *animationAt(QQmlListProperty<Qt3DAnimation::QAbstractAnimation> *list, qsizetype index);
-    static qsizetype animationCount(QQmlListProperty<Qt3DAnimation::QAbstractAnimation> *list);
-    static void clearAnimation(QQmlListProperty<Qt3DAnimation::QAbstractAnimation> *list);
 };
 
 } // namespace Quick

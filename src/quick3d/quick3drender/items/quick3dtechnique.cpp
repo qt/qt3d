@@ -52,125 +52,112 @@ Quick3DTechnique::Quick3DTechnique(QObject *parent)
 
 QQmlListProperty<QRenderPass> Quick3DTechnique::renderPassList()
 {
-    return QQmlListProperty<QRenderPass>(this, 0,
-                                         &Quick3DTechnique::appendRenderPass,
-                                         &Quick3DTechnique::renderPassCount,
-                                         &Quick3DTechnique::renderPassAt,
-                                         &Quick3DTechnique::clearRenderPasses);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    using qt_size_type = qsizetype;
+#else
+    using qt_size_type = int;
+#endif
+
+    using ListContentType = QRenderPass;
+    auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *renderPass) {
+        Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
+        if (technique)
+            technique->parentTechnique()->addRenderPass(renderPass);
+    };
+    auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
+        Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
+        if (technique)
+            return technique->parentTechnique()->renderPasses().size();
+        return 0;
+    };
+    auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
+        Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
+        if (technique)
+            return qobject_cast<QRenderPass *>(technique->parentTechnique()->renderPasses().at(index));
+        return nullptr;
+    };
+    auto clearFunction = [](QQmlListProperty<ListContentType> *list) {
+        Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
+        if (technique) {
+            const auto passes = technique->parentTechnique()->renderPasses();
+            for (QRenderPass *pass : passes)
+                technique->parentTechnique()->removeRenderPass(pass);
+        }
+    };
+
+    return QQmlListProperty<ListContentType>(this, nullptr, appendFunction, countFunction, atFunction, clearFunction);
 }
 
 QQmlListProperty<QParameter> Quick3DTechnique::parameterList()
 {
-    return QQmlListProperty<QParameter>(this, 0,
-                                        &Quick3DTechnique::appendParameter,
-                                        &Quick3DTechnique::parametersCount,
-                                        &Quick3DTechnique::parameterAt,
-                                        &Quick3DTechnique::clearParameterList);
-}
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    using qt_size_type = qsizetype;
+#else
+    using qt_size_type = int;
+#endif
 
-void Quick3DTechnique::appendParameter(QQmlListProperty<QParameter> *list, QParameter *param)
-{
-    Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
-    technique->parentTechnique()->addParameter(param);
-}
+    using ListContentType = QParameter;
+    auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *param) {
+        Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
+        technique->parentTechnique()->addParameter(param);
+    };
+    auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
+        Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
+        return technique->parentTechnique()->parameters().count();
+    };
+    auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
+        Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
+        return technique->parentTechnique()->parameters().at(index);
+    };
+    auto clearFunction = [](QQmlListProperty<ListContentType> *list) {
+        Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
+        const auto parameters = technique->parentTechnique()->parameters();
+        for (QParameter *p : parameters)
+            technique->parentTechnique()->removeParameter(p);
+    };
 
-QParameter *Quick3DTechnique::parameterAt(QQmlListProperty<QParameter> *list, qsizetype index)
-{
-    Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
-    return technique->parentTechnique()->parameters().at(index);
-}
-
-qsizetype Quick3DTechnique::parametersCount(QQmlListProperty<QParameter> *list)
-{
-    Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
-    return technique->parentTechnique()->parameters().count();
-}
-
-void Quick3DTechnique::clearParameterList(QQmlListProperty<QParameter> *list)
-{
-    Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
-    const auto parameters = technique->parentTechnique()->parameters();
-    for (QParameter *p : parameters)
-        technique->parentTechnique()->removeParameter(p);
-}
-
-void Quick3DTechnique::appendRenderPass(QQmlListProperty<QRenderPass> *list, QRenderPass *renderPass)
-{
-    Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
-    if (technique) {
-        technique->parentTechnique()->addRenderPass(renderPass);
-    }
-}
-
-QRenderPass *Quick3DTechnique::renderPassAt(QQmlListProperty<QRenderPass> *list, qsizetype index)
-{
-    Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
-    if (technique)
-        return qobject_cast<QRenderPass *>(technique->parentTechnique()->renderPasses().at(index));
-    return 0;
-}
-
-qsizetype Quick3DTechnique::renderPassCount(QQmlListProperty<QRenderPass> *list)
-{
-    Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
-    if (technique)
-        return technique->parentTechnique()->renderPasses().size();
-    return 0;
-}
-
-void Quick3DTechnique::clearRenderPasses(QQmlListProperty<QRenderPass> *list)
-{
-    Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
-    if (technique) {
-        const auto passes = technique->parentTechnique()->renderPasses();
-        for (QRenderPass *pass : passes)
-            technique->parentTechnique()->removeRenderPass(pass);
-    }
+    return QQmlListProperty<ListContentType>(this, nullptr, appendFunction, countFunction, atFunction, clearFunction);
 }
 
 QQmlListProperty<QFilterKey> Quick3DTechnique::filterKeyList()
 {
-    return QQmlListProperty<QFilterKey>(this, 0,
-                                         &Quick3DTechnique::appendFilterKey,
-                                         &Quick3DTechnique::filterKeyCount,
-                                         &Quick3DTechnique::filterKeyAt,
-                                         &Quick3DTechnique::clearFilterKeyList);
-}
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    using qt_size_type = qsizetype;
+#else
+    using qt_size_type = int;
+#endif
 
-void Quick3DTechnique::appendFilterKey(QQmlListProperty<QFilterKey> *list, QFilterKey *filterKey)
-{
-    Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
-    if (technique) {
-        if (!filterKey->parent())
-            filterKey->setParent(technique->parentTechnique());
-        technique->parentTechnique()->addFilterKey(filterKey);
-    }
-}
+    using ListContentType = QFilterKey;
+    auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *filterKey) {
+        Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
+        if (technique) {
+            if (!filterKey->parent())
+                filterKey->setParent(technique->parentTechnique());
+            technique->parentTechnique()->addFilterKey(filterKey);
+        }
+    };
+    auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
+        Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
+        if (technique)
+            return technique->parentTechnique()->filterKeys().size();
+        return 0;
+    };
+    auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
+        Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
+        if (technique)
+            return technique->parentTechnique()->filterKeys().at(index);
+        return nullptr;
+    };
+    auto clearFunction = [](QQmlListProperty<ListContentType> *list) {
+        Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
+        if (technique) {
+            const auto keys = technique->parentTechnique()->filterKeys();
+            for (QFilterKey *a : keys)
+                technique->parentTechnique()->removeFilterKey(a);
+        }
+    };
 
-QFilterKey *Quick3DTechnique::filterKeyAt(QQmlListProperty<QFilterKey> *list, qsizetype index)
-{
-    Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
-    if (technique)
-        return technique->parentTechnique()->filterKeys().at(index);
-    return 0;
-}
-
-qsizetype Quick3DTechnique::filterKeyCount(QQmlListProperty<QFilterKey> *list)
-{
-    Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
-    if (technique)
-        return technique->parentTechnique()->filterKeys().size();
-    return 0;
-}
-
-void Quick3DTechnique::clearFilterKeyList(QQmlListProperty<QFilterKey> *list)
-{
-    Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
-    if (technique) {
-        const auto keys = technique->parentTechnique()->filterKeys();
-        for (QFilterKey *a : keys)
-            technique->parentTechnique()->removeFilterKey(a);
-    }
+    return QQmlListProperty<ListContentType>(this, nullptr, appendFunction, countFunction, atFunction, clearFunction);
 }
 
 } // namespace Quick

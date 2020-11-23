@@ -70,16 +70,10 @@ class Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DTextureExtension : public QObj
     Q_CLASSINFO("DefaultProperty", "textureImages")
 
 public:
-    explicit Quick3DTextureExtension(QObject *parent = 0);
+    explicit Quick3DTextureExtension(QObject *parent = nullptr);
 
     QQmlListProperty<QAbstractTextureImage> textureImages();
     inline QAbstractTexture *parentTexture() const { return qobject_cast<QAbstractTexture *>(parent()); }
-
-private:
-    static void appendTextureImage(QQmlListProperty<QAbstractTextureImage> *list, QAbstractTextureImage *textureImage);
-    static QAbstractTextureImage *textureImageAt(QQmlListProperty<QAbstractTextureImage> *list, qsizetype index);
-    static qsizetype textureImageCount(QQmlListProperty<QAbstractTextureImage> *list);
-    static void clearTextureImageList(QQmlListProperty<QAbstractTextureImage> *list);
 };
 
 } // namespace Quick

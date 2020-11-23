@@ -75,17 +75,6 @@ public:
     inline QLogicalDevice *parentLogicalDevice() const { return qobject_cast<QLogicalDevice *>(parent()); }
     QQmlListProperty<QAxis> qmlAxes();
     QQmlListProperty<QAction> qmlActions();
-
-private:
-    static void appendAxis(QQmlListProperty<QAxis> *list, QAxis *axes);
-    static QAxis *axisAt(QQmlListProperty<QAxis> *list, qsizetype index);
-    static qsizetype axesCount(QQmlListProperty<QAxis> *list);
-    static void clearAxes(QQmlListProperty<QAxis> *list);
-
-    static void appendAction(QQmlListProperty<QAction> *list, QAction *action);
-    static QAction *actionAt(QQmlListProperty<QAction> *list, qsizetype index);
-    static qsizetype actionCount(QQmlListProperty<QAction> *list);
-    static void clearActions(QQmlListProperty<QAction> *list);
 };
 
 } // namespace Quick

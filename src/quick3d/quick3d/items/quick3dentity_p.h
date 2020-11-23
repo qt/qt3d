@@ -72,18 +72,12 @@ class Q_3DQUICKSHARED_PRIVATE_EXPORT Quick3DEntity : public QObject
     Q_PROPERTY(QQmlListProperty<Qt3DCore::QComponent> components READ componentList)
 
 public:
-    explicit Quick3DEntity(QObject *parent = 0);
+    explicit Quick3DEntity(QObject *parent = nullptr);
     QQmlListProperty<Qt3DCore::QComponent> componentList();
 
     inline QEntity *parentEntity() const { return qobject_cast<QEntity*>(parent()); }
 
 private:
-
-    static void qmlAppendComponent(QQmlListProperty<Qt3DCore::QComponent> *list, Qt3DCore::QComponent *comp);
-    static QComponent *qmlComponentAt(QQmlListProperty<Qt3DCore::QComponent> *list, qsizetype index);
-    static qsizetype qmlComponentsCount(QQmlListProperty<Qt3DCore::QComponent> *list);
-    static void qmlClearComponents(QQmlListProperty<Qt3DCore::QComponent> *list);
-
     QList<Qt3DCore::QComponent *> m_managedComponents;
 };
 

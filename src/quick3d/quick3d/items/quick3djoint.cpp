@@ -56,37 +56,33 @@ Quick3DJoint::Quick3DJoint(QObject *parent)
 */
 QQmlListProperty<QJoint> Quick3DJoint::childJoints()
 {
-    return QQmlListProperty<QJoint>(this, 0,
-                                    Quick3DJoint::appendJoint,
-                                    Quick3DJoint::jointCount,
-                                    Quick3DJoint::jointAt,
-                                    Quick3DJoint::clearJoints);
-}
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    using qt_size_type = qsizetype;
+#else
+    using qt_size_type = int;
+#endif
 
-void Quick3DJoint::appendJoint(QQmlListProperty<QJoint> *list, QJoint *joint)
-{
-    Quick3DJoint *jointExtension = qobject_cast<Quick3DJoint *>(list->object);
-    jointExtension->parentJoint()->addChildJoint(joint);
-}
+    using ListContentType = QJoint;
+    auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *joint) {
+        Quick3DJoint *jointExtension = qobject_cast<Quick3DJoint *>(list->object);
+        jointExtension->parentJoint()->addChildJoint(joint);
+    };
+    auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
+        Quick3DJoint *jointExtension = qobject_cast<Quick3DJoint *>(list->object);
+        return jointExtension->parentJoint()->childJoints().count();
+    };
+    auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
+        Quick3DJoint *jointExtension = qobject_cast<Quick3DJoint *>(list->object);
+        return jointExtension->parentJoint()->childJoints().at(index);
+    };
+    auto clearFunction = [](QQmlListProperty<ListContentType> *list) {
+        Quick3DJoint *jointExtension = qobject_cast<Quick3DJoint *>(list->object);
+        const auto joints = jointExtension->parentJoint()->childJoints();
+        for (QJoint *joint : joints)
+            jointExtension->parentJoint()->removeChildJoint(joint);
+    };
 
-QJoint *Quick3DJoint::jointAt(QQmlListProperty<QJoint> *list, qsizetype index)
-{
-    Quick3DJoint *jointExtension = qobject_cast<Quick3DJoint *>(list->object);
-    return jointExtension->parentJoint()->childJoints().at(index);
-}
-
-qsizetype Quick3DJoint::jointCount(QQmlListProperty<QJoint> *list)
-{
-    Quick3DJoint *jointExtension = qobject_cast<Quick3DJoint *>(list->object);
-    return jointExtension->parentJoint()->childJoints().count();
-}
-
-void Quick3DJoint::clearJoints(QQmlListProperty<QJoint> *list)
-{
-    Quick3DJoint *jointExtension = qobject_cast<Quick3DJoint *>(list->object);
-    const auto joints = jointExtension->parentJoint()->childJoints();
-    for (QJoint *joint : joints)
-        jointExtension->parentJoint()->removeChildJoint(joint);
+    return QQmlListProperty<ListContentType>(this, nullptr, appendFunction, countFunction, atFunction, clearFunction);
 }
 
 } // namespace Quick

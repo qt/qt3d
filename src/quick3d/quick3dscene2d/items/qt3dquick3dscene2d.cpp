@@ -50,47 +50,42 @@ QQuick3DScene2D::QQuick3DScene2D(QObject *parent)
 
 QQmlListProperty<Qt3DCore::QEntity> QQuick3DScene2D::entities()
 {
-    return QQmlListProperty<Qt3DCore::QEntity>(this, 0,
-                                               &QQuick3DScene2D::appendEntity,
-                                               &QQuick3DScene2D::entityCount,
-                                               &QQuick3DScene2D::entityAt,
-                                               &QQuick3DScene2D::clearEntities);
-}
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    using qt_size_type = qsizetype;
+#else
+    using qt_size_type = int;
+#endif
 
-void QQuick3DScene2D::appendEntity(QQmlListProperty<Qt3DCore::QEntity> *list,
-                                   Qt3DCore::QEntity *entity)
-{
-    QQuick3DScene2D *scene2d = qobject_cast<QQuick3DScene2D *>(list->object);
-    if (scene2d)
-        scene2d->parentScene2D()->addEntity(entity);
-}
+    using ListContentType = Qt3DCore::QEntity;
+    auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *entity) {
+        QQuick3DScene2D *scene2d = qobject_cast<QQuick3DScene2D *>(list->object);
+        if (scene2d)
+            scene2d->parentScene2D()->addEntity(entity);
+    };
+    auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
+        QQuick3DScene2D *scene2d = qobject_cast<QQuick3DScene2D *>(list->object);
+        if (scene2d)
+            return scene2d->parentScene2D()->entities().count();
+        return 0;
+    };
+    auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
+        QQuick3DScene2D *scene2d = qobject_cast<QQuick3DScene2D *>(list->object);
+        if (scene2d) {
+            return qobject_cast<Qt3DCore::QEntity *>(
+                scene2d->parentScene2D()->entities().at(index));
+        }
+        return nullptr;
+    };
+    auto clearFunction = [](QQmlListProperty<ListContentType> *list) {
+        QQuick3DScene2D *scene2d = qobject_cast<QQuick3DScene2D *>(list->object);
+        if (scene2d) {
+            QList<Qt3DCore::QEntity*> entities = scene2d->parentScene2D()->entities();
+            for (Qt3DCore::QEntity *e : entities)
+                scene2d->parentScene2D()->removeEntity(e);
+        }
+    };
 
-qsizetype QQuick3DScene2D::entityCount(QQmlListProperty<Qt3DCore::QEntity> *list)
-{
-    QQuick3DScene2D *scene2d = qobject_cast<QQuick3DScene2D *>(list->object);
-    if (scene2d)
-        return scene2d->parentScene2D()->entities().count();
-    return 0;
-}
-
-Qt3DCore::QEntity *QQuick3DScene2D::entityAt(QQmlListProperty<Qt3DCore::QEntity> *list, qsizetype index)
-{
-    QQuick3DScene2D *scene2d = qobject_cast<QQuick3DScene2D *>(list->object);
-    if (scene2d) {
-        return qobject_cast<Qt3DCore::QEntity *>(
-                    scene2d->parentScene2D()->entities().at(index));
-    }
-    return nullptr;
-}
-
-void QQuick3DScene2D::clearEntities(QQmlListProperty<Qt3DCore::QEntity> *list)
-{
-    QQuick3DScene2D *scene2d = qobject_cast<QQuick3DScene2D *>(list->object);
-    if (scene2d) {
-        QList<Qt3DCore::QEntity*> entities = scene2d->parentScene2D()->entities();
-        for (Qt3DCore::QEntity *e : entities)
-            scene2d->parentScene2D()->removeEntity(e);
-    }
+    return QQmlListProperty<ListContentType>(this, nullptr, appendFunction, countFunction, atFunction, clearFunction);
 }
 
 } // namespace Quick

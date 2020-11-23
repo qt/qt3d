@@ -52,37 +52,32 @@ Quick3DAction::Quick3DAction(QObject *parent)
 
 QQmlListProperty<QAbstractActionInput> Quick3DAction::qmlActionInputs()
 {
-    return QQmlListProperty<QAbstractActionInput>(this, 0,
-                                        &Quick3DAction::appendActionInput,
-                                        &Quick3DAction::actionInputCount,
-                                        &Quick3DAction::actionInputAt,
-                                        &Quick3DAction::clearActionInputs);
-}
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    using qt_size_type = qsizetype;
+#else
+    using qt_size_type = int;
+#endif
 
-void Quick3DAction::appendActionInput(QQmlListProperty<QAbstractActionInput> *list, QAbstractActionInput *input)
-{
-    Quick3DAction *action = qobject_cast<Quick3DAction *>(list->object);
-    action->parentAction()->addInput(input);
-}
+    auto appendFunction = [](QQmlListProperty<QAbstractActionInput> *list, QAbstractActionInput *input) {
+        Quick3DAction *action = qobject_cast<Quick3DAction *>(list->object);
+        action->parentAction()->addInput(input);
+    };
+    auto countFunction = [](QQmlListProperty<QAbstractActionInput> *list) -> qt_size_type {
+        Quick3DAction *action = qobject_cast<Quick3DAction *>(list->object);
+        return action->parentAction()->inputs().count();
+    };
+    auto atFunction = [](QQmlListProperty<QAbstractActionInput> *list, qt_size_type index) -> QAbstractActionInput * {
+        Quick3DAction *action = qobject_cast<Quick3DAction *>(list->object);
+        return action->parentAction()->inputs().at(index);
+    };
+    auto clearFunction = [](QQmlListProperty<QAbstractActionInput> *list) {
+        Quick3DAction *action = qobject_cast<Quick3DAction *>(list->object);
+        const auto inputs = action->parentAction()->inputs();
+        for (QAbstractActionInput *input : inputs)
+            action->parentAction()->removeInput(input);
+    };
 
-QAbstractActionInput *Quick3DAction::actionInputAt(QQmlListProperty<QAbstractActionInput> *list, qsizetype index)
-{
-    Quick3DAction *action = qobject_cast<Quick3DAction *>(list->object);
-    return action->parentAction()->inputs().at(index);
-}
-
-qsizetype Quick3DAction::actionInputCount(QQmlListProperty<QAbstractActionInput> *list)
-{
-    Quick3DAction *action = qobject_cast<Quick3DAction *>(list->object);
-    return action->parentAction()->inputs().count();
-}
-
-void Quick3DAction::clearActionInputs(QQmlListProperty<QAbstractActionInput> *list)
-{
-    Quick3DAction *action = qobject_cast<Quick3DAction *>(list->object);
-    const auto inputs = action->parentAction()->inputs();
-    for (QAbstractActionInput *input : inputs)
-        action->parentAction()->removeInput(input);
+    return QQmlListProperty<QAbstractActionInput>(this, nullptr, appendFunction, countFunction, atFunction, clearFunction);
 }
 
 

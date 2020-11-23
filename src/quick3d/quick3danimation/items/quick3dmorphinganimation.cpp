@@ -48,47 +48,39 @@ QQuick3DMorphingAnimation::QQuick3DMorphingAnimation(QObject *parent)
 
 QQmlListProperty<Qt3DAnimation::QMorphTarget> QQuick3DMorphingAnimation::morphTargets()
 {
-    return QQmlListProperty<Qt3DAnimation::QMorphTarget>(this, 0,
-                                       &QQuick3DMorphingAnimation::appendMorphTarget,
-                                       &QQuick3DMorphingAnimation::morphTargetCount,
-                                       &QQuick3DMorphingAnimation::morphTargetAt,
-                                       &QQuick3DMorphingAnimation::clearMorphTargets);
-}
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    using qt_size_type = qsizetype;
+#else
+    using qt_size_type = int;
+#endif
 
-void QQuick3DMorphingAnimation::appendMorphTarget(QQmlListProperty<Qt3DAnimation::QMorphTarget> *list,
-                                                  Qt3DAnimation::QMorphTarget *morphTarget)
-{
-    QQuick3DMorphingAnimation *animation = qobject_cast<QQuick3DMorphingAnimation *>(list->object);
-    if (animation)
-        animation->parentMorphingAnimation()->addMorphTarget(morphTarget);
-}
+    using ListContentType = Qt3DAnimation::QMorphTarget;
+    auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *morphTarget) {
+        QQuick3DMorphingAnimation *animation = qobject_cast<QQuick3DMorphingAnimation *>(list->object);
+        if (animation)
+            animation->parentMorphingAnimation()->addMorphTarget(morphTarget);
+    };
+    auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
+        QQuick3DMorphingAnimation *animation = qobject_cast<QQuick3DMorphingAnimation *>(list->object);
+        if (animation)
+            return animation->parentMorphingAnimation()->morphTargetList().count();
+        return 0;
+    };
+    auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
+        QQuick3DMorphingAnimation *animation = qobject_cast<QQuick3DMorphingAnimation *>(list->object);
+        if (animation) {
+            return qobject_cast<Qt3DAnimation::QMorphTarget *>(
+                animation->parentMorphingAnimation()->morphTargetList().at(index));
+        }
+        return nullptr;
+    };
+    auto clearFunction = [](QQmlListProperty<ListContentType> *list) {
+        QQuick3DMorphingAnimation *animation = qobject_cast<QQuick3DMorphingAnimation *>(list->object);
+        if (animation)
+            animation->parentMorphingAnimation()->setMorphTargets({});
+    };
 
-qsizetype QQuick3DMorphingAnimation::morphTargetCount(QQmlListProperty<Qt3DAnimation::QMorphTarget> *list)
-{
-    QQuick3DMorphingAnimation *animation = qobject_cast<QQuick3DMorphingAnimation *>(list->object);
-    if (animation)
-        return animation->parentMorphingAnimation()->morphTargetList().count();
-    return 0;
-}
-
-Qt3DAnimation::QMorphTarget *QQuick3DMorphingAnimation::morphTargetAt(QQmlListProperty<Qt3DAnimation::QMorphTarget> *list,
-                                                                      qsizetype index)
-{
-    QQuick3DMorphingAnimation *animation = qobject_cast<QQuick3DMorphingAnimation *>(list->object);
-    if (animation) {
-        return qobject_cast<Qt3DAnimation::QMorphTarget *>(
-                    animation->parentMorphingAnimation()->morphTargetList().at(index));
-    }
-    return nullptr;
-}
-
-void QQuick3DMorphingAnimation::clearMorphTargets(QQmlListProperty<Qt3DAnimation::QMorphTarget> *list)
-{
-    QQuick3DMorphingAnimation *animation = qobject_cast<QQuick3DMorphingAnimation *>(list->object);
-    if (animation) {
-        QList<Qt3DAnimation::QMorphTarget *> emptyList;
-        animation->parentMorphingAnimation()->setMorphTargets(emptyList);
-    }
+    return QQmlListProperty<ListContentType>(this, nullptr, appendFunction, countFunction, atFunction, clearFunction);
 }
 
 } // namespace Quick

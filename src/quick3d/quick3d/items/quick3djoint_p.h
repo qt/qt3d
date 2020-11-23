@@ -72,12 +72,6 @@ public:
     QQmlListProperty<Qt3DCore::QJoint> childJoints();
 
     inline QJoint *parentJoint() const { return qobject_cast<QJoint*>(parent()); }
-
-private:
-    static void appendJoint(QQmlListProperty<Qt3DCore::QJoint> *list, Qt3DCore::QJoint *obj);
-    static QJoint *jointAt(QQmlListProperty<Qt3DCore::QJoint> *list, qsizetype index);
-    static qsizetype jointCount(QQmlListProperty<Qt3DCore::QJoint> *list);
-    static void clearJoints(QQmlListProperty<Qt3DCore::QJoint> *list);
 };
 
 } // namespace Quick

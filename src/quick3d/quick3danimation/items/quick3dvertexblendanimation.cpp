@@ -48,54 +48,43 @@ QQuick3DVertexBlendAnimation::QQuick3DVertexBlendAnimation(QObject *parent)
 
 QQmlListProperty<Qt3DAnimation::QMorphTarget> QQuick3DVertexBlendAnimation::morphTargets()
 {
-    return QQmlListProperty<Qt3DAnimation::QMorphTarget>(this, 0,
-                                       &QQuick3DVertexBlendAnimation::appendMorphTarget,
-                                       &QQuick3DVertexBlendAnimation::morphTargetCount,
-                                       &QQuick3DVertexBlendAnimation::morphTargetAt,
-                                       &QQuick3DVertexBlendAnimation::clearMorphTargets);
-}
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    using qt_size_type = qsizetype;
+#else
+    using qt_size_type = int;
+#endif
 
-void QQuick3DVertexBlendAnimation::appendMorphTarget(
-                                            QQmlListProperty<Qt3DAnimation::QMorphTarget> *list,
-                                            Qt3DAnimation::QMorphTarget *morphTarget)
-{
-    QQuick3DVertexBlendAnimation *animation
+    using ListContentType = Qt3DAnimation::QMorphTarget;
+    auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *morphTarget) {
+        QQuick3DVertexBlendAnimation *animation
             = qobject_cast<QQuick3DVertexBlendAnimation *>(list->object);
-    if (animation)
-        animation->parentVertexBlendAnimation()->addMorphTarget(morphTarget);
-}
+        if (animation)
+            animation->parentVertexBlendAnimation()->addMorphTarget(morphTarget);
+    };
+    auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
+        QQuick3DVertexBlendAnimation *animation
+            = qobject_cast<QQuick3DVertexBlendAnimation *>(list->object);
+        if (animation)
+            return animation->parentVertexBlendAnimation()->morphTargetList().count();
+        return 0;
+    };
+    auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
+        QQuick3DVertexBlendAnimation *animation
+            = qobject_cast<QQuick3DVertexBlendAnimation *>(list->object);
+        if (animation) {
+            return qobject_cast<Qt3DAnimation::QMorphTarget *>(
+                animation->parentVertexBlendAnimation()->morphTargetList().at(index));
+        }
+        return nullptr;
+    };
+    auto clearFunction = [](QQmlListProperty<ListContentType> *list) {
+        QQuick3DVertexBlendAnimation *animation
+            = qobject_cast<QQuick3DVertexBlendAnimation *>(list->object);
+        if (animation)
+            animation->parentVertexBlendAnimation()->setMorphTargets({});
+    };
 
-qsizetype QQuick3DVertexBlendAnimation::morphTargetCount(
-                                            QQmlListProperty<Qt3DAnimation::QMorphTarget> *list)
-{
-    QQuick3DVertexBlendAnimation *animation
-            = qobject_cast<QQuick3DVertexBlendAnimation *>(list->object);
-    if (animation)
-        return animation->parentVertexBlendAnimation()->morphTargetList().count();
-    return 0;
-}
-
-Qt3DAnimation::QMorphTarget *QQuick3DVertexBlendAnimation::morphTargetAt(
-                                            QQmlListProperty<Qt3DAnimation::QMorphTarget> *list,
-                                            qsizetype index)
-{
-    QQuick3DVertexBlendAnimation *animation
-            = qobject_cast<QQuick3DVertexBlendAnimation *>(list->object);
-    if (animation) {
-        return qobject_cast<Qt3DAnimation::QMorphTarget *>(
-                    animation->parentVertexBlendAnimation()->morphTargetList().at(index));
-    }
-    return nullptr;
-}
-
-void QQuick3DVertexBlendAnimation::clearMorphTargets(QQmlListProperty<Qt3DAnimation::QMorphTarget> *list)
-{
-    QQuick3DVertexBlendAnimation *animation
-            = qobject_cast<QQuick3DVertexBlendAnimation *>(list->object);
-    if (animation) {
-        QList<Qt3DAnimation::QMorphTarget *> emptyList;
-        animation->parentVertexBlendAnimation()->setMorphTargets(emptyList);
-    }
+    return QQmlListProperty<ListContentType>(this, nullptr, appendFunction, countFunction, atFunction, clearFunction);
 }
 
 } // namespace Quick

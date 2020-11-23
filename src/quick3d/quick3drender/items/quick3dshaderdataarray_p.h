@@ -76,15 +76,11 @@ class Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DShaderDataArray : public Qt3DC
     Q_CLASSINFO("DefaultProperty", "values")
 
 public:
-    explicit Quick3DShaderDataArray(Qt3DCore::QNode *parent = 0);
+    explicit Quick3DShaderDataArray(Qt3DCore::QNode *parent = nullptr);
     QQmlListProperty<QShaderData> valuesList();
     QList<QShaderData *> values() const;
 
 private:
-    static void appendValue(QQmlListProperty<QShaderData> *list, QShaderData *bar);
-    static QShaderData *valueAt(QQmlListProperty<QShaderData> *list, qsizetype index);
-    static qsizetype valueCount(QQmlListProperty<QShaderData> *list);
-    static void clearValues(QQmlListProperty<QShaderData> *list);
     Q_DECLARE_PRIVATE(Quick3DShaderDataArray)
 };
 

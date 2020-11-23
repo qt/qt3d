@@ -52,72 +52,64 @@ Quick3DLogicalDevice::Quick3DLogicalDevice(QObject *parent)
 
 QQmlListProperty<QAxis> Quick3DLogicalDevice::qmlAxes()
 {
-    return QQmlListProperty<QAxis>(this, 0,
-                                   &Quick3DLogicalDevice::appendAxis,
-                                   &Quick3DLogicalDevice::axesCount,
-                                   &Quick3DLogicalDevice::axisAt,
-                                   &Quick3DLogicalDevice::clearAxes);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    using qt_size_type = qsizetype;
+#else
+    using qt_size_type = int;
+#endif
+
+    using ListContentType = QAxis;
+    auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *axes) {
+        Quick3DLogicalDevice *device = qobject_cast<Quick3DLogicalDevice *>(list->object);
+        device->parentLogicalDevice()->addAxis(axes);
+    };
+    auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
+        Quick3DLogicalDevice *device = qobject_cast<Quick3DLogicalDevice *>(list->object);
+        return device->parentLogicalDevice()->axes().count();
+    };
+    auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
+        Quick3DLogicalDevice *device = qobject_cast<Quick3DLogicalDevice *>(list->object);
+        return device->parentLogicalDevice()->axes().at(index);
+    };
+    auto clearFunction = [](QQmlListProperty<ListContentType> *list) {
+        Quick3DLogicalDevice *device = qobject_cast<Quick3DLogicalDevice *>(list->object);
+        const auto axes = device->parentLogicalDevice()->axes();
+        for (QAxis *axis : axes)
+            device->parentLogicalDevice()->removeAxis(axis);
+    };
+
+    return QQmlListProperty<ListContentType>(this, nullptr, appendFunction, countFunction, atFunction, clearFunction);
 }
 
 QQmlListProperty<QAction> Quick3DLogicalDevice::qmlActions()
 {
-    return QQmlListProperty<QAction>(this, 0,
-                                     &Quick3DLogicalDevice::appendAction,
-                                     &Quick3DLogicalDevice::actionCount,
-                                     &Quick3DLogicalDevice::actionAt,
-                                     &Quick3DLogicalDevice::clearActions);
-}
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    using qt_size_type = qsizetype;
+#else
+    using qt_size_type = int;
+#endif
 
-void Quick3DLogicalDevice::appendAxis(QQmlListProperty<QAxis> *list, QAxis *axes)
-{
-    Quick3DLogicalDevice *device = qobject_cast<Quick3DLogicalDevice *>(list->object);
-    device->parentLogicalDevice()->addAxis(axes);
-}
+    using ListContentType = QAction;
+    auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *action) {
+        Quick3DLogicalDevice *device = qobject_cast<Quick3DLogicalDevice *>(list->object);
+        device->parentLogicalDevice()->addAction(action);
+    };
+    auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
+        Quick3DLogicalDevice *device = qobject_cast<Quick3DLogicalDevice *>(list->object);
+        return device->parentLogicalDevice()->actions().count();
+    };
+    auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
+        Quick3DLogicalDevice *device = qobject_cast<Quick3DLogicalDevice *>(list->object);
+        return device->parentLogicalDevice()->actions().at(index);
+    };
+    auto clearFunction = [](QQmlListProperty<ListContentType> *list) {
+        Quick3DLogicalDevice *device = qobject_cast<Quick3DLogicalDevice *>(list->object);
+        const auto actions = device->parentLogicalDevice()->actions();
+        for (QAction *action : actions)
+            device->parentLogicalDevice()->removeAction(action);
+    };
 
-QAxis *Quick3DLogicalDevice::axisAt(QQmlListProperty<QAxis> *list, qsizetype index)
-{
-    Quick3DLogicalDevice *device = qobject_cast<Quick3DLogicalDevice *>(list->object);
-    return device->parentLogicalDevice()->axes().at(index);
-}
-
-qsizetype Quick3DLogicalDevice::axesCount(QQmlListProperty<QAxis> *list)
-{
-    Quick3DLogicalDevice *device = qobject_cast<Quick3DLogicalDevice *>(list->object);
-    return device->parentLogicalDevice()->axes().count();
-}
-
-void Quick3DLogicalDevice::clearAxes(QQmlListProperty<QAxis> *list)
-{
-    Quick3DLogicalDevice *device = qobject_cast<Quick3DLogicalDevice *>(list->object);
-    const auto axes = device->parentLogicalDevice()->axes();
-    for (QAxis *axis : axes)
-        device->parentLogicalDevice()->removeAxis(axis);
-}
-
-void Quick3DLogicalDevice::appendAction(QQmlListProperty<QAction> *list, QAction *action)
-{
-    Quick3DLogicalDevice *device = qobject_cast<Quick3DLogicalDevice *>(list->object);
-    device->parentLogicalDevice()->addAction(action);
-}
-
-QAction *Quick3DLogicalDevice::actionAt(QQmlListProperty<QAction> *list, qsizetype index)
-{
-    Quick3DLogicalDevice *device = qobject_cast<Quick3DLogicalDevice *>(list->object);
-    return device->parentLogicalDevice()->actions().at(index);
-}
-
-qsizetype Quick3DLogicalDevice::actionCount(QQmlListProperty<QAction> *list)
-{
-    Quick3DLogicalDevice *device = qobject_cast<Quick3DLogicalDevice *>(list->object);
-    return device->parentLogicalDevice()->actions().count();
-}
-
-void Quick3DLogicalDevice::clearActions(QQmlListProperty<QAction> *list)
-{
-    Quick3DLogicalDevice *device = qobject_cast<Quick3DLogicalDevice *>(list->object);
-    const auto actions = device->parentLogicalDevice()->actions();
-    for (QAction *action : actions)
-        device->parentLogicalDevice()->removeAction(action);
+    return QQmlListProperty<ListContentType>(this, nullptr, appendFunction, countFunction, atFunction, clearFunction);
 }
 
 

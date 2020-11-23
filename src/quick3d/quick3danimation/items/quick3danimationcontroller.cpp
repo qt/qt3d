@@ -48,44 +48,37 @@ QQuick3DAnimationController::QQuick3DAnimationController(QObject *parent)
 
 QQmlListProperty<QAnimationGroup> QQuick3DAnimationController::animationGroups()
 {
-    return QQmlListProperty<QAnimationGroup>(this, 0,
-                                       &QQuick3DAnimationController::appendAnimationGroup,
-                                       &QQuick3DAnimationController::animationGroupCount,
-                                       &QQuick3DAnimationController::animationGroupAt,
-                                       &QQuick3DAnimationController::clearAnimationGroups);
-}
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    using qt_size_type = qsizetype;
+#else
+    using qt_size_type = int;
+#endif
 
+    using ListContentType = QAnimationGroup;
+    auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *bar) {
+        QQuick3DAnimationController *controller = qobject_cast<QQuick3DAnimationController *>(list->object);
+        if (controller)
+            controller->parentAnimationController()->addAnimationGroup(bar);
+    };
+    auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
+        QQuick3DAnimationController *controller = qobject_cast<QQuick3DAnimationController *>(list->object);
+        if (controller)
+            return controller->parentAnimationController()->animationGroupList().count();
+        return 0;
+    };
+    auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
+        QQuick3DAnimationController *controller = qobject_cast<QQuick3DAnimationController *>(list->object);
+        if (controller)
+            return qobject_cast<QAnimationGroup *>(controller->parentAnimationController()->getGroup(index));
+        return nullptr;
+    };
+    auto clearFunction = [](QQmlListProperty<ListContentType> *list) {
+        QQuick3DAnimationController *controller = qobject_cast<QQuick3DAnimationController *>(list->object);
+        if (controller)
+            controller->parentAnimationController()->setAnimationGroups({});
+    };
 
-void QQuick3DAnimationController::appendAnimationGroup(QQmlListProperty<QAnimationGroup> *list, QAnimationGroup *bar)
-{
-    QQuick3DAnimationController *controller = qobject_cast<QQuick3DAnimationController *>(list->object);
-    if (controller)
-        controller->parentAnimationController()->addAnimationGroup(bar);
-}
-
-qsizetype QQuick3DAnimationController::animationGroupCount(QQmlListProperty<QAnimationGroup> *list)
-{
-    QQuick3DAnimationController *controller = qobject_cast<QQuick3DAnimationController *>(list->object);
-    if (controller)
-        return controller->parentAnimationController()->animationGroupList().count();
-    return 0;
-}
-
-QAnimationGroup *QQuick3DAnimationController::animationGroupAt(QQmlListProperty<QAnimationGroup> *list, qsizetype index)
-{
-    QQuick3DAnimationController *controller = qobject_cast<QQuick3DAnimationController *>(list->object);
-    if (controller)
-        return qobject_cast<QAnimationGroup *>(controller->parentAnimationController()->getGroup(index));
-    return nullptr;
-}
-
-void QQuick3DAnimationController::clearAnimationGroups(QQmlListProperty<QAnimationGroup> *list)
-{
-    QQuick3DAnimationController *controller = qobject_cast<QQuick3DAnimationController *>(list->object);
-    if (controller) {
-        QList<QAnimationGroup *> emptyList;
-        controller->parentAnimationController()->setAnimationGroups(emptyList);
-    }
+    return QQmlListProperty<ListContentType>(this, nullptr, appendFunction, countFunction, atFunction, clearFunction);
 }
 
 

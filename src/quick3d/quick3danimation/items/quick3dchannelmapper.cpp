@@ -52,37 +52,33 @@ Quick3DChannelMapper::Quick3DChannelMapper(QObject *parent)
 
 QQmlListProperty<QAbstractChannelMapping> Quick3DChannelMapper::qmlMappings()
 {
-    return QQmlListProperty<QAbstractChannelMapping>(this, 0,
-                                                     &Quick3DChannelMapper::appendMapping,
-                                                     &Quick3DChannelMapper::mappingCount,
-                                                     &Quick3DChannelMapper::mappingAt,
-                                                     &Quick3DChannelMapper::clearMappings);
-}
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    using qt_size_type = qsizetype;
+#else
+    using qt_size_type = int;
+#endif
 
-void Quick3DChannelMapper::appendMapping(QQmlListProperty<QAbstractChannelMapping> *list, QAbstractChannelMapping *mapping)
-{
-    Quick3DChannelMapper *extension = qobject_cast<Quick3DChannelMapper *>(list->object);
-    extension->parentMapper()->addMapping(mapping);
-}
+    using ListContentType = QAbstractChannelMapping;
+    auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *mapping) {
+        Quick3DChannelMapper *extension = qobject_cast<Quick3DChannelMapper *>(list->object);
+        extension->parentMapper()->addMapping(mapping);
+    };
+    auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
+        Quick3DChannelMapper *extension = qobject_cast<Quick3DChannelMapper *>(list->object);
+        return extension->parentMapper()->mappings().size();
+    };
+    auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
+        Quick3DChannelMapper *extension = qobject_cast<Quick3DChannelMapper *>(list->object);
+        return extension->parentMapper()->mappings().at(index);
+    };
+    auto clearFunction = [](QQmlListProperty<ListContentType> *list) {
+        Quick3DChannelMapper *extension = qobject_cast<Quick3DChannelMapper *>(list->object);
+        const auto mappings = extension->parentMapper()->mappings();
+        for (QAbstractChannelMapping *mapping : mappings)
+            extension->parentMapper()->removeMapping(mapping);
+    };
 
-QAbstractChannelMapping *Quick3DChannelMapper::mappingAt(QQmlListProperty<QAbstractChannelMapping> *list, qsizetype index)
-{
-    Quick3DChannelMapper *extension = qobject_cast<Quick3DChannelMapper *>(list->object);
-    return extension->parentMapper()->mappings().at(index);
-}
-
-qsizetype Quick3DChannelMapper::mappingCount(QQmlListProperty<QAbstractChannelMapping> *list)
-{
-    Quick3DChannelMapper *extension = qobject_cast<Quick3DChannelMapper *>(list->object);
-    return extension->parentMapper()->mappings().count();
-}
-
-void Quick3DChannelMapper::clearMappings(QQmlListProperty<QAbstractChannelMapping> *list)
-{
-    Quick3DChannelMapper *extension = qobject_cast<Quick3DChannelMapper *>(list->object);
-    const auto mappings = extension->parentMapper()->mappings();
-    for (QAbstractChannelMapping *mapping : mappings)
-        extension->parentMapper()->removeMapping(mapping);
+    return QQmlListProperty<ListContentType>(this, nullptr, appendFunction, countFunction, atFunction, clearFunction);
 }
 
 } // namespace Quick

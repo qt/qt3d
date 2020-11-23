@@ -77,17 +77,6 @@ public:
     QQmlListProperty<QParameter> parameterList();
 
     inline QTechniqueFilter *parentTechniqueFilter() const { return qobject_cast<QTechniqueFilter*>(parent()); }
-
-private:
-    static void appendRequire(QQmlListProperty<QFilterKey> *list, QFilterKey *criterion);
-    static QFilterKey *requireAt(QQmlListProperty<QFilterKey> *list, qsizetype index);
-    static qsizetype requiresCount(QQmlListProperty<QFilterKey> *list);
-    static void clearRequires(QQmlListProperty<QFilterKey> *list);
-
-    static void appendParameter(QQmlListProperty<QParameter> *list, QParameter *param);
-    static QParameter *parameterAt(QQmlListProperty<QParameter> *list, qsizetype index);
-    static qsizetype parametersCount(QQmlListProperty<QParameter> *list);
-    static void clearParameterList(QQmlListProperty<QParameter> *list);
 };
 
 } // namespace Quick

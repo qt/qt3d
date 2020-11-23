@@ -56,46 +56,42 @@ Quick3DMaterial::Quick3DMaterial(QObject *parent)
 
 QQmlListProperty<QParameter> Quick3DMaterial::qmlParameters()
 {
-    return QQmlListProperty<QParameter>(this, 0,
-                                       &Quick3DMaterial::appendParameter,
-                                       &Quick3DMaterial::parameterCount,
-                                       &Quick3DMaterial::parameterAt,
-                                       &Quick3DMaterial::clearParameters);
-}
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    using qt_size_type = qsizetype;
+#else
+    using qt_size_type = int;
+#endif
 
-void Quick3DMaterial::appendParameter(QQmlListProperty<QParameter> *list, QParameter *param)
-{
-    Quick3DMaterial *mat = qobject_cast<Quick3DMaterial *>(list->object);
-    if (mat) {
-        param->setParent(mat->parentMaterial());
-        mat->parentMaterial()->addParameter(param);
-    }
-}
+    using ListContentType = QParameter;
+    auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *param) {
+        Quick3DMaterial *mat = qobject_cast<Quick3DMaterial *>(list->object);
+        if (mat) {
+            param->setParent(mat->parentMaterial());
+            mat->parentMaterial()->addParameter(param);
+        }
+    };
+    auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
+        Quick3DMaterial *mat = qobject_cast<Quick3DMaterial *>(list->object);
+        if (mat)
+            return mat->parentMaterial()->parameters().count();
+        return 0;
+    };
+    auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
+        Quick3DMaterial *mat = qobject_cast<Quick3DMaterial *>(list->object);
+        if (mat)
+            return mat->parentMaterial()->parameters().at(index);
+        return nullptr;
+    };
+    auto clearFunction = [](QQmlListProperty<ListContentType> *list) {
+        Quick3DMaterial *mat = qobject_cast<Quick3DMaterial *>(list->object);
+        if (mat) {
+            const auto parameters = mat->parentMaterial()->parameters();
+            for (QParameter *p : parameters)
+                mat->parentMaterial()->removeParameter(p);
+        }
+    };
 
-QParameter *Quick3DMaterial::parameterAt(QQmlListProperty<QParameter> *list, qsizetype index)
-{
-    Quick3DMaterial *mat = qobject_cast<Quick3DMaterial *>(list->object);
-    if (mat)
-        return mat->parentMaterial()->parameters().at(index);
-    return 0;
-}
-
-qsizetype Quick3DMaterial::parameterCount(QQmlListProperty<QParameter> *list)
-{
-    Quick3DMaterial *mat = qobject_cast<Quick3DMaterial *>(list->object);
-    if (mat)
-        return mat->parentMaterial()->parameters().count();
-    return 0;
-}
-
-void Quick3DMaterial::clearParameters(QQmlListProperty<QParameter> *list)
-{
-    Quick3DMaterial *mat = qobject_cast<Quick3DMaterial *>(list->object);
-    if (mat) {
-        const auto parameters = mat->parentMaterial()->parameters();
-        for (QParameter *p : parameters)
-            mat->parentMaterial()->removeParameter(p);
-    }
+    return QQmlListProperty<ListContentType>(this, nullptr, appendFunction, countFunction, atFunction, clearFunction);
 }
 
 } // Quick

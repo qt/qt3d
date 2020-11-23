@@ -68,16 +68,10 @@ class Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DRenderTargetOutput : public QO
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3DRender::QRenderTargetOutput> attachments READ qmlAttachments)
 public:
-    explicit Quick3DRenderTargetOutput(QObject *parent = 0);
+    explicit Quick3DRenderTargetOutput(QObject *parent = nullptr);
 
     inline QRenderTarget *parentRenderTarget() const { return qobject_cast<QRenderTarget *>(parent()); }
     QQmlListProperty<QRenderTargetOutput> qmlAttachments();
-
-private:
-    static void appendRenderAttachment(QQmlListProperty<QRenderTargetOutput> *list, QRenderTargetOutput *attachment);
-    static QRenderTargetOutput *renderAttachmentAt(QQmlListProperty<QRenderTargetOutput> *list, qsizetype index);
-    static qsizetype renderAttachmentCount(QQmlListProperty<QRenderTargetOutput> *list);
-    static void clearRenderAttachments(QQmlListProperty<QRenderTargetOutput> *list);
 };
 
 } // namespace Quick

@@ -67,11 +67,35 @@ Quick3DNode::Quick3DNode(QObject *parent)
 
 QQmlListProperty<QObject> Quick3DNode::data()
 {
-    return QQmlListProperty<QObject>(this, 0,
-                                     Quick3DNode::appendData,
-                                     Quick3DNode::dataCount,
-                                     Quick3DNode::dataAt,
-                                     Quick3DNode::clearData);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    using qt_size_type = qsizetype;
+#else
+    using qt_size_type = int;
+#endif
+
+    using ListContentType = QObject;
+    auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *obj) {
+        if (!obj)
+            return;
+
+        Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
+        self->childAppended(0, obj);
+    };
+    auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
+        Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
+        return self->parentNode()->children().count();
+    };
+    auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
+        Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
+        return self->parentNode()->children().at(index);
+    };
+    auto clearFunction = [](QQmlListProperty<ListContentType> *list) {
+        Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
+        for (QObject *const child : self->parentNode()->children())
+            self->childRemoved(0, child);
+    };
+
+    return QQmlListProperty<ListContentType>(this, nullptr, appendFunction, countFunction, atFunction, clearFunction);
 }
 
 /*!
@@ -81,76 +105,44 @@ QQmlListProperty<QObject> Quick3DNode::data()
 
 QQmlListProperty<QNode> Quick3DNode::childNodes()
 {
-    return QQmlListProperty<QNode>(this, 0,
-                                  Quick3DNode::appendChild,
-                                  Quick3DNode::childCount,
-                                  Quick3DNode::childAt,
-                                  Quick3DNode::clearChildren);
-}
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    using qt_size_type = qsizetype;
+#else
+    using qt_size_type = int;
+#endif
 
-void Quick3DNode::appendData(QQmlListProperty<QObject> *list, QObject *obj)
-{
-    if (!obj)
-        return;
+    using ListContentType = QNode;
+    auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *obj) {
+        if (!obj)
+            return;
 
-    Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
-    self->childAppended(0, obj);
-}
+        Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
+        Q_ASSERT(!self->parentNode()->children().contains(obj));
 
-QObject *Quick3DNode::dataAt(QQmlListProperty<QObject> *list, qsizetype index)
-{
-    Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
-    return self->parentNode()->children().at(index);
-}
+        self->childAppended(0, obj);
+    };
+    auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
+        Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
+        return self->parentNode()->children().count();
+    };
+    auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
+        Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
+        return qobject_cast<QNode *>(self->parentNode()->children().at(index));
+    };
+    auto clearFunction = [](QQmlListProperty<ListContentType> *list) {
+        Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
+        for (QObject *const child : self->parentNode()->children())
+            self->childRemoved(0, child);
+    };
 
-qsizetype Quick3DNode::dataCount(QQmlListProperty<QObject> *list)
-{
-    Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
-    return self->parentNode()->children().count();
-}
-
-void Quick3DNode::clearData(QQmlListProperty<QObject> *list)
-{
-    Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
-    for (QObject *const child : self->parentNode()->children())
-        self->childRemoved(0, child);
-}
-
-void Quick3DNode::appendChild(QQmlListProperty<Qt3DCore::QNode> *list, Qt3DCore::QNode *obj)
-{
-    if (!obj)
-        return;
-
-    Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
-    Q_ASSERT(!self->parentNode()->children().contains(obj));
-
-    self->childAppended(0, obj);
-}
-
-Qt3DCore::QNode *Quick3DNode::childAt(QQmlListProperty<Qt3DCore::QNode> *list, qsizetype index)
-{
-    Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
-    return qobject_cast<QNode *>(self->parentNode()->children().at(index));
-}
-
-qsizetype Quick3DNode::childCount(QQmlListProperty<Qt3DCore::QNode> *list)
-{
-    Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
-    return self->parentNode()->children().count();
-}
-
-void Quick3DNode::clearChildren(QQmlListProperty<Qt3DCore::QNode> *list)
-{
-    Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
-    for (QObject *const child : self->parentNode()->children())
-        self->childRemoved(0, child);
+    return QQmlListProperty<ListContentType>(this, nullptr, appendFunction, countFunction, atFunction, clearFunction);
 }
 
 void Quick3DNode::childAppended(int, QObject *obj)
 {
     QNode *parentNode = this->parentNode();
     if (obj->parent() == parentNode)
-        obj->setParent(0);
+        obj->setParent(nullptr);
     // Set after otherwise addChild might not work
     if (QNode *n = qobject_cast<QNode *>(obj))
         n->setParent(parentNode);

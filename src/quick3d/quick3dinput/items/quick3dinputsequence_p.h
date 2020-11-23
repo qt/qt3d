@@ -71,12 +71,6 @@ public:
 
     inline QInputSequence *parentSequence() const { return qobject_cast<QInputSequence *>(parent()); }
     QQmlListProperty<QAbstractActionInput> qmlActionInputs();
-
-private:
-    static void appendActionInput(QQmlListProperty<QAbstractActionInput> *list, QAbstractActionInput *input);
-    static QAbstractActionInput *actionInputAt(QQmlListProperty<QAbstractActionInput> *list, qsizetype index);
-    static qsizetype actionInputCount(QQmlListProperty<QAbstractActionInput> *list);
-    static void clearActionInputs(QQmlListProperty<QAbstractActionInput> *list);
 };
 
 } // namespace Quick

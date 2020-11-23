@@ -69,17 +69,11 @@ class Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DLayerFilter : public QObject
     Q_PROPERTY(QQmlListProperty<Qt3DRender::QLayer> layers READ qmlLayers)
 
 public:
-    explicit Quick3DLayerFilter(QObject *parent = 0);
+    explicit Quick3DLayerFilter(QObject *parent = nullptr);
 
     inline QLayerFilter *parentFilter() const { return qobject_cast<QLayerFilter*>(parent()); }
 
     QQmlListProperty<QLayer> qmlLayers();
-
-private:
-    static void appendLayer(QQmlListProperty<QLayer> *list, QLayer *bar);
-    static QLayer *layerAt(QQmlListProperty<QLayer> *list, qsizetype index);
-    static qsizetype layerCount(QQmlListProperty<QLayer> *list);
-    static void clearLayers(QQmlListProperty<QLayer> *list);
 };
 
 } // namespace Quick

@@ -72,20 +72,12 @@ class Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DMaterial : public QObject
     Q_PROPERTY(QQmlListProperty<Qt3DRender::QParameter> parameters READ qmlParameters)
 
 public:
-    explicit Quick3DMaterial(QObject *parent = 0);
+    explicit Quick3DMaterial(QObject *parent = nullptr);
 
     // TO DO : replace by QAbstractMaterial later on
     inline QMaterial *parentMaterial() const { return qobject_cast<QMaterial*>(parent()); }
 
     QQmlListProperty<QParameter> qmlParameters();
-
-
-private:
-    // FIXME - remove when we have a custom QML parser
-    static void appendParameter(QQmlListProperty<QParameter> *list, QParameter *bar);
-    static QParameter *parameterAt(QQmlListProperty<QParameter> *list, qsizetype index);
-    static qsizetype parameterCount(QQmlListProperty<QParameter> *list);
-    static void clearParameters(QQmlListProperty<QParameter> *list);
 };
 
 } // namespace Quick

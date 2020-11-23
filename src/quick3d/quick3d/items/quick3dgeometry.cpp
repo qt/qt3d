@@ -51,38 +51,34 @@ Quick3DGeometry::Quick3DGeometry(QObject *parent)
 
 QQmlListProperty<Qt3DCore::QAttribute> Quick3DGeometry::attributeList()
 {
-    return QQmlListProperty<Qt3DCore::QAttribute>(this, nullptr,
-                                                  &Quick3DGeometry::appendAttribute,
-                                                  &Quick3DGeometry::attributesCount,
-                                                  &Quick3DGeometry::attributeAt,
-                                                  &Quick3DGeometry::clearAttributes);
-}
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    using qt_size_type = qsizetype;
+#else
+    using qt_size_type = int;
+#endif
 
-void Quick3DGeometry::appendAttribute(QQmlListProperty<Qt3DCore::QAttribute> *list, Qt3DCore::QAttribute *attribute)
-{
-    Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
-    geometry->m_managedAttributes.append(attribute);
-    geometry->parentGeometry()->addAttribute(attribute);
-}
+    using ListContentType = Qt3DCore::QAttribute;
+    auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *attribute) {
+        Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
+        geometry->m_managedAttributes.append(attribute);
+        geometry->parentGeometry()->addAttribute(attribute);
+    };
+    auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
+        Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
+        return geometry->parentGeometry()->attributes().count();
+    };
+    auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
+        Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
+        return geometry->parentGeometry()->attributes().at(index);
+    };
+    auto clearFunction = [](QQmlListProperty<ListContentType> *list) {
+        Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
+        for (Qt3DCore::QAttribute *attribute : qAsConst(geometry->m_managedAttributes))
+            geometry->parentGeometry()->removeAttribute(attribute);
+        geometry->m_managedAttributes.clear();
+    };
 
-Qt3DCore::QAttribute *Quick3DGeometry::attributeAt(QQmlListProperty<Qt3DCore::QAttribute> *list, qsizetype index)
-{
-    Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
-    return geometry->parentGeometry()->attributes().at(index);
-}
-
-qsizetype Quick3DGeometry::attributesCount(QQmlListProperty<Qt3DCore::QAttribute> *list)
-{
-    Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
-    return geometry->parentGeometry()->attributes().count();
-}
-
-void Quick3DGeometry::clearAttributes(QQmlListProperty<Qt3DCore::QAttribute> *list)
-{
-    Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
-    for (Qt3DCore::QAttribute *attribute : qAsConst(geometry->m_managedAttributes))
-        geometry->parentGeometry()->removeAttribute(attribute);
-    geometry->m_managedAttributes.clear();
+    return QQmlListProperty<ListContentType>(this, nullptr, appendFunction, countFunction, atFunction, clearFunction);
 }
 
 } // namespace Quick

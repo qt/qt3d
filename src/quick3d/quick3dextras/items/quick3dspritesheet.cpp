@@ -57,39 +57,33 @@ Quick3DSpriteSheet::~Quick3DSpriteSheet()
 
 QQmlListProperty<Qt3DExtras::QSpriteSheetItem> Quick3DSpriteSheet::sprites()
 {
-    return QQmlListProperty<Qt3DExtras::QSpriteSheetItem>(this, 0,
-                                                          &Quick3DSpriteSheet::appendSprite,
-                                                          &Quick3DSpriteSheet::spriteCount,
-                                                          &Quick3DSpriteSheet::spriteAt,
-                                                          &Quick3DSpriteSheet::clearSprites);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    using qt_size_type = qsizetype;
+#else
+    using qt_size_type = int;
+#endif
 
-}
+    using ListContentType = Qt3DExtras::QSpriteSheetItem;
+    auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *sprite) {
+        Quick3DSpriteSheet *spritesheet = qobject_cast<Quick3DSpriteSheet *>(list->object);
+        spritesheet->parentSpriteSheet()->addSprite(sprite);
+    };
+    auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
+        Quick3DSpriteSheet *spritesheet = qobject_cast<Quick3DSpriteSheet *>(list->object);
+        return spritesheet->parentSpriteSheet()->sprites().count();
+    };
+    auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
+        Quick3DSpriteSheet *spritesheet = qobject_cast<Quick3DSpriteSheet *>(list->object);
+        return spritesheet->parentSpriteSheet()->sprites().at(index);
+    };
+    auto clearFunction = [](QQmlListProperty<ListContentType> *list) {
+        Quick3DSpriteSheet *spritesheet = qobject_cast<Quick3DSpriteSheet *>(list->object);
+        const auto sprites = spritesheet->parentSpriteSheet()->sprites();
+        for (QSpriteSheetItem *sprite : sprites)
+            spritesheet->parentSpriteSheet()->removeSprite(sprite);
+    };
 
-void Quick3DSpriteSheet::appendSprite(QQmlListProperty<Qt3DExtras::QSpriteSheetItem> *list,
-                                      Qt3DExtras::QSpriteSheetItem *sprite)
-{
-    Quick3DSpriteSheet *spritesheet = qobject_cast<Quick3DSpriteSheet *>(list->object);
-    spritesheet->parentSpriteSheet()->addSprite(sprite);
-}
-
-Qt3DExtras::QSpriteSheetItem *Quick3DSpriteSheet::spriteAt(QQmlListProperty<Qt3DExtras::QSpriteSheetItem> *list, qsizetype index)
-{
-    Quick3DSpriteSheet *spritesheet = qobject_cast<Quick3DSpriteSheet *>(list->object);
-    return spritesheet->parentSpriteSheet()->sprites().at(index);
-}
-
-qsizetype Quick3DSpriteSheet::spriteCount(QQmlListProperty<Qt3DExtras::QSpriteSheetItem> *list)
-{
-    Quick3DSpriteSheet *spritesheet = qobject_cast<Quick3DSpriteSheet *>(list->object);
-    return spritesheet->parentSpriteSheet()->sprites().count();
-}
-
-void Quick3DSpriteSheet::clearSprites(QQmlListProperty<Qt3DExtras::QSpriteSheetItem> *list)
-{
-    Quick3DSpriteSheet *spritesheet = qobject_cast<Quick3DSpriteSheet *>(list->object);
-    const auto sprites = spritesheet->parentSpriteSheet()->sprites();
-    for (QSpriteSheetItem *sprite : sprites)
-        spritesheet->parentSpriteSheet()->removeSprite(sprite);
+    return QQmlListProperty<ListContentType>(this, nullptr, appendFunction, countFunction, atFunction, clearFunction);
 }
 
 } // namespace Quick

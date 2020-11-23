@@ -52,37 +52,33 @@ Quick3DInputSequence::Quick3DInputSequence(QObject *parent)
 
 QQmlListProperty<QAbstractActionInput> Quick3DInputSequence::qmlActionInputs()
 {
-    return QQmlListProperty<QAbstractActionInput>(this, 0,
-                                        &Quick3DInputSequence::appendActionInput,
-                                        &Quick3DInputSequence::actionInputCount,
-                                        &Quick3DInputSequence::actionInputAt,
-                                        &Quick3DInputSequence::clearActionInputs);
-}
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    using qt_size_type = qsizetype;
+#else
+    using qt_size_type = int;
+#endif
 
-void Quick3DInputSequence::appendActionInput(QQmlListProperty<QAbstractActionInput> *list, QAbstractActionInput *input)
-{
-    Quick3DInputSequence *action = qobject_cast<Quick3DInputSequence *>(list->object);
-    action->parentSequence()->addSequence(input);
-}
+    using ListContentType = QAbstractActionInput;
+    auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *input) {
+        Quick3DInputSequence *action = qobject_cast<Quick3DInputSequence *>(list->object);
+        action->parentSequence()->addSequence(input);
+    };
+    auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
+        Quick3DInputSequence *action = qobject_cast<Quick3DInputSequence *>(list->object);
+        return action->parentSequence()->sequences().count();
+    };
+    auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
+        Quick3DInputSequence *action = qobject_cast<Quick3DInputSequence *>(list->object);
+        return action->parentSequence()->sequences().at(index);
+    };
+    auto clearFunction = [](QQmlListProperty<ListContentType> *list) {
+        Quick3DInputSequence *action = qobject_cast<Quick3DInputSequence *>(list->object);
+        const auto sequences = action->parentSequence()->sequences();
+        for (QAbstractActionInput *input : sequences)
+            action->parentSequence()->removeSequence(input);
+    };
 
-QAbstractActionInput *Quick3DInputSequence::actionInputAt(QQmlListProperty<QAbstractActionInput> *list, qsizetype index)
-{
-    Quick3DInputSequence *action = qobject_cast<Quick3DInputSequence *>(list->object);
-    return action->parentSequence()->sequences().at(index);
-}
-
-qsizetype Quick3DInputSequence::actionInputCount(QQmlListProperty<QAbstractActionInput> *list)
-{
-    Quick3DInputSequence *action = qobject_cast<Quick3DInputSequence *>(list->object);
-    return action->parentSequence()->sequences().count();
-}
-
-void Quick3DInputSequence::clearActionInputs(QQmlListProperty<QAbstractActionInput> *list)
-{
-    Quick3DInputSequence *action = qobject_cast<Quick3DInputSequence *>(list->object);
-    const auto sequences = action->parentSequence()->sequences();
-    for (QAbstractActionInput *input : sequences)
-        action->parentSequence()->removeSequence(input);
+    return QQmlListProperty<ListContentType>(this, nullptr, appendFunction, countFunction, atFunction, clearFunction);
 }
 
 

@@ -75,17 +75,6 @@ public:
 
     inline QNode *parentNode() const { return qobject_cast<QNode*>(parent()); }
 
-private:
-    static void appendData(QQmlListProperty<QObject> *list, QObject *obj);
-    static QObject *dataAt(QQmlListProperty<QObject> *list, qsizetype index);
-    static qsizetype dataCount(QQmlListProperty<QObject> *list);
-    static void clearData(QQmlListProperty<QObject> *list);
-
-    static void appendChild(QQmlListProperty<Qt3DCore::QNode> *list, Qt3DCore::QNode *obj);
-    static QNode *childAt(QQmlListProperty<Qt3DCore::QNode> *list, qsizetype index);
-    static qsizetype childCount(QQmlListProperty<Qt3DCore::QNode> *list);
-    static void clearChildren(QQmlListProperty<Qt3DCore::QNode> *list);
-
 private Q_SLOTS:
     void childAppended(int idx, QObject *child);
     void childRemoved(int idx, QObject *child);

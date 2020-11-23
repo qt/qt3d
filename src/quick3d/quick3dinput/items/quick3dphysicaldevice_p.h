@@ -73,12 +73,6 @@ public:
 
     inline QAbstractPhysicalDevice *parentPhysicalDevice() const { return qobject_cast<QAbstractPhysicalDevice *>(parent()); }
     QQmlListProperty<Qt3DInput::QAxisSetting> axisSettings();
-
-private:
-    static void appendAxisSetting(QQmlListProperty<QAxisSetting> *list, QAxisSetting *axes);
-    static QAxisSetting *axisSettingAt(QQmlListProperty<QAxisSetting> *list, qsizetype index);
-    static qsizetype axisSettingsCount(QQmlListProperty<QAxisSetting> *list);
-    static void clearAxisSettings(QQmlListProperty<QAxisSetting> *list);
 };
 
 } // namespace Quick

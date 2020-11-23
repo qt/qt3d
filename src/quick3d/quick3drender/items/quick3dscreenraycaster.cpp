@@ -60,11 +60,40 @@ Quick3DScreenRayCaster::Quick3DScreenRayCaster(QObject *parent)
 
 QQmlListProperty<Qt3DRender::QLayer> Qt3DRender::Render::Quick::Quick3DScreenRayCaster::qmlLayers()
 {
-    return QQmlListProperty<QLayer>(this, nullptr,
-                                    &Quick3DRayCasterPrivate::appendLayer,
-                                    &Quick3DRayCasterPrivate::layerCount,
-                                    &Quick3DRayCasterPrivate::layerAt,
-                                    &Quick3DRayCasterPrivate::clearLayers);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    using qt_size_type = qsizetype;
+#else
+    using qt_size_type = int;
+#endif
+
+    using ListContentType = Qt3DRender::QLayer;
+    auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *layer) {
+        QAbstractRayCaster *filter = qobject_cast<QAbstractRayCaster *>(list->object);
+        if (filter)
+            filter->addLayer(layer);
+    };
+    auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
+        QAbstractRayCaster *filter = qobject_cast<QAbstractRayCaster *>(list->object);
+        if (filter)
+            return int(filter->layers().size());
+        return 0;
+    };
+    auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
+        QAbstractRayCaster *filter = qobject_cast<QAbstractRayCaster *>(list->object);
+        if (filter)
+            return filter->layers().at(index);
+        return nullptr;
+    };
+    auto clearFunction = [](QQmlListProperty<ListContentType> *list) {
+        QAbstractRayCaster *filter = qobject_cast<QAbstractRayCaster *>(list->object);
+        if (filter) {
+            const auto layers = filter->layers();
+            for (QLayer *layer : layers)
+                filter->removeLayer(layer);
+        }
+    };
+
+    return QQmlListProperty<ListContentType>(this, nullptr, appendFunction, countFunction, atFunction, clearFunction);
 }
 
 } // namespace Quick

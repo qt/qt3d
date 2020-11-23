@@ -73,12 +73,6 @@ public:
 
     inline QAxis *parentAxis() const { return qobject_cast<QAxis *>(parent()); }
     QQmlListProperty<QAbstractAxisInput> qmlAxisInputs();
-
-private:
-    static void appendAxisInput(QQmlListProperty<QAbstractAxisInput> *list, QAbstractAxisInput *input);
-    static QAbstractAxisInput *axisInputAt(QQmlListProperty<QAbstractAxisInput> *list, qsizetype index);
-    static qsizetype axesInputCount(QQmlListProperty<QAbstractAxisInput> *list);
-    static void clearAxisInputs(QQmlListProperty<QAbstractAxisInput> *list);
 };
 
 } // namespace Quick

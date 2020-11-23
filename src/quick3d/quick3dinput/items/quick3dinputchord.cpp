@@ -52,37 +52,33 @@ Quick3DInputChord::Quick3DInputChord(QObject *parent)
 
 QQmlListProperty<QAbstractActionInput> Quick3DInputChord::qmlActionInputs()
 {
-    return QQmlListProperty<QAbstractActionInput>(this, 0,
-                                                  &Quick3DInputChord::appendActionInput,
-                                                  &Quick3DInputChord::actionInputCount,
-                                                  &Quick3DInputChord::actionInputAt,
-                                                  &Quick3DInputChord::clearActionInputs);
-}
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    using qt_size_type = qsizetype;
+#else
+    using qt_size_type = int;
+#endif
 
-void Quick3DInputChord::appendActionInput(QQmlListProperty<QAbstractActionInput> *list, QAbstractActionInput *input)
-{
-    Quick3DInputChord *action = qobject_cast<Quick3DInputChord *>(list->object);
-    action->parentChord()->addChord(input);
-}
+    using ListContentType = QAbstractActionInput;
+    auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *input) {
+        Quick3DInputChord *action = qobject_cast<Quick3DInputChord *>(list->object);
+        action->parentChord()->addChord(input);
+    };
+    auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
+        Quick3DInputChord *action = qobject_cast<Quick3DInputChord *>(list->object);
+        return action->parentChord()->chords().count();
+    };
+    auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
+        Quick3DInputChord *action = qobject_cast<Quick3DInputChord *>(list->object);
+        return action->parentChord()->chords().at(index);
+    };
+    auto clearFunction = [](QQmlListProperty<ListContentType> *list) {
+        Quick3DInputChord *action = qobject_cast<Quick3DInputChord *>(list->object);
+        const auto chords = action->parentChord()->chords();
+        for (QAbstractActionInput *input : chords)
+            action->parentChord()->removeChord(input);
+    };
 
-QAbstractActionInput *Quick3DInputChord::actionInputAt(QQmlListProperty<QAbstractActionInput> *list, qsizetype index)
-{
-    Quick3DInputChord *action = qobject_cast<Quick3DInputChord *>(list->object);
-    return action->parentChord()->chords().at(index);
-}
-
-qsizetype Quick3DInputChord::actionInputCount(QQmlListProperty<QAbstractActionInput> *list)
-{
-    Quick3DInputChord *action = qobject_cast<Quick3DInputChord *>(list->object);
-    return action->parentChord()->chords().count();
-}
-
-void Quick3DInputChord::clearActionInputs(QQmlListProperty<QAbstractActionInput> *list)
-{
-    Quick3DInputChord *action = qobject_cast<Quick3DInputChord *>(list->object);
-    const auto chords = action->parentChord()->chords();
-    for (QAbstractActionInput *input : chords)
-        action->parentChord()->removeChord(input);
+    return QQmlListProperty<ListContentType>(this, nullptr, appendFunction, countFunction, atFunction, clearFunction);
 }
 
 } // namespace Quick

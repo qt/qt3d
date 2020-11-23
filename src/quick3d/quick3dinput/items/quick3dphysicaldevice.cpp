@@ -52,37 +52,33 @@ Quick3DPhysicalDevice::Quick3DPhysicalDevice(QObject *parent) : QObject(parent)
 
 QQmlListProperty<QAxisSetting> Quick3DPhysicalDevice::axisSettings()
 {
-    return QQmlListProperty<QAxisSetting>(this, 0,
-                                          &Quick3DPhysicalDevice::appendAxisSetting,
-                                          &Quick3DPhysicalDevice::axisSettingsCount,
-                                          &Quick3DPhysicalDevice::axisSettingAt,
-                                          &Quick3DPhysicalDevice::clearAxisSettings);
-}
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    using qt_size_type = qsizetype;
+#else
+    using qt_size_type = int;
+#endif
 
-void Quick3DPhysicalDevice::appendAxisSetting(QQmlListProperty<QAxisSetting> *list, QAxisSetting *axisSetting)
-{
-    Quick3DPhysicalDevice *device = qobject_cast<Quick3DPhysicalDevice *>(list->object);
-    device->parentPhysicalDevice()->addAxisSetting(axisSetting);
-}
+    using ListContentType = QAxisSetting;
+    auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *axisSetting) {
+        Quick3DPhysicalDevice *device = qobject_cast<Quick3DPhysicalDevice *>(list->object);
+        device->parentPhysicalDevice()->addAxisSetting(axisSetting);
+    };
+    auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
+        Quick3DPhysicalDevice *device = qobject_cast<Quick3DPhysicalDevice *>(list->object);
+        return device->parentPhysicalDevice()->axisSettings().count();
+    };
+    auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
+        Quick3DPhysicalDevice *device = qobject_cast<Quick3DPhysicalDevice *>(list->object);
+        return device->parentPhysicalDevice()->axisSettings().at(index);
+    };
+    auto clearFunction = [](QQmlListProperty<ListContentType> *list) {
+        Quick3DPhysicalDevice *device = qobject_cast<Quick3DPhysicalDevice *>(list->object);
+        const auto axisSettings = device->parentPhysicalDevice()->axisSettings();
+        for (QAxisSetting *axisSetting : axisSettings)
+            device->parentPhysicalDevice()->removeAxisSetting(axisSetting);
+    };
 
-QAxisSetting *Quick3DPhysicalDevice::axisSettingAt(QQmlListProperty<QAxisSetting> *list, qsizetype index)
-{
-    Quick3DPhysicalDevice *device = qobject_cast<Quick3DPhysicalDevice *>(list->object);
-    return device->parentPhysicalDevice()->axisSettings().at(index);
-}
-
-qsizetype Quick3DPhysicalDevice::axisSettingsCount(QQmlListProperty<QAxisSetting> *list)
-{
-    Quick3DPhysicalDevice *device = qobject_cast<Quick3DPhysicalDevice *>(list->object);
-    return device->parentPhysicalDevice()->axisSettings().count();
-}
-
-void Quick3DPhysicalDevice::clearAxisSettings(QQmlListProperty<QAxisSetting> *list)
-{
-    Quick3DPhysicalDevice *device = qobject_cast<Quick3DPhysicalDevice *>(list->object);
-    const auto axisSettings = device->parentPhysicalDevice()->axisSettings();
-    for (QAxisSetting *axisSetting : axisSettings)
-        device->parentPhysicalDevice()->removeAxisSetting(axisSetting);
+    return QQmlListProperty<ListContentType>(this, nullptr, appendFunction, countFunction, atFunction, clearFunction);
 }
 
 } // namespace Quick

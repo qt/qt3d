@@ -73,12 +73,6 @@ public:
 
     inline QChannelMapper *parentMapper() const { return qobject_cast<QChannelMapper *>(parent()); }
     QQmlListProperty<QAbstractChannelMapping> qmlMappings();
-
-private:
-    static void appendMapping(QQmlListProperty<QAbstractChannelMapping> *list, QAbstractChannelMapping *mapping);
-    static QAbstractChannelMapping *mappingAt(QQmlListProperty<QAbstractChannelMapping> *list, qsizetype index);
-    static qsizetype mappingCount(QQmlListProperty<QAbstractChannelMapping> *list);
-    static void clearMappings(QQmlListProperty<QAbstractChannelMapping> *list);
 };
 
 } // namespace Quick

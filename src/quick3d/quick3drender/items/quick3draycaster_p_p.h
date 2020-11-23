@@ -68,11 +68,6 @@ class Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DRayCasterPrivate : public QAbs
 public:
     explicit Quick3DRayCasterPrivate() : QAbstractRayCasterPrivate() { }
 
-    static void appendLayer(QQmlListProperty<QLayer> *list, QLayer *bar);
-    static QLayer *layerAt(QQmlListProperty<QLayer> *list, qsizetype index);
-    static qsizetype layerCount(QQmlListProperty<QLayer> *list);
-    static void clearLayers(QQmlListProperty<QLayer> *list);
-
     Q_DECLARE_PUBLIC(Quick3DRayCaster)
 };
 

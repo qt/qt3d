@@ -54,43 +54,39 @@ Quick3DTextureExtension::Quick3DTextureExtension(QObject *parent)
 
 QQmlListProperty<QAbstractTextureImage> Quick3DTextureExtension::textureImages()
 {
-    return QQmlListProperty<QAbstractTextureImage>(this, 0,
-                                                   &Quick3DTextureExtension::appendTextureImage,
-                                                   &Quick3DTextureExtension::textureImageCount,
-                                                   &Quick3DTextureExtension::textureImageAt,
-                                                   &Quick3DTextureExtension::clearTextureImageList);
-}
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    using qt_size_type = qsizetype;
+#else
+    using qt_size_type = int;
+#endif
 
-void Quick3DTextureExtension::appendTextureImage(QQmlListProperty<QAbstractTextureImage> *list, QAbstractTextureImage *textureImage)
-{
-    Quick3DTextureExtension *self = qobject_cast<Quick3DTextureExtension *>(list->object);
-    if (self)
-        self->parentTexture()->addTextureImage(textureImage);
-}
+    using ListContentType = QAbstractTextureImage;
+    auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *textureImage) {
+        Quick3DTextureExtension *self = qobject_cast<Quick3DTextureExtension *>(list->object);
+        if (self)
+            self->parentTexture()->addTextureImage(textureImage);
+    };
+    auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
+        Quick3DTextureExtension *self = qobject_cast<Quick3DTextureExtension *>(list->object);
+        if (self)
+            return self->parentTexture()->textureImages().count();
+        return 0;
+    };
+    auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
+        Quick3DTextureExtension *self = qobject_cast<Quick3DTextureExtension *>(list->object);
+        if (self)
+            return self->parentTexture()->textureImages().at(index);
+        return nullptr;
+    };
+    auto clearFunction = [](QQmlListProperty<ListContentType> *list) {
+        if (Quick3DTextureExtension *self = qobject_cast<Quick3DTextureExtension *>(list->object)) {
+            const auto images = self->parentTexture()->textureImages();
+            for (QAbstractTextureImage *img : images)
+                self->parentTexture()->removeTextureImage(img);
+        }
+    };
 
-QAbstractTextureImage *Quick3DTextureExtension::textureImageAt(QQmlListProperty<QAbstractTextureImage> *list, qsizetype index)
-{
-    Quick3DTextureExtension *self = qobject_cast<Quick3DTextureExtension *>(list->object);
-    if (self)
-        return self->parentTexture()->textureImages().at(index);
-    return nullptr;
-}
-
-qsizetype Quick3DTextureExtension::textureImageCount(QQmlListProperty<QAbstractTextureImage> *list)
-{
-    Quick3DTextureExtension *self = qobject_cast<Quick3DTextureExtension *>(list->object);
-    if (self)
-        return self->parentTexture()->textureImages().count();
-    return 0;
-}
-
-void Quick3DTextureExtension::clearTextureImageList(QQmlListProperty<QAbstractTextureImage> *list)
-{
-    if (Quick3DTextureExtension *self = qobject_cast<Quick3DTextureExtension *>(list->object)) {
-        const auto images = self->parentTexture()->textureImages();
-        for (QAbstractTextureImage *img : images)
-            self->parentTexture()->removeTextureImage(img);
-    }
+    return QQmlListProperty<ListContentType>(this, nullptr, appendFunction, countFunction, atFunction, clearFunction);
 }
 
 } // namespace Quick

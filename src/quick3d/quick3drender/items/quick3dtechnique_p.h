@@ -77,23 +77,6 @@ public:
 
     // Use QAbstractTechnique when it has been properly defined
     inline QTechnique *parentTechnique() const { return qobject_cast<QTechnique*>(parent()); }
-
-private:
-
-    static void appendParameter(QQmlListProperty<QParameter> *list, QParameter *param);
-    static QParameter *parameterAt(QQmlListProperty<QParameter> *list, qsizetype index);
-    static qsizetype parametersCount(QQmlListProperty<QParameter> *list);
-    static void clearParameterList(QQmlListProperty<QParameter> *list);
-
-    static void appendFilterKey(QQmlListProperty<QFilterKey> *list, QFilterKey *filterKey);
-    static QFilterKey *filterKeyAt(QQmlListProperty<QFilterKey> *list, qsizetype index);
-    static qsizetype filterKeyCount(QQmlListProperty<QFilterKey> *list);
-    static void clearFilterKeyList(QQmlListProperty<QFilterKey> *list);
-
-    static void appendRenderPass(QQmlListProperty<QRenderPass> *list, QRenderPass* renderPass);
-    static QRenderPass *renderPassAt(QQmlListProperty<QRenderPass> *list, qsizetype index);
-    static qsizetype renderPassCount(QQmlListProperty<QRenderPass> *list);
-    static void clearRenderPasses( QQmlListProperty<QRenderPass> *list);
 };
 
 } // namespace Quick

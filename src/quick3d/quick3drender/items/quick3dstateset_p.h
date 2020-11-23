@@ -67,17 +67,11 @@ class Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DStateSet : public QObject
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3DRender::QRenderState> renderStates READ renderStateList CONSTANT)
 public:
-    explicit Quick3DStateSet(QObject *parent = 0);
+    explicit Quick3DStateSet(QObject *parent = nullptr);
     ~Quick3DStateSet();
 
     QQmlListProperty<QRenderState> renderStateList();
     inline QRenderStateSet *parentStateSet() const { return qobject_cast<QRenderStateSet *>(parent()); }
-
-private:
-    static void appendRenderState(QQmlListProperty<QRenderState> *list, QRenderState *state);
-    static QRenderState *renderStateAt(QQmlListProperty<QRenderState> *list, qsizetype index);
-    static qsizetype renderStateCount(QQmlListProperty<QRenderState> *list);
-    static void clearRenderStates(QQmlListProperty<QRenderState> *list);
 };
 
 } // namespace Quick
