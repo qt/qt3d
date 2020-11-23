@@ -45,7 +45,9 @@
 #include <qopenglcontext.h>
 #include <qopenglframebufferobject.h>
 #include <QtQuick/qquickwindow.h>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <private/qrhi_p.h>
+#endif
 
 #include <Qt3DRender/private/qrenderaspect_p.h>
 #include <Qt3DRender/private/abstractrenderer_p.h>
@@ -161,10 +163,12 @@ void Scene3DRenderer::init(Qt3DCore::QAspectEngine *aspectEngine,
      Qt3DRender::QRenderAspectPrivate *aspectPriv = static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect));
      Qt3DRender::Render::AbstractRenderer *renderer = aspectPriv->m_renderer;
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     const bool isRHI = renderer->api() == API::RHI;
     if (isRHI)
         m_quickRenderer = new Scene3DRenderer::RHIRenderer;
     else
+#endif
         m_quickRenderer = new Scene3DRenderer::GLRenderer;
     m_quickRenderer->initialize(this, renderer);
 }
@@ -337,7 +341,12 @@ void Scene3DRenderer::GLRenderer::beforeSynchronize(Scene3DRenderer *scene3DRend
         if (generateNewTexture) {
             m_finalFBO.reset(createFramebufferObject(m_lastSize));
             m_textureId = m_finalFBO->texture();
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
             m_texture.reset(QNativeInterface::QSGOpenGLTexture::fromNative(m_textureId, window, m_finalFBO->size(), QQuickWindow::TextureHasAlphaChannel));
+#else
+            m_texture.reset(window->createTextureFromNativeObject(QQuickWindow::NativeObjectTexture, (void*) m_textureId,
+                                                                  0, m_finalFBO->size(), QQuickWindow::TextureHasAlphaChannel));
+#endif
         }
 
         // Set texture on node
@@ -422,6 +431,8 @@ void Scene3DRenderer::GLRenderer::shutdown(Scene3DRenderer *sceneRenderer)
     m_finalFBO.reset();
     m_multisampledFBO.reset();
 }
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 
 void Scene3DRenderer::RHIRenderer::initialize(Scene3DRenderer *scene3DRenderer,
                                               Qt3DRender::Render::AbstractRenderer *renderer)
@@ -625,6 +636,8 @@ void Scene3DRenderer::RHIRenderer::releaseRHIResources()
     delete m_rhiRenderTargetPassDescriptor;
     m_rhiRenderTargetPassDescriptor = nullptr;
 }
+
+#endif
 
 Scene3DRenderer::QuickRenderer::QuickRenderer() {}
 Scene3DRenderer::QuickRenderer::~QuickRenderer() {}

@@ -2,6 +2,7 @@ TARGET   = Qt3DQuick
 MODULE   = 3dquick
 
 QT      += core-private gui-private qml qml-private quick quick-private 3dcore 3dcore-private
+CONFIG  += c++17
 
 gcov {
     QMAKE_CXXFLAGS += -fprofile-arcs -ftest-coverage

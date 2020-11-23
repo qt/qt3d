@@ -78,10 +78,13 @@ Scene3DSGMaterialShader::Scene3DSGMaterialShader()
     // Generated with qsb, we target all GL version Qt3D can handle
     // qsb -b --glsl "460,450,440,430,420,410,400,330,150,120,320 es,300 es,100 es" --hlsl 50 --msl 12 -o scene3dmaterial.vert.qsb scene3dmaterial.vert
     // qsb --glsl "460,450,440,430,420,410,400,330,150,120,320 es,300 es,100 es" --hlsl 50 --msl 12 -o scene3dmaterial.frag.qsb scene3dmaterial.frag
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     setShaderFileName(VertexStage, QLatin1String(":/shaders/scene3dmaterial.vert.qsb"));
     setShaderFileName(FragmentStage, QLatin1String(":/shaders/scene3dmaterial.frag.qsb"));
+#endif
 }
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 bool Scene3DSGMaterialShader::updateUniformData(QSGMaterialShader::RenderState &state,
                                                 QSGMaterial *newMaterial,
                                                 QSGMaterial *oldMaterial)
@@ -150,6 +153,15 @@ void Scene3DSGMaterialShader::updateSampledImage(QSGMaterialShader::RenderState 
             *texture = t;
     }
 }
+
+#else
+
+const char * const *Qt3DRender::Scene3DSGMaterialShader::attributeNames() const
+{
+    return nullptr;
+}
+
+#endif
 
 } // namespace Qt3DRender
 

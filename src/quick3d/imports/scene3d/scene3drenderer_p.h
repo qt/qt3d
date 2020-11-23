@@ -159,6 +159,7 @@ private:
         quint32 m_textureId = 0;
     };
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     class RHIRenderer : public QuickRenderer
     {
     public:
@@ -181,6 +182,7 @@ private:
         QRhiRenderPassDescriptor *m_rhiRenderTargetPassDescriptor = nullptr;
         QRhi *m_rhi = nullptr;
     };
+#endif
 
     Qt3DCore::QAspectEngine *m_aspectEngine; // Will be released by the Scene3DItem
     QRenderAspect *m_renderAspect; // Will be released by the aspectEngine

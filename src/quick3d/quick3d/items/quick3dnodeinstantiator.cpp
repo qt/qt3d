@@ -196,7 +196,7 @@ void Quick3DNodeInstantiatorPrivate::_q_modelUpdated(const QQmlChangeSet &change
         } else {
             while (count--) {
                 QObject *obj = m_objects.at(index);
-                m_objects.remove(index);
+                m_objects.removeAt(index);
                 emit q->objectRemoved(index, obj);
                 if (obj)
                     m_instanceModel->release(obj);

@@ -65,8 +65,12 @@ public:
 
 protected:
     // QSGMaterialShader interface
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     bool updateUniformData(RenderState &state, QSGMaterial *newMaterial, QSGMaterial *oldMaterial) final;
     void updateSampledImage(RenderState &state, int binding, QSGTexture **texture, QSGMaterial *newMaterial, QSGMaterial *oldMaterial) final;
+#else
+    char const *const *attributeNames() const final;
+#endif
 };
 
 } // namespace Qt3DRender

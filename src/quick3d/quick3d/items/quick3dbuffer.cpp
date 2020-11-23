@@ -71,7 +71,11 @@ QByteArray Quick3DBuffer::convertToRawData(const QJSValue &jsValue)
     Q_ASSERT(m_v4engine);
     QV4::Scope scope(m_v4engine);
     QV4::Scoped<QV4::TypedArray> typedArray(scope,
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
                                             QJSValuePrivate::convertToReturnedValue(m_v4engine, jsValue));
+#else
+                                            QJSValuePrivate::convertedToValue(m_v4engine, jsValue));
+#endif
     if (!typedArray)
         return QByteArray();
 
