@@ -69,21 +69,21 @@ public:
     explicit QKeyEvent(const QT_PREPEND_NAMESPACE(QKeyEvent) &ke);
     ~QKeyEvent();
 
-    inline int key() const { return m_event.key(); }
-    inline QString text() const { return m_event.text(); }
-    inline int modifiers() const { return m_event.modifiers(); }
-    inline bool isAutoRepeat() const { return m_event.isAutoRepeat(); }
-    inline int count() const { return m_event.count(); }
-    inline quint32 nativeScanCode() const { return m_event.nativeScanCode(); }
-    inline bool isAccepted() const { return m_event.isAccepted(); }
-    inline void setAccepted(bool accepted) { m_event.setAccepted(accepted); }
-    inline QEvent::Type type() const { return m_event.type(); }
+    inline int key() const { return m_event->key(); }
+    inline QString text() const { return m_event->text(); }
+    inline int modifiers() const { return m_event->modifiers(); }
+    inline bool isAutoRepeat() const { return m_event->isAutoRepeat(); }
+    inline int count() const { return m_event->count(); }
+    inline quint32 nativeScanCode() const { return m_event->nativeScanCode(); }
+    inline bool isAccepted() const { return m_event->isAccepted(); }
+    inline void setAccepted(bool accepted) { m_event->setAccepted(accepted); }
+    inline QEvent::Type type() const { return m_event->type(); }
 #if QT_CONFIG(shortcut)
-    Q_INVOKABLE bool matches(QKeySequence::StandardKey key_) const { return m_event.matches(key_); }
+    Q_INVOKABLE bool matches(QKeySequence::StandardKey key_) const { return m_event->matches(key_); }
 #endif
 
 private:
-    QT_PREPEND_NAMESPACE(QKeyEvent) m_event;
+    std::unique_ptr<QT_PREPEND_NAMESPACE(QKeyEvent)> m_event;
 };
 
 } // namespace Qt3DInput

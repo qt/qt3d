@@ -46,9 +46,9 @@ namespace Qt3DInput {
 namespace {
 
 template<typename EventClass, typename QtEventClass>
-typename EventClass::Modifiers modifiersForEvent(const QtEventClass &event)
+typename EventClass::Modifiers modifiersForEvent(const QtEventClass *event)
 {
-    const Qt::KeyboardModifiers eventModifiers = event.modifiers();
+    const Qt::KeyboardModifiers eventModifiers = event->modifiers();
     int modifiers = EventClass::NoModifier;
 
     if (eventModifiers & Qt::ShiftModifier)
@@ -259,7 +259,11 @@ typename EventClass::Modifiers modifiersForEvent(const QtEventClass &event)
  */
 QMouseEvent::QMouseEvent(const QT_PREPEND_NAMESPACE(QMouseEvent) &e)
     : QObject()
-    , m_event(e)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+      , m_event(static_cast<QT_PREPEND_NAMESPACE(QMouseEvent)*>(e.clone()))
+#else
+    , m_even(new QT_PREPEND_NAMESPACE(QMouseEvent)(e))
+#endif
 {
 }
 
@@ -272,7 +276,7 @@ QMouseEvent::~QMouseEvent()
  */
 QMouseEvent::Buttons QMouseEvent::button() const
 {
-    switch (m_event.button()) {
+    switch (m_event->button()) {
     case Qt::LeftButton:
         return QMouseEvent::LeftButton;
     case Qt::RightButton:
@@ -292,7 +296,7 @@ QMouseEvent::Buttons QMouseEvent::button() const
  */
 int QMouseEvent::buttons() const
 {
-   return m_event.buttons();
+    return m_event->buttons();
 }
 
 /*!
@@ -300,7 +304,7 @@ int QMouseEvent::buttons() const
  */
 QMouseEvent::Modifiers QMouseEvent::modifiers() const
 {
-    return modifiersForEvent<QMouseEvent, decltype(m_event)>(m_event);
+    return modifiersForEvent<QMouseEvent, QT_PREPEND_NAMESPACE(QMouseEvent)>(m_event.get());
 }
 
 /*!
@@ -478,7 +482,11 @@ QMouseEvent::Modifiers QMouseEvent::modifiers() const
  */
 QWheelEvent::QWheelEvent(const QT_PREPEND_NAMESPACE(QWheelEvent) &e)
     : QObject()
-    , m_event(e)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+      , m_event(static_cast<QT_PREPEND_NAMESPACE(QWheelEvent)*>(e.clone()))
+#else
+      , m_even(new QT_PREPEND_NAMESPACE(QMouseEvent)(e))
+#endif
 {
 }
 
@@ -492,7 +500,7 @@ QWheelEvent::~QWheelEvent()
  */
 int QWheelEvent::buttons() const
 {
-    return m_event.buttons();
+    return m_event->buttons();
 }
 
 /*!
@@ -500,7 +508,7 @@ int QWheelEvent::buttons() const
  */
 QWheelEvent::Modifiers QWheelEvent::modifiers() const
 {
-    return modifiersForEvent<QWheelEvent, decltype(m_event)>(m_event);
+    return modifiersForEvent<QWheelEvent, QT_PREPEND_NAMESPACE(QWheelEvent)>(m_event.get());
 }
 #endif // QT_CONFIG(wheelevent)
 

@@ -211,7 +211,11 @@ void PickBoundingVolumeJob::setRoot(Entity *root)
 
 bool PickBoundingVolumeJob::processMouseEvent(QObject* object, QMouseEvent *event)
 {
-    m_pendingMouseEvents.emplace_back(object, QMouseEvent(*event));
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    m_pendingMouseEvents.emplace_back(object, std::unique_ptr<QMouseEvent>(static_cast<QMouseEvent *>(event->clone())));
+#else
+    m_pendingMouseEvents.emplace_back(object, new QMouseEvent(*event));
+#endif
     return false;
 }
 
@@ -254,7 +258,7 @@ bool PickBoundingVolumeJob::runHelper()
     bool hasOtherEvent = false;
     // Quickly look which types of events we've got
     for (const auto &event : mouseEvents) {
-        const bool isMove = (event.second.type() == QEvent::MouseMove);
+        const bool isMove = (event.second->type() == QEvent::MouseMove);
         hasMoveEvent |= isMove;
         hasOtherEvent |= !isMove;
     }
@@ -290,7 +294,7 @@ bool PickBoundingVolumeJob::runHelper()
 
     // For each mouse event
     for (const auto &event : mouseEvents)
-        processPickEvent(pickConfiguration, event.first, &event.second);
+        processPickEvent(pickConfiguration, event.first, event.second.get());
 
     // Clear Hovered elements that needs to be cleared
     // Send exit event to object pickers on which we

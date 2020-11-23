@@ -72,16 +72,11 @@ public:
     explicit PickEventFilter(QRenderAspectPrivate *aspect, QObject *parent = nullptr);
     ~PickEventFilter();
 
-    QList<QPair<QObject*, QMouseEvent>> pendingMouseEvents();
-    QList<QKeyEvent> pendingKeyEvents();
-
 protected:
     bool eventFilter(QObject *obj, QEvent *e) final;
 
 private:
     QRenderAspectPrivate *m_aspect;
-    QList<QPair<QObject*, QMouseEvent>> m_pendingMouseEvents;
-    QList<QKeyEvent> m_pendingKeyEvents;
 };
 
 } // Render
