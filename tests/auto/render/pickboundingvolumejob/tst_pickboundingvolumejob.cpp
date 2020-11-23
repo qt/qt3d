@@ -383,47 +383,55 @@ private Q_SLOTS:
         // THEN
         QVERIFY(pickBVJob.currentPicker().isNull());
 
-        // WHEN
-        auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(207., 303.), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        pickBVJob.processMouseEvent(nullptr, &event);
-        bool earlyReturn = !pickBVJob.runHelper();
+        {
+            // WHEN
+            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(207., 303.), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            pickBVJob.processMouseEvent(nullptr, &event);
+            bool earlyReturn = !pickBVJob.runHelper();
 
-        // THEN
-        QVERIFY(!earlyReturn);
-        QVERIFY(!pickBVJob.currentPicker().isNull());
-        Qt3DRender::Render::ObjectPicker *backendPicker = test->nodeManagers()->data<Qt3DRender::Render::ObjectPicker, Qt3DRender::Render::ObjectPickerManager>(pickBVJob.currentPicker());
-        QVERIFY(backendPicker != nullptr);
-        QCOMPARE(backendPicker->peerId(), picker1->id());
+            // THEN
+            QVERIFY(!earlyReturn);
+            QVERIFY(!pickBVJob.currentPicker().isNull());
+            Qt3DRender::Render::ObjectPicker *backendPicker = test->nodeManagers()->data<Qt3DRender::Render::ObjectPicker, Qt3DRender::Render::ObjectPickerManager>(pickBVJob.currentPicker());
+            QVERIFY(backendPicker != nullptr);
+            QCOMPARE(backendPicker->peerId(), picker1->id());
+        }
 
-        // WHEN
-        event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(207., 303.), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        pickBVJob.processMouseEvent(nullptr, &event);
-        earlyReturn = !pickBVJob.runHelper();
+        {
+            // WHEN
+            auto event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(207., 303.), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            pickBVJob.processMouseEvent(nullptr, &event);
+            bool earlyReturn = !pickBVJob.runHelper();
 
-        // THEN
-        QVERIFY(!earlyReturn);
-        QVERIFY(pickBVJob.currentPicker().isNull());
+            // THEN
+            QVERIFY(!earlyReturn);
+            QVERIFY(pickBVJob.currentPicker().isNull());
+        }
 
-        // WHEN
-        event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(390., 300.), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        pickBVJob.processMouseEvent(nullptr, &event);
-        earlyReturn = !pickBVJob.runHelper();
+        {
+            // WHEN
+            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(390., 300.), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            pickBVJob.processMouseEvent(nullptr, &event);
+            bool earlyReturn = !pickBVJob.runHelper();
 
-        // THEN
-        QVERIFY(!earlyReturn);
-        QVERIFY(!pickBVJob.currentPicker().isNull());
-        backendPicker = test->nodeManagers()->data<Qt3DRender::Render::ObjectPicker, Qt3DRender::Render::ObjectPickerManager>(pickBVJob.currentPicker());
-        QVERIFY(backendPicker != nullptr);
-        QCOMPARE(backendPicker->peerId(), picker2->id());
+            // THEN
+            QVERIFY(!earlyReturn);
+            QVERIFY(!pickBVJob.currentPicker().isNull());
+            auto backendPicker = test->nodeManagers()->data<Qt3DRender::Render::ObjectPicker, Qt3DRender::Render::ObjectPickerManager>(pickBVJob.currentPicker());
+            QVERIFY(backendPicker != nullptr);
+            QCOMPARE(backendPicker->peerId(), picker2->id());
+        }
 
-        // WHEN
-        event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(390., 300.), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        pickBVJob.processMouseEvent(nullptr, &event);
-        earlyReturn = !pickBVJob.runHelper();
+        {
+            // WHEN
+            auto event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(390., 300.), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            pickBVJob.processMouseEvent(nullptr, &event);
+            bool earlyReturn = !pickBVJob.runHelper();
 
-        // THEN
-        QVERIFY(!earlyReturn);
-        QVERIFY(pickBVJob.currentPicker().isNull());
+            // THEN
+            QVERIFY(!earlyReturn);
+            QVERIFY(pickBVJob.currentPicker().isNull());
+        }
     }
 
     void checkEarlyReturnWhenNoMouseEvents_data()
@@ -626,27 +634,31 @@ private Q_SLOTS:
         QCOMPARE(test->renderSettings()->pickResultMode(), pickResultMode);
         QCOMPARE(test->renderSettings()->faceOrientationPickingMode(), faceOrientationPickingMode);
 
-        // WHEN
         Qt3DRender::Render::PickBoundingVolumeJob pickBVJob;
         initializePickBoundingVolumeJob(&pickBVJob, test.data());
 
-        auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(207., 303.),
-                                 Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        pickBVJob.processMouseEvent(nullptr, &event);
-        bool earlyReturn = !pickBVJob.runHelper();
+        {
+            // WHEN
+            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(207., 303.),
+                                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            pickBVJob.processMouseEvent(nullptr, &event);
+            bool earlyReturn = !pickBVJob.runHelper();
 
-        // THEN
-        QVERIFY(!pickBVJob.currentPicker().isNull());
-        QVERIFY(!earlyReturn);
+            // THEN
+            QVERIFY(!pickBVJob.currentPicker().isNull());
+            QVERIFY(!earlyReturn);
+        }
 
-        // WHEN
-        event = QMouseEvent(QMouseEvent::MouseMove, QPointF(207., 303.),
-                            Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        pickBVJob.processMouseEvent(nullptr, &event);
-        earlyReturn = !pickBVJob.runHelper();
+        {
+            // WHEN
+            auto event = QMouseEvent(QMouseEvent::MouseMove, QPointF(207., 303.),
+                                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            pickBVJob.processMouseEvent(nullptr, &event);
+            bool earlyReturn = !pickBVJob.runHelper();
 
-        // THEN
-        QVERIFY(earlyReturn);
+            // THEN
+            QVERIFY(earlyReturn);
+        }
     }
 
     void checkNoEarlyReturnWhenMoveEventsAndDragEnabledPickers_data()
@@ -685,27 +697,31 @@ private Q_SLOTS:
         QCOMPARE(test->renderSettings()->pickResultMode(), pickResultMode);
         QCOMPARE(test->renderSettings()->faceOrientationPickingMode(), faceOrientationPickingMode);
 
-        // WHEN
         Qt3DRender::Render::PickBoundingVolumeJob pickBVJob;
         initializePickBoundingVolumeJob(&pickBVJob, test.data());
 
-        auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(207., 303.),
-                                 Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        pickBVJob.processMouseEvent(nullptr, &event);
-        bool earlyReturn = !pickBVJob.runHelper();
+        {
+            // WHEN
+            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(207., 303.),
+                                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            pickBVJob.processMouseEvent(nullptr, &event);
+            bool earlyReturn = !pickBVJob.runHelper();
 
-        // THEN
-        QVERIFY(!pickBVJob.currentPicker().isNull());
-        QVERIFY(!earlyReturn);
+            // THEN
+            QVERIFY(!pickBVJob.currentPicker().isNull());
+            QVERIFY(!earlyReturn);
+        }
 
-        // WHEN
-        event = QMouseEvent(QMouseEvent::MouseMove, QPointF(207., 303.),
-                            Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        pickBVJob.processMouseEvent(nullptr, &event);
-        earlyReturn = !pickBVJob.runHelper();
+        {
+            // WHEN
+            auto event = QMouseEvent(QMouseEvent::MouseMove, QPointF(207., 303.),
+                                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            pickBVJob.processMouseEvent(nullptr, &event);
+            bool earlyReturn = !pickBVJob.runHelper();
 
-        // THEN
-        QVERIFY(!earlyReturn);
+            // THEN
+            QVERIFY(!earlyReturn);
+        }
     }
 
     void checkEarlyReturnWhenNoProperFrameGraph_data()
@@ -822,75 +838,83 @@ private Q_SLOTS:
         QVERIFY(mouseButtonReleasedSpy.isValid());
         QVERIFY(mouseClickedSpy.isValid());
 
-        auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(207.0, 303.0),
-                                 Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        pickBVJob.processMouseEvent(nullptr, &event);
-        bool earlyReturn = !pickBVJob.runHelper();
-        Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
+        {
+            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(207.0, 303.0),
+                                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            pickBVJob.processMouseEvent(nullptr, &event);
+            bool earlyReturn = !pickBVJob.runHelper();
+            Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
 
-        // THEN -> Pressed
-        QVERIFY(!earlyReturn);
-        QVERIFY(backendPicker1->isPressed());
-        QVERIFY(picker1->isPressed());
-        QCOMPARE(mouseButtonPressedSpy.count(), backAndFrontPicking ? 2 : 1);
-        QCOMPARE(mouseMovedSpy.count(), 0);
-        QCOMPARE(mouseButtonReleasedSpy.count(), 0);
-        QCOMPARE(mouseClickedSpy.count(), 0);
+            // THEN -> Pressed
+            QVERIFY(!earlyReturn);
+            QVERIFY(backendPicker1->isPressed());
+            QVERIFY(picker1->isPressed());
+            QCOMPARE(mouseButtonPressedSpy.count(), backAndFrontPicking ? 2 : 1);
+            QCOMPARE(mouseMovedSpy.count(), 0);
+            QCOMPARE(mouseButtonReleasedSpy.count(), 0);
+            QCOMPARE(mouseClickedSpy.count(), 0);
+        }
 
-        // WHEN -> Move on same object
-        event = QMouseEvent(QMouseEvent::MouseMove, QPointF(207.0, 303.0),
-                            Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        pickBVJob.processMouseEvent(nullptr, &event);
-        earlyReturn = !pickBVJob.runHelper();
-        Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
+        {
+            // WHEN -> Move on same object
+            auto event = QMouseEvent(QMouseEvent::MouseMove, QPointF(207.0, 303.0),
+                                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            pickBVJob.processMouseEvent(nullptr, &event);
+            bool earlyReturn = !pickBVJob.runHelper();
+            Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
 
-        // THEN -> Moved
-        QVERIFY(!earlyReturn);
-        QVERIFY(backendPicker1->isPressed());
-        QVERIFY(picker1->isPressed());
-        QCOMPARE(mouseButtonPressedSpy.count(), backAndFrontPicking ? 2 : 1);
-        QCOMPARE(mouseMovedSpy.count(), backAndFrontPicking ? 2 : 1);
-        QCOMPARE(mouseButtonReleasedSpy.count(), 0);
-        QCOMPARE(mouseClickedSpy.count(), 0);
+            // THEN -> Moved
+            QVERIFY(!earlyReturn);
+            QVERIFY(backendPicker1->isPressed());
+            QVERIFY(picker1->isPressed());
+            QCOMPARE(mouseButtonPressedSpy.count(), backAndFrontPicking ? 2 : 1);
+            QCOMPARE(mouseMovedSpy.count(), backAndFrontPicking ? 2 : 1);
+            QCOMPARE(mouseButtonReleasedSpy.count(), 0);
+            QCOMPARE(mouseClickedSpy.count(), 0);
+        }
 
-        // WHEN -> Release on object
-        event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(207.0, 303.0),
-                            Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        pickBVJob.processMouseEvent(nullptr, &event);
-        earlyReturn = !pickBVJob.runHelper();
-        Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
+        {
+            // WHEN -> Release on object
+            auto event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(207.0, 303.0),
+                                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            pickBVJob.processMouseEvent(nullptr, &event);
+            bool earlyReturn = !pickBVJob.runHelper();
+            Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
 
-        // THEN -> Released + Clicked
-        QVERIFY(!earlyReturn);
-        QVERIFY(!backendPicker1->isPressed());
-        QVERIFY(!picker1->isPressed());
-        QCOMPARE(mouseButtonPressedSpy.count(), backAndFrontPicking ? 2 : 1);
-        QCOMPARE(mouseMovedSpy.count(), backAndFrontPicking ? 2 : 1);
-        QCOMPARE(mouseButtonReleasedSpy.count(), /*backAndFrontPicking ? 2 :*/ 1);
-        QCOMPARE(mouseClickedSpy.count(), 1);
+            // THEN -> Released + Clicked
+            QVERIFY(!earlyReturn);
+            QVERIFY(!backendPicker1->isPressed());
+            QVERIFY(!picker1->isPressed());
+            QCOMPARE(mouseButtonPressedSpy.count(), backAndFrontPicking ? 2 : 1);
+            QCOMPARE(mouseMovedSpy.count(), backAndFrontPicking ? 2 : 1);
+            QCOMPARE(mouseButtonReleasedSpy.count(), /*backAndFrontPicking ? 2 :*/ 1);
+            QCOMPARE(mouseClickedSpy.count(), 1);
+        }
 
         mouseButtonPressedSpy.clear();
         mouseMovedSpy.clear();
         mouseButtonReleasedSpy.clear();
         mouseClickedSpy.clear();
 
-        // WHEN -> Release outside of object
-        event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(207.0, 303.0),
-                            Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        pickBVJob.processMouseEvent(nullptr, &event);
-        event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(0.0, 0.0),
-                            Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        pickBVJob.processMouseEvent(nullptr, &event);
-        earlyReturn = !pickBVJob.runHelper();
-        Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
+        {
+            // WHEN -> Release outside of object
+            auto event1 = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(207.0, 303.0),
+                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            pickBVJob.processMouseEvent(nullptr, &event1);
+            auto event2 = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(0.0, 0.0),
+                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            pickBVJob.processMouseEvent(nullptr, &event2);
+            bool earlyReturn = !pickBVJob.runHelper();
+            Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
 
-        // THEN -> Released
-        QVERIFY(!earlyReturn);
-        QVERIFY(!backendPicker1->isPressed());
-        QVERIFY(!picker1->isPressed());
-        QCOMPARE(mouseButtonPressedSpy.count(), backAndFrontPicking ? 2 : 1);
-        QCOMPARE(mouseMovedSpy.count(), 0);
-        QCOMPARE(mouseButtonReleasedSpy.count(), 1);
+            // THEN -> Released
+            QVERIFY(!earlyReturn);
+            QVERIFY(!backendPicker1->isPressed());
+            QVERIFY(!picker1->isPressed());
+            QCOMPARE(mouseButtonPressedSpy.count(), backAndFrontPicking ? 2 : 1);
+            QCOMPARE(mouseMovedSpy.count(), 0);
+            QCOMPARE(mouseButtonReleasedSpy.count(), 1);
+        }
     }
 
     void checkDispatchReleaseEventOnLastPickerWhenMovingOutOfViewport()
@@ -942,52 +966,58 @@ private Q_SLOTS:
         Qt3DRender::Render::PickBoundingVolumeJob pickBVJob;
         initializePickBoundingVolumeJob(&pickBVJob, test.data());
 
-        auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(207.0, 303.0),
-                                 Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        pickBVJob.processMouseEvent(nullptr, &event);
-        bool earlyReturn = !pickBVJob.runHelper();
-        Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
+        {
+            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(207.0, 303.0),
+                                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            pickBVJob.processMouseEvent(nullptr, &event);
+            bool earlyReturn = !pickBVJob.runHelper();
+            Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
 
-        // THEN -> Pressed
-        QVERIFY(!earlyReturn);
-        QVERIFY(backendPicker1->isPressed());
-        QVERIFY(picker1->isPressed());
-        QCOMPARE(mouseButtonPressedSpy.count(), 1);
-        QCOMPARE(mouseMovedSpy.count(), 0);
-        QCOMPARE(mouseButtonReleasedSpy.count(), 0);
+            // THEN -> Pressed
+            QVERIFY(!earlyReturn);
+            QVERIFY(backendPicker1->isPressed());
+            QVERIFY(picker1->isPressed());
+            QCOMPARE(mouseButtonPressedSpy.count(), 1);
+            QCOMPARE(mouseMovedSpy.count(), 0);
+            QCOMPARE(mouseButtonReleasedSpy.count(), 0);
+        }
 
-        // WHEN -> Releasing out of the viewport
-        event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(10000.0, 10000.0),
-                            Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        pickBVJob.processMouseEvent(nullptr, &event);
-        earlyReturn = !pickBVJob.runHelper();
-        Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
+        {
+            // WHEN -> Releasing out of the viewport
+            auto event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(10000.0, 10000.0),
+                                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            pickBVJob.processMouseEvent(nullptr, &event);
+            bool earlyReturn = !pickBVJob.runHelper();
+            Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
 
-        // THEN -> Should have received released event
-        QVERIFY(!earlyReturn);
-        QVERIFY(!backendPicker1->isPressed());
-        QVERIFY(!picker1->isPressed());
-        QCOMPARE(mouseButtonPressedSpy.count(), 1);
-        QCOMPARE(mouseMovedSpy.count(), 0);
-        QCOMPARE(mouseButtonReleasedSpy.count(), 1);
+            // THEN -> Should have received released event
+            QVERIFY(!earlyReturn);
+            QVERIFY(!backendPicker1->isPressed());
+            QVERIFY(!picker1->isPressed());
+            QCOMPARE(mouseButtonPressedSpy.count(), 1);
+            QCOMPARE(mouseMovedSpy.count(), 0);
+            QCOMPARE(mouseButtonReleasedSpy.count(), 1);
+        }
 
-
-        // WHEN -> Releasing out of the viewport
         mouseButtonPressedSpy.clear();
         mouseMovedSpy.clear();
         mouseButtonReleasedSpy.clear();
-        event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(10000.0, 10000.0),
-                            Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        pickBVJob.processMouseEvent(nullptr, &event);
-        earlyReturn = !pickBVJob.runHelper();
-        Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
 
-        // THEN -> Should have received nothing
-        QVERIFY(!backendPicker1->isPressed());
-        QVERIFY(!picker1->isPressed());
-        QCOMPARE(mouseButtonPressedSpy.count(), 0);
-        QCOMPARE(mouseMovedSpy.count(), 0);
-        QCOMPARE(mouseButtonReleasedSpy.count(), 0);
+        {
+            // WHEN -> Releasing out of the viewport
+            auto event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(10000.0, 10000.0),
+                                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            pickBVJob.processMouseEvent(nullptr, &event);
+            bool earlyReturn = !pickBVJob.runHelper();
+            Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
+
+            // THEN -> Should have received nothing
+            QVERIFY(!backendPicker1->isPressed());
+            QVERIFY(!picker1->isPressed());
+            QCOMPARE(mouseButtonPressedSpy.count(), 0);
+            QCOMPARE(mouseMovedSpy.count(), 0);
+            QCOMPARE(mouseButtonReleasedSpy.count(), 0);
+        }
     }
 
     void checkDispatchHoverEvent_data()
@@ -1046,52 +1076,58 @@ private Q_SLOTS:
         Qt3DRender::Render::PickBoundingVolumeJob pickBVJob;
         initializePickBoundingVolumeJob(&pickBVJob, test.data());
 
-        auto event = QMouseEvent(QMouseEvent::HoverMove, QPointF(207.0, 303.0),
-                                 Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        pickBVJob.processMouseEvent(nullptr, &event);
-        bool earlyReturn = !pickBVJob.runHelper();
-        Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
+        {
+            auto event = QMouseEvent(QMouseEvent::HoverMove, QPointF(207.0, 303.0),
+                                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            pickBVJob.processMouseEvent(nullptr, &event);
+            bool earlyReturn = !pickBVJob.runHelper();
+            Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
 
-        // THEN -> Entered
-        QVERIFY(!earlyReturn);
-        QVERIFY(!backendPicker1->isPressed());
-        QVERIFY(!picker1->isPressed());
-        QCOMPARE(mouseEntered.count(), 1);
-        QCOMPARE(mouseExited.count(), 0);
+            // THEN -> Entered
+            QVERIFY(!earlyReturn);
+            QVERIFY(!backendPicker1->isPressed());
+            QVERIFY(!picker1->isPressed());
+            QCOMPARE(mouseEntered.count(), 1);
+            QCOMPARE(mouseExited.count(), 0);
+        }
 
-        // WHEN -> HoverMove Out
-        event = QMouseEvent(QEvent::HoverMove, QPointF(20.0, 40.0),
-                            Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        pickBVJob.processMouseEvent(nullptr, &event);
-        earlyReturn = !pickBVJob.runHelper();
-        Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
+        {
+            // WHEN -> HoverMove Out
+            auto event = QMouseEvent(QEvent::HoverMove, QPointF(20.0, 40.0),
+                                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            pickBVJob.processMouseEvent(nullptr, &event);
+            bool earlyReturn = !pickBVJob.runHelper();
+            Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
 
-        // THEN - Exited
-        QVERIFY(!earlyReturn);
-        QVERIFY(!backendPicker1->isPressed());
-        QVERIFY(!picker1->isPressed());
-        QCOMPARE(mouseEntered.count(), 1);
-        QCOMPARE(mouseExited.count(), 1);
+            // THEN - Exited
+            QVERIFY(!earlyReturn);
+            QVERIFY(!backendPicker1->isPressed());
+            QVERIFY(!picker1->isPressed());
+            QCOMPARE(mouseEntered.count(), 1);
+            QCOMPARE(mouseExited.count(), 1);
+        }
 
         mouseEntered.clear();
         mouseExited.clear();
 
         // WHEN -> HoverMove In + Pressed other
-        event = QMouseEvent(QEvent::HoverMove, QPointF(207.0, 303.0),
-                            Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        pickBVJob.processMouseEvent(nullptr, &event);
-        event = QMouseEvent(QEvent::MouseButtonPress, QPointF(0.0, 0.0),
-                            Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        pickBVJob.processMouseEvent(nullptr, &event);
-        earlyReturn = !pickBVJob.runHelper();
-        Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
+        {
+            auto event1 = QMouseEvent(QEvent::HoverMove, QPointF(207.0, 303.0),
+                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            pickBVJob.processMouseEvent(nullptr, &event1);
+            auto event2 = QMouseEvent(QEvent::MouseButtonPress, QPointF(0.0, 0.0),
+                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            pickBVJob.processMouseEvent(nullptr, &event2);
+            bool earlyReturn = !pickBVJob.runHelper();
+            Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
 
-        // THEN - Entered, Exited
-        QVERIFY(!earlyReturn);
-        QVERIFY(!backendPicker1->isPressed());
-        QVERIFY(!picker1->isPressed());
-        QCOMPARE(mouseEntered.count(), 1);
-        QCOMPARE(mouseExited.count(), 1);
+            // THEN - Entered, Exited
+            QVERIFY(!earlyReturn);
+            QVERIFY(!backendPicker1->isPressed());
+            QVERIFY(!picker1->isPressed());
+            QCOMPARE(mouseEntered.count(), 1);
+            QCOMPARE(mouseExited.count(), 1);
+        }
     }
 
     void shouldDispatchMouseEventFromChildren_data()
@@ -1156,77 +1192,87 @@ private Q_SLOTS:
         Qt3DRender::Render::PickBoundingVolumeJob pickBVJob;
         initializePickBoundingVolumeJob(&pickBVJob, test.data());
 
-        auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(400.0, 300.0),
-                                 Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        pickBVJob.processMouseEvent(nullptr, &event);
-        bool earlyReturn = !pickBVJob.runHelper();
-        Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
+        {
+            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(400.0, 300.0),
+                                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            pickBVJob.processMouseEvent(nullptr, &event);
+            bool earlyReturn = !pickBVJob.runHelper();
+            Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
 
-        // THEN -> Pressed
-        QVERIFY(!earlyReturn);
-        QVERIFY(backendPicker->isPressed());
-        QVERIFY(picker->isPressed());
-        QCOMPARE(mouseButtonPressedSpy.count(), backAndFrontPicking ? 2 : 1);
-        QCOMPARE(mouseMovedSpy.count(), 0);
-        QCOMPARE(mouseButtonReleasedSpy.count(), 0);
-        QCOMPARE(mouseClickedSpy.count(), 0);
+            // THEN -> Pressed
+            QVERIFY(!earlyReturn);
+            QVERIFY(backendPicker->isPressed());
+            QVERIFY(picker->isPressed());
+            QCOMPARE(mouseButtonPressedSpy.count(), backAndFrontPicking ? 2 : 1);
+            QCOMPARE(mouseMovedSpy.count(), 0);
+            QCOMPARE(mouseButtonReleasedSpy.count(), 0);
+            QCOMPARE(mouseClickedSpy.count(), 0);
+        }
 
-        // WHEN -> Move on same object
         mouseButtonPressedSpy.clear();
-        event = QMouseEvent(QMouseEvent::MouseMove, QPointF(400.0, 300.0),
-                            Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        pickBVJob.processMouseEvent(nullptr, &event);
-        earlyReturn = !pickBVJob.runHelper();
-        Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
 
-        // THEN -> Moved
-        QVERIFY(!earlyReturn);
-        QVERIFY(backendPicker->isPressed());
-        QVERIFY(picker->isPressed());
-        QCOMPARE(mouseButtonPressedSpy.count(), 0);
-        QCOMPARE(mouseMovedSpy.count(), backAndFrontPicking ? 2 : 1);
-        QCOMPARE(mouseButtonReleasedSpy.count(), 0);
-        QCOMPARE(mouseClickedSpy.count(), 0);
+        {
+            // WHEN -> Move on same object
+            auto event = QMouseEvent(QMouseEvent::MouseMove, QPointF(400.0, 300.0),
+                                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            pickBVJob.processMouseEvent(nullptr, &event);
+            bool earlyReturn = !pickBVJob.runHelper();
+            Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
+
+            // THEN -> Moved
+            QVERIFY(!earlyReturn);
+            QVERIFY(backendPicker->isPressed());
+            QVERIFY(picker->isPressed());
+            QCOMPARE(mouseButtonPressedSpy.count(), 0);
+            QCOMPARE(mouseMovedSpy.count(), backAndFrontPicking ? 2 : 1);
+            QCOMPARE(mouseButtonReleasedSpy.count(), 0);
+            QCOMPARE(mouseClickedSpy.count(), 0);
+        }
+
+        mouseMovedSpy.clear();
 
         // WHEN -> Release on object
-        mouseMovedSpy.clear();
-        event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(400.0, 300.0),
-                            Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        pickBVJob.processMouseEvent(nullptr, &event);
-        earlyReturn = !pickBVJob.runHelper();
-        Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
+        {
+            auto event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(400.0, 300.0),
+                                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            pickBVJob.processMouseEvent(nullptr, &event);
+            bool earlyReturn = !pickBVJob.runHelper();
+            Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
 
-        // THEN -> Released + Clicked
-        QVERIFY(!earlyReturn);
-        QVERIFY(!backendPicker->isPressed());
-        QVERIFY(!picker->isPressed());
-        QCOMPARE(mouseButtonPressedSpy.count(), 0);
-        QCOMPARE(mouseMovedSpy.count(), 0);
-        QCOMPARE(mouseButtonReleasedSpy.count(), 1);
-        QCOMPARE(mouseClickedSpy.count(), 1);
+            // THEN -> Released + Clicked
+            QVERIFY(!earlyReturn);
+            QVERIFY(!backendPicker->isPressed());
+            QVERIFY(!picker->isPressed());
+            QCOMPARE(mouseButtonPressedSpy.count(), 0);
+            QCOMPARE(mouseMovedSpy.count(), 0);
+            QCOMPARE(mouseButtonReleasedSpy.count(), 1);
+            QCOMPARE(mouseClickedSpy.count(), 1);
+        }
 
         // WHEN -> Release outside of object
         mouseButtonPressedSpy.clear();
         mouseMovedSpy.clear();
         mouseButtonReleasedSpy.clear();
 
-        event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(400., 300.),
-                            Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        pickBVJob.processMouseEvent(nullptr, &event);
-        event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(0., 0.),
-                            Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        pickBVJob.processMouseEvent(nullptr, &event);
-        earlyReturn = !pickBVJob.runHelper();
-        Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
+        {
+            auto event1 = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(400., 300.),
+                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            pickBVJob.processMouseEvent(nullptr, &event1);
+            auto event2 = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(0., 0.),
+                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            pickBVJob.processMouseEvent(nullptr, &event2);
+            bool earlyReturn = !pickBVJob.runHelper();
+            Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
 
-        // THEN -> Released
-        QVERIFY(!earlyReturn);
-        QVERIFY(!backendPicker->isPressed());
-        QVERIFY(!picker->isPressed());
-        QCOMPARE(mouseButtonPressedSpy.count(), backAndFrontPicking ? 2 : 1);
-        QCOMPARE(mouseMovedSpy.count(), 0);
-        QCOMPARE(mouseButtonReleasedSpy.count(), 1);
-        QCOMPARE(mouseClickedSpy.count(), 1);
+            // THEN -> Released
+            QVERIFY(!earlyReturn);
+            QVERIFY(!backendPicker->isPressed());
+            QVERIFY(!picker->isPressed());
+            QCOMPARE(mouseButtonPressedSpy.count(), backAndFrontPicking ? 2 : 1);
+            QCOMPARE(mouseMovedSpy.count(), 0);
+            QCOMPARE(mouseButtonReleasedSpy.count(), 1);
+            QCOMPARE(mouseClickedSpy.count(), 1);
+        }
     }
 
     void checkPickerGrabbing_data()
@@ -1320,50 +1366,54 @@ private Q_SLOTS:
         Qt3DRender::Render::PickBoundingVolumeJob pickBVJob;
         initializePickBoundingVolumeJob(&pickBVJob, test.data());
 
-        auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(320., 303.),
-                                 Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        pickBVJob.processMouseEvent(nullptr, &event);
-        bool earlyReturn = !pickBVJob.runHelper();
-        Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
+        {
+            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(320., 303.),
+                                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            pickBVJob.processMouseEvent(nullptr, &event);
+            bool earlyReturn = !pickBVJob.runHelper();
+            Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
 
-        // THEN -> Pressed
-        QVERIFY(!earlyReturn);
-        QVERIFY(backendPicker1->isPressed());
-        QVERIFY(picker1->isPressed());
-
-        QCOMPARE(mouseButtonPressedSpy1.count(), backAndFrontPicking ? 2 : 1);
-        QCOMPARE(mouseMovedSpy1.count(), 0);
-        QCOMPARE(mouseButtonReleasedSpy1.count(), 0);
-        QCOMPARE(mouseClickedSpy1.count(), 0);
-        QCOMPARE(mouseEntered1.count(), 0);
-        QCOMPARE(mouseExited1.count(), 0);
-
-        // WHEN -> Move on next object, show stay on previous picker unless all picks are requested
-        event = QMouseEvent(QMouseEvent::MouseMove, QPointF(280., 303.),
-                            Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        pickBVJob.processMouseEvent(nullptr, &event);
-        earlyReturn = !pickBVJob.runHelper();
-        Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
-
-        // THEN -> Moved over the second picker, is the first one still pressed
-        QVERIFY(!earlyReturn);
-        if (pickResultMode != Qt3DRender::QPickingSettings::AllPicks) {
+            // THEN -> Pressed
+            QVERIFY(!earlyReturn);
             QVERIFY(backendPicker1->isPressed());
             QVERIFY(picker1->isPressed());
-            QCOMPARE(mouseButtonPressedSpy1.count(), 1);
-            QCOMPARE(mouseMovedSpy1.count(), 1);
+
+            QCOMPARE(mouseButtonPressedSpy1.count(), backAndFrontPicking ? 2 : 1);
+            QCOMPARE(mouseMovedSpy1.count(), 0);
             QCOMPARE(mouseButtonReleasedSpy1.count(), 0);
             QCOMPARE(mouseClickedSpy1.count(), 0);
             QCOMPARE(mouseEntered1.count(), 0);
             QCOMPARE(mouseExited1.count(), 0);
-        } else {
-            QVERIFY(!picker2->isPressed());
-            QCOMPARE(mouseButtonPressedSpy2.count(), 0);
-            QCOMPARE(mouseMovedSpy2.count(), backAndFrontPicking ? 2 : 1);
-            QCOMPARE(mouseButtonReleasedSpy2.count(), 0);
-            QCOMPARE(mouseClickedSpy2.count(), 0);
-            QCOMPARE(mouseEntered2.count(), 1);
-            QCOMPARE(mouseExited2.count(), 0);
+        }
+
+        {
+            // WHEN -> Move on next object, show stay on previous picker unless all picks are requested
+            auto event = QMouseEvent(QMouseEvent::MouseMove, QPointF(280., 303.),
+                                Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            pickBVJob.processMouseEvent(nullptr, &event);
+            bool earlyReturn = !pickBVJob.runHelper();
+            Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
+
+            // THEN -> Moved over the second picker, is the first one still pressed
+            QVERIFY(!earlyReturn);
+            if (pickResultMode != Qt3DRender::QPickingSettings::AllPicks) {
+                QVERIFY(backendPicker1->isPressed());
+                QVERIFY(picker1->isPressed());
+                QCOMPARE(mouseButtonPressedSpy1.count(), 1);
+                QCOMPARE(mouseMovedSpy1.count(), 1);
+                QCOMPARE(mouseButtonReleasedSpy1.count(), 0);
+                QCOMPARE(mouseClickedSpy1.count(), 0);
+                QCOMPARE(mouseEntered1.count(), 0);
+                QCOMPARE(mouseExited1.count(), 0);
+            } else {
+                QVERIFY(!picker2->isPressed());
+                QCOMPARE(mouseButtonPressedSpy2.count(), 0);
+                QCOMPARE(mouseMovedSpy2.count(), backAndFrontPicking ? 2 : 1);
+                QCOMPARE(mouseButtonReleasedSpy2.count(), 0);
+                QCOMPARE(mouseClickedSpy2.count(), 0);
+                QCOMPARE(mouseEntered2.count(), 1);
+                QCOMPARE(mouseExited2.count(), 0);
+            }
         }
     }
 
@@ -1485,43 +1535,47 @@ private Q_SLOTS:
         Qt3DRender::Render::PickBoundingVolumeJob pickBVJob;
         initializePickBoundingVolumeJob(&pickBVJob, test.data());
 
-        auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(280., 300.),
-                                 Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        pickBVJob.processMouseEvent(nullptr, &event);
-        bool earlyReturn = !pickBVJob.runHelper();
-        Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
+        {
+            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(280., 300.),
+                                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            pickBVJob.processMouseEvent(nullptr, &event);
+            bool earlyReturn = !pickBVJob.runHelper();
+            Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
 
-        // THEN -> Pressed
-        QVERIFY(!earlyReturn);
-        QVERIFY(backendPicker->isPressed());
-        QVERIFY(picker->isPressed());
-        QCOMPARE(mouseButtonPressedSpy.count(), 1);
-        QCOMPARE(mouseMovedSpy.count(), 0);
-        QCOMPARE(mouseButtonReleasedSpy.count(), 0);
-        QCOMPARE(mouseClickedSpy.count(), 0);
-        QCOMPARE(mouseEntered.count(), 0);
-        QCOMPARE(mouseExited.count(), 0);
+            // THEN -> Pressed
+            QVERIFY(!earlyReturn);
+            QVERIFY(backendPicker->isPressed());
+            QVERIFY(picker->isPressed());
+            QCOMPARE(mouseButtonPressedSpy.count(), 1);
+            QCOMPARE(mouseMovedSpy.count(), 0);
+            QCOMPARE(mouseButtonReleasedSpy.count(), 0);
+            QCOMPARE(mouseClickedSpy.count(), 0);
+            QCOMPARE(mouseEntered.count(), 0);
+            QCOMPARE(mouseExited.count(), 0);
+        }
 
         // WHEN reset -> Presset on object in vp2
         backendPicker->cleanup();
         backendPicker->setEnabled(true);
 
-        event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(320., 300.),
-                            Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        pickBVJob.processMouseEvent(nullptr, &event);
-        earlyReturn = !pickBVJob.runHelper();
-        Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
+        {
+            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(320., 300.),
+                                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            pickBVJob.processMouseEvent(nullptr, &event);
+            bool earlyReturn = !pickBVJob.runHelper();
+            Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
 
-        // THEN -> Nothing happened
-        QVERIFY(!earlyReturn);
-        QVERIFY(!backendPicker->isPressed());
-        QVERIFY(picker->isPressed());
-        QCOMPARE(mouseButtonPressedSpy.count(), 1);
-        QCOMPARE(mouseMovedSpy.count(), 0);
-        QCOMPARE(mouseButtonReleasedSpy.count(), 0);
-        QCOMPARE(mouseClickedSpy.count(), 0);
-        QCOMPARE(mouseEntered.count(), 0);
-        QCOMPARE(mouseExited.count(), 0);
+            // THEN -> Nothing happened
+            QVERIFY(!earlyReturn);
+            QVERIFY(!backendPicker->isPressed());
+            QVERIFY(picker->isPressed());
+            QCOMPARE(mouseButtonPressedSpy.count(), 1);
+            QCOMPARE(mouseMovedSpy.count(), 0);
+            QCOMPARE(mouseButtonReleasedSpy.count(), 0);
+            QCOMPARE(mouseClickedSpy.count(), 0);
+            QCOMPARE(mouseEntered.count(), 0);
+            QCOMPARE(mouseExited.count(), 0);
+        }
     }
 
     void checkMultipleRayDirections_data()
@@ -1687,55 +1741,59 @@ private Q_SLOTS:
             initializePickBoundingVolumeJob(&pickBVJob, test.data());
 
             // WHEN -> Pressed on object
-            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(300., 300.),
-                                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-            pickBVJob.processMouseEvent(nullptr, &event);
-            bool earlyReturn = !pickBVJob.runHelper();
-            Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
+            {
+                auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(300., 300.),
+                                         Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+                pickBVJob.processMouseEvent(nullptr, &event);
+                bool earlyReturn = !pickBVJob.runHelper();
+                Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
 
-            // THEN -> Select picker with highest priority
-            QVERIFY(!earlyReturn);
-            QVERIFY(backendPicker1->isPressed());
-            QVERIFY(picker1->isPressed());
-            QCOMPARE(mouseButtonPressedSpy1.count(), 1);
-            QCOMPARE(mouseMovedSpy1.count(), 0);
-            QCOMPARE(mouseButtonReleasedSpy1.count(), 0);
-            QCOMPARE(mouseClickedSpy1.count(), 0);
-            QCOMPARE(mouseEntered1.count(), 0);
-            QCOMPARE(mouseExited1.count(), 0);
+                // THEN -> Select picker with highest priority
+                QVERIFY(!earlyReturn);
+                QVERIFY(backendPicker1->isPressed());
+                QVERIFY(picker1->isPressed());
+                QCOMPARE(mouseButtonPressedSpy1.count(), 1);
+                QCOMPARE(mouseMovedSpy1.count(), 0);
+                QCOMPARE(mouseButtonReleasedSpy1.count(), 0);
+                QCOMPARE(mouseClickedSpy1.count(), 0);
+                QCOMPARE(mouseEntered1.count(), 0);
+                QCOMPARE(mouseExited1.count(), 0);
 
-            QVERIFY(!backendPicker2->isPressed());
-            QVERIFY(!picker2->isPressed());
-            QCOMPARE(mouseButtonPressedSpy2.count(), 0);
-            QCOMPARE(mouseMovedSpy2.count(), 0);
-            QCOMPARE(mouseButtonReleasedSpy2.count(), 0);
-            QCOMPARE(mouseClickedSpy2.count(), 0);
-            QCOMPARE(mouseEntered2.count(), 0);
-            QCOMPARE(mouseExited2.count(), 0);
+                QVERIFY(!backendPicker2->isPressed());
+                QVERIFY(!picker2->isPressed());
+                QCOMPARE(mouseButtonPressedSpy2.count(), 0);
+                QCOMPARE(mouseMovedSpy2.count(), 0);
+                QCOMPARE(mouseButtonReleasedSpy2.count(), 0);
+                QCOMPARE(mouseClickedSpy2.count(), 0);
+                QCOMPARE(mouseEntered2.count(), 0);
+                QCOMPARE(mouseExited2.count(), 0);
+            }
 
-            event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(300., 300.),
-                                Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-            pickBVJob.processMouseEvent(nullptr, &event);
-            pickBVJob.runHelper();
-            Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
+            {
+                auto event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(300., 300.),
+                                         Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+                pickBVJob.processMouseEvent(nullptr, &event);
+                pickBVJob.runHelper();
+                Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
 
-            QVERIFY(!backendPicker1->isPressed());
-            QVERIFY(!picker1->isPressed());
-            QCOMPARE(mouseButtonPressedSpy1.count(), 1);
-            QCOMPARE(mouseMovedSpy1.count(), 0);
-            QCOMPARE(mouseButtonReleasedSpy1.count(), 1);
-            QCOMPARE(mouseClickedSpy1.count(), 1);
-            QCOMPARE(mouseEntered1.count(), 0);
-            QCOMPARE(mouseExited1.count(), 0);
+                QVERIFY(!backendPicker1->isPressed());
+                QVERIFY(!picker1->isPressed());
+                QCOMPARE(mouseButtonPressedSpy1.count(), 1);
+                QCOMPARE(mouseMovedSpy1.count(), 0);
+                QCOMPARE(mouseButtonReleasedSpy1.count(), 1);
+                QCOMPARE(mouseClickedSpy1.count(), 1);
+                QCOMPARE(mouseEntered1.count(), 0);
+                QCOMPARE(mouseExited1.count(), 0);
 
-            QVERIFY(!backendPicker2->isPressed());
-            QVERIFY(!picker2->isPressed());
-            QCOMPARE(mouseButtonPressedSpy2.count(), 0);
-            QCOMPARE(mouseMovedSpy2.count(), 0);
-            QCOMPARE(mouseButtonReleasedSpy2.count(), 0);
-            QCOMPARE(mouseClickedSpy2.count(), 0);
-            QCOMPARE(mouseEntered2.count(), 0);
-            QCOMPARE(mouseExited2.count(), 0);
+                QVERIFY(!backendPicker2->isPressed());
+                QVERIFY(!picker2->isPressed());
+                QCOMPARE(mouseButtonPressedSpy2.count(), 0);
+                QCOMPARE(mouseMovedSpy2.count(), 0);
+                QCOMPARE(mouseButtonReleasedSpy2.count(), 0);
+                QCOMPARE(mouseClickedSpy2.count(), 0);
+                QCOMPARE(mouseEntered2.count(), 0);
+                QCOMPARE(mouseExited2.count(), 0);
+            }
         }
 
         mouseButtonPressedSpy1.clear();
@@ -1751,55 +1809,59 @@ private Q_SLOTS:
             initializePickBoundingVolumeJob(&pickBVJob, test.data());
 
             // WHEN -> Pressed on object
-            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(300., 300.),
-                                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-            pickBVJob.processMouseEvent(nullptr, &event);
-            bool earlyReturn = !pickBVJob.runHelper();
-            Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
+            {
+                auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(300., 300.),
+                                         Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+                pickBVJob.processMouseEvent(nullptr, &event);
+                bool earlyReturn = !pickBVJob.runHelper();
+                Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
 
-            // THEN -> Select picker with highest priority
-            QVERIFY(!earlyReturn);
-            QVERIFY(!backendPicker1->isPressed());
-            QVERIFY(!picker1->isPressed());
-            QCOMPARE(mouseButtonPressedSpy1.count(), 0);
-            QCOMPARE(mouseMovedSpy1.count(), 0);
-            QCOMPARE(mouseButtonReleasedSpy1.count(), 0);
-            QCOMPARE(mouseClickedSpy1.count(), 0);
-            QCOMPARE(mouseEntered1.count(), 0);
-            QCOMPARE(mouseExited1.count(), 0);
+                // THEN -> Select picker with highest priority
+                QVERIFY(!earlyReturn);
+                QVERIFY(!backendPicker1->isPressed());
+                QVERIFY(!picker1->isPressed());
+                QCOMPARE(mouseButtonPressedSpy1.count(), 0);
+                QCOMPARE(mouseMovedSpy1.count(), 0);
+                QCOMPARE(mouseButtonReleasedSpy1.count(), 0);
+                QCOMPARE(mouseClickedSpy1.count(), 0);
+                QCOMPARE(mouseEntered1.count(), 0);
+                QCOMPARE(mouseExited1.count(), 0);
 
-            QVERIFY(backendPicker2->isPressed());
-            QVERIFY(picker2->isPressed());
-            QCOMPARE(mouseButtonPressedSpy2.count(), 1);
-            QCOMPARE(mouseMovedSpy2.count(), 0);
-            QCOMPARE(mouseButtonReleasedSpy2.count(), 0);
-            QCOMPARE(mouseClickedSpy2.count(), 0);
-            QCOMPARE(mouseEntered2.count(), 0);
-            QCOMPARE(mouseExited2.count(), 0);
+                QVERIFY(backendPicker2->isPressed());
+                QVERIFY(picker2->isPressed());
+                QCOMPARE(mouseButtonPressedSpy2.count(), 1);
+                QCOMPARE(mouseMovedSpy2.count(), 0);
+                QCOMPARE(mouseButtonReleasedSpy2.count(), 0);
+                QCOMPARE(mouseClickedSpy2.count(), 0);
+                QCOMPARE(mouseEntered2.count(), 0);
+                QCOMPARE(mouseExited2.count(), 0);
+            }
 
-            event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(300., 300.),
-                                Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-            pickBVJob.processMouseEvent(nullptr, &event);
-            pickBVJob.runHelper();
-            Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
+            {
+                auto event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(300., 300.),
+                                         Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+                pickBVJob.processMouseEvent(nullptr, &event);
+                pickBVJob.runHelper();
+                Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
 
-            QVERIFY(!backendPicker1->isPressed());
-            QVERIFY(!picker1->isPressed());
-            QCOMPARE(mouseButtonPressedSpy1.count(), 0);
-            QCOMPARE(mouseMovedSpy1.count(), 0);
-            QCOMPARE(mouseButtonReleasedSpy1.count(), 0);
-            QCOMPARE(mouseClickedSpy1.count(), 0);
-            QCOMPARE(mouseEntered1.count(), 0);
-            QCOMPARE(mouseExited1.count(), 0);
+                QVERIFY(!backendPicker1->isPressed());
+                QVERIFY(!picker1->isPressed());
+                QCOMPARE(mouseButtonPressedSpy1.count(), 0);
+                QCOMPARE(mouseMovedSpy1.count(), 0);
+                QCOMPARE(mouseButtonReleasedSpy1.count(), 0);
+                QCOMPARE(mouseClickedSpy1.count(), 0);
+                QCOMPARE(mouseEntered1.count(), 0);
+                QCOMPARE(mouseExited1.count(), 0);
 
-            QVERIFY(!backendPicker2->isPressed());
-            QVERIFY(!picker2->isPressed());
-            QCOMPARE(mouseButtonPressedSpy2.count(), 1);
-            QCOMPARE(mouseMovedSpy2.count(), 0);
-            QCOMPARE(mouseButtonReleasedSpy2.count(), 1);
-            QCOMPARE(mouseClickedSpy2.count(), 1);
-            QCOMPARE(mouseEntered2.count(), 0);
-            QCOMPARE(mouseExited2.count(), 0);
+                QVERIFY(!backendPicker2->isPressed());
+                QVERIFY(!picker2->isPressed());
+                QCOMPARE(mouseButtonPressedSpy2.count(), 1);
+                QCOMPARE(mouseMovedSpy2.count(), 0);
+                QCOMPARE(mouseButtonReleasedSpy2.count(), 1);
+                QCOMPARE(mouseClickedSpy2.count(), 1);
+                QCOMPARE(mouseEntered2.count(), 0);
+                QCOMPARE(mouseExited2.count(), 0);
+            }
         }
     }
 

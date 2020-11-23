@@ -1639,12 +1639,6 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const std::vector
                     m_imGuiRenderer->setCapabilities(m_settings->capabilities());
             }
 
-            {
-                for (auto &keyEvent: m_frameKeyEvents)
-                    m_imGuiRenderer->processEvent(&keyEvent);
-                for (auto &mouseEvent: m_frameMouseEvents)
-                    m_imGuiRenderer->processEvent(&mouseEvent.second);
-            }
             m_imGuiRenderer->renderDebugOverlay(renderViews, renderView, m_jobsInLastFrame);
         }
 #endif

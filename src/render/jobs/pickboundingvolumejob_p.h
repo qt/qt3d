@@ -65,6 +65,7 @@
 #include <QSharedPointer>
 
 #include <vector>
+#include <memory>
 
 QT_BEGIN_NAMESPACE
 
@@ -109,7 +110,7 @@ private:
 
     void clearPreviouslyHoveredPickers();
 
-    std::vector<std::pair<QObject*, QMouseEvent>> m_pendingMouseEvents;
+    std::vector<std::pair<QObject*, std::unique_ptr<QMouseEvent>>> m_pendingMouseEvents;
     bool m_pickersDirty;
     bool m_oneHoverAtLeast;
     HObjectPicker m_currentPicker;

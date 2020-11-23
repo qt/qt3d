@@ -45,6 +45,8 @@
 #include <QtCore/QObject>
 #include <QtGui/QMouseEvent>
 
+#include <memory>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
@@ -59,7 +61,6 @@ class Q_3DINPUTSHARED_EXPORT QMouseEvent : public QObject
     Q_PROPERTY(int buttons READ buttons CONSTANT)
     Q_PROPERTY(Qt3DInput::QMouseEvent::Modifiers modifiers READ modifiers CONSTANT)
     Q_PROPERTY(bool accepted READ isAccepted WRITE setAccepted)
-
 public:
     enum Buttons {
         LeftButton = Qt::LeftButton,
@@ -84,25 +85,25 @@ public:
     explicit QMouseEvent(const QT_PREPEND_NAMESPACE(QMouseEvent) &e);
     ~QMouseEvent();
 
-    inline int x() const { return int(m_event.position().x()); }
-    inline int y() const { return int(m_event.position().y()); }
+    inline int x() const { return int(m_event->position().x()); }
+    inline int y() const { return int(m_event->position().y()); }
     inline bool wasHeld() const {
 #if QT_CONFIG(gestures)
-      return static_cast<Qt::GestureType>(m_event.type()) == Qt::TapAndHoldGesture;
+        return static_cast<Qt::GestureType>(m_event->type()) == Qt::TapAndHoldGesture;
 #else
-      return false;
+        return false;
 #endif
     }
     Buttons button() const;
     int buttons() const;
     Modifiers modifiers() const;
 
-    inline bool isAccepted() const { return m_event.isAccepted(); }
-    inline void setAccepted(bool accepted) { m_event.setAccepted(accepted); }
-    inline QEvent::Type type() const { return m_event.type(); }
+    inline bool isAccepted() const { return m_event->isAccepted(); }
+    inline void setAccepted(bool accepted) { m_event->setAccepted(accepted); }
+    inline QEvent::Type type() const { return m_event->type(); }
 
 private:
-    QT_PREPEND_NAMESPACE(QMouseEvent) m_event;
+    std::unique_ptr<QT_PREPEND_NAMESPACE(QMouseEvent)> m_event;
 };
 
 typedef QSharedPointer<QMouseEvent> QMouseEventPtr;
@@ -142,18 +143,18 @@ public:
     explicit QWheelEvent(const QT_PREPEND_NAMESPACE(QWheelEvent) &e);
     ~QWheelEvent();
 
-    inline int x() const { return int(m_event.position().x()); }
-    inline int y() const { return int(m_event.position().y()); }
-    inline QPoint angleDelta() const { return m_event.angleDelta(); }
+    inline int x() const { return int(m_event->position().x()); }
+    inline int y() const { return int(m_event->position().y()); }
+    inline QPoint angleDelta() const { return m_event->angleDelta(); }
     int buttons() const;
     Modifiers modifiers() const;
 
-    inline bool isAccepted() const { return m_event.isAccepted(); }
-    inline void setAccepted(bool accepted) { m_event.setAccepted(accepted); }
-    inline QEvent::Type type() const { return m_event.type(); }
+    inline bool isAccepted() const { return m_event->isAccepted(); }
+    inline void setAccepted(bool accepted) { m_event->setAccepted(accepted); }
+    inline QEvent::Type type() const { return m_event->type(); }
 
 private:
-    QT_PREPEND_NAMESPACE(QWheelEvent) m_event;
+    std::unique_ptr<QT_PREPEND_NAMESPACE(QWheelEvent)> m_event;
 };
 
 typedef QSharedPointer<QWheelEvent> QWheelEventPtr;
