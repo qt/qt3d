@@ -60,25 +60,6 @@ PickEventFilter::~PickEventFilter()
 
 /*!
     \internal
-    Called from a worker thread in the thread pool so be sure to
-    mutex protect the data.
-*/
-QList<QPair<QObject *, QMouseEvent> > PickEventFilter::pendingMouseEvents()
-{
-    QList<QPair<QObject*, QMouseEvent>> pendingEvents(m_pendingMouseEvents);
-    m_pendingMouseEvents.clear();
-    return pendingEvents;
-}
-
-QList<QKeyEvent> PickEventFilter::pendingKeyEvents()
-{
-    QList<QKeyEvent> pendingEvents(m_pendingKeyEvents);
-    m_pendingKeyEvents.clear();
-    return pendingEvents;
-}
-
-/*!
-    \internal
     Called from the main thread.
 */
 bool PickEventFilter::eventFilter(QObject *obj, QEvent *e)
@@ -87,19 +68,16 @@ bool PickEventFilter::eventFilter(QObject *obj, QEvent *e)
     case QEvent::MouseButtonPress:
     case QEvent::MouseButtonRelease:
     case QEvent::MouseMove:
-        m_pendingMouseEvents.push_back({obj, QMouseEvent(*static_cast<QMouseEvent *>(e))});
         return m_aspect->processMouseEvent(obj, static_cast<QMouseEvent *>(e));
     case QEvent::HoverMove: {
         QHoverEvent *he = static_cast<QHoverEvent *>(e);
         auto mouseEvent = QMouseEvent(QEvent::MouseMove,
                                       he->position(), Qt::NoButton, Qt::NoButton,
                                       he->modifiers());
-        m_pendingMouseEvents.push_back({obj, mouseEvent});
         return m_aspect->processMouseEvent(obj, &mouseEvent);
         }
     case QEvent::KeyPress:
     case QEvent::KeyRelease:
-        m_pendingKeyEvents.push_back(QKeyEvent(*static_cast<QKeyEvent *>(e)));
         return m_aspect->processKeyEvent(obj, static_cast<QKeyEvent *>(e));
     default:
         break;

@@ -40,6 +40,7 @@
 #ifndef QT3DANIMATION_QANIMATIONCLIPDATA_H
 #define QT3DANIMATION_QANIMATIONCLIPDATA_H
 
+#include <QtCore/qmetatype.h>
 #include <QtCore/qscopedpointer.h>
 #include <QtCore/qstring.h>
 #include <Qt3DAnimation/qt3danimation_global.h>

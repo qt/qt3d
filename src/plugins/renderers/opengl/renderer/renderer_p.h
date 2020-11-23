@@ -419,8 +419,6 @@ private:
     QSharedPointer<ResourceAccessor> m_scene2DResourceAccessor;
 
     Debug::ImGuiRenderer *m_imGuiRenderer;
-    QList<QPair<QObject *, QMouseEvent>> m_frameMouseEvents;
-    QList<QKeyEvent> m_frameKeyEvents;
     int m_jobsInLastFrame;
 };
 
