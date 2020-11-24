@@ -61,23 +61,14 @@ Material {
         Parameter { name: "finalCollisionFactor"; value: finalCollisionFactor }
     ]
 
-    ShaderProgram {
-        id: computeShader
-        computeShaderCode: loadSource("qrc:/particles.comp")
-    }
-
-    ShaderProgram {
-        id: drawShader
-        vertexShaderCode: loadSource("qrc:/particles.vert")
-        fragmentShaderCode: loadSource("qrc:/particles.frag")
-    }
-
     effect: Effect {
         techniques: [
             Technique {
                 renderPasses: [
                     RenderPass {
-                        shaderProgram: computeShader
+                        shaderProgram: ShaderProgram {
+                            computeShaderCode: loadSource("qrc:/shaders/gl43/particles.comp")
+                        }
                         // We set the buffer as the parameter data
                         parameters: [
                             Parameter { name: "Particles"; value: dataBuffer }
@@ -97,7 +88,10 @@ Material {
             Technique {
                 renderPasses: [
                     RenderPass {
-                        shaderProgram: drawShader
+                        shaderProgram: ShaderProgram {
+                            vertexShaderCode: loadSource("qrc:/shaders/gl43/particles.vert")
+                            fragmentShaderCode: loadSource("qrc:/shaders/gl43/particles.frag")
+                        }
                         // We assume the mesh to be drawn will also receive
                         // Vertex buffers attributes that will be used to position and color
                     }
@@ -110,6 +104,49 @@ Material {
                     profile: GraphicsApiFilter.CoreProfile
                     majorVersion: 4
                     minorVersion: 3
+                }
+            },
+            Technique {
+                renderPasses: [
+                    RenderPass {
+                        shaderProgram: ShaderProgram {
+                            computeShaderCode: loadSource("qrc:/shaders/gl45/particles.comp")
+                        }
+                        // We set the buffer as the parameter data
+                        parameters: [
+                            Parameter { name: "Particles"; value: dataBuffer }
+                        ]
+                    }
+                ]
+                filterKeys: [
+                    FilterKey { name: "type"; value: "compute" }
+                ]
+                graphicsApiFilter {
+                    api: GraphicsApiFilter.RHI
+                    profile: GraphicsApiFilter.NoProfile
+                    majorVersion: 1
+                    minorVersion: 0
+                }
+            },
+            Technique {
+                renderPasses: [
+                    RenderPass {
+                        shaderProgram: ShaderProgram {
+                            vertexShaderCode: loadSource("qrc:/shaders/gl45/particles.vert")
+                            fragmentShaderCode: loadSource("qrc:/shaders/gl45/particles.frag")
+                        }
+                        // We assume the mesh to be drawn will also receive
+                        // Vertex buffers attributes that will be used to position and color
+                    }
+                ]
+                filterKeys: [
+                    FilterKey { name: "type"; value: "draw" }
+                ]
+                graphicsApiFilter {
+                    api: GraphicsApiFilter.RHI
+                    profile: GraphicsApiFilter.NoProfile
+                    majorVersion: 1
+                    minorVersion: 0
                 }
             }
         ] // techniques

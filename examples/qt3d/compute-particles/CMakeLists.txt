@@ -45,9 +45,12 @@ set(compute-particles_resource_files
     "ComputeMaterial.qml"
     "ParticlesScene.qml"
     "main.qml"
-    "particles.comp"
-    "particles.frag"
-    "particles.vert"
+    "shaders/gl43/particles.comp"
+    "shaders/gl43/particles.frag"
+    "shaders/gl43/particles.vert"
+    "shaders/gl45/particles.comp"
+    "shaders/gl45/particles.frag"
+    "shaders/gl45/particles.vert"
 )
 
 qt6_add_resources(compute-particles "compute-particles"
