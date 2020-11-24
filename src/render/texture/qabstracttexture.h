@@ -65,6 +65,7 @@ class Q_3DRENDERSHARED_EXPORT QAbstractTexture : public Qt3DCore::QNode
     Q_PROPERTY(int width READ width WRITE setWidth NOTIFY widthChanged)
     Q_PROPERTY(int height READ height WRITE setHeight NOTIFY heightChanged)
     Q_PROPERTY(int depth READ depth WRITE setDepth NOTIFY depthChanged)
+    Q_PROPERTY(int mipLevels READ mipLevels WRITE setMipLevels NOTIFY mipLevelsChanged)
     Q_PROPERTY(Filter magnificationFilter READ magnificationFilter WRITE setMagnificationFilter NOTIFY magnificationFilterChanged)
     Q_PROPERTY(Filter minificationFilter READ minificationFilter WRITE setMinificationFilter NOTIFY minificationFilterChanged)
     Q_PROPERTY(float maximumAnisotropy READ maximumAnisotropy WRITE setMaximumAnisotropy NOTIFY maximumAnisotropyChanged)
@@ -305,6 +306,7 @@ public:
     int depth() const;
     int layers() const;
     int samples() const;
+    int mipLevels() const;
     HandleType handleType() const;
     QVariant handle() const;
 
@@ -324,6 +326,7 @@ public Q_SLOTS:
     void setComparisonMode(ComparisonMode mode);
     void setLayers(int layers);
     void setSamples(int samples);
+    void setMipLevels(int mipLevels);
 
 Q_SIGNALS:
     void formatChanged(TextureFormat format);
@@ -341,6 +344,7 @@ Q_SIGNALS:
     void samplesChanged(int samples);
     Q_REVISION(13) void handleTypeChanged(HandleType handleType);
     Q_REVISION(13) void handleChanged(QVariant handle);
+    void mipLevelsChanged(int mipLevels);
 
 protected:
     explicit QAbstractTexture(Qt3DCore::QNode *parent = nullptr);
