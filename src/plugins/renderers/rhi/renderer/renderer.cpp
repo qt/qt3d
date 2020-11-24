@@ -918,7 +918,7 @@ void Renderer::buildGraphicsPipelines(RHIGraphicsPipeline *graphicsPipeline,
     }
 
     auto onFailure = [&] {
-        qCWarning(Backend) << "Failed to build pipeline";
+        qCWarning(Backend) << "Failed to build graphics pipeline";
     };
 
     PipelineUBOSet *uboSet = graphicsPipeline->uboSet();
@@ -1103,16 +1103,17 @@ void Renderer::buildComputePipelines(RHIComputePipeline *computePipeline,
                                      const RenderCommand &cmd)
 {
     Q_UNUSED(rv);
-    auto onFailure = [&] { computePipeline->cleanup(); };
+    auto onFailure = [&] {
+        qCWarning(Backend) << "Failed to build compute pipeline";
+    };
 
     PipelineUBOSet *uboSet = computePipeline->uboSet();
     RHIShader *shader = cmd.m_rhiShader;
 
     // Setup shaders
     const QShader& computeShader = cmd.m_rhiShader->shaderStage(QShader::ComputeStage);
-    if (!computeShader.isValid()) {
+    if (!computeShader.isValid())
         return onFailure();
-    }
 
     // Set Resource Bindings
     const std::vector<QRhiShaderResourceBinding> resourceBindings = uboSet->resourceLayout(shader);
@@ -1389,7 +1390,8 @@ Renderer::prepareCommandsSubmission(const std::vector<RenderView *> &renderViews
             } else if (command.m_type == RenderCommand::Compute) {
                 // By this time shaders have been loaded
                 RHIShader *shader = command.m_rhiShader;
-                Q_ASSERT(shader);
+                if (!shader)
+                    return;
 
                 updateComputePipeline(command, rv, i);
             }
@@ -2121,70 +2123,15 @@ Renderer::submitRenderViews(const std::vector<RHIPassInfo> &rhiPassesInfo)
             previousSurface = surface;
         }
 
-        // Apply Memory Barrier if needed
-        //        if (renderView->memoryBarrier() != QMemoryBarrier::None)
-        //            qCWarning(Backend) << "RHI Doesn't support MemoryBarrier";
-
         // Execute the render commands
         if (!executeCommandsSubmission(rhiPassInfo))
             m_lastFrameCorrect.storeRelaxed(
                     0); // something went wrong; make sure to render the next frame!
 
-        // executeCommandsSubmission takes care of restoring the stateset to the value
-        // of gc->currentContext() at the moment it was called (either
-        // renderViewStateSet or m_defaultRenderStateSet)
-        //        if (!renderView->renderCaptureNodeId().isNull()) {
-        //            RHI_UNIMPLEMENTED;
-        //*            const QRenderCaptureRequest request = renderView->renderCaptureRequest();
-        //*            const QSize size =
-        //m_submissionContext->renderTargetSize(renderView->surfaceSize());
-        //*            QRect rect(QPoint(0, 0), size);
-        //*            if (!request.rect.isEmpty())
-        //*                rect = rect.intersected(request.rect);
-        //*            QImage image;
-        //*            if (!rect.isEmpty()) {
-        //*                // Bind fbo as read framebuffer
-        //*                m_submissionContext->bindFramebuffer(m_submissionContext->activeFBO(),
-        //GraphicsHelperInterface::FBORead);
-        //*                image = m_submissionContext->readFramebuffer(rect);
-        //*            } else {
-        //*                qCWarning(Backend) << "Requested capture rectangle is outside framebuffer";
-        //*            }
-        //*            Render::RenderCapture *renderCapture =
-        //*
-        //static_cast<Render::RenderCapture*>(m_nodesManager->frameGraphManager()->lookupNode(renderView->renderCaptureNodeId()));
-        //*            renderCapture->addRenderCapture(request.captureId, image);
-        //*            if
-        //(!m_pendingRenderCaptureSendRequests.contains(renderView->renderCaptureNodeId()))
-        //* m_pendingRenderCaptureSendRequests.push_back(renderView->renderCaptureNodeId());
-        //        }
-
         //        if (renderView->isDownloadBuffersEnable())
         //        {
         //            RHI_UNIMPLEMENTED;
         ////*            downloadGLBuffers();
-        //        }
-
-        //        // Perform BlitFramebuffer operations
-        //        if (renderView->hasBlitFramebufferInfo()) {
-        //            RHI_UNIMPLEMENTED;
-        ////*            const auto &blitFramebufferInfo = renderView->blitFrameBufferInfo();
-        ////*            const QNodeId inputTargetId = blitFramebufferInfo.sourceRenderTargetId;
-        ////*            const QNodeId outputTargetId =
-        ///blitFramebufferInfo.destinationRenderTargetId;
-        ////*            const QRect inputRect = blitFramebufferInfo.sourceRect;
-        ////*            const QRect outputRect = blitFramebufferInfo.destinationRect;
-        ////*            const QRenderTargetOutput::AttachmentPoint inputAttachmentPoint =
-        ///blitFramebufferInfo.sourceAttachmentPoint;
-        ////*            const QRenderTargetOutput::AttachmentPoint outputAttachmentPoint =
-        ///blitFramebufferInfo.destinationAttachmentPoint;
-        ////*            const QBlitFramebuffer::InterpolationMethod interpolationMethod =
-        ///blitFramebufferInfo.interpolationMethod;
-        ////*            m_submissionContext->blitFramebuffer(inputTargetId, outputTargetId,
-        ///inputRect, outputRect, lastBoundFBOId,
-        ////*                                                 inputAttachmentPoint,
-        ///outputAttachmentPoint,
-        ////*                                                 interpolationMethod);
         //        }
 
         frameElapsed = timer.elapsed() - frameElapsed;
@@ -2439,80 +2386,23 @@ QAbstractFrameAdvanceService *Renderer::frameAdvanceService() const
     return static_cast<Qt3DCore::QAbstractFrameAdvanceService *>(m_vsyncFrameAdvanceService.data());
 }
 
-// Called by executeCommands
-void Renderer::performDraw(RenderCommand *command)
-{
-    QRhiCommandBuffer *cb = m_submissionContext->currentFrameCommandBuffer();
-    // Indirect Draw Calls
-    if (command->m_drawIndirect) {
-        RHI_UNIMPLEMENTED;
-    } else { // Direct Draw Calls
-
-        // TO DO: Add glMulti Draw variants
-        if (command->m_primitiveType == QGeometryRenderer::Patches) {
-            RHI_UNIMPLEMENTED;
-            //* m_submissionContext->setVerticesPerPatch(command->m_verticesPerPatch);
-        }
-
-        if (command->m_primitiveRestartEnabled) {
-            RHI_UNIMPLEMENTED;
-            //* m_submissionContext->enablePrimitiveRestart(command->m_restartIndexValue);
-        }
-
-        // TO DO: Add glMulti Draw variants
-        if (command->m_drawIndexed) {
-            cb->drawIndexed(command->m_primitiveCount, command->m_instanceCount,
-                            command->m_indexOffset, command->m_indexAttributeByteOffset,
-                            command->m_firstInstance);
-        } else {
-            cb->draw(command->m_primitiveCount, command->m_instanceCount, command->m_firstVertex,
-                     command->m_firstInstance);
-        }
-    }
-
-#if defined(QT3D_RENDER_ASPECT_RHI_DEBUG)
-    int err = m_submissionContext->openGLContext()->functions()->glGetError();
-    if (err)
-        qCWarning(Rendering) << "GL error after drawing mesh:" << QString::number(err, 16);
-#endif
-
-    //    if (command->m_primitiveRestartEnabled)
-    //        m_submissionContext->disablePrimitiveRestart();
-}
-
-bool Renderer::performCompute(QRhiCommandBuffer *cb, const RenderCommand &command)
+bool Renderer::performCompute(QRhiCommandBuffer *cb, RenderCommand &command)
 {
     RHIComputePipeline *pipeline = command.pipeline.compute();
     if (!pipeline)
         return true;
     cb->setComputePipeline(pipeline->pipeline());
-    cb->setShaderResources();
+
+    if (!setBindingAndShaderResourcesForCommand(cb, command, pipeline->uboSet()))
+        return false;
+
+    const std::vector<QRhiCommandBuffer::DynamicOffset> offsets = pipeline->uboSet()->offsets(command);
+    cb->setShaderResources(command.shaderResourceBindings,
+                           offsets.size(),
+                           offsets.data());
 
     cb->dispatch(command.m_workGroups[0], command.m_workGroups[1], command.m_workGroups[2]);
-
-
-    Q_UNUSED(command);
-    //* {
-    //*     RHIShader *shader =
-    //m_RHIResourceManagers->rhiShaderManager()->lookupResource(command->m_shaderId);
-    //*     m_submissionContext->activateShader(shader);
-    //* }
-    //* {
-    //*     m_submissionContext->setParameters(command->m_parameterPack);
-    //* }
-    //* {
-    //*     m_submissionContext->dispatchCompute(command->m_workGroups[0],
-    //*             command->m_workGroups[1],
-    //*             command->m_workGroups[2]);
-    //* }
-    // HACK: Reset the compute flag to dirty
     m_dirtyBits.marked |= AbstractRenderer::ComputeDirty;
-
-    //* #if defined(QT3D_RENDER_ASPECT_RHI_DEBUG)
-    //*     int err = m_submissionContext->openGLContext()->functions()->glGetError();
-    //*     if (err)
-    //*         qCWarning(Rendering) << "GL error after drawing mesh:" << QString::number(err, 16);
-    //* #endif
     return true;
 }
 
@@ -2644,33 +2534,8 @@ bool Renderer::performDraw(QRhiCommandBuffer *cb, const QRhiViewport &vp,
     if (scissor)
         cb->setScissor(*scissor);
 
-    // We need to create new resource bindings for each RC as each RC might potentially
-    // have different textures or reference custom UBOs (if using Parameters with UBOs directly).
-    // TO DO: We could propably check for texture and use the UBO set default ShaderResourceBindings
-    // if we only have UBOs with offsets
-    bool needsRecreate = false;
-    if (command.shaderResourceBindings == nullptr) {
-        command.shaderResourceBindings = m_submissionContext->rhi()->newShaderResourceBindings();
-        needsRecreate = true;
-    }
-
-    // TO DO: Improve this to only perform when required
-    const std::vector<QRhiShaderResourceBinding> &resourcesBindings = pipeline->uboSet()->resourceBindings(command);
-    if (command.resourcesBindings != resourcesBindings) {
-        command.resourcesBindings = std::move(resourcesBindings);
-        command.shaderResourceBindings->setBindings(command.resourcesBindings.cbegin(), command.resourcesBindings.cend());
-        needsRecreate = true;
-    }
-
-    if (needsRecreate && !command.shaderResourceBindings->create()) {
-        qCWarning(Backend) << "Failed to create ShaderResourceBindings";
+    if (!setBindingAndShaderResourcesForCommand(cb, command, pipeline->uboSet()))
         return false;
-    }
-    const std::vector<QRhiCommandBuffer::DynamicOffset> offsets = pipeline->uboSet()->offsets(command);
-
-    cb->setShaderResources(command.shaderResourceBindings,
-                           offsets.size(),
-                           offsets.data());
 
     // Send the draw command
     if (Q_UNLIKELY(!command.indexBuffer)) {
@@ -2685,6 +2550,40 @@ bool Renderer::performDraw(QRhiCommandBuffer *cb, const QRhiViewport &vp,
         cb->drawIndexed(command.m_primitiveCount, command.m_instanceCount, command.m_indexOffset,
                         command.m_indexAttributeByteOffset, command.m_firstInstance);
     }
+    return true;
+}
+
+bool Renderer::setBindingAndShaderResourcesForCommand(QRhiCommandBuffer *cb,
+                                                      RenderCommand &command,
+                                                      PipelineUBOSet *uboSet)
+{
+    // We need to create new resource bindings for each RC as each RC might potentially
+    // have different textures or reference custom UBOs (if using Parameters with UBOs directly).
+    // TO DO: We could propably check for texture and use the UBO set default ShaderResourceBindings
+    // if we only have UBOs with offsets
+    bool needsRecreate = false;
+    if (command.shaderResourceBindings == nullptr) {
+        command.shaderResourceBindings = m_submissionContext->rhi()->newShaderResourceBindings();
+        needsRecreate = true;
+    }
+
+    // TO DO: Improve this to only perform when required
+    const std::vector<QRhiShaderResourceBinding> &resourcesBindings = uboSet->resourceBindings(command);
+    if (command.resourcesBindings != resourcesBindings) {
+        command.resourcesBindings = std::move(resourcesBindings);
+        command.shaderResourceBindings->setBindings(command.resourcesBindings.cbegin(), command.resourcesBindings.cend());
+        needsRecreate = true;
+    }
+
+    if (needsRecreate && !command.shaderResourceBindings->create()) {
+        qCWarning(Backend) << "Failed to create ShaderResourceBindings";
+        return false;
+    }
+    const std::vector<QRhiCommandBuffer::DynamicOffset> offsets = uboSet->offsets(command);
+
+    cb->setShaderResources(command.shaderResourceBindings,
+                           offsets.size(),
+                           offsets.data());
     return true;
 }
 
@@ -2795,7 +2694,7 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
     };
 
     auto executeComputeRenderView = [&] (RenderView* rv) {
-        rv->forEachCommand([&] (const RenderCommand &command) {
+        rv->forEachCommand([&] (RenderCommand &command) {
             if (Q_UNLIKELY(!command.isValid()))
                 return;
 
@@ -2810,6 +2709,7 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
     // All the RVs in the current passinfo target the same RenderTarget
     // A single beginPass should take place, unless Computes RVs are intermingled
     QRhiResourceUpdateBatch *inPassUpdates = nullptr;
+    static const bool supportsCompute = m_submissionContext->rhi()->isFeatureSupported(QRhi::Compute);
 
     // Per Pass Global States
     for (RenderView *rv : renderViews) {
@@ -2823,12 +2723,15 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
 
             // There is also the possibility where we weren't either in a compute or draw pass (for the first RV)
             // hence why these conditions are like this
-            if (!inCompute) {
-                cb->beginComputePass(m_submissionContext->m_currentUpdates);
-                inCompute = true;
+            if (supportsCompute) {
+                if (!inCompute) {
+                    cb->beginComputePass(m_submissionContext->m_currentUpdates);
+                    inCompute = true;
+                }
+                executeComputeRenderView(rv);
+            } else {
+                qWarning() << "RHI backend doesn't support Compute";
             }
-
-            executeComputeRenderView(rv);
         } else {
             // Same logic than above but reversed
             if (inCompute) {

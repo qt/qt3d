@@ -53,17 +53,19 @@ QRhiBuffer::UsageFlags bufferTypeToRhi(RHIBuffer::Type t)
 {
     QRhiBuffer::UsageFlags flag{};
 
-    if (t & RHIBuffer::Type::ArrayBuffer)
+    if (t & RHIBuffer::Type::ArrayBuffer ||
+        t & RHIBuffer::Type::ShaderStorageBuffer) {
+        // We have no easy way to know if a SSBO is used as a VertexBuffer
+        // and vice versa, so we set both flags when either type is requested
+        flag |= QRhiBuffer::StorageBuffer;
         flag |= QRhiBuffer::VertexBuffer;
+    }
 
     if (t & RHIBuffer::Type::IndexBuffer)
         flag |= QRhiBuffer::IndexBuffer;
 
     if (t & RHIBuffer::Type::UniformBuffer)
         flag |= QRhiBuffer::UniformBuffer;
-
-    if (t & RHIBuffer::Type::ShaderStorageBuffer)
-        flag |= QRhiBuffer::StorageBuffer;
 
     return flag;
 }
