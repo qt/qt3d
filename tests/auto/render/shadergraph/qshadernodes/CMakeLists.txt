@@ -4,7 +4,9 @@
 ## tst_qshadernodes Test:
 #####################################################################
 
-qt_internal_add_test(tst_qshadernodes
+# special case begin
+qt_internal_add_test(tst_qt3d_qshadernodes
+# special case end
     SOURCES
         tst_qshadernodes.cpp
     PUBLIC_LIBRARIES

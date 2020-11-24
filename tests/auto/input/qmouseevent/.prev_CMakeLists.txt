@@ -1,16 +1,14 @@
-# Generated from qaction.pro.
+# Generated from qmouseevent.pro.
 
 #####################################################################
-## tst_qaction Test:
+## tst_qmouseevent Test:
 #####################################################################
 
-# special case begin
-qt_internal_add_test(tst_qt3d_qaction
-# special case end
+qt_internal_add_test(tst_qmouseevent
     SOURCES
         ../commons/testdevice.h
         ../commons/testdeviceproxy.h
-        tst_qaction.cpp
+        tst_qmouseevent.cpp
     INCLUDE_DIRECTORIES
         ../../core/common
         ../commons
@@ -23,15 +21,13 @@ qt_internal_add_test(tst_qt3d_qaction
         Qt::Gui
 )
 
-#### Keys ignored in scope 1:.:.:qaction.pro:<TRUE>:
+#### Keys ignored in scope 1:.:.:qmouseevent.pro:<TRUE>:
 # TEMPLATE = "app"
 
 ## Scopes:
 #####################################################################
 
-# special case begin
-qt_internal_extend_target(tst_qt3d_qaction CONDITION QT_FEATURE_private_tests
-# special case end
+qt_internal_extend_target(tst_qmouseevent CONDITION QT_FEATURE_private_tests
     SOURCES
         ../../core/common/qbackendnodetester.cpp ../../core/common/qbackendnodetester.h
         ../../core/common/testarbiter.h

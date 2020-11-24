@@ -1,10 +1,12 @@
 # Generated from material.pro.
 
+# special case skip regeneration
+
 #####################################################################
 ## tst_material Test:
 #####################################################################
 
-qt_internal_add_test(tst_material
+qt_internal_add_test(tst_qt3d_material
     SOURCES
         tst_material.cpp
     PUBLIC_LIBRARIES
@@ -23,4 +25,4 @@ qt_internal_add_test(tst_material
 #####################################################################
 
 include(../commons/commons.cmake)
-qt3d_setup_common_render_test(tst_material)
+qt3d_setup_common_render_test(tst_qt3d_material)
