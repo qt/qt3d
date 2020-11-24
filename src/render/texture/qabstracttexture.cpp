@@ -588,6 +588,15 @@ void QAbstractTexture::setSamples(int samples)
     }
 }
 
+void QAbstractTexture::setMipLevels(int mipLevels)
+{
+    Q_D(QAbstractTexture);
+    if (d->m_mipmapLevels != mipLevels) {
+        d->m_mipmapLevels = mipLevels;
+        emit mipLevelsChanged(mipLevels);
+    }
+}
+
 /*!
     Returns the number of samples per texel for the texture provider.
 
@@ -598,6 +607,22 @@ int QAbstractTexture::samples() const
 {
     Q_D(const QAbstractTexture);
     return d->m_samples;
+}
+
+/*!
+    \property Qt3DRender::QAbstractTexture::mipLevels
+
+    Holds the mipmap levels of the texture provider.
+ */
+/*!
+    \qmlproperty int Qt3DRender::QAbstractTexture::format
+
+    Holds the mipmap levels of the texture provider.
+ */
+int QAbstractTexture::mipLevels() const
+{
+    Q_D(const QAbstractTexture);
+    return d->m_mipmapLevels;
 }
 
 /*!

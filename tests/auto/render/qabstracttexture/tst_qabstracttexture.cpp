@@ -85,6 +85,7 @@ private Q_SLOTS:
         QCOMPARE(abstractTexture.depth(), 1);
         QCOMPARE(abstractTexture.magnificationFilter(), Qt3DRender::QAbstractTexture::Nearest);
         QCOMPARE(abstractTexture.minificationFilter(),  Qt3DRender::QAbstractTexture::Nearest);
+        QCOMPARE(abstractTexture.mipLevels(), 1);
         QCOMPARE(abstractTexture.maximumAnisotropy(), 1.0f);
         QCOMPARE(abstractTexture.comparisonFunction(), Qt3DRender::QAbstractTexture::CompareLessEqual);
         QCOMPARE(abstractTexture.comparisonMode(), Qt3DRender::QAbstractTexture::CompareNone);
@@ -328,6 +329,25 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(abstractTexture.samples(), newValue);
+            QCOMPARE(spy.count(), 0);
+        }
+        {
+            // WHEN
+            QSignalSpy spy(&abstractTexture, SIGNAL(mipLevelsChanged(int)));
+            const int newValue = 1024;
+            abstractTexture.setMipLevels(newValue);
+
+            // THEN
+            QVERIFY(spy.isValid());
+            QCOMPARE(abstractTexture.mipLevels(), newValue);
+            QCOMPARE(spy.count(), 1);
+
+            // WHEN
+            spy.clear();
+            abstractTexture.setMipLevels(newValue);
+
+            // THEN
+            QCOMPARE(abstractTexture.mipLevels(), newValue);
             QCOMPARE(spy.count(), 0);
         }
     }
@@ -666,6 +686,33 @@ private Q_SLOTS:
             QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
 
+    }
+
+    void checkMipLevelsUpdate()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        FakeTexture abstractTexture;
+        arbiter.setArbiterOnNode(&abstractTexture);
+
+        {
+            // WHEN
+            abstractTexture.setMipLevels(16);
+
+            // THEN
+            QCOMPARE(arbiter.dirtyNodes().size(), 1);
+            QCOMPARE(arbiter.dirtyNodes().front(), &abstractTexture);
+
+            arbiter.clear();
+        }
+
+        {
+            // WHEN
+            abstractTexture.setMipLevels(16);
+
+            // THEN
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
+        }
     }
 
     void checkTextureImageAdded()
