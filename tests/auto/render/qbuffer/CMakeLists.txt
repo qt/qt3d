@@ -1,10 +1,12 @@
 # Generated from qbuffer.pro.
 
+# special case skip regeneration
+
 #####################################################################
 ## tst_qbuffer Test:
 #####################################################################
 
-qt_internal_add_test(tst_qbuffer
+qt_internal_add_test(tst_qt3d_qbuffer
     SOURCES
         tst_qbuffer.cpp
     PUBLIC_LIBRARIES
@@ -23,4 +25,4 @@ qt_internal_add_test(tst_qbuffer
 #####################################################################
 
 include(../commons/commons.cmake)
-qt3d_setup_common_render_test(tst_qbuffer)
+qt3d_setup_common_render_test(tst_qt3d_qbuffer)
