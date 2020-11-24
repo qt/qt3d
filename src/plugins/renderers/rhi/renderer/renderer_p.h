@@ -160,6 +160,7 @@ class RHIResourceManagers;
 class RenderView;
 class RHIGraphicsPipeline;
 class RHIComputePipeline;
+class PipelineUBOSet;
 
 class Q_AUTOTEST_EXPORT Renderer : public AbstractRenderer
 {
@@ -362,7 +363,6 @@ private:
 
     std::vector<Qt3DCore::QNodeId> m_pendingRenderCaptureSendRequests;
 
-    void performDraw(RenderCommand *command);
     SynchronizerJobPtr m_bufferGathererJob;
     SynchronizerJobPtr m_textureGathererJob;
     SynchronizerPostFramePtr m_introspectShaderJob;
@@ -442,9 +442,12 @@ private:
     bool uploadBuffersForCommand(RHIGraphicsPipeline* graphics, RenderCommand &command);
     bool uploadUBOsForCommand(QRhiCommandBuffer *cb, const RenderView *rv,
                               const RenderCommand &command);
-    bool performCompute(QRhiCommandBuffer *cb, const RenderCommand &command);
+    bool performCompute(QRhiCommandBuffer *cb, RenderCommand &command);
     bool performDraw(QRhiCommandBuffer *cb, const QRhiViewport &vp, const QRhiScissor *scissor,
                      RenderCommand &command);
+    bool setBindingAndShaderResourcesForCommand(QRhiCommandBuffer *cb,
+                                                RenderCommand &command,
+                                                PipelineUBOSet *uboSet);
 };
 
 } // namespace Rhi
