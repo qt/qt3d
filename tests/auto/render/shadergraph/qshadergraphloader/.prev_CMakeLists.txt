@@ -4,9 +4,7 @@
 ## tst_qshadergraphloader Test:
 #####################################################################
 
-# special case begin
-qt_internal_add_test(tst_qt3d_qshadergraphloader
-# special case end
+qt_internal_add_test(tst_qshadergraphloader
     SOURCES
         tst_qshadergraphloader.cpp
     PUBLIC_LIBRARIES

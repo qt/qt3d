@@ -4,9 +4,7 @@
 ## tst_qaction Test:
 #####################################################################
 
-# special case begin
-qt_internal_add_test(tst_qt3d_qaction
-# special case end
+qt_internal_add_test(tst_qaction
     SOURCES
         ../commons/testdevice.h
         ../commons/testdeviceproxy.h
@@ -29,9 +27,7 @@ qt_internal_add_test(tst_qt3d_qaction
 ## Scopes:
 #####################################################################
 
-# special case begin
-qt_internal_extend_target(tst_qt3d_qaction CONDITION QT_FEATURE_private_tests
-# special case end
+qt_internal_extend_target(tst_qaction CONDITION QT_FEATURE_private_tests
     SOURCES
         ../../core/common/qbackendnodetester.cpp ../../core/common/qbackendnodetester.h
         ../../core/common/testarbiter.h

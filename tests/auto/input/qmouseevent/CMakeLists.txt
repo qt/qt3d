@@ -4,7 +4,9 @@
 ## tst_qmouseevent Test:
 #####################################################################
 
-qt_internal_add_test(tst_qmouseevent
+#special case begin
+qt_internal_add_test(tst_qt3d_qmouseevent
+#special case end
     SOURCES
         ../commons/testdevice.h
         ../commons/testdeviceproxy.h
@@ -27,7 +29,9 @@ qt_internal_add_test(tst_qmouseevent
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(tst_qmouseevent CONDITION QT_FEATURE_private_tests
+#special case begin
+qt_internal_extend_target(tst_qt3d_qmouseevent CONDITION QT_FEATURE_private_tests
+#special case end
     SOURCES
         ../../core/common/qbackendnodetester.cpp ../../core/common/qbackendnodetester.h
         ../../core/common/testarbiter.h

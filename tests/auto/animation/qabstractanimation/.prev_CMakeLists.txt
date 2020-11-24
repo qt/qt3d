@@ -4,10 +4,7 @@
 ## tst_qabstractanimation Test:
 #####################################################################
 
-
-# special case begin
-qt_internal_add_test(tst_qt3d_qabstractanimation
-# special case end
+qt_internal_add_test(tst_qabstractanimation
     SOURCES
         tst_qabstractanimation.cpp
     PUBLIC_LIBRARIES

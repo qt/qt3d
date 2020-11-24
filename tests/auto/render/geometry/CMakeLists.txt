@@ -1,10 +1,12 @@
 # Generated from geometry.pro.
 
+# special case skip regeneration
+
 #####################################################################
 ## tst_geometry Test:
 #####################################################################
 
-qt_internal_add_test(tst_geometry
+qt_internal_add_test(tst_qt3d_geometry
     SOURCES
         tst_geometry.cpp
     PUBLIC_LIBRARIES
@@ -23,4 +25,4 @@ qt_internal_add_test(tst_geometry
 #####################################################################
 
 include(../commons/commons.cmake)
-qt3d_setup_common_render_test(tst_geometry)
+qt3d_setup_common_render_test(tst_qt3d_geometry)

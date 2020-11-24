@@ -1,14 +1,12 @@
-# Generated from qshadergraphloader.pro.
+# Generated from qshadergraph.pro.
 
 #####################################################################
-## tst_qshadergraphloader Test:
+## tst_qshadergraph Test:
 #####################################################################
 
-# special case begin
-qt_internal_add_test(tst_qt3d_qshadergraphloader
-# special case end
+qt_internal_add_test(tst_qshadergraph
     SOURCES
-        tst_qshadergraphloader.cpp
+        tst_qshadergraph.cpp
     PUBLIC_LIBRARIES
         Qt::3DRenderPrivate
         Qt::Gui
