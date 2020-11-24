@@ -223,6 +223,7 @@ void tst_RenderTexture::checkPropertyMirroring()
     frontend.setDepth(16);
     frontend.setLayers(8);
     frontend.setSamples(32);
+    frontend.setMipLevels(8);
 
     // WHEN
     simulateInitializationSync(&frontend, &backend);
