@@ -122,29 +122,6 @@ void QBufferPrivate::setData(const QByteArray &data)
  */
 
 /*!
- * \enum QBuffer::BufferType
- *
- * The type of the buffer.
- *
- * \value VertexBuffer
- *        GL_ARRAY_BUFFER
- * \value IndexBuffer
- *        GL_ELEMENT_ARRAY_BUFFER
- * \value PixelPackBuffer
- *        GL_PIXEL_PACK_BUFFER
- * \value PixelUnpackBuffer
- *        GL_PIXEL_UNPACK_BUFFER
- * \value UniformBuffer
- *        GL_UNIFORM_BUFFER
- * \value ShaderStorageBuffer
- *        GL_SHADER_STORAGE_BUFFER
- * \value DrawIndirectBuffer
- *        GL_DRAW_INDIRECT_BUFFER
- *
- * \deprecated
- */
-
-/*!
  * \enum QBuffer::UsageType
  *
  * The type of the usage.
@@ -178,11 +155,6 @@ void QBufferPrivate::setData(const QByteArray &data)
  *        Read access
  * \value ReadWrite
  *        Write|Read
- */
-
-/*!
- * \typedef Qt3DCore::QBufferDataGeneratorPtr
- * \relates Qt3DCore::QBuffer
  */
 
 /*!

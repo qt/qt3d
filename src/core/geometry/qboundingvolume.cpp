@@ -154,42 +154,41 @@ QBoundingVolumePrivate *QBoundingVolumePrivate::get(QBoundingVolume *q)
  */
 
 /*!
- * \class Qt3DCore::QBoundingVolume
- * \inheaderfile Qt3DCore/QBoundingVolume
- * \inmodule Qt3DCore
- * \inherits Qt3DCore::QComponent
- * \since 6.0
- *
- * \brief can be used to override an entity's bounding volume.
- *
- * An entity's bounding volume is used for many operations such as
- * picking or view frustum culling. It is normally computed by
- * traversing the rendered geometry.
- *
- * QBoundingVolume can be used when the extent of the geometry is
- * known to the application so that Qt 3D does not have to
- * compute it.
- *
- * A bounding volume can be provided either as minimum and maximum
- * extent coordinates, or a separate, usually simpler, geometry
- * that approximates the rendered mesh.
- *
- * When using minimum and maximum extents, these are considered
- * to be the opposite corners of an axis aligned bounding box,
- * in the geometry's local coordinate system.
- *
- * QBoundingVolume can also be used to query the computed bounding
- * volume of a GeometryView. The implicitMinPoint and implicitMaxPoint
- * properties will be updated if the geometry changes. Note that this
- * is done asynchronously on a background thread so you should check
- * the value of implicitPointsValid before reading them.
- *
- * You can force the implicit extents to be updated by calling
- * updateImplicitBounds. This will block on the calling thread until
- * the results are available.
- *
- * \note GeometryRenderer inherits BoundingVolume and thus supports
- * reading implicit bounds or setting explicit bounds also.
+    \class Qt3DCore::QBoundingVolume
+    \inheaderfile Qt3DCore/QBoundingVolume
+    \inmodule Qt3DCore
+    \inherits Qt3DCore::QComponent
+    \since 6.0
+    \brief can be used to override the bounding volume of an entity.
+
+    An entity's bounding volume is used for many operations such as
+    picking or view frustum culling. It is normally computed by
+    traversing the rendered geometry.
+
+    QBoundingVolume can be used when the extent of the geometry is
+    known to the application so that Qt 3D does not have to
+    compute it.
+
+    A bounding volume can be provided either as minimum and maximum
+    extent coordinates, or a separate, usually simpler, geometry
+    that approximates the rendered mesh.
+
+    When using minimum and maximum extents, these are considered
+    to be the opposite corners of an axis aligned bounding box,
+    in the geometry's local coordinate system.
+
+    QBoundingVolume can also be used to query the computed bounding
+    volume of a GeometryView. The implicitMinPoint and implicitMaxPoint
+    properties will be updated if the geometry changes. Note that this
+    is done asynchronously on a background thread so you should check
+    the value of implicitPointsValid before reading them.
+
+    You can force the implicit extents to be updated by calling
+    updateImplicitBounds. This will block on the calling thread until
+    the results are available.
+
+    \note GeometryRenderer inherits BoundingVolume and thus supports
+    reading implicit bounds or setting explicit bounds also.
 */
 
 /*!
@@ -222,7 +221,7 @@ QBoundingVolume::~QBoundingVolume()
 * to compute the bounding volume.
 */
 /*!
-* \property QAttribute::view
+* \property QBoundingVolume::view
 *
 * Holds a pointer to the instance of QGeometryView which will be used, if set,
 * to compute the bounding volume.
@@ -239,7 +238,7 @@ QGeometryView *QBoundingVolume::view() const
 * Holds minimum extent of the bounding volume computed from the specified view.
 */
 /*!
-* \property QAttribute::implicitMinPoint
+* \property QBoundingVolume::implicitMinPoint
 *
 * Holds minimum extent of the bounding volume computed from the specified view.
 */
@@ -255,7 +254,7 @@ QVector3D QBoundingVolume::implicitMinPoint() const
 * Holds maximum extent of the bounding volume computed from the specified view.
 */
 /*!
-* \property QAttribute::implicitMaxPoint
+* \property QBoundingVolume::implicitMaxPoint
 *
 * Holds maximum extent of the bounding volume computed from the specified view.
 */
@@ -273,7 +272,7 @@ QVector3D QBoundingVolume::implicitMaxPoint() const
 * \sa updateImplicitBounds
 */
 /*!
-* \property QAttribute::implicitPointsValid
+* \property QBoundingVolume::implicitPointsValid
 *
 * True if a view has been assigned and the implicit extent properties are up to date.
 *
@@ -293,7 +292,7 @@ bool QBoundingVolume::areImplicitPointsValid() const
 * geometry.
 */
 /*!
-* \property QAttribute::minPoint
+* \property QBoundingVolume::minPoint
 *
 * User specified minimum extent of the bounding volume. When set (along with maximum
 * extent), this will be used internally to avoid computing the volume from the
@@ -313,7 +312,7 @@ QVector3D QBoundingVolume::minPoint() const
 * geometry.
 */
 /*!
-* \property QAttribute::maxPoint
+* \property QBoundingVolume::maxPoint
 *
 * User specified maximum extent of the bounding volume. When set (along with minimum
 * extent), this will be used internally to avoid computing the volume from the
@@ -354,10 +353,18 @@ void QBoundingVolume::setMaxPoint(const QVector3D &maxPoint)
 }
 
 /*!
-* \brief QBoundingVolume::updateImplicitBounds
+* \qmlmethod bool BoundingVolume::updateImplicitBounds()
 *
 * Updates the implicit bounds of the specified view. Returns
-* true if the computation succeeded and false otherwise.
+* \c true if the computation succeeded and false otherwise.
+*
+* \note The calculations are done in the call thread, this
+* could take significant time for large meshes.
+*/
+
+/*!
+* Updates the implicit bounds of the specified view. Returns
+* \c true if the computation succeeded and false otherwise.
 *
 * \note The calculations are done in the call thread, this
 * could take significant time for large meshes.

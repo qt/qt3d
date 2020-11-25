@@ -614,11 +614,6 @@ int QAbstractTexture::samples() const
 
     Holds the mipmap levels of the texture provider.
  */
-/*!
-    \qmlproperty int Qt3DRender::QAbstractTexture::format
-
-    Holds the mipmap levels of the texture provider.
- */
 int QAbstractTexture::mipLevels() const
 {
     Q_D(const QAbstractTexture);

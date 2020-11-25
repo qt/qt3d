@@ -330,8 +330,7 @@ void QTextureImageData::setFaces(int faces) noexcept
 }
 
 /*!
- * Sets the alignment requirements for the image
- * \param alignment
+ * Sets the \a alignment requirements for the image.
  */
 void QTextureImageData::setAlignment(int alignment) noexcept
 {
@@ -340,7 +339,7 @@ void QTextureImageData::setAlignment(int alignment) noexcept
 }
 
 /*!
-  \return the alignment requirement for the image
+  \return the alignment requirement for the image.
  */
 int QTextureImageData::alignment() const noexcept
 {
@@ -349,7 +348,7 @@ int QTextureImageData::alignment() const noexcept
 }
 
 /*!
-  \return the target for the stored texture
+  \return the target for the stored texture.
  */
 QOpenGLTexture::Target QTextureImageData::target() const noexcept
 {
@@ -358,7 +357,7 @@ QOpenGLTexture::Target QTextureImageData::target() const noexcept
 }
 
 /*!
-  \return the format of the stored texture
+  \return the format of the stored texture.
  */
 QOpenGLTexture::TextureFormat QTextureImageData::format() const noexcept
 {
@@ -368,7 +367,6 @@ QOpenGLTexture::TextureFormat QTextureImageData::format() const noexcept
 
 /*!
  * Sets the target to \a target.
- * \param target
  */
 void QTextureImageData::setTarget(QOpenGLTexture::Target target) noexcept
 {
@@ -378,7 +376,6 @@ void QTextureImageData::setTarget(QOpenGLTexture::Target target) noexcept
 
 /*!
  * Sets the format to \a format.
- * \param
  */
 void QTextureImageData::setFormat(QOpenGLTexture::TextureFormat format) noexcept
 {
@@ -388,7 +385,6 @@ void QTextureImageData::setFormat(QOpenGLTexture::TextureFormat format) noexcept
 
 /*!
  * Sets the pixel format to \a pixelFormat.
- * \param setPixelFormat
  */
 void QTextureImageData::setPixelFormat(QOpenGLTexture::PixelFormat pixelFormat) noexcept
 {
@@ -397,8 +393,7 @@ void QTextureImageData::setPixelFormat(QOpenGLTexture::PixelFormat pixelFormat) 
 }
 
 /*!
- * Sets the pixel type to \a pixelType
- * \param setPixelType
+ * Sets the pixel type to \a pixelType.
  */
 void QTextureImageData::setPixelType(QOpenGLTexture::PixelType pixelType) noexcept
 {
@@ -407,7 +402,7 @@ void QTextureImageData::setPixelType(QOpenGLTexture::PixelType pixelType) noexce
 }
 
 /*!
-  Copies the image \a image as raw data within this object
+  Copies the image \a image as raw data within this object.
  */
 void QTextureImageData::setImage(const QImage &image)
 {
@@ -431,7 +426,7 @@ void QTextureImageData::setImage(const QImage &image)
 }
 
 /*!
-  Store the data \a data with blocksize \a blockSize and if the data to be stored is compressed \a isCompressed
+  Stores the data \a data with blocksize \a blockSize and if the data to be stored is compressed \a isCompressed.
  */
 void QTextureImageData::setData(const QByteArray &data, int blockSize, bool isCompressed)
 {
@@ -446,7 +441,7 @@ void QTextureImageData::setData(const QByteArray &data, std::function<QByteArray
 }
 
 /*!
-  \return the raw image data for the texture at layer \a layer, face \a face and mipmapLevel \a mipmapLevel
+  \return the raw image data for the texture at layer \a layer, face \a face and mipmapLevel \a mipmapLevel.
  */
 QByteArray QTextureImageData::data(int layer, int face, int mipmapLevel) const
 {
@@ -455,7 +450,7 @@ QByteArray QTextureImageData::data(int layer, int face, int mipmapLevel) const
 }
 
 /*!
-  \return the pixel format of the stored texture
+  \return the pixel format of the stored texture.
  */
 QOpenGLTexture::PixelFormat QTextureImageData::pixelFormat() const noexcept
 {
@@ -464,7 +459,7 @@ QOpenGLTexture::PixelFormat QTextureImageData::pixelFormat() const noexcept
 }
 
 /*!
-  \return the pixel type of the stored texture
+  \return the pixel type of the stored texture.
  */
 QOpenGLTexture::PixelType QTextureImageData::pixelType() const noexcept
 {

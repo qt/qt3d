@@ -65,7 +65,7 @@
         the size of the axis aligned bounding box of a geometry
     \li \l {Qt3DRender::QPickingProxy} provides a way of specifying an alternative
         (usually simpler) geometry for picking
-    \li \l {Qt3DCore::QAbstractAspect} and \l {Qt3DCore::QAspectJobs} add methods
+    \li \l {Qt3DCore::QAbstractAspect} and \l {Qt3DCore::QAspectJob} add methods
         to facilitate and optimize the synchronization of backend operations.
     \endlist
 */

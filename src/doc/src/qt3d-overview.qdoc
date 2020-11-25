@@ -89,9 +89,8 @@
     vertex, tessellation control, tessellation evaluation, geometry, and
     fragment shaders. Compute shaders are planned for a future release.
 
-    For examples of using shaders, see the \l {Simple Shader Example},
-    \l {Qt 3D: Shadow Map QML Example}, \l{Qt 3D: Wireframe QML Example}, and
-    \l {Qt 3D: Wave QML Example}.
+    For examples of using shaders, see the \l {Qt 3D: Shadow Map QML Example},
+    \l{Qt 3D: Wireframe QML Example}, and \l {Qt 3D: Wave QML Example}.
 
     \section2 Shadow Mapping
 
