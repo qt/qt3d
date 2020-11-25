@@ -65,25 +65,25 @@ namespace Qt3DExtras {
  */
 
 /*!
- * \qmlproperty int CylinderMesh::rings
+ * \qmlproperty int CylinderGeometryView::rings
  *
  * Holds the number of rings in the mesh.
  */
 
 /*!
- * \qmlproperty int CylinderMesh::slices
+ * \qmlproperty int CylinderGeometryView::slices
  *
  * Holds the number of slices in the mesh.
  */
 
 /*!
- * \qmlproperty real CylinderMesh::radius
+ * \qmlproperty real CylinderGeometryView::radius
  *
  * Holds the radius of the cylinder.
  */
 
 /*!
- * \qmlproperty real CylinderMesh::length
+ * \qmlproperty real CylinderGeometryView::length
  *
  * Holds the length of the cylinder.
  */

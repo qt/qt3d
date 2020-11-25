@@ -16,6 +16,7 @@
 #include "../core/transforms/matrix4x4_p.h"
 #include "../core/transforms/vector3d_p.h"
 #include "../render/raycasting/qray3d_p.h"
+#include "../render/texture/qtexturegenerator_p.h"
 #include "../input/frontend/qabstractphysicaldeviceproxy_p.h"
 #include "../input/frontend/qinputdeviceintegration_p.h"
 #include "../animation/frontend/qchannelmappingcreatedchange_p.h"

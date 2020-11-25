@@ -97,7 +97,7 @@ QPickTriangleEvent *QPickTriangleEventPrivate::clone() const
     \note In the case of indexed rendering, the point indices are relative to the
     array of coordinates, not the array of indices.
 
-    \sa QPickingSettings, QPickEvent, QObjectPicker, QAttribute
+    \sa QPickingSettings, QPickEvent, QObjectPicker
     \since 5.7
 */
 
