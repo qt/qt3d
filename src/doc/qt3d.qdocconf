@@ -62,7 +62,6 @@ excludefiles += "*_p.h"
 headers       = ../core/transforms/matrix4x4_p.h \
                 ../core/transforms/vector3d_p.h \
                 ../render/raycasting/qray3d_p.h \
-                ../animation/frontend/qchannelmappingcreatedchange_p.h \
                 ../input/frontend/qabstractphysicaldeviceproxy_p.h \
                 ../input/frontend/qinputdeviceintegration_p.h \
                 ../quick3d/imports/scene3d/scene3ditem_p.h

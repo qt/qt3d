@@ -106,6 +106,7 @@ using QNodeIdVector = QList<QNodeId>;
 Q_3DCORESHARED_EXPORT QDebug operator<<(QDebug d, QNodeId id);
 #endif
 
+//! [nodeid-qhash]
 inline constexpr size_t qHash(QNodeId id, size_t seed = 0) noexcept
 {
     using QT_PREPEND_NAMESPACE(qHash);

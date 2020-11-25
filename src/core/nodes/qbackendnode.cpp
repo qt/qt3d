@@ -106,7 +106,7 @@ void QBackendNodePrivate::componentRemoved(QNode *frontend)
  *
  * \TODO
  *
- * \a change
+ * \a id
  *
  * \return created node.
  */

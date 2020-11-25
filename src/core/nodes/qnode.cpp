@@ -631,36 +631,6 @@ void QNodePrivate::nodePtrDeleter(QNode *q)
 */
 
 /*!
-    \fn void Qt3DCore::QNodeCommand::setReplyToCommandId(CommandId id)
-
-    Sets the command \a id to which the message is a reply.
-
-*/
-/*!
-    \fn  Qt3DCore::QNode::PropertyTrackingMode Qt3DCore::QNode::defaultPropertyTrackingMode() const
-
-    Returns the default property tracking mode which determines whether a
-    QNode should be listening for property updates.
-
-*/
-/*!
-    \fn Qt3DCore::QNode::clearPropertyTracking(const QString &propertyName)
-
-    Clears the tracking property called \a propertyName.
-*/
-/*!
-    \fn Qt3DCore::QNode::PropertyTrackingMode Qt3DCore::QNode::propertyTracking(const QString &propertyName) const
-
-    Returns the tracking mode of \a propertyName.
-*/
-
-/*!
-    \fn Qt3DCore::QNode::setPropertyTracking(const QString &propertyName, Qt3DCore::QNode::PropertyTrackingMode trackMode)
-
-    Sets the property tracking for \a propertyName and \a trackMode.
-*/
-
-/*!
      Creates a new QNode instance with parent \a parent.
 
      \note The backend aspects will be notified that a QNode instance is
@@ -838,45 +808,6 @@ bool QNode::isEnabled() const
     Q_D(const QNode);
     return d->m_enabled;
 }
-
-/*!
-   \fn Qt3DCore::QNodeCommand::CommandId Qt3DCore::QNodeCommand::inReplyTo() const
-
-   Returns the id of the original QNodeCommand message that
-   was sent to the backend.
-
-*/
-/*!
-    \fn void Qt3DCore::QNodeCommand::setData(const QVariant &data)
-
-    Sets the data (\a data) in the backend node to perform
-    the operations requested.
-*/
-/*!
-    \fn void Qt3DCore::QNodeCommand::setName(const QString &name)
-
-
-    Sets the data (\a name) in the backend node to perform
-    the operations requested.
-*/
-
-/*!
-    \enum Qt3DCore::QNode::PropertyTrackingMode
-
-    Indicates how a QNode listens for property updates.
-
-    \value TrackFinalValues
-           Tracks final values
-    \value DontTrackValues
-           Does not track values
-    \value TrackAllValues
-           Tracks all values
-*/
-/*!
-    \fn Qt3DCore::QNode::clearPropertyTrackings()
-
-    Erases all values that have been saved by the property tracking.
-*/
 
 namespace {
 

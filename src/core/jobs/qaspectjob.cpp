@@ -153,8 +153,9 @@ const std::vector<QWeakPointer<QAspectJob> > &QAspectJob::dependencies() const
 }
 
 /*!
- * This is called, in the main thread, when all the jobs have completed.
- * It's a good point to push changes back to the frontend.
+ * Called in the main thread when all the jobs have completed.
+ * This is a good point to push changes back to the frontend.
+ * \a aspectEngine is the engine responsible for the run loop.
  */
 void QAspectJob::postFrame(QAspectEngine *aspectEngine)
 {

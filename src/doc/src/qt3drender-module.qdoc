@@ -160,6 +160,6 @@
     If not specified, RHI will default to what it deduces to be the best backend
     for the platform.
 
-    Alternatively, if using a QQuickWindow, \l [QQuickWindow::setGraphicsApi()]
+    Alternatively, if using a QQuickWindow, QQuickWindow::setGraphicsApi()
     can be used to specify the RHI internal rendering backend.
 */

@@ -170,7 +170,7 @@ QGraphicsApiFilter::~QGraphicsApiFilter()
   \value OpenGL QSurfaceFormat::OpenGL
   \value Vulkan Vulkan
   \value DirectX DirectX
-
+  \value RHI RHI
 */
 
 /*!

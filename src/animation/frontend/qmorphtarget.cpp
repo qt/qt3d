@@ -63,9 +63,9 @@ namespace Qt3DAnimation {
     \instantiates Qt3DAnimation::QMorphTarget
 
     A MorphTarget type is a convenience type, which provides a list
-    of \l {Qt3D.Render::Attribute} {Attributes}, which the MorphingAnimation uses
+    of \l {Qt3D.Core::Attribute} {Attributes}, which the MorphingAnimation uses
     to animate geometry. A MorphTarget can also be created based on existing
-    \l {Qt3D.Render::Geometry}{Geometry}.
+    \l {Qt3D.Core::Geometry}{Geometry}.
 
 */
 

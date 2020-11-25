@@ -162,17 +162,6 @@ QGeometry::QGeometry(QNode *parent)
     : QGeometry(*new QGeometryPrivate(), parent) {}
 
 /*!
-    \fn Qt3DCore::QGeometryFactory::operator()()
-
-     Returns the generated geometry.
-*/
-/*!
-    \fn bool Qt3DCore::QGeometryFactory::operator==(const QGeometryFactory &other) const = 0
-
-    Compares the factory with the factory specified in \a other.
-    Returns true if they are equal.
-*/
-/*!
     \internal
  */
 QGeometry::~QGeometry()
