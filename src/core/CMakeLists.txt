@@ -185,3 +185,7 @@ qt_internal_extend_target(3DCore
         aligned_malloc_p.h
         resources/qresourcemanager.cpp resources/qresourcemanager_p.h
 )
+
+qt_internal_add_docs(3DCore
+    doc/qt3d.qdocconf
+)

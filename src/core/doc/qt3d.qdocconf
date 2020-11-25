@@ -44,73 +44,61 @@ tagfile                 = qt3d.tags
 depends                 += qtcore qtgui qtqml qtquick qtdoc
 
 headerdirs += . \
-              ../render \
-              ../core \
-              ../logic \
-              ../plugins \
-              ../quick3d/quick3d \
-              ../input \
-              ../extras \
-              ../animation \
-              ../quick3d/quick3dscene2d \
-              ../quick3d/imports/scene3d
+              ../../render \
+              ../../core \
+              ../../logic \
+              ../../plugins \
+              ../../quick3d/quick3d \
+              ../../input \
+              ../../extras \
+              ../../animation \
+              ../../quick3d/quick3dscene2d \
+              ../../quick3d/imports/scene3d
 
 # Exclude private header files from the documentation build
 excludefiles += "*_p.h"
 
 # Add some private headers explicitly to avoid documentation warnings
-headers       = ../core/transforms/matrix4x4_p.h \
-                ../core/transforms/vector3d_p.h \
-                ../render/raycasting/qray3d_p.h \
-                ../input/frontend/qabstractphysicaldeviceproxy_p.h \
-                ../input/frontend/qinputdeviceintegration_p.h \
-                ../quick3d/imports/scene3d/scene3ditem_p.h
+headers       = ../../core/transforms/matrix4x4_p.h \
+                ../../core/transforms/vector3d_p.h \
+                ../../render/raycasting/qray3d_p.h \
+                ../../input/frontend/qabstractphysicaldeviceproxy_p.h \
+                ../../input/frontend/qinputdeviceintegration_p.h \
+                ../../quick3d/imports/scene3d/scene3ditem_p.h
 
 sourcedirs += . \
-              ../render \
-              ../core \
-              ../logic \
-              ../plugins \
-              ../quick3d/quick3d \
-              ../input \
-              ../extras \
-              ../animation \
-              ../quick3d/quick3dscene2d \
-              ../quick3d/imports/scene3d
+              ../../render \
+              ../../core \
+              ../../logic \
+              ../../plugins \
+              ../../quick3d/quick3d \
+              ../../input \
+              ../../extras \
+              ../../animation \
+              ../../quick3d/quick3dscene2d \
+              ../../quick3d/imports/scene3d
 
 
-exampledirs += ../../examples/qt3d \
+exampledirs += ../../../examples/qt3d \
                snippets
 
 examples.fileextensions       += "*.fraq *.geom *.vert"
 examples.imageextensions      += "*.png"
 
 excludedirs += \
-              ../plugins/renderplugins \
-              ../plugins/sceneparsers
+              ../../plugins/renderplugins \
+              ../../plugins/sceneparsers
 
 macro.TODO = " "
 imagedirs   += images \
-               ../../examples/qt3d/shadow-map-qml/doc/images \
-               ../../examples/qt3d/basicshapes-cpp/doc/images \
-               ../../examples/qt3d/planets-qml/doc/images \
-               ../../examples/qt3d/wireframe/doc/images \
-               ../../examples/qt3d/audio-visualizer-qml/doc/images \
-               ../../examples/qt3d/simplecustommaterial/doc/images \
-               ../../examples/qt3d/scene2d/doc/images \
-               ../../examples/qt3d/advancedcustommaterial/doc/images
-
-Cpp.ignoretokens     += Q_3DINPUTSHARED_EXPORT \
-                        Q_3DCORESHARED_EXPORT \
-                        Q_3DLOGICSHARED_EXPORT \
-                        Q_3DRENDERSHARED_EXPORT \
-                        Q_3DRENDERSHARED_PRIVATE_EXPORT \
-                        Q_3DQUICKSHARED_PRIVATE_EXPORT \
-                        Q_3DEXTRASSHARED_EXPORT \
-                        Q_3DANIMATIONSHARED_EXPORT \
-                        Q_3DQUICKSCENE2DSHARED_EXPORT
-
-Cpp.ignoredirectives += Q_DECLARE_LOGGING_CATEGORY
+               ../../../examples/qt3d/shadow-map-qml/doc/images \
+               ../../../examples/qt3d/basicshapes-cpp/doc/images \
+               ../../../examples/qt3d/planets-qml/doc/images \
+               ../../../examples/qt3d/wireframe/doc/images \
+               ../../../examples/qt3d/audio-visualizer-qml/doc/images \
+               ../../../examples/qt3d/simplecustommaterial/doc/images \
+               ../../../examples/qt3d/scene2d/doc/images \
+               ../../../examples/qt3d/advancedcustommaterial/doc/images
 
 manifestmeta.highlighted.names = \
                 "Qt3D/Qt 3D: Advanced custom material QML Example" \
