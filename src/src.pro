@@ -26,10 +26,6 @@ src_extras.subdir = $$PWD/extras
 src_extras.target = src_extras
 src_extras.depends = src_render src_input src_logic
 
-src_doc.subdir = $$PWD/doc
-src_doc.target = sub-doc
-src_doc.depends = src_animation src_input
-
 qtHaveModule(quick) {
     # Quick3D libs
     src_quick3d_core.subdir = $$PWD/quick3d/quick3d
@@ -124,10 +120,8 @@ qtConfig(qt3d-render) {
         src_render \
         src_plugins_renderers
 }
-qtConfig(qt3d-animation) {
-    SUBDIRS += src_animation
-    qtConfig(qt3d-input): SUBDIRS += src_doc
-}
+qtConfig(qt3d-animation): SUBDIRS += src_animation
+
 qtConfig(qt3d-extras) {
     SUBDIRS += \
         src_extras \

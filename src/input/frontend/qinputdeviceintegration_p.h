@@ -56,7 +56,9 @@
 #include <Qt3DCore/qnodeid.h>
 #include <QtCore/QObject>
 
+#ifndef Q_QDOC
 #include <Qt3DInput/private/qabstractphysicaldevicebackendnode_p.h>
+#endif
 
 QT_BEGIN_NAMESPACE
 
