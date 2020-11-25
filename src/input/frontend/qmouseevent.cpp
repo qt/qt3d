@@ -262,7 +262,7 @@ QMouseEvent::QMouseEvent(const QT_PREPEND_NAMESPACE(QMouseEvent) &e)
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
       , m_event(static_cast<QT_PREPEND_NAMESPACE(QMouseEvent)*>(e.clone()))
 #else
-    , m_even(new QT_PREPEND_NAMESPACE(QMouseEvent)(e))
+    , m_event(new QT_PREPEND_NAMESPACE(QMouseEvent)(e))
 #endif
 {
 }
@@ -485,7 +485,7 @@ QWheelEvent::QWheelEvent(const QT_PREPEND_NAMESPACE(QWheelEvent) &e)
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
       , m_event(static_cast<QT_PREPEND_NAMESPACE(QWheelEvent)*>(e.clone()))
 #else
-      , m_even(new QT_PREPEND_NAMESPACE(QMouseEvent)(e))
+      , m_event(new QT_PREPEND_NAMESPACE(QWheelEvent)(e))
 #endif
 {
 }
