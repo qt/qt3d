@@ -53,7 +53,9 @@
 
 #include <Qt3DInput/qabstractphysicaldevice.h>
 
+#ifndef Q_QDOC
 #include <Qt3DInput/private/qt3dinput_global_p.h>
+#endif
 
 QT_BEGIN_NAMESPACE
 

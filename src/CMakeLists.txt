@@ -16,7 +16,6 @@ endif()
 if(QT_FEATURE_qt3d_animation)
     add_subdirectory(animation)
 endif()
-add_subdirectory(doc)
 
 if(TARGET Qt::Quick)
     # Quick3D libs
