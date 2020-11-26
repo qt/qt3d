@@ -74,7 +74,6 @@ int main(int argc, char **argv)
     QGuiApplication app(argc, argv);
     setSurfaceFormat();
 
-    QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGLRhi);
     QQuickView view;
 
     view.resize(1024, 1024);
