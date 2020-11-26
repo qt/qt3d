@@ -50,6 +50,8 @@ set(shaders_resource_files
     "shaders/es2/simpleColor.vert"
     "shaders/gl3/simpleColor.frag"
     "shaders/gl3/simpleColor.vert"
+    "shaders/gl45/simpleColor.frag"
+    "shaders/gl45/simpleColor.vert"
 )
 
 qt6_add_resources(simplecustommaterial "shaders"

@@ -4,5 +4,7 @@
         <file>shaders/gl3/simpleColor.vert</file>
         <file>shaders/es2/simpleColor.frag</file>
         <file>shaders/es2/simpleColor.vert</file>
+        <file>shaders/gl45/simpleColor.frag</file>
+        <file>shaders/gl45/simpleColor.vert</file>
     </qresource>
 </RCC>
