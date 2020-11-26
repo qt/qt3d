@@ -71,6 +71,8 @@ Material {
         //! [1]
         property string vertex: "qrc:/shaders/gl3/simpleColor.vert"
         property string fragment: "qrc:/shaders/gl3/simpleColor.frag"
+        property string vertexRHI: "qrc:/shaders/gl45/simpleColor.vert"
+        property string fragmentRHI: "qrc:/shaders/gl45/simpleColor.frag"
         property string vertexES: "qrc:/shaders/es2/simpleColor.vert"
         property string fragmentES: "qrc:/shaders/es2/simpleColor.frag"
         //! [1]
@@ -91,6 +93,11 @@ Material {
             id: es2Shader
             vertexShaderCode: loadSource(parent.vertexES)
             fragmentShaderCode: loadSource(parent.fragmentES)
+        }
+        ShaderProgram {
+            id: rhiShader
+            vertexShaderCode: loadSource(parent.vertexRHI)
+            fragmentShaderCode: loadSource(parent.fragmentRHI)
         }
         //! [2]
 
@@ -134,6 +141,19 @@ Material {
                 }
                 renderPasses: RenderPass {
                     shaderProgram: es2Shader
+                }
+            },
+            // RHI 1.0
+            Technique {
+                filterKeys: [forward]
+                graphicsApiFilter {
+                    api: GraphicsApiFilter.RHI
+                    profile: GraphicsApiFilter.NoProfile
+                    majorVersion: 1
+                    minorVersion: 0
+                }
+                renderPasses: RenderPass {
+                    shaderProgram: rhiShader
                 }
             }
         ]
