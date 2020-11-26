@@ -103,7 +103,7 @@ Entity {
 
     Mesh {
         id: logoMesh
-        source: "Qt_logo.obj"
+        source: "qrc:/Qt_logo.obj"
     }
 
     Entity {
