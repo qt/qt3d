@@ -79,6 +79,8 @@ set(shaders_resource_files
     "shaders/es2/water.vert"
     "shaders/gl3/water.frag"
     "shaders/gl3/water.vert"
+    "shaders/rhi/water.frag"
+    "shaders/rhi/water.vert"
 )
 
 qt6_add_resources(advancedcustommaterial "shaders"
