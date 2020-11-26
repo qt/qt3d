@@ -98,6 +98,34 @@ Effect {
     }
 
     RenderPass {
+        id: rhishadowpass
+        filterKeys: [ shadowkey ]
+
+        shaderProgram: ShaderProgram {
+            vertexShaderCode:   loadSource("qrc:/shaders/rhi/shadowmap.vert")
+            fragmentShaderCode: loadSource("qrc:/shaders/rhi/shadowmap.frag")
+        }
+
+        renderStates: [
+            PolygonOffset { scaleFactor: 4; depthSteps: 4 },
+            DepthTest { depthFunction: DepthTest.Less }
+        ]
+    }
+
+
+    RenderPass {
+        id: rhipass
+        filterKeys: [ forwardkey ]
+
+        shaderProgram: ShaderProgram {
+            vertexShaderCode:   loadSource("qrc:/shaders/rhi/planetDShadow.vert")
+            fragmentShaderCode: loadSource("qrc:/shaders/rhi/planetDShadow.frag")
+        }
+
+        // no special render state set => use the default set of states
+    }
+
+    RenderPass {
         id: espass
         filterKeys: [ forwardkey ]
 
@@ -143,6 +171,17 @@ Effect {
             filterKeys: [ eskey ]
 
             renderPasses: [ espass ]
+        },
+        Technique {
+            graphicsApiFilter {
+                api: GraphicsApiFilter.RHi
+                majorVersion: 1
+                minorVersion: 0
+            }
+
+            filterKeys: [ desktopkey ]
+
+            renderPasses: [ rhishadowpass, rhipass ]
         }
     ]
 }

@@ -38,5 +38,17 @@
         <file>shaders/gl3/planetDShadow.frag</file>
         <file>shaders/gl3/planetDShadow.vert</file>
         <file>AppleTVInput.qml</file>
+        <file>shaders/rhi/planetD.frag</file>
+        <file>shaders/rhi/planetD.vert</file>
+        <file>shaders/rhi/planetDB.frag</file>
+        <file>shaders/rhi/planetDB.vert</file>
+        <file>shaders/rhi/planetDS.frag</file>
+        <file>shaders/rhi/planetDSB.frag</file>
+        <file>shaders/rhi/planetDShadow.frag</file>
+        <file>shaders/rhi/planetDShadow.vert</file>
+        <file>shaders/rhi/shadowmap.frag</file>
+        <file>shaders/rhi/shadowmap.vert</file>
+        <file>shaders/rhi/sun.frag</file>
+        <file>shaders/rhi/sun.vert</file>
     </qresource>
 </RCC>

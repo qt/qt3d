@@ -90,6 +90,18 @@ set(planets-qml_resource_files
     "shaders/gl3/shadowmap.vert"
     "shaders/gl3/sun.frag"
     "shaders/gl3/sun.vert"
+    "shaders/rhi/planetD.frag"
+    "shaders/rhi/planetD.vert"
+    "shaders/rhi/planetDB.frag"
+    "shaders/rhi/planetDB.vert"
+    "shaders/rhi/planetDS.frag"
+    "shaders/rhi/planetDSB.frag"
+    "shaders/rhi/planetDShadow.frag"
+    "shaders/rhi/planetDShadow.vert"
+    "shaders/rhi/shadowmap.frag"
+    "shaders/rhi/shadowmap.vert"
+    "shaders/rhi/sun.frag"
+    "shaders/rhi/sun.vert"
 )
 
 qt6_add_resources(planets-qml "planets-qml"

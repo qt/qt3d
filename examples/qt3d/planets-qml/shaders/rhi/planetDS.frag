@@ -1,7 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -49,96 +49,81 @@
 **
 ****************************************************************************/
 
-import Qt3D.Core 2.0
-import Qt3D.Render 2.0
+#version 450 core
 
-Effect {
-    id: root
+layout(std140, binding = 2) uniform extras_uniforms {
+    float texCoordScale;
+    vec3 ka;            // Ambient reflectivity
+    vec3 ks;            // Specular reflectivity
+    float shininess;    // Specular shininess factor
+    float opacity;      // Alpha channel
+    vec3 lightPosition;
+    vec3 lightIntensity;
+};
 
-    FilterKey { id: desktopkey; name: "name"; value: "Desktop" }
-    FilterKey { id: forwardkey; name : "pass"; value : "forward" }
-    FilterKey { id: eskey; name: "name"; value: "ES2" }
+layout(binding=3) uniform sampler2D diffuseTexture;
+layout(binding=4) uniform sampler2D specularTexture;
 
-    RenderPass {
-        id: glpass
-        filterKeys: [ forwardkey ]
+layout(location=0) in vec3 position;
+layout(location=1) in vec3 normal;
+layout(location=2) in vec2 texCoord;
 
-        shaderProgram: ShaderProgram {
-            vertexShaderCode:   loadSource("qrc:/shaders/gl3/sun.vert")
-            fragmentShaderCode: loadSource("qrc:/shaders/gl3/sun.frag")
-        }
+layout(std140, binding = 0) uniform qt3d_render_view_uniforms {
+  mat4 viewMatrix;
+  mat4 projectionMatrix;
+  mat4 uncorrectedProjectionMatrix;
+  mat4 clipCorrectionMatrix;
+  mat4 viewProjectionMatrix;
+  mat4 inverseViewMatrix;
+  mat4 inverseProjectionMatrix;
+  mat4 inverseViewProjectionMatrix;
+  mat4 viewportMatrix;
+  mat4 inverseViewportMatrix;
+  vec4 textureTransformMatrix;
+  vec3 eyePosition;
+  float aspectRatio;
+  float gamma;
+  float exposure;
+  float time;
+};
 
-        // no special render state set => use the default set of states
-    }
+layout(location=0) out vec4 fragColor;
 
-    RenderPass {
-        id: rhipass
-        filterKeys: [ forwardkey ]
+vec3 dsModel(const in vec2 flipYTexCoord)
+{
+    // Calculate the vector from the light to the fragment
+    vec3 s = normalize(vec3(viewMatrix * vec4(lightPosition, 1.0)) - position);
 
-        shaderProgram: ShaderProgram {
-            vertexShaderCode:   loadSource("qrc:/shaders/rhi/sun.vert")
-            fragmentShaderCode: loadSource("qrc:/shaders/rhi/sun.frag")
-        }
+    // Calculate the vector from the fragment to the eye position
+    // (origin since this is in "eye" or "camera" space)
+    vec3 v = normalize(-position);
 
-        // no special render state set => use the default set of states
-    }
+    // Reflect the light beam using the normal at this fragment
+    vec3 r = reflect(-s, normal);
 
-    RenderPass {
-        id: espass
-        filterKeys: [ forwardkey ]
+    // Calculate the diffuse component
+    float diffuse = max(dot(s, normal), 0.0);
 
-        shaderProgram: ShaderProgram {
-            vertexShaderCode:   loadSource("qrc:/shaders/es2/sun.vert")
-            fragmentShaderCode: loadSource("qrc:/shaders/es2/sun.frag")
-        }
+    // Calculate the specular component
+    float specular = 0.0;
+    if (dot(s, normal) > 0.0)
+        specular = (shininess / (8.0 * 3.14)) * pow(max(dot(r, v), 0.0), shininess);
 
-        // no special render state set => use the default set of states
-    }
+    // Lookup diffuse and specular factors
+    vec3 diffuseColor = texture(diffuseTexture, flipYTexCoord).rgb;
+    vec3 specularColor = texture(specularTexture, flipYTexCoord).rgb;
 
-    techniques: [
-        Technique {
-            graphicsApiFilter {
-                api: GraphicsApiFilter.OpenGL
-                profile: GraphicsApiFilter.CoreProfile
-                majorVersion: 3
-                minorVersion: 2
-            }
+    // Combine the ambient, diffuse and specular contributions
+    return lightIntensity * ((ka + diffuse) * diffuseColor + specular * specularColor);
+}
 
-            filterKeys: [ desktopkey ]
+void main()
+{
+    vec2 flipYTexCoord = texCoord;
+    flipYTexCoord.y = 1.0 - texCoord.y;
 
-            renderPasses: [ glpass ]
-        },
-        Technique {
-            graphicsApiFilter {
-                api: GraphicsApiFilter.OpenGL
-                majorVersion: 2
-            }
+    vec3 result = lightIntensity * ka * texture(diffuseTexture, flipYTexCoord).rgb;
+    result += dsModel(flipYTexCoord);
 
-            filterKeys: [ eskey ]
-
-            renderPasses: [ espass ]
-        },
-        Technique {
-            graphicsApiFilter {
-                api: GraphicsApiFilter.OpenGLES
-                majorVersion: 2
-                minorVersion: 0
-            }
-
-            filterKeys: [ eskey ]
-
-            renderPasses: [ espass ]
-        },
-        Technique {
-            graphicsApiFilter {
-                api: GraphicsApiFilter.RHI
-                majorVersion: 1
-                minorVersion: 0
-            }
-
-            filterKeys: [ desktopkey ]
-
-            renderPasses: [ rhipass ]
-        }
-    ]
+    fragColor = vec4(result, opacity * texture(diffuseTexture, flipYTexCoord).a);
 }
