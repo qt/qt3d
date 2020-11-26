@@ -80,6 +80,11 @@ public:
 
     static QByteArray deincludify(const QByteArray &contents, const QString &filePath);
     static QByteArray deincludify(const QString &filePath);
+    static QByteArray resolveAutoBindingIndices(const QByteArray &content,
+                                                int &currentBinding,
+                                                int &currentInputLocation,
+                                                int &currentOutputLocation);
+    static QByteArray resolveAutoBindingIndices(const QByteArray &content);
 };
 
 } // namespace Qt3DRender

@@ -44,6 +44,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QUrl>
+#include <QRegularExpression>
 
 /*!
     \class Qt3DRender::QShaderProgram
@@ -672,6 +673,71 @@ QByteArray QShaderProgramPrivate::deincludify(const QString &filePath)
     return deincludify(contents, filePath);
 }
 
+QByteArray QShaderProgramPrivate::resolveAutoBindingIndices(const QByteArray &content,
+                                                            int &currentBinding,
+                                                            int &currentInputLocation,
+                                                            int &currentOutputLocation)
+{
+    QString shaderCode = QString::fromUtf8(content);
+
+    // This lambda will replace all occurrences of a string (e.g. "binding = auto") by another,
+    // with the incremented int passed as argument (e.g. "binding = 1", "binding = 2" ...)
+    const auto replaceAndIncrement = [&](const QRegularExpression &regexp,
+            int &variable,
+            const QString &replacement) noexcept {
+        int matchStart = 0;
+        do {
+            matchStart = shaderCode.indexOf(regexp, matchStart);
+            if (matchStart != -1) {
+                const auto match = regexp.match(QStringView{shaderCode}.mid(matchStart));
+                const auto length = match.capturedLength(0);
+
+                shaderCode.replace(matchStart, length, replacement.arg(variable++));
+            }
+        } while (matchStart != -1);
+    };
+
+    // 1. Handle uniforms
+    {
+        thread_local const QRegularExpression bindings(
+                    QStringLiteral("binding\\s*=\\s*auto"));
+
+        replaceAndIncrement(bindings, currentBinding, QStringLiteral("binding = %1"));
+    }
+
+    // 2. Handle inputs
+    {
+        thread_local const QRegularExpression inLocations(
+                    QStringLiteral("location\\s*=\\s*auto\\s*\\)\\s*in\\s+"));
+
+        replaceAndIncrement(inLocations, currentInputLocation,
+                            QStringLiteral("location = %1) in "));
+    }
+
+    // 3. Handle outputs
+    {
+        thread_local const QRegularExpression outLocations(
+                    QStringLiteral("location\\s*=\\s*auto\\s*\\)\\s*out\\s+"));
+
+        replaceAndIncrement(outLocations, currentOutputLocation,
+                            QStringLiteral("location = %1) out "));
+    }
+
+    return shaderCode.toUtf8();
+}
+
+QByteArray QShaderProgramPrivate::resolveAutoBindingIndices(const QByteArray &content)
+{
+    int currentBinding = 2; // Qt3D default uniforms are 0 and 1
+    int currentInputLocation = 0;
+    int currentOutputLocation = 0;
+
+    return QShaderProgramPrivate::resolveAutoBindingIndices(content,
+                                                            currentBinding,
+                                                            currentInputLocation,
+                                                            currentOutputLocation);
+}
+
 QByteArray QShaderProgramPrivate::deincludify(const QByteArray &contents, const QString &filePath)
 {
     QByteArrayList lines = contents.split('\n');
@@ -710,7 +776,8 @@ QByteArray QShaderProgramPrivate::deincludify(const QByteArray &contents, const 
 QByteArray QShaderProgram::loadSource(const QUrl &sourceUrl)
 {
     // TO DO: Handle remote path
-    return QShaderProgramPrivate::deincludify(Qt3DCore::QUrlHelper::urlToLocalFileOrQrc(sourceUrl));
+    const QByteArray deincluded = QShaderProgramPrivate::deincludify(Qt3DCore::QUrlHelper::urlToLocalFileOrQrc(sourceUrl));
+    return QShaderProgramPrivate::resolveAutoBindingIndices(deincluded);
 }
 
 } // of namespace Qt3DRender
