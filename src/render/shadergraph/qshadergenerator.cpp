@@ -402,52 +402,12 @@ namespace
         void onInclude(QByteArrayList &code, const QByteArray &snippet) noexcept
         {
             const auto filepath = QString::fromUtf8(snippet.mid(strlen("#pragma include ")));
-            QString deincluded = QString::fromUtf8(QShaderProgramPrivate::deincludify(filepath));
+            const QByteArray deincluded = QShaderProgramPrivate::deincludify(filepath);
 
-            // This lambda will replace all occurrences of a string (e.g. "binding = auto") by another,
-            // with the incremented int passed as argument (e.g. "binding = 1", "binding = 2" ...)
-            const auto replaceAndIncrement = [&deincluded](const QRegularExpression &regexp,
-                                                           int &variable,
-                                                           const QString &replacement) noexcept {
-                int matchStart = 0;
-                do {
-                    matchStart = deincluded.indexOf(regexp, matchStart);
-                    if (matchStart != -1) {
-                        const auto match = regexp.match(QStringView{deincluded}.mid(matchStart));
-                        const auto length = match.capturedLength(0);
-
-                        deincluded.replace(matchStart, length, replacement.arg(variable++));
-                    }
-                } while (matchStart != -1);
-            };
-
-            // 1. Handle uniforms
-            {
-                thread_local const QRegularExpression bindings(
-                        QStringLiteral("binding\\s?+=\\s?+auto"));
-
-                replaceAndIncrement(bindings, currentBinding, QStringLiteral("binding = %1"));
-            }
-
-            // 2. Handle inputs
-            {
-                thread_local const QRegularExpression inLocations(
-                        QStringLiteral("location\\s?+=\\s?+auto\\s?+\\)\\s?+in\\s+"));
-
-                replaceAndIncrement(inLocations, currentInputLocation,
-                                    QStringLiteral("location = %1) in "));
-            }
-
-            // 3. Handle outputs
-            {
-                thread_local const QRegularExpression outLocations(
-                        QStringLiteral("location\\s?+=\\s?+auto\\s?+\\)\\s?+out\\s+"));
-
-                replaceAndIncrement(outLocations, currentOutputLocation,
-                                    QStringLiteral("location = %1) out "));
-            }
-
-            code << deincluded.toUtf8();
+            code << QShaderProgramPrivate::resolveAutoBindingIndices(deincluded,
+                                                                     currentBinding,
+                                                                     currentInputLocation,
+                                                                     currentOutputLocation);
         }
 
         int currentInputLocation { 0 };
