@@ -1,6 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -48,34 +49,51 @@
 **
 ****************************************************************************/
 
-#include <QGuiApplication>
-#include <QQuickView>
-#include <QQmlContext>
-#include <QOpenGLContext>
-#include "networkcontroller.h"
+#version 450 core
 
-int main(int argc, char **argv)
+layout(location=0) in vec3 vertexPosition;
+layout(location=1) in vec3 vertexNormal;
+layout(location=2) in vec2 vertexTexCoord;
+
+layout(location = 3) out vec4 positionInLightSpace;
+
+layout(location = 0) out vec3 position;
+layout(location = 1) out vec3 normal;
+layout(location = 2) out vec2 texCoord;
+
+layout(std140, binding = 1) uniform qt3d_command_uniforms {
+  mat4 modelMatrix;
+  mat4 inverseModelMatrix;
+  mat4 modelViewMatrix;
+  mat3 modelNormalMatrix;
+  mat4 inverseModelViewMatrix;
+  mat4 modelViewProjection;
+  mat4 inverseModelViewProjectionMatrix;
+};
+
+layout(std140, binding = 2) uniform extras_uniforms {
+    float texCoordScale;
+    vec3 ka;            // Ambient reflectivity
+    vec3 ks;            // Specular reflectivity
+    float shininess;    // Specular shininess factor
+    float opacity;      // Alpha channel
+    vec3 lightPosition;
+    vec3 lightIntensity;
+    mat4 lightViewProjection;
+};
+
+void main()
 {
-    QGuiApplication app(argc, argv);
+    const mat4 shadowMatrix = mat4(0.5, 0.0, 0.0, 0.0,
+                                   0.0, 0.5, 0.0, 0.0,
+                                   0.0, 0.0, 0.5, 0.0,
+                                   0.5, 0.5, 0.5, 1.0);
 
-    QSurfaceFormat format;
-    if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {
-        format.setVersion(4, 5);
-        format.setProfile(QSurfaceFormat::CoreProfile);
-    }
-    format.setDepthBufferSize(24);
-    format.setStencilBufferSize(8);
-    format.setSamples(4);
+    positionInLightSpace = shadowMatrix * lightViewProjection * modelMatrix * vec4(vertexPosition, 1.0);
 
-    NetworkController networkController;
+    texCoord = vertexTexCoord * texCoordScale;
+    normal = normalize(modelNormalMatrix * vertexNormal);
+    position = vec3(modelViewMatrix * vec4(vertexPosition, 1.0));
 
-    QQuickView view;
-    view.setFormat(format);
-    view.rootContext()->setContextProperty("networkController", &networkController);
-    view.setResizeMode(QQuickView::SizeRootObjectToView);
-    view.setSource(QUrl("qrc:/PlanetsMain.qml"));
-    view.setColor("#000000");
-    view.show();
-
-    return app.exec();
+    gl_Position = modelViewProjection * vec4(vertexPosition, 1.0);
 }
