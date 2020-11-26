@@ -101,6 +101,7 @@ public:
 
     bool multisample() const { return m_multisample; }
     QSize boundingSize() const { return m_boundingRectSize; }
+    bool isYUp() const;
 
     void init(Qt3DCore::QAspectEngine *aspectEngine, QRenderAspect *renderAspect);
 
@@ -128,6 +129,7 @@ private:
         virtual void beforeRendering(Scene3DRenderer *scene3DRenderer) = 0;
         virtual void beforeRenderPassRecording(Scene3DRenderer *scene3DRenderer) = 0;
         virtual void shutdown(Scene3DRenderer *sceneRenderer) = 0;
+        virtual bool isYUp() const = 0;
 
     protected:
         bool m_lastMultisample = false;
@@ -148,6 +150,7 @@ private:
         void beforeRendering(Scene3DRenderer *scene3DRenderer) override;
         void beforeRenderPassRecording(Scene3DRenderer *scene3DRenderer) override;
         void shutdown(Scene3DRenderer *sceneRenderer) override;
+        bool isYUp() const override { return true; };
 
     private:
         QScopedPointer<QOpenGLFramebufferObject> m_multisampledFBO;
@@ -165,6 +168,7 @@ private:
         void beforeRendering(Scene3DRenderer *scene3DRenderer) override;
         void beforeRenderPassRecording(Scene3DRenderer *scene3DRenderer) override;
         void shutdown(Scene3DRenderer *sceneRenderer) override;
+        bool isYUp() const override;
 
     private:
         void releaseRHIResources();
