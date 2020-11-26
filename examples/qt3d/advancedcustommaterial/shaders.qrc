@@ -4,5 +4,7 @@
         <file>shaders/gl3/water.vert</file>
         <file>shaders/es2/water.frag</file>
         <file>shaders/es2/water.vert</file>
+        <file>shaders/rhi/water.frag</file>
+        <file>shaders/rhi/water.vert</file>
     </qresource>
 </RCC>

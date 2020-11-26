@@ -189,6 +189,8 @@ Material {
         property string fragment: "qrc:/shaders/gl3/water.frag"
         property string vertexES: "qrc:/shaders/es2/water.vert"
         property string fragmentES: "qrc:/shaders/es2/water.frag"
+        property string vertexRHI: "qrc:/shaders/rhi/water.vert"
+        property string fragmentRHI: "qrc:/shaders/rhi/water.frag"
 
         FilterKey {
             id: forward
@@ -204,6 +206,11 @@ Material {
             id: esShader
             vertexShaderCode: loadSource(parent.vertexES)
             fragmentShaderCode: loadSource(parent.fragmentES)
+        }
+        ShaderProgram {
+            id: rhiShader
+            vertexShaderCode: loadSource(parent.vertexRHI)
+            fragmentShaderCode: loadSource(parent.fragmentRHI)
         }
 
         AlphaCoverage { id: alphaCoverage }
@@ -253,6 +260,21 @@ Material {
                 }
                 renderPasses: RenderPass {
                     shaderProgram: esShader
+                    renderStates: [ alphaCoverage ]
+                }
+            },
+
+            // RHI
+            Technique {
+                filterKeys: [ forward ]
+                graphicsApiFilter {
+                    api: GraphicsApiFilter.RHI
+                    profile: GraphicsApiFilter.NoProfile
+                    majorVersion: 1
+                    minorVersion: 0
+                }
+                renderPasses: RenderPass {
+                    shaderProgram: rhiShader
                     renderStates: [ alphaCoverage ]
                 }
             }
