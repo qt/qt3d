@@ -9,6 +9,8 @@ layout(location = 0) out vec4 fragColor;
 layout(std140, binding = 0) uniform qt3d_render_view_uniforms {
   mat4 viewMatrix;
   mat4 projectionMatrix;
+  mat4 uncorrectedProjectionMatrix;
+  mat4 clipCorrectionMatrix;
   mat4 viewProjectionMatrix;
   mat4 inverseViewMatrix;
   mat4 inverseProjectionMatrix;

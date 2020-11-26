@@ -125,13 +125,12 @@ struct Q_AUTOTEST_EXPORT BlitFramebufferInfo
     QBlitFramebuffer::InterpolationMethod interpolationMethod;
 };
 
-// This class is kind of analogous to RenderBin but I want to avoid trampling
-// on that until we get this working
-
 struct RenderViewUBO
 {
     float viewMatrix[16];
     float projectionMatrix[16];
+    float uncorrectedProjectionMatrix[16];
+    float clipCorrectionMatrix[16];
     float viewProjectionMatrix[16];
     float inverseViewMatrix[16];
     float inverseProjectionMatrix[16];
@@ -147,7 +146,7 @@ struct RenderViewUBO
     float yUpInNDC;
     float yUpInFBO;
 };
-static_assert(sizeof(RenderViewUBO) == sizeof(float) * (8 * 16 + 1 * 4 + 1 * 3 + 6 * 1),
+static_assert(sizeof(RenderViewUBO) == sizeof(float) * (10 * 16 + 1 * 4 + 1 * 3 + 6 * 1),
               "UBO doesn't match std140");
 
 class Q_AUTOTEST_EXPORT RenderView
@@ -348,6 +347,7 @@ private:
     Qt3DCore::QNodeIdVector m_layerFilterIds;
     Matrix4x4 m_viewMatrix;
     Matrix4x4 m_viewProjectionMatrix;
+    Matrix4x4 m_clipCorrectionMatrix;
     Vector3D m_eyePos;
     Vector3D m_eyeViewDir;
 
