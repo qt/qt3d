@@ -142,18 +142,11 @@ static QRectF resolveViewport(const QRectF &fractionalViewport, const QSize &sur
                   fractionalViewport.height() * surfaceSize.height());
 }
 
-static Matrix4x4 getProjectionMatrix(const CameraLens *lens, bool yIsUp)
+static Matrix4x4 getProjectionMatrix(const CameraLens *lens)
 {
     Matrix4x4 m;
     if (lens)
         m = lens->projection();
-    if (!yIsUp) {
-        const Matrix4x4 rev { 1,  0,   0,   0,
-                              0, -1,   0,   0,
-                              0,  0, 0.5, 0.5,
-                              0,  0,   0,   1 };
-        return rev * m;
-    }
     return m;
 }
 
@@ -1083,7 +1076,10 @@ void RenderView::updateRenderCommand(const EntityRenderCommandDataSubView &subVi
 {
     // Update RenderViewUBO (Qt3D standard uniforms)
     const bool yIsUp = m_renderer->submissionContext()->rhi()->isYUpInNDC();
-    const Matrix4x4 projectionMatrix = getProjectionMatrix(m_renderCameraLens, yIsUp);
+
+    const Matrix4x4 clipCorrectionMatrix = Matrix4x4(m_renderer->submissionContext()->rhi()->clipSpaceCorrMatrix());
+    const Matrix4x4 unCorrectedProjectionMatrix = getProjectionMatrix(m_renderCameraLens);
+    const Matrix4x4 projectionMatrix = clipCorrectionMatrix * unCorrectedProjectionMatrix;
     const Matrix4x4 inverseViewMatrix = m_viewMatrix.inverted();
     const Matrix4x4 inversedProjectionMatrix = projectionMatrix.inverted();
     const Matrix4x4 viewProjectionMatrix = (projectionMatrix * m_viewMatrix);
@@ -1091,6 +1087,8 @@ void RenderView::updateRenderCommand(const EntityRenderCommandDataSubView &subVi
     {
         memcpy(&m_renderViewUBO.viewMatrix, &m_viewMatrix, sizeof(Matrix4x4));
         memcpy(&m_renderViewUBO.projectionMatrix, &projectionMatrix, sizeof(Matrix4x4));
+        memcpy(&m_renderViewUBO.clipCorrectionMatrix, &clipCorrectionMatrix, sizeof(Matrix4x4));
+        memcpy(&m_renderViewUBO.uncorrectedProjectionMatrix, &unCorrectedProjectionMatrix, sizeof(Matrix4x4));
         memcpy(&m_renderViewUBO.viewProjectionMatrix, &viewProjectionMatrix, sizeof(Matrix4x4));
         memcpy(&m_renderViewUBO.inverseViewMatrix, &inverseViewMatrix, sizeof(Matrix4x4));
         memcpy(&m_renderViewUBO.inverseProjectionMatrix, &inversedProjectionMatrix,
