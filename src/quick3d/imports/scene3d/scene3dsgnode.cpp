@@ -74,11 +74,19 @@ Scene3DSGNode::~Scene3DSGNode()
     // is terminated.
 }
 
-void Scene3DSGNode::setRect(const QRectF &rect, const QRectF textureRect)
+void Scene3DSGNode::setRect(const QRectF &rect, bool mirrorVertically)
 {
     if (rect != m_rect) {
         m_rect = rect;
         // By default, map the item's bounding rect to normalized texture coordinates
+
+        QRectF textureRect = QRectF(0.0f, 1.0f, 1.0f, -1.0f);
+        if (mirrorVertically) {
+            float tmp = textureRect.top();
+            textureRect.setTop(textureRect.bottom());
+            textureRect.setBottom(tmp);
+        }
+
         QSGGeometry::updateTexturedRectGeometry(&m_geometry, m_rect, textureRect);
         markDirty(DirtyGeometry);
     }

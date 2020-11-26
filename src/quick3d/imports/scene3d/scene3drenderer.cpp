@@ -198,6 +198,11 @@ Scene3DSGNode *Scene3DRenderer::sgNode() const
     return m_node;
 }
 
+bool Scene3DRenderer::isYUp() const
+{
+    return m_quickRenderer ? m_quickRenderer->isYUp() : true;
+}
+
 // Executed in the QtQuick render thread (which may even be the gui/main with QQuickWidget / RenderControl).
 void Scene3DRenderer::shutdown()
 {
@@ -593,6 +598,11 @@ void Scene3DRenderer::RHIRenderer::shutdown(Scene3DRenderer *scene3DRenderer)
         m_renderer->shutdown();
 
     releaseRHIResources();
+}
+
+bool Scene3DRenderer::RHIRenderer::isYUp() const
+{
+    return m_rhi->isYUpInNDC();
 }
 
 void Scene3DRenderer::RHIRenderer::releaseRHIResources()

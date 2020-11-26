@@ -857,7 +857,10 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
         if (fboNode) {
             if (!fboNode->parent())
                 managerNode->appendChildNode(fboNode);
-            fboNode->setRect(boundingRect());
+
+            // Depending on the backend in use, we might or might not have
+            // to flip content
+            fboNode->setRect(boundingRect(), !renderer->isYUp());
         }
     }
 
