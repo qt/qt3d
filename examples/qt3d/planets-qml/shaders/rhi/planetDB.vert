@@ -1,7 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -49,96 +49,83 @@
 **
 ****************************************************************************/
 
-import Qt3D.Core 2.0
-import Qt3D.Render 2.0
+#version 450 core
 
-Effect {
-    id: root
+layout(location=0) in vec3 vertexPosition;
+layout(location=1) in vec3 vertexNormal;
+layout(location=2) in vec2 vertexTexCoord;
+layout(location=3) in vec4 vertexTangent;
 
-    FilterKey { id: desktopkey; name: "name"; value: "Desktop" }
-    FilterKey { id: forwardkey; name : "pass"; value : "forward" }
-    FilterKey { id: eskey; name: "name"; value: "ES2" }
+layout(location=0) out vec3 lightDir;
+layout(location=1) out vec3 viewDir;
+layout(location=2) out vec2 texCoord;
 
-    RenderPass {
-        id: glpass
-        filterKeys: [ forwardkey ]
 
-        shaderProgram: ShaderProgram {
-            vertexShaderCode:   loadSource("qrc:/shaders/gl3/sun.vert")
-            fragmentShaderCode: loadSource("qrc:/shaders/gl3/sun.frag")
-        }
+layout(std140, binding = 0) uniform qt3d_render_view_uniforms {
+  mat4 viewMatrix;
+  mat4 projectionMatrix;
+  mat4 uncorrectedProjectionMatrix;
+  mat4 clipCorrectionMatrix;
+  mat4 viewProjectionMatrix;
+  mat4 inverseViewMatrix;
+  mat4 inverseProjectionMatrix;
+  mat4 inverseViewProjectionMatrix;
+  mat4 viewportMatrix;
+  mat4 inverseViewportMatrix;
+  vec4 textureTransformMatrix;
+  vec3 eyePosition;
+  float aspectRatio;
+  float gamma;
+  float exposure;
+  float time;
+};
 
-        // no special render state set => use the default set of states
-    }
+layout(std140, binding = 1) uniform qt3d_command_uniforms {
+  mat4 modelMatrix;
+  mat4 inverseModelMatrix;
+  mat4 modelViewMatrix;
+  mat3 modelNormalMatrix;
+  mat4 inverseModelViewMatrix;
+  mat4 modelViewProjection;
+  mat4 inverseModelViewProjectionMatrix;
+};
 
-    RenderPass {
-        id: rhipass
-        filterKeys: [ forwardkey ]
+layout(std140, binding = 2) uniform extras_uniforms {
+    float texCoordScale;
+    vec3 ka;            // Ambient reflectivity
+    vec3 ks;            // Specular reflectivity
+    float shininess;    // Specular shininess factor
+    float opacity;      // Alpha channel
+    vec3 lightPosition;
+    vec3 lightIntensity;
+};
 
-        shaderProgram: ShaderProgram {
-            vertexShaderCode:   loadSource("qrc:/shaders/rhi/sun.vert")
-            fragmentShaderCode: loadSource("qrc:/shaders/rhi/sun.frag")
-        }
+void main()
+{
+    // Pass through texture coordinates
+    texCoord = vertexTexCoord * texCoordScale;
 
-        // no special render state set => use the default set of states
-    }
+    // Transform position, normal, and tangent to eye coords
+    vec3 normal = normalize(modelNormalMatrix * vertexNormal);
+    vec3 tangent = normalize(modelNormalMatrix * vertexTangent.xyz);
+    vec3 position = vec3(modelViewMatrix * vec4(vertexPosition, 1.0));
 
-    RenderPass {
-        id: espass
-        filterKeys: [ forwardkey ]
+    // Calculate binormal vector
+    vec3 binormal = normalize(cross(normal, tangent));
 
-        shaderProgram: ShaderProgram {
-            vertexShaderCode:   loadSource("qrc:/shaders/es2/sun.vert")
-            fragmentShaderCode: loadSource("qrc:/shaders/es2/sun.frag")
-        }
+    // Construct matrix to transform from eye coords to tangent space
+    mat3 tangentMatrix = mat3 (
+        tangent.x, binormal.x, normal.x,
+        tangent.y, binormal.y, normal.y,
+        tangent.z, binormal.z, normal.z);
 
-        // no special render state set => use the default set of states
-    }
+    // Transform light direction and view direction to tangent space
+    vec3 s = lightPosition - position;
+    lightDir = normalize(tangentMatrix * vec3(viewMatrix * vec4(s, 1.0)));
 
-    techniques: [
-        Technique {
-            graphicsApiFilter {
-                api: GraphicsApiFilter.OpenGL
-                profile: GraphicsApiFilter.CoreProfile
-                majorVersion: 3
-                minorVersion: 2
-            }
+    vec3 v = -position;
+    viewDir = normalize(tangentMatrix * v);
 
-            filterKeys: [ desktopkey ]
-
-            renderPasses: [ glpass ]
-        },
-        Technique {
-            graphicsApiFilter {
-                api: GraphicsApiFilter.OpenGL
-                majorVersion: 2
-            }
-
-            filterKeys: [ eskey ]
-
-            renderPasses: [ espass ]
-        },
-        Technique {
-            graphicsApiFilter {
-                api: GraphicsApiFilter.OpenGLES
-                majorVersion: 2
-                minorVersion: 0
-            }
-
-            filterKeys: [ eskey ]
-
-            renderPasses: [ espass ]
-        },
-        Technique {
-            graphicsApiFilter {
-                api: GraphicsApiFilter.RHI
-                majorVersion: 1
-                minorVersion: 0
-            }
-
-            filterKeys: [ desktopkey ]
-
-            renderPasses: [ rhipass ]
-        }
-    ]
+    // Calculate vertex position in clip coordinates
+    gl_Position = modelViewProjection * vec4(vertexPosition, 1.0);
 }

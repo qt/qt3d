@@ -163,6 +163,8 @@ Entity {
         fragmentES: "qrc:/shaders/es2/planetDB.frag"
         vertexGL: "qrc:/shaders/gl3/planetDB.vert"
         fragmentGL: "qrc:/shaders/gl3/planetDB.frag"
+        vertexRHI: "qrc:/shaders/rhi/planetDB.vert"
+        fragmentRHI: "qrc:/shaders/rhi/planetDB.frag"
     }
 
     PlanetEffect {
@@ -172,6 +174,8 @@ Entity {
         fragmentES: "qrc:/shaders/es2/planetDSB.frag"
         vertexGL: "qrc:/shaders/gl3/planetDB.vert"
         fragmentGL: "qrc:/shaders/gl3/planetDSB.frag"
+        vertexRHI: "qrc:/shaders/rhi/planetDB.vert"
+        fragmentRHI: "qrc:/shaders/rhi/planetDSB.frag"
     }
 
     PlanetEffect {
@@ -181,6 +185,8 @@ Entity {
         fragmentES: "qrc:/shaders/es2/planetDS.frag"
         vertexGL: "qrc:/shaders/gl3/planetD.vert"
         fragmentGL: "qrc:/shaders/gl3/planetDS.frag"
+        vertexRHI: "qrc:/shaders/rhi/planetD.vert"
+        fragmentRHI: "qrc:/shaders/rhi/planetDS.frag"
     }
 
     SunEffect {

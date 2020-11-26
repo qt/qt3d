@@ -1,6 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -48,34 +49,29 @@
 **
 ****************************************************************************/
 
-#include <QGuiApplication>
-#include <QQuickView>
-#include <QQmlContext>
-#include <QOpenGLContext>
-#include "networkcontroller.h"
+#version 450 core
 
-int main(int argc, char **argv)
+layout(binding=3) uniform sampler2D diffuseTexture;
+
+layout(location=0) in vec3 position;
+layout(location=1) in vec2 texCoord;
+
+layout(location = 0) out vec4 fragColor;
+
+vec4 dModel(const in vec2 flipYTexCoord)
 {
-    QGuiApplication app(argc, argv);
+    // Lookup diffuse
+    vec3 diffuseColor = texture(diffuseTexture, flipYTexCoord).rgb;
 
-    QSurfaceFormat format;
-    if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {
-        format.setVersion(4, 5);
-        format.setProfile(QSurfaceFormat::CoreProfile);
-    }
-    format.setDepthBufferSize(24);
-    format.setStencilBufferSize(8);
-    format.setSamples(4);
+    return vec4(diffuseColor, 1.0);
+}
 
-    NetworkController networkController;
+void main()
+{
+    vec2 flipYTexCoord = texCoord;
+    flipYTexCoord.y = 1.0 - texCoord.y;
 
-    QQuickView view;
-    view.setFormat(format);
-    view.rootContext()->setContextProperty("networkController", &networkController);
-    view.setResizeMode(QQuickView::SizeRootObjectToView);
-    view.setSource(QUrl("qrc:/PlanetsMain.qml"));
-    view.setColor("#000000");
-    view.show();
+    vec4 result = dModel(flipYTexCoord);
 
-    return app.exec();
+    fragColor = result;
 }

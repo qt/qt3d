@@ -68,7 +68,7 @@ Item {
     Connections {
         target: networkController
 
-        onCommandAccepted: {
+        function onCommandAccepted() {
             var focusedItem = mainview.Window.window.activeFocusItem
             if (focusedItem && focusedItem.panningEnabled) {
                 focusedItem.panningEnabled = false
@@ -224,9 +224,9 @@ Item {
     Component {
         id: planetButtonDelegate
         PlanetButton {
-            source: planetImageSource
-            text: name
-            focusPlanet: planetNumber
+            source: model.planetImageSource
+            text: model.name
+            focusPlanet: model.planetNumber
             planetSelector: mainview
             buttonSize: planetButtonSize
             fontSize: textSize
