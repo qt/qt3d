@@ -444,6 +444,33 @@ QByteArray rawDataForUniformValue(const QShaderDescription::BlockVariable &block
               ? QByteArray(value.constData<char>(), std::min(value.byteSize(), blockVariable.size))
               : QByteArray::fromRawData(value.constData<char>(), std::min(value.byteSize(), blockVariable.size));
     const int matrixStride = blockVariable.matrixStride;
+    int arrayStride = blockVariable.arrayStride;
+    const int firstArrayDim = !blockVariable.arrayDims.empty() ? blockVariable.arrayDims.first() : 0;
+
+    if (blockVariable.arrayDims.size() > 1)
+        qCWarning(Backend) << "Multi Dimension arrays not handled yet";
+
+    if (arrayStride != 0 && matrixStride != 0)
+        qCWarning(Backend) << "Arrays of matrices not handled yet";
+
+    // Special cases for arrays
+    if (firstArrayDim > 0) {
+        // It appears that for a float myArray[8]; stride is reported as being
+        // 0 but expected size 128 bytes which means 16 bytes per float
+        // In that case we compute the arrayStride ourselves
+        if (arrayStride == 0)
+            arrayStride = blockVariable.size / firstArrayDim;
+        if (arrayStride != 0) {
+            QByteArray newRawData(firstArrayDim * arrayStride, '\0');
+            const int byteSizePerEntry = value.elementByteSize();
+            for (int i = 0, m = std::min(firstArrayDim, value.elementCount()); i < m; ++i) {
+                std::memcpy(newRawData.data() + i * arrayStride,
+                            rawData.constData() + i * byteSizePerEntry,
+                            byteSizePerEntry);
+            }
+            return newRawData;
+        }
+    }
 
     // Special cases for matrices which might have to be aligned to a vec4 stride
     if (matrixStride != 0 && value.byteSize() % matrixStride != 0) {
@@ -457,6 +484,9 @@ QByteArray rawDataForUniformValue(const QShaderDescription::BlockVariable &block
         }
         return newRawData;
     }
+
+    // Note: we currently don't handle array of matrices
+
     return rawData;
 }
 
