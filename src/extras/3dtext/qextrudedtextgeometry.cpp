@@ -75,10 +75,10 @@ struct TriangulationData {
         int end;
     };
 
-    QVector<QVector3D> vertices;
-    QVector<IndexType> indices;
-    QVector<Outline> outlines;
-    QVector<IndexType> outlineIndices;
+    std::vector<QVector3D> vertices;
+    std::vector<IndexType> indices;
+    std::vector<Outline> outlines;
+    std::vector<IndexType> outlineIndices;
     bool inverted;
 };
 
@@ -91,13 +91,13 @@ TriangulationData triangulate(const QString &text, const QFont &font)
     QPainterPath path;
     path.setFillRule(Qt::WindingFill);
     path.addText(0, 0, font, text);
-    QList<QPolygonF> polygons = path.toSubpathPolygons(QTransform().scale(1.f, -1.f));
+    QList<QPolygonF> polygons = path.toSubpathPolygons(QTransform().scale(1., -1.));
 
     // maybe glyph has no geometry
     if (polygons.size() == 0)
         return result;
 
-    const int prevNumIndices = result.indices.size();
+    const size_t prevNumIndices = result.indices.size();
 
     // Reset path and add previously extracted polygons (which where spatially transformed)
     path = QPainterPath();
@@ -107,9 +107,9 @@ TriangulationData triangulate(const QString &text, const QFont &font)
 
     // Extract polylines out of the path, this allows us to retrieve indices for each glyph outline
     QPolylineSet polylines = qPolyline(path);
-    QVector<IndexType> tmpIndices;
-    tmpIndices.resize(polylines.indices.size());
-    memcpy(tmpIndices.data(), polylines.indices.data(), polylines.indices.size() * sizeof(IndexType));
+    std::vector<IndexType> tmpIndices;
+    tmpIndices.resize(size_t(polylines.indices.size()));
+    memcpy(tmpIndices.data(), polylines.indices.data(), size_t(polylines.indices.size()) * sizeof(IndexType));
 
     int lastIndex = 0;
     for (const IndexType idx : tmpIndices) {
@@ -127,13 +127,13 @@ TriangulationData triangulate(const QString &text, const QFont &font)
     const QTriangleSet triangles = qTriangulate(path);
 
     // Append new indices to result.indices buffer
-    result.indices.resize(result.indices.size() + triangles.indices.size());
-    memcpy(&result.indices[prevNumIndices], triangles.indices.data(), triangles.indices.size() * sizeof(IndexType));
-    for (int i = prevNumIndices, m = result.indices.size(); i < m; ++i)
+    result.indices.resize(result.indices.size() + size_t(triangles.indices.size()));
+    memcpy(&result.indices[prevNumIndices], triangles.indices.data(), size_t(triangles.indices.size()) * sizeof(IndexType));
+    for (size_t i = prevNumIndices, m = result.indices.size(); i < m; ++i)
         result.indices[i] += result.vertices.size();
 
     // Append new triangles to result.vertices
-    result.vertices.reserve(triangles.vertices.size() / 2);
+    result.vertices.reserve(size_t(triangles.vertices.size()) / 2);
     for (int i = 0, m = triangles.vertices.size(); i < m; i += 2)
         result.vertices.push_back(QVector3D(triangles.vertices[i] / font.pointSizeF(), triangles.vertices[i + 1] / font.pointSizeF(), 0.0f));
 
@@ -307,16 +307,16 @@ void QExtrudedTextGeometryPrivate::update()
 
     TriangulationData data = triangulate(m_text, m_font);
 
-    const int numVertices = data.vertices.size();
-    const int numIndices = data.indices.size();
+    const size_t numVertices = data.vertices.size();
+    const size_t numIndices = data.indices.size();
 
     struct Vertex {
         QVector3D position;
         QVector3D normal;
     };
 
-    QVector<IndexType> indices;
-    QVector<Vertex> vertices;
+    std::vector<IndexType> indices;
+    std::vector<Vertex> vertices;
 
     // TODO: keep 'vertices.size()' small when extruding
     vertices.reserve(data.vertices.size() * 2);
@@ -327,7 +327,7 @@ void QExtrudedTextGeometryPrivate::update()
         vertices.push_back({ QVector3D(v.x(), v.y(), m_depth), // vertex
                              QVector3D(0.0f, 0.0f, 1.0f) }); // normal
 
-    for (int i = 0, verticesIndex = vertices.size(); i < data.outlines.size(); ++i) {
+    for (size_t i = 0, verticesIndex = vertices.size(); i < data.outlines.size(); ++i) {
         const int begin = data.outlines[i].begin;
         const int end = data.outlines[i].end;
         const int verticesIndexBegin = verticesIndex;
@@ -336,8 +336,8 @@ void QExtrudedTextGeometryPrivate::update()
             continue;
 
         QVector3D prevNormal = QVector3D::crossProduct(
-                    vertices[data.outlineIndices[end - 1] + numVertices].position - vertices[data.outlineIndices[end - 1]].position,
-                vertices[data.outlineIndices[begin]].position - vertices[data.outlineIndices[end - 1]].position).normalized();
+                                   vertices[data.outlineIndices[end - 1] + numVertices].position - vertices[data.outlineIndices[end - 1]].position,
+                                   vertices[data.outlineIndices[begin]].position - vertices[data.outlineIndices[end - 1]].position).normalized();
 
         for (int j = begin; j < end; ++j) {
             const bool isLastIndex = (j == end - 1);
@@ -393,8 +393,7 @@ void QExtrudedTextGeometryPrivate::update()
     memcpy(indicesFaces, data.indices.data(), numIndices * sizeof(IndexType));
 
     // insert values for front face and flip triangles
-    for (int j = 0; j < numIndices; j += 3)
-    {
+    for (size_t j = 0; j < numIndices; j += 3) {
         indicesFaces[numIndices + j    ] = indicesFaces[j    ] + numVertices;
         indicesFaces[numIndices + j + 1] = indicesFaces[j + 2] + numVertices;
         indicesFaces[numIndices + j + 2] = indicesFaces[j + 1] + numVertices;
