@@ -1484,29 +1484,29 @@ SubmissionContext::ShaderCreationInfo SubmissionContext::createShaderProgram(RHI
     // Compile shaders
     const auto &shaderCode = shader->shaderCode();
     QShaderBaker b;
-    QVector<QShaderBaker::GeneratedShader> generatedShaders;
+    QList<QShaderBaker::GeneratedShader> generatedShaders;
 
 #if QT_FEATURE_vulkan
     if (m_rhi->backend() == QRhi::Vulkan)
-        generatedShaders.push_back({ QShader::SpirvShader, 100 });
+        generatedShaders.emplace_back(QShader::SpirvShader, 100);
 #endif
 
 #ifndef QT_NO_OPENGL
     if (m_rhi->backend() == QRhi::OpenGLES2)
-        generatedShaders.push_back({ QShader::GlslShader, glslVersionForFormat(format()) });
+        generatedShaders.emplace_back(QShader::GlslShader, glslVersionForFormat(format()));
 #endif
 
 #ifdef Q_OS_WIN
     if (m_rhi->backend() == QRhi::D3D11)
-        generatedShaders.push_back({ QShader::HlslShader, QShaderVersion(50) });
+        generatedShaders.emplace_back(QShader::HlslShader, QShaderVersion(50));
 #endif
 
 #ifdef Q_OS_MACOS
     if (m_rhi->backend() == QRhi::Metal)
-        generatedShaders.push_back({ QShader::MslShader, QShaderVersion(12) });
+        generatedShaders.emplace_back(QShader::MslShader, QShaderVersion(12));
 #endif
 
-    QVector<QShader::Variant> generatedShaderVariants(generatedShaders.size());
+    QList<QShader::Variant> generatedShaderVariants(generatedShaders.size());
 
     b.setGeneratedShaders(generatedShaders);
     b.setGeneratedShaderVariants(generatedShaderVariants);
@@ -1514,7 +1514,7 @@ SubmissionContext::ShaderCreationInfo SubmissionContext::createShaderProgram(RHI
     // TODO handle caching as QShader does not have a built-in mechanism for that
     QString logs;
     bool success = true;
-    for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i) {
+    for (size_t i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i) {
         const QShaderProgram::ShaderType type = static_cast<QShaderProgram::ShaderType>(i);
         if (!shaderCode.at(i).isEmpty()) {
             // Note: logs only return the error but not all the shader code
