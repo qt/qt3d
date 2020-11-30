@@ -8,3 +8,6 @@ dependencies:
   ../qtshadertools:
     ref: ee64e253c647e92645de7a35e5ea63b1ae9bed12
     required: true
+  ../qttools:
+    ref: 3a5acdba81b10c411c1e55bd55b8525236554064
+    required: false
