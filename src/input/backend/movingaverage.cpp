@@ -56,7 +56,7 @@ MovingAverage::MovingAverage(unsigned int samples)
 void MovingAverage::addSample(float sample)
 {
     if (m_sampleCount == m_maxSampleCount)
-        m_total -= m_samples.at(m_currentSample);
+        m_total -= m_samples[m_currentSample];
     else
         ++m_sampleCount;
 
