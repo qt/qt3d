@@ -75,8 +75,8 @@ public:
     ~DistanceFieldTextRenderer();
 
     void setGlyphData(Qt3DRender::QAbstractTexture *glyphTexture,
-                      const QVector<float> &vertexData,
-                      const QVector<quint16> &indexData);
+                      const std::vector<float> &vertexData,
+                      const std::vector<quint16> &indexData);
 
     void setColor(const QColor &color);
 

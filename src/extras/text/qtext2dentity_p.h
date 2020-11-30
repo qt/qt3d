@@ -101,7 +101,7 @@ public:
 
     QList<DistanceFieldTextRenderer*> m_renderers;
 
-    float computeActualScale() const;
+    qreal computeActualScale() const;
 
     void setCurrentGlyphRuns(const QList<QGlyphRun> &runs);
     void clearCurrentGlyphRuns();

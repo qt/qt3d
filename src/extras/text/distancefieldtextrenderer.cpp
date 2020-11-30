@@ -129,18 +129,18 @@ DistanceFieldTextRenderer::~DistanceFieldTextRenderer()
 }
 
 void DistanceFieldTextRenderer::setGlyphData(Qt3DRender::QAbstractTexture *glyphTexture,
-                                             const QVector<float> &vertexData,
-                                             const QVector<quint16> &indexData)
+                                             const std::vector<float> &vertexData,
+                                             const std::vector<quint16> &indexData)
 {
     Q_D(DistanceFieldTextRenderer);
 
-    const int vertexCount = vertexData.size() / 5;
+    const size_t vertexCount = vertexData.size() / 5;
 
     d->m_vertexBuffer->setData(QByteArray((char*) vertexData.data(), vertexData.size() * sizeof(float)));
     d->m_indexBuffer->setData(QByteArray((char*) indexData.data(), indexData.size() * sizeof(quint16)));
-    d->m_positionAttr->setCount(vertexCount);
-    d->m_texCoordAttr->setCount(vertexCount);
-    d->m_indexAttr->setCount(indexData.size());
+    d->m_positionAttr->setCount(uint(vertexCount));
+    d->m_texCoordAttr->setCount(uint(vertexCount));
+    d->m_indexAttr->setCount(uint(indexData.size()));
 
     d->m_material->setDistanceFieldTexture(glyphTexture);
 }
