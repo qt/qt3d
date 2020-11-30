@@ -113,7 +113,7 @@ class GLTFSkeletonLoader
 
         QString name;
         int inverseBindAccessorIndex;
-        QList<int> jointNodeIndices;
+        std::vector<int> jointNodeIndices;
     };
 
     class Node
@@ -123,7 +123,7 @@ class GLTFSkeletonLoader
         explicit Node(const QJsonObject &json);
 
         Qt3DCore::Sqt localTransform;
-        QList<int> childNodeIndices;
+        std::vector<int> childNodeIndices;
         QString name;
         int parentNodeIndex;
         int cameraIndex;
@@ -164,17 +164,17 @@ private:
     void setupNodeParentLinks();
     QByteArray resolveLocalData(const QString &path) const;
 
-    SkeletonData createSkeletonFromSkin(Skin *skin) const;
-    QMatrix4x4 inverseBindMatrix(Skin *skin, int jointIndex) const;
+    SkeletonData createSkeletonFromSkin(const Skin &skin) const;
+    QMatrix4x4 inverseBindMatrix(const Skin &skin, int jointIndex) const;
     RawData accessorData(int accessorIndex, int index) const;
 
     QJsonDocument m_json;
     QString m_basePath;
-    QVector<BufferData> m_bufferDatas;
-    QVector<BufferView> m_bufferViews;
-    QVector<AccessorData> m_accessors;
-    QVector<Skin> m_skins;
-    QVector<Node> m_nodes;
+    std::vector<BufferData> m_bufferDatas;
+    std::vector<BufferView> m_bufferViews;
+    std::vector<AccessorData> m_accessors;
+    std::vector<Skin> m_skins;
+    std::vector<Node> m_nodes;
 };
 
 } // namespace Render

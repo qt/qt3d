@@ -335,12 +335,12 @@ bool GLTFSkeletonLoader::load(QIODevice *ioDev)
 
 SkeletonData GLTFSkeletonLoader::createSkeleton(const QString &skeletonName)
 {
-    if (m_skins.isEmpty()) {
+    if (m_skins.empty()) {
         qCWarning(Jobs, "glTF file does not contain any skins");
         return SkeletonData();
     }
 
-    Skin *skin = m_skins.begin();
+    auto skin = m_skins.begin();
     if (!skeletonName.isNull()) {
         const auto result = std::find_if(m_skins.begin(), m_skins.end(),
             [skeletonName](const Skin &skin) { return skin.name == skeletonName; });
@@ -348,23 +348,23 @@ SkeletonData GLTFSkeletonLoader::createSkeleton(const QString &skeletonName)
             skin = result;
     }
 
-    Q_ASSERT(skin != nullptr);
-    return createSkeletonFromSkin(skin);
+    Q_ASSERT(skin != m_skins.end());
+    return createSkeletonFromSkin(*skin);
 }
 
-SkeletonData GLTFSkeletonLoader::createSkeletonFromSkin(Skin *skin) const
+SkeletonData GLTFSkeletonLoader::createSkeletonFromSkin(const Skin &skin) const
 {
     SkeletonData skel;
 
-    const int jointCount = skin->jointNodeIndices.size();
-    skel.reserve(jointCount);
+    const auto jointCount = skin.jointNodeIndices.size();
+    skel.reserve(int(jointCount));
 
     QHash<const Node *, int> jointIndexMap;
     for (int i = 0; i < jointCount; ++i) {
         // Get a pointer to the node for this joint and store it in
         // a map to the JointInfo index. We can later use this to set
         // the parent indices of the joints
-        const Node *node = &m_nodes[skin->jointNodeIndices[i]];
+        const Node *node = &m_nodes[skin.jointNodeIndices[i]];
         jointIndexMap.insert(node, i);
 
         JointInfo joint;
@@ -381,10 +381,10 @@ SkeletonData GLTFSkeletonLoader::createSkeletonFromSkin(Skin *skin) const
     return skel;
 }
 
-QMatrix4x4 GLTFSkeletonLoader::inverseBindMatrix(Skin *skin, int jointIndex) const
+QMatrix4x4 GLTFSkeletonLoader::inverseBindMatrix(const Skin &skin, int jointIndex) const
 {
     // Create a matrix and copy the data into it
-    RawData rawData = accessorData(skin->inverseBindAccessorIndex, jointIndex);
+    RawData rawData = accessorData(skin.inverseBindAccessorIndex, jointIndex);
     QMatrix4x4 m;
     memcpy(m.data(), rawData.data, rawData.byteLength);
     return m;
@@ -552,15 +552,15 @@ bool GLTFSkeletonLoader::processJSONNode(const QJsonObject &json)
 
 void GLTFSkeletonLoader::setupNodeParentLinks()
 {
-    const int nodeCount = m_nodes.size();
-    for (int i = 0; i < nodeCount; ++i) {
+    const size_t nodeCount = m_nodes.size();
+    for (size_t i = 0; i < nodeCount; ++i) {
         const Node &node = m_nodes[i];
-        const QList<int> &childNodeIndices = node.childNodeIndices;
+        const std::vector<int> &childNodeIndices = node.childNodeIndices;
         for (const auto childNodeIndex : childNodeIndices) {
             Q_ASSERT(childNodeIndex < m_nodes.size());
-            Node &childNode = m_nodes[childNodeIndex];
+            Node &childNode = m_nodes[size_t(childNodeIndex)];
             Q_ASSERT(childNode.parentNodeIndex == -1);
-            childNode.parentNodeIndex = i;
+            childNode.parentNodeIndex = int(i);
         }
     }
 }
