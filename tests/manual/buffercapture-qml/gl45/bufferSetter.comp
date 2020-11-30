@@ -48,66 +48,21 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.2 as QQ2
-import Qt3D.Core 2.9
-import Qt3D.Render 2.9
-import Qt3D.Input 2.0
-import Qt3D.Extras 2.0
+#version 450 core
 
-Entity {
-    id: sceneRoot
+layout (local_size_x=32) in;
 
-    Camera {
-        id: sceneCamera
-        projectionType: CameraLens.PerspectiveProjection
-        upVector: Qt.vector3d(0, 1, 0)
-        position: Qt.vector3d(0, 0, -800)
-        viewCenter: Qt.vector3d(0, 0, 0)
-        nearPlane: 0.1
-        farPlane: 1000
-        fieldOfView: 25
-        aspectRatio: 1.33
-    }
+layout (std430, binding = 3) buffer InputBuffer
+{
+    uint d[];
+};
 
-    components: [
-        RenderSettings {
-            ComputeFrameGraph {
-            }
-            // explicitly set RenderingPolicy to AlwaysRender, as changes in the
-            // scene won't be reflected in actual Qt scene-graph changes (due to
-            // GPU compute calls)
-            renderPolicy: RenderSettings.Always
-        }
-    ]
+layout(std140, binding=4) uniform custom_uniforms {
+    int inputSize;
+};
 
-    function initGraphBuffer() {
-        var bufferData = new Uint32Array(1024);
-        for (var i = 0; i < 1024; ++i) {
-            bufferData[i] = 1;
-        }
-        return bufferData
-    }
-
-
-    Buffer {
-        id: graphBuffer
-        objectName: "buffer"
-        accessType: Buffer.ReadWrite
-        data: initGraphBuffer()
-    }
-
-    ComputeMaterial {
-        id: computeMaterial
-        dataBuffer: graphBuffer
-        inputSize: 1024
-    }
-
-    Entity {
-        id: particleComputeEntity
-        readonly property ComputeCommand particlesComputeJob: ComputeCommand {}
-        components: [
-            particlesComputeJob,
-            computeMaterial
-        ]
-    }
+void main()
+{
+    if (gl_GlobalInvocationID.x < inputSize)
+        d[gl_GlobalInvocationID.x] = d[gl_GlobalInvocationID.x] + gl_GlobalInvocationID.x * 2;
 }

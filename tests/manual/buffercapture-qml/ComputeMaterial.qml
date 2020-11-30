@@ -48,8 +48,8 @@
 **
 ****************************************************************************/
 
-import Qt3D.Core 2.0
-import Qt3D.Render 2.0
+import Qt3D.Core 2.9
+import Qt3D.Render 2.9
 
 Material {
     property Buffer dataBuffer;
@@ -60,8 +60,13 @@ Material {
     ]
 
     ShaderProgram {
-        id: computeShader
-        computeShaderCode: loadSource("qrc:/bufferSetter.comp")
+        id: computeShaderGL43
+        computeShaderCode: loadSource("qrc:/gl43/bufferSetter.comp")
+    }
+
+    ShaderProgram {
+        id: computeShaderGL45
+        computeShaderCode: loadSource("qrc:/gl45/bufferSetter.comp")
     }
 
     effect: Effect {
@@ -69,7 +74,7 @@ Material {
             Technique {
                 renderPasses: [
                     RenderPass {
-                        shaderProgram: computeShader
+                        shaderProgram: computeShaderGL43
                         // We set the buffer as the parameter data
                         parameters: [
                             Parameter { name: "input"; value: dataBuffer }
@@ -84,6 +89,26 @@ Material {
                     profile: GraphicsApiFilter.CoreProfile
                     majorVersion: 4
                     minorVersion: 3
+                }
+            },
+            Technique {
+                renderPasses: [
+                    RenderPass {
+                        shaderProgram: computeShaderGL45
+                        // We set the buffer as the parameter data
+                        parameters: [
+                            Parameter { name: "input"; value: dataBuffer }
+                        ]
+                    }
+                ]
+                filterKeys: [
+                    FilterKey { name: "type"; value: "compute" }
+                ]
+                graphicsApiFilter {
+                    api: GraphicsApiFilter.RHI
+                    profile: GraphicsApiFilter.NoProfile
+                    majorVersion: 1
+                    minorVersion: 0
                 }
             }
         ] // techniques

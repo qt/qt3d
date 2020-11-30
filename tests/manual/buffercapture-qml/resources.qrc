@@ -1,9 +1,10 @@
 <RCC>
     <qresource prefix="/">
         <file>BufferSetterScene.qml</file>
-        <file>bufferSetter.comp</file>
         <file>main.qml</file>
         <file>ComputeFrameGraph.qml</file>
         <file>ComputeMaterial.qml</file>
+        <file>gl43/bufferSetter.comp</file>
+        <file>gl45/bufferSetter.comp</file>
     </qresource>
 </RCC>
