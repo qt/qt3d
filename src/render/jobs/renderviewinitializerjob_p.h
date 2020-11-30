@@ -107,8 +107,6 @@ public:
 
         // Create a RenderView object
         m_renderView = new RenderView;
-
-        // RenderView should allocate heap resources using only the currentFrameAllocator
         m_renderView->setRenderer(m_renderer);
 
         // Populate the renderview's configuration from the framegraph

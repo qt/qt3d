@@ -105,7 +105,6 @@ class QScreen;
 
 namespace Qt3DCore {
 class QEntity;
-class QFrameAllocator;
 }
 
 namespace Qt3DRender {

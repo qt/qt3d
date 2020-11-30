@@ -42,7 +42,6 @@
 #include <submissioncontext_p.h>
 #include <Qt3DRender/private/texture_p.h>
 
-#include <Qt3DCore/private/qframeallocator_p.h>
 #include <Qt3DCore/private/vector_helper_p.h>
 
 #include <QOpenGLShaderProgram>

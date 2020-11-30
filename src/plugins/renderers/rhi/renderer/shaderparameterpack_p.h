@@ -64,10 +64,6 @@ QT_BEGIN_NAMESPACE
 
 class QOpenGLShaderProgram;
 
-namespace Qt3DCore {
-class QFrameAllocator;
-}
-
 namespace Qt3DRender {
 namespace Render {
 namespace Rhi {

@@ -132,11 +132,11 @@ inline QJsonArray col2jsvec(const QColor &color, bool alpha = false)
 }
 
 template <typename T>
-inline QJsonArray vec2jsvec(const QVector<T> &v)
+inline QJsonArray vec2jsvec(const std::vector<T> &v)
 {
     QJsonArray arr;
-    for (int i = 0; i < v.count(); ++i)
-        arr << v.at(i);
+    for (size_t i = 0; i < v.size(); ++i)
+        arr << v[i];
     return arr;
 }
 
@@ -1738,9 +1738,9 @@ void GLTFExporter::exportMaterials(QJsonObject &materials)
 
             // Blend function handling is our own extension used for Phong Alpha material.
             QJsonObject functions;
-            if (!matInfo.blendEquations.isEmpty())
+            if (!matInfo.blendEquations.empty())
                 functions["blendEquationSeparate"] = vec2jsvec(matInfo.blendEquations);
-            if (!matInfo.blendArguments.isEmpty())
+            if (!matInfo.blendArguments.empty())
                 functions["blendFuncSeparate"] = vec2jsvec(matInfo.blendArguments);
             if (!functions.isEmpty())
                 commonMat["functions"] = functions;

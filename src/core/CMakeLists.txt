@@ -48,8 +48,6 @@ qt_internal_add_module(3DCore
         qt3dcore_global.h qt3dcore_global_p.h
         qtickclock.cpp qtickclock_p.h
         qurlhelper.cpp qurlhelper_p.h
-        resources/qframeallocator.cpp resources/qframeallocator_p.h
-        resources/qframeallocator_p_p.h
         resources/qhandle_p.h
         resources/qloadgltf_p.h
         services/nullservices_p.h

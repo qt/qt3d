@@ -2138,8 +2138,8 @@ QVariant GLTFImporter::parameterValueFromJSON(int type, const QJsonValue &value)
         QVector2D vector2D;
         QVector3D vector3D;
         QVector4D vector4D;
-        QVector<float> dataMat2(4, 0.0f);
-        QVector<float> dataMat3(9, 0.0f);
+        std::vector<float> dataMat2(4, 0.0f);
+        std::vector<float> dataMat3(9, 0.0f);
 
         switch (type) {
         case GL_BYTE:
@@ -2209,7 +2209,7 @@ QVariant GLTFImporter::parameterValueFromJSON(int type, const QJsonValue &value)
             dataMat2[1] = static_cast<GLfloat>(valueArray.at(2).toDouble());
             dataMat2[2] = static_cast<GLfloat>(valueArray.at(1).toDouble());
             dataMat2[3] = static_cast<GLfloat>(valueArray.at(3).toDouble());
-            return QVariant::fromValue(QMatrix2x2(dataMat2.constData()));
+            return QVariant::fromValue(QMatrix2x2(dataMat2.data()));
         case GL_FLOAT_MAT3:
             //Matrix3x3 is in Row Major ordering (so we need to convert)
             dataMat3[0] = static_cast<GLfloat>(valueArray.at(0).toDouble());
@@ -2221,7 +2221,7 @@ QVariant GLTFImporter::parameterValueFromJSON(int type, const QJsonValue &value)
             dataMat3[6] = static_cast<GLfloat>(valueArray.at(2).toDouble());
             dataMat3[7] = static_cast<GLfloat>(valueArray.at(5).toDouble());
             dataMat3[8] = static_cast<GLfloat>(valueArray.at(8).toDouble());
-            return QVariant::fromValue(QMatrix3x3(dataMat3.constData()));
+            return QVariant::fromValue(QMatrix3x3(dataMat3.data()));
         case GL_FLOAT_MAT4:
             //Matrix4x4 is Column Major ordering
             return QVariant(QMatrix4x4(static_cast<GLfloat>(valueArray.at(0).toDouble()),
