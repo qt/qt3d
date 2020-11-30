@@ -2028,7 +2028,7 @@ void Renderer::cleanupRenderTarget(const Qt3DCore::QNodeId &renderTargetId)
 }
 
 // Called by SubmitRenderView
-void Renderer::downloadGLBuffers()
+void Renderer::downloadRHIBuffers()
 {
     const std::vector<Qt3DCore::QNodeId> downloadableHandles = std::move(m_downloadableBuffers);
     for (const Qt3DCore::QNodeId &bufferId : downloadableHandles) {
@@ -2127,12 +2127,6 @@ Renderer::submitRenderViews(const std::vector<RHIPassInfo> &rhiPassesInfo)
         if (!executeCommandsSubmission(rhiPassInfo))
             m_lastFrameCorrect.storeRelaxed(
                     0); // something went wrong; make sure to render the next frame!
-
-        //        if (renderView->isDownloadBuffersEnable())
-        //        {
-        //            RHI_UNIMPLEMENTED;
-        ////*            downloadGLBuffers();
-        //        }
 
         frameElapsed = timer.elapsed() - frameElapsed;
         qCDebug(Rendering) << Q_FUNC_INFO << "Submitted RHI Passes " << i + 1 << "/"
@@ -2801,6 +2795,9 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
                 }
             }
         }
+
+        if (rv->isDownloadBuffersEnable())
+            downloadRHIBuffers();
     }
 
     if (Q_LIKELY(inDraw))

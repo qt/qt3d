@@ -26,7 +26,8 @@ set(resources_resource_files
     "BufferSetterScene.qml"
     "ComputeFrameGraph.qml"
     "ComputeMaterial.qml"
-    "bufferSetter.comp"
+    "gl43/bufferSetter.comp"
+    "gl45/bufferSetter.comp"
     "main.qml"
 )
 

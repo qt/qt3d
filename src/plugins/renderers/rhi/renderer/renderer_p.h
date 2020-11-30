@@ -252,7 +252,7 @@ public:
     void updateTexture(Texture *texture);
     void cleanupTexture(Qt3DCore::QNodeId cleanedUpTextureId);
     void cleanupShader(const Shader *shader);
-    void downloadGLBuffers();
+    void downloadRHIBuffers();
 
     struct RHIPassInfo
     {
