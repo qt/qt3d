@@ -95,6 +95,19 @@ class Qt3D(ConanFile):
             cmake.definitions["ANDROID_SDK_ROOT"] = self._read_env('ANDROID_SDK_ROOT')
             cmake.definitions["ANDROID_NDK_ROOT"] = self._read_env('ANDROID_NDK_ROOT')
 
+        if self.settings.os == "iOS":
+            # Instead of Conan's auto-added 'Darwin', explicitly pass 'iOS'.
+            cmake.definitions["CMAKE_SYSTEM_NAME"] = "iOS"
+
+            # Remove the explicit sysroot, let CMake detect the sysroots, to ensure
+            # that multi-arch builds work.
+            del cmake.definitions["CMAKE_OSX_SYSROOT"]
+
+            # Remove the conan provided architecture, instead rely on the architectures set
+            # by the Qt toolchain file, which with official Qt packages most likely means
+            # multi-arch iOS.
+            del cmake.definitions["CMAKE_OSX_ARCHITECTURES"]
+
         for c in [ 'assimp', 'opengl_renderer', 'rhi_renderer']:
             value = os.environ.get('qt3d_' + c)
             if value:
