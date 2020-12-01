@@ -1842,7 +1842,7 @@ std::vector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
             m_updatedDisableSubtreeEnablers.push_back(node->peerId());
     }
 
-    int idealThreadCount = QThreadPooler::maxThreadCount();
+    int idealThreadCount = QAspectJobManager::idealThreadCount();
 
     const size_t fgBranchCount = m_frameGraphLeaves.size();
     if (fgBranchCount > 1) {

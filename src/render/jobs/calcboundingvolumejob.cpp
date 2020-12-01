@@ -43,6 +43,7 @@
 #include <Qt3DCore/qboundingvolume.h>
 #include <Qt3DCore/private/qabstractfrontendnodemanager_p.h>
 #include <Qt3DCore/private/qgeometry_p.h>
+#include <Qt3DCore/private/qaspectjobmanager_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
@@ -469,7 +470,7 @@ void CalculateBoundingVolumeJob::run()
     updatedGeometries.reserve(entities.size());
 
 #if QT_CONFIG(concurrent)
-    if (entities.size() > 1) {
+    if (entities.size() > 1 && QAspectJobManager::idealThreadCount() > 1) {
         UpdateBoundFunctor functor;
         functor.manager = m_manager;
         ReduceUpdateBoundFunctor reduceFunctor;
