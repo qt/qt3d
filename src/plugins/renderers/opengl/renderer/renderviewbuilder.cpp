@@ -435,26 +435,6 @@ bool RenderViewBuilder::lightCacheNeedsToBeRebuilt() const
     return m_rebuildFlags.testFlag(RebuildFlag::LightCacheRebuild);
 }
 
-int RenderViewBuilder::defaultJobCount()
-{
-    static int jobCount = 0;
-    if (jobCount)
-        return jobCount;
-
-    const QByteArray maxThreadCount = qgetenv("QT3D_MAX_THREAD_COUNT");
-    if (!maxThreadCount.isEmpty()) {
-        bool conversionOK = false;
-        const int maxThreadCountValue = maxThreadCount.toInt(&conversionOK);
-        if (conversionOK) {
-            jobCount = maxThreadCountValue;
-            return jobCount;
-        }
-    }
-
-    jobCount = QThread::idealThreadCount();
-    return jobCount;
-}
-
 int RenderViewBuilder::optimalJobCount() const
 {
     return m_optimalParallelJobCount;

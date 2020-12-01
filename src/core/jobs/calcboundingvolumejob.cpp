@@ -293,7 +293,7 @@ void CalculateBoundingVolumeJob::run()
     });
 
 #if QT_CONFIG(concurrent)
-    if (dirtyEntities.size() > 1 && QThreadPooler::maxThreadCount() > 1) {
+    if (dirtyEntities.size() > 1 && QAspectJobManager::idealThreadCount() > 1) {
         UpdateBoundFunctor functor;
         ReduceUpdateBoundFunctor reduceFunctor;
         m_results = QtConcurrent::blockingMappedReduced<decltype(m_results)>(dirtyEntities, functor, reduceFunctor);

@@ -119,7 +119,6 @@ public:
     void setLightCacheNeedsToBeRebuilt(bool needsToBeRebuilt);
     bool lightCacheNeedsToBeRebuilt() const;
 
-    static int defaultJobCount();
     int optimalJobCount() const;
     void setOptimalJobCount(int v);
 
