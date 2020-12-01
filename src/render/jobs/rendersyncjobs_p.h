@@ -299,7 +299,7 @@ public:
             const bool lightsCacheRebuild = m_rebuildFlags.testFlag(RebuildFlag::LightCacheRebuild);
             const bool cameraDirty = cacheForLeaf.viewProjectionMatrix != rv->viewProjectionMatrix();
             const bool hasProximityFilter = !rv->proximityFilterIds().empty();
-            const bool commandFilteringRequired =
+            bool commandFilteringRequired =
                     fullRebuild ||
                     layerFilteringRebuild ||
                     lightsCacheRebuild ||
@@ -375,9 +375,12 @@ public:
             // We need to check this regardless of whether the camera has moved since
             // entities in the scene themselves could have moved
             if (isDraw && rv->frustumCulling()) {
-                cacheForLeaf.filteredAndCulledRenderables = entitiesInSubset(
+                const std::vector<Entity *> &subset = entitiesInSubset(
                             cacheForLeaf.layeredFilteredRenderables,
                             m_frustumCullingJob->visibleEntities());
+                // Force command filtering if what we contain in cache and what we filtered differ
+                commandFilteringRequired |= (subset != cacheForLeaf.filteredAndCulledRenderables);
+                cacheForLeaf.filteredAndCulledRenderables = subset;
             }
 
             rv->setMaterialParameterTable(cacheForLeaf.materialParameterGatherer);
