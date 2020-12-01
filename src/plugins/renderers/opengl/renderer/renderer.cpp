@@ -127,9 +127,6 @@
 
 QT_BEGIN_NAMESPACE
 
-// Crashes on AMD Radeon drivers on Windows. Disable for now.
-//#define SHADER_LOADING_IN_COMMAND_THREAD
-
 using namespace Qt3DCore;
 
 namespace Qt3DRender {
@@ -957,6 +954,13 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
                 // RenderCommand should have a handle to the corresponding VAO for the Mesh and Shader
                 HVao vaoHandle;
 
+                // If shader was loaded this frame, skip creating VAO for the command
+                // as we have to wait for next frame to make sure command was build against valid shader
+                if (m_lastLoadedShaderIds.contains(command.m_shaderId)) {
+                    command.m_isValid = false;
+                    return;
+                }
+
                 // Create VAO or return already created instance associated with command shader/geometry
                 // (VAO is emulated if not supported)
                 createOrUpdateVAO(&command, &vaoHandle, &vao);
@@ -1311,7 +1315,6 @@ void Renderer::updateGLResources()
         }
     }
 
-#ifndef SHADER_LOADING_IN_COMMAND_THREAD
     {
         Profiling::GLTimeRecorder recorder(Profiling::ShaderUpload, activeProfiler());
         const QVector<HShader> dirtyShaderHandles = std::move(m_dirtyShaders);
@@ -1325,9 +1328,26 @@ void Renderer::updateGLResources()
 
             // Compile shader
             m_submissionContext->loadShader(shader, shaderManager, m_glResourceManagers->glShaderManager());
+
+            // Release any VAO referencing this shader. When we build VAO, we
+            // rely on the shader introspection to know the active uniforms In
+            // case the shader is reloaded, we might end up having more/less
+            // active uniforms than prior therefore we need to ensure VAO is
+            // rebuilt.
+            VAOManager *vaoManager = m_glResourceManagers->vaoManager();
+            const std::vector<HVao> activeVaos = vaoManager->activeHandles(); // copy
+            for (const HVao &vao : activeVaos) {
+                if (vao.data() && vao->key().second == shader->peerId())
+                    vaoManager->releaseResource(vao->key());
+            }
+
+            // Record shader id in vector of vectors loaded this frame
+            // Given commands need to be built against loaded shader (at next frame)
+            // we can make use of this vector to skip operations that target this
+            // shader for this frame
+            m_lastLoadedShaderIds.push_back(shader->peerId());
         }
     }
-#endif
 
     {
         Profiling::GLTimeRecorder recorder(Profiling::TextureUpload, activeProfiler());
@@ -2323,6 +2343,7 @@ void Renderer::cleanGraphicsResources()
         // We can really release the texture at this point
         m_nodesManager->shaderManager()->releaseResource(shaderCleanedUpId);
     }
+    m_lastLoadedShaderIds.clear();
 }
 
 const GraphicsApiFilterData *Renderer::contextInfo() const

@@ -126,8 +126,6 @@
 
 QT_BEGIN_NAMESPACE
 
-// Crashes on AMD Radeon drivers on Windows. Disable for now.
-//#define SHADER_LOADING_IN_COMMAND_THREAD
 using namespace Qt3DCore;
 
 namespace Qt3DRender {

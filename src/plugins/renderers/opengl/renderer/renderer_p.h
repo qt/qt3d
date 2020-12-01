@@ -400,6 +400,7 @@ private:
     QVector<Qt3DCore::QNodeId> m_updatedDisableSubtreeEnablers;
     Qt3DCore::QNodeIdVector m_textureIdsToCleanup;
     QVector<ShaderBuilderUpdate> m_shaderBuilderUpdates;
+    Qt3DCore::QNodeIdVector m_lastLoadedShaderIds;
 
     bool m_ownedContext;
 
