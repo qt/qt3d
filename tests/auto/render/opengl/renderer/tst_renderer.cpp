@@ -140,9 +140,9 @@ private Q_SLOTS:
         // filterEntityByLayerJob,
         // syncFilterEntityByLayerJob
 
-        const int singleRenderViewCommandRebuildJobCount  = 1 + Qt3DRender::Render::OpenGL::RenderViewBuilder::defaultJobCount();
+        const int singleRenderViewCommandRebuildJobCount  = 1 + Qt3DCore::QAspectJobManager::idealThreadCount();
 
-        const int singleRenderViewJobCount = 8 + 1 * Qt3DRender::Render::OpenGL::RenderViewBuilder::defaultJobCount();
+        const int singleRenderViewJobCount = 8 + 1 * Qt3DCore::QAspectJobManager::idealThreadCount();
         // RenderViewBuilder renderViewJob,
         //                   syncRenderViewInitializationJob,
         //                   syncFrustumCullingJob,

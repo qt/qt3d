@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "qthreadpooler_p.h"
+#include "qaspectjobmanager_p.h"
 #include <QtCore/QDebug>
 
 QT_BEGIN_NAMESPACE
@@ -52,7 +53,7 @@ QThreadPooler::QThreadPooler(QObject *parent)
     , m_threadPool(QThreadPool::globalInstance())
     , m_totalRunJobs(0)
 {
-    m_threadPool->setMaxThreadCount(QThreadPooler::maxThreadCount());
+    m_threadPool->setMaxThreadCount(QAspectJobManager::idealThreadCount());
     // Ensures that threads will never be recycled
     m_threadPool->setExpiryTimeout(-1);
 }
@@ -197,24 +198,6 @@ int QThreadPooler::currentCount() const
     // The caller have to set the mutex
 
     return m_taskCount.loadRelaxed();
-}
-
-int QThreadPooler::maxThreadCount()
-{
-    static int threadCount = 0;
-
-    if (threadCount == 0) {
-        threadCount = QThread::idealThreadCount();
-        const QByteArray maxThreadCount = qgetenv("QT3D_MAX_THREAD_COUNT");
-        if (!maxThreadCount.isEmpty()) {
-            bool conversionOK = false;
-            const int maxThreadCountValue = maxThreadCount.toInt(&conversionOK);
-            if (conversionOK)
-                threadCount = std::min(threadCount, maxThreadCountValue);
-        }
-    }
-
-    return threadCount;
 }
 
 } // namespace Qt3DCore

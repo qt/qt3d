@@ -259,9 +259,9 @@ private Q_SLOTS:
             QVERIFY(renderViewBuilder.filterEntityByLayerJob().isNull());
             QVERIFY(renderViewBuilder.syncFilterEntityByLayerJob().isNull());
 
-            QCOMPARE(renderViewBuilder.renderViewCommandUpdaterJobs().size(), Qt3DRender::Render::OpenGL::RenderViewBuilder::defaultJobCount());
+            QCOMPARE(renderViewBuilder.renderViewCommandUpdaterJobs().size(), Qt3DCore::QAspectJobManager::idealThreadCount());
             QCOMPARE(renderViewBuilder.materialGathererJobs().size(), 0);
-            QCOMPARE(renderViewBuilder.buildJobHierachy().size(), 8 + 1 * Qt3DRender::Render::OpenGL::RenderViewBuilder::defaultJobCount());
+            QCOMPARE(renderViewBuilder.buildJobHierachy().size(), 8 + 1 * Qt3DCore::QAspectJobManager::idealThreadCount());
         }
 
         {
