@@ -1,0 +1,219 @@
+/****************************************************************************
+**
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \page qt3drender-porting-to-rhi.html
+    \title Qt 3D Render Porting to RHI
+
+    \brief This section details what's involved in porting Qt 3D materials to
+    work with RHI.
+
+    As a reminder, in Qt 6, Qt 3D will default to using it's RHI rendering
+    backend.
+
+    Using the older OpenGL backend from the Qt 5 series remains possible. This
+    can be enabled by setting environment variable QT3D_RENDERER to opengl.
+    This is required in case you don't want to port your application to support
+    RHI or in case you need features which are currently limited or not
+    available on the RHI backend.
+
+    Currently, the known RHI limitations are:
+    \list
+    \li No way to explicitly Blit (you have to blit manually by rendering a
+    quad into a framebuffer)
+    \li MemoryBarrier cannot be set explicitly
+    \li Not all Texture Formats are available
+    \li Draw Indirect is currently not supported
+    \li Geometry Shaders are currently not supported.
+    \li Different RHI backends might support different feature set.
+    \endlist
+
+    Please also take care not to confuse the Qt 3D OpenGL render backend with
+    Qt 3D's RHI render backend running on top of OpenGL.
+
+    RHI is an abstraction over different graphics API. This means that on a
+    given platform, several RHI could use several backends.
+
+    To force RHI to use a given backend, the QSG_RHI_BACKEND environment variable
+    should be set to one of opengl, vulkan, metal, directx.
+
+    \section1 Add RHI Compatible Techniques
+
+    To add RHI support to a Qt 3D Material / Effect, a new Technique targeting
+    RHI will be required. As of this writing, the only valid RHI version is 1.0.
+
+    \badcode
+    Material {
+        Effect {
+            technique: [
+                Technique {
+                    id: gl3Technique
+                    graphicsApiFilter {
+                        api: GraphicsApiFilter.OpenGL
+                        profile: GraphicsApiFilter.CoreProfile
+                        majorVersion: 3
+                        minorVersion: 1
+                    }
+                    renderPasses: RenderPass {
+                        id: gl3Pass
+                        shaderProgram: ShaderProgram {
+                            ...
+                        }
+                    }
+                },
+                Technique {
+                    id: rhiTechnique
+                    graphicsApiFilter {
+                        api: GraphicsApiFilter.RHI
+                        profile: GraphicsApiFilter.NoProfile
+                        majorVersion: 1
+                        minorVersion: 0
+                    }
+                    renderPasses: RenderPass {
+                        id: rhiPass
+                        shaderProgram: ShaderProgram {
+                            ...
+                        }
+                    }
+                }
+            ]
+        }
+    }
+    \endcode
+
+    \badcode
+
+    QMaterial *material = new QMaterial();
+    QEffect *effect = new QEffect();
+
+    // Set the effect on the material
+    material->setEffect(effect);
+
+    {
+        QTechnique *gl3Technique = new QTechnique();
+        QRenderPass *gl3Pass = new QRenderPass();
+        QShaderProgram *glShader = new QShaderProgram();
+
+        // Set the shader on the render pass
+        gl3Pass->setShaderProgram(glShader);
+
+        // Add the pass to the technique
+        gl3Technique->addRenderPass(gl3Pass);
+
+        // Set the targeted GL version for the technique
+        gl3Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
+        gl3Technique->graphicsApiFilter()->setMajorVersion(3);
+        gl3Technique->graphicsApiFilter()->setMinorVersion(1);
+        gl3Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::CoreProfile);
+
+        // Add the technique to the effect
+        effect->addTechnique(gl3Technique);
+    }
+
+    {
+        QTechnique *rhiTechnique = new QTechnique();
+        QRenderPass *rhiPass = new QRenderPass();
+        QShaderProgram *rhiShader = new QShaderProgram();
+
+        // Set the shader on the render pass
+        rhiPass->setShaderProgram(glShader);
+
+        // Add the pass to the technique
+        rhiTechnique->addRenderPass(rhiPass);
+
+        // Set the targeted RHI version for the technique
+        rhiTechnique->graphicsApiFilter()->setApi(QGraphicsApiFilter::RHI);
+        rhiTechnique->graphicsApiFilter()->setMajorVersion(1);
+        rhiTechnique->graphicsApiFilter()->setMinorVersion(0);
+        rhiTechnique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
+
+        // Add the technique to the effect
+        effect->addTechnique(rhiTechnique);
+    }
+    \endcode
+
+
+    \section1 Creating a RHI compatible shader
+
+    Regardless on which backend RHI will be running on top of, the shaders will
+    be written in GLSL 450.
+
+    Changes are minimal compared to earlier GLSL versions, the main noticeable
+    differences are in the way uniforms are declared.
+    Please also note that in and out variables need to have their locations defined
+    and that they should be consistent between shader stages.
+
+    \badcode
+    #version 450 core
+
+    layout(location = 0) in vec3 vertexPosition;
+    layout(location = 0) out vec3 worldPosition;
+
+    layout(std140, binding = 0) uniform qt3d_render_view_uniforms {
+      mat4 viewMatrix;
+      mat4 projectionMatrix;
+      mat4 uncorrectedProjectionMatrix;
+      mat4 clipCorrectionMatrix;
+      mat4 viewProjectionMatrix;
+      mat4 inverseViewMatrix;
+      mat4 inverseProjectionMatrix;
+      mat4 inverseViewProjectionMatrix;
+      mat4 viewportMatrix;
+      mat4 inverseViewportMatrix;
+      vec4 textureTransformMatrix;
+      vec3 eyePosition;
+      float aspectRatio;
+      float gamma;
+      float exposure;
+      float time;
+      float yUpInNDC;
+      float yUpInFBO;
+    };
+
+    layout(std140, binding = 1) uniform qt3d_command_uniforms {
+      mat4 modelMatrix;
+      mat4 inverseModelMatrix;
+      mat4 modelViewMatrix;
+      mat3 modelNormalMatrix;
+      mat4 inverseModelViewMatrix;
+      mat4 modelViewProjection;
+      mat4 inverseModelViewProjectionMatrix;
+    };
+
+    void main()
+    {
+        ...
+    }
+    \endcode
+
+    For more details about shader changes, please checkout \l
+    {Qt3DRender::QShaderProgram}
+
+    \section1 Qt 3D Extras
+
+    Materials in Qt 3D Extras have been ported to RHI.
+ */
