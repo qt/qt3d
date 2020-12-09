@@ -479,7 +479,7 @@
 
     \badcode
     Parameter { name: "myColor"; value: "blue" }
-    \code
+    \endcode
 
     Textures still have to be defined as standalone uniforms.
 
@@ -494,7 +494,7 @@
     {
         fragColor = texture(source, vec2(0.5, 0.5));
     }
-    \code
+    \endcode
 */
 
 /*!
