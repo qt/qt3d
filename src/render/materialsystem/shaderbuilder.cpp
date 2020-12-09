@@ -235,7 +235,7 @@ void ShaderBuilder::generateCode(QShaderProgram::ShaderType type)
 
     const QByteArray cacheKey = hashKeyForShaderGraph(type);
     const bool forceRegenerate = qEnvironmentVariableIsSet("QT3D_REBUILD_SHADER_CACHE");
-    const bool useCache = !qEnvironmentVariableIsSet("QT3D_DISABLE_SHADER_CACHE") || !forceRegenerate;
+    const bool useCache = !qEnvironmentVariableIsSet("QT3D_DISABLE_SHADER_CACHE") && !forceRegenerate;
     const QByteArray userProvidedPath = qgetenv("QT3D_WRITABLE_CACHE_PATH");
     const QString cachedFilterPath = QDir(userProvidedPath.isEmpty() ?
                                               QStandardPaths::writableLocation(QStandardPaths::TempLocation)
