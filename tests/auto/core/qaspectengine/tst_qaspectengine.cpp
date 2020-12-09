@@ -26,7 +26,9 @@
 **
 ****************************************************************************/
 
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
+#include <QTimer>
+
 #include <Qt3DCore/QAbstractAspect>
 #include <Qt3DCore/qaspectengine.h>
 #include <Qt3DCore/qentity.h>

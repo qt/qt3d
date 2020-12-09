@@ -27,7 +27,7 @@
 ****************************************************************************/
 
 
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 
 #include <QtCore/qbuffer.h>
 

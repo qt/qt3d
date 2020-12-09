@@ -26,7 +26,7 @@
 **
 ****************************************************************************/
 
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 #include <qgraphicsutils_p.h>
 
 class tst_QGraphicsUtils : public QObject

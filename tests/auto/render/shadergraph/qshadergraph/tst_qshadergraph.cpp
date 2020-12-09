@@ -27,7 +27,7 @@
 ****************************************************************************/
 
 
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 
 #include <Qt3DRender/private/qshadergraph_p.h>
 

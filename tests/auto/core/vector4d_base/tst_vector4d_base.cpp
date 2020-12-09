@@ -26,7 +26,7 @@
 **
 ****************************************************************************/
 
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 #include <Qt3DCore/private/vector4d_p.h>
 
 class tst_Vector4D_Base: public QObject

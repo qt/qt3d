@@ -26,7 +26,9 @@
 **
 ****************************************************************************/
 
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
+#include <QtTest/QSignalSpy>
+
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DCore/private/qtransform_p.h>

@@ -26,7 +26,7 @@
 **
 ****************************************************************************/
 
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DCore/qgeometry.h>
 #include <Qt3DRender/qmesh.h>

@@ -26,7 +26,7 @@
 **
 ****************************************************************************/
 
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/entity_p_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
