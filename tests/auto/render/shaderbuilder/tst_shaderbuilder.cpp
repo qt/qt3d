@@ -609,6 +609,7 @@ private slots:
     void checkFileCaching()
     {
         // GIVEN
+        qunsetenv("QT3D_DISABLE_SHADER_CACHE");
         QTemporaryDir cacheDir;
 
         if (!cacheDir.isValid()) {
@@ -685,6 +686,7 @@ private slots:
     void checkRuntimeCaching()
     {
         // GIVEN
+        qunsetenv("QT3D_DISABLE_SHADER_CACHE");
         TestRenderer renderer;
         QTemporaryDir cacheDir;
 
