@@ -26,7 +26,7 @@
 **
 ****************************************************************************/
 
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/triangleboundingvolume_p.h>
 #include <Qt3DRender/private/qraycastingservice_p.h>

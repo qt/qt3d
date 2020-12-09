@@ -26,7 +26,7 @@
 **
 ****************************************************************************/
 
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 #include <Qt3DCore/qaspectjob.h>
 
 using namespace Qt3DCore;

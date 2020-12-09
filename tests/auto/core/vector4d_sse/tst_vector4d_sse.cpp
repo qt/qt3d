@@ -26,7 +26,7 @@
 **
 ****************************************************************************/
 
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 #include <Qt3DCore/private/vector4d_sse_p.h>
 #include <Qt3DCore/qt3dcore-config.h>
 

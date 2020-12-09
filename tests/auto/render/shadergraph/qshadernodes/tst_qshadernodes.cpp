@@ -27,7 +27,7 @@
 ****************************************************************************/
 
 
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 
 #include <Qt3DRender/private/qshaderformat_p.h>
 #include <Qt3DRender/private/qshadernode_p.h>

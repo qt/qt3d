@@ -26,7 +26,7 @@
 **
 ****************************************************************************/
 
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 #include <QtCore/QThread>
 #include <QtCore/QAtomicInt>
 #include <QtCore/QMutexLocker>

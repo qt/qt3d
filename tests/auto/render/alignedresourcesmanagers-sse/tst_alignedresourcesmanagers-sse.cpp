@@ -26,7 +26,7 @@
 **
 ****************************************************************************/
 
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/private/matrix4x4_sse_p.h>
 #include <Qt3DCore/private/qresourcemanager_p.h>

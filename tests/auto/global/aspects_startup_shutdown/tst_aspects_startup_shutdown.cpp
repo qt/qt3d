@@ -48,7 +48,7 @@
 **
 ****************************************************************************/
 
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QTransform>

@@ -26,7 +26,7 @@
 **
 ****************************************************************************/
 
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 #include <QList>
 #include <Qt3DCore/private/qhandle_p.h>
 #include <Qt3DCore/private/qresourcemanager_p.h>

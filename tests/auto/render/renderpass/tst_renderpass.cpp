@@ -26,7 +26,7 @@
 **
 ****************************************************************************/
 
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 #include <qbackendnodetester.h>
 #include <Qt3DRender/private/renderpass_p.h>
 

@@ -26,7 +26,7 @@
 **
 ****************************************************************************/
 
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 #include <Qt3DCore/private/qservicelocator_p.h>
 #include <Qt3DCore/private/qopenglinformationservice_p.h>
 #include <Qt3DCore/private/qsysteminformationservice_p.h>
