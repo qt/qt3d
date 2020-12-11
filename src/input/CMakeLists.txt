@@ -5,7 +5,7 @@
 #####################################################################
 
 qt_internal_add_module(3DInput
-    PLUGIN_TYPES Qt::3DInputdevices
+    PLUGIN_TYPES 3dinputdevices
     SOURCES
         backend/abstractactioninput.cpp backend/abstractactioninput_p.h
         backend/abstractaxisinput.cpp backend/abstractaxisinput_p.h
