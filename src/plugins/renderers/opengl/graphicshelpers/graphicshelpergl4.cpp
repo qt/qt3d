@@ -633,6 +633,7 @@ UniformType GraphicsHelperGL4::uniformTypeFromGLType(GLenum type)
     case GL_SAMPLER_1D:
     case GL_SAMPLER_1D_ARRAY:
     case GL_SAMPLER_1D_SHADOW:
+    case GL_SAMPLER_1D_ARRAY_SHADOW:
     case GL_SAMPLER_2D:
     case GL_SAMPLER_2D_RECT:
     case GL_SAMPLER_2D_SHADOW:
@@ -651,6 +652,7 @@ UniformType GraphicsHelperGL4::uniformTypeFromGLType(GLenum type)
     case GL_INT_SAMPLER_2D:
     case GL_INT_SAMPLER_3D:
     case GL_INT_SAMPLER_BUFFER:
+    case GL_INT_SAMPLER_2D_RECT:
     case GL_INT_SAMPLER_CUBE:
     case GL_INT_SAMPLER_CUBE_MAP_ARRAY:
     case GL_INT_SAMPLER_1D_ARRAY:
@@ -661,6 +663,7 @@ UniformType GraphicsHelperGL4::uniformTypeFromGLType(GLenum type)
     case GL_UNSIGNED_INT_SAMPLER_2D:
     case GL_UNSIGNED_INT_SAMPLER_3D:
     case GL_UNSIGNED_INT_SAMPLER_BUFFER:
+    case GL_UNSIGNED_INT_SAMPLER_2D_RECT:
     case GL_UNSIGNED_INT_SAMPLER_1D_ARRAY:
     case GL_UNSIGNED_INT_SAMPLER_2D_ARRAY:
     case GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE:
@@ -1077,17 +1080,21 @@ void GraphicsHelperGL4::buildUniformBuffer(const QVariant &v, const ShaderUnifor
     case GL_INT_SAMPLER_2D:
     case GL_INT_SAMPLER_3D:
     case GL_INT_SAMPLER_CUBE:
+    case GL_INT_SAMPLER_CUBE_MAP_ARRAY:
     case GL_INT_SAMPLER_BUFFER:
     case GL_INT_SAMPLER_2D_RECT:
     case GL_UNSIGNED_INT_SAMPLER_1D:
     case GL_UNSIGNED_INT_SAMPLER_2D:
     case GL_UNSIGNED_INT_SAMPLER_3D:
     case GL_UNSIGNED_INT_SAMPLER_CUBE:
+    case GL_UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY:
     case GL_UNSIGNED_INT_SAMPLER_BUFFER:
     case GL_UNSIGNED_INT_SAMPLER_2D_RECT:
     case GL_SAMPLER_1D_SHADOW:
     case GL_SAMPLER_2D_SHADOW:
     case GL_SAMPLER_CUBE_SHADOW:
+    case GL_SAMPLER_CUBE_MAP_ARRAY:
+    case GL_SAMPLER_CUBE_MAP_ARRAY_SHADOW:
     case GL_SAMPLER_1D_ARRAY:
     case GL_SAMPLER_2D_ARRAY:
     case GL_INT_SAMPLER_1D_ARRAY:
@@ -1250,6 +1257,10 @@ uint GraphicsHelperGL4::uniformByteSize(const ShaderUniform &description)
     case GL_SAMPLER_1D_SHADOW:
     case GL_SAMPLER_2D_SHADOW:
     case GL_SAMPLER_CUBE_SHADOW:
+    case GL_SAMPLER_CUBE_MAP_ARRAY:
+    case GL_SAMPLER_CUBE_MAP_ARRAY_SHADOW:
+    case GL_INT_SAMPLER_CUBE_MAP_ARRAY:
+    case GL_UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY:
     case GL_SAMPLER_1D_ARRAY:
     case GL_SAMPLER_2D_ARRAY:
     case GL_INT_SAMPLER_1D_ARRAY:
