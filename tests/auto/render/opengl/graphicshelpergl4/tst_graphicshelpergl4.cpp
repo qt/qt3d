@@ -469,6 +469,113 @@ private Q_SLOTS:
                 m_func->glDeleteFramebuffers(1, &fboId);
             }
         }
+
+        // TargetCubeMapArray
+        {
+            // GIVEN
+            QOpenGLTexture texture(QOpenGLTexture::TargetCubeMapArray);
+            texture.setSize(512, 512);
+            texture.setFormat(QOpenGLTexture::RGBA32F);
+            texture.setMinificationFilter(QOpenGLTexture::Linear);
+            texture.setMagnificationFilter(QOpenGLTexture::Linear);
+            texture.setWrapMode(QOpenGLTexture::ClampToEdge);
+            texture.setLayers(4);
+            if (!texture.create())
+                qWarning() << "Texture creation failed";
+            texture.allocateStorage();
+            QVERIFY(texture.isStorageAllocated());
+            GLint error = m_func->glGetError();
+            QVERIFY(error == 0);
+
+            { // Check All Faces
+
+                // GIVEN
+                GLuint fboId;
+                m_func->glGenFramebuffers(1, &fboId);
+
+                // THEN
+                QVERIFY(fboId != 0);
+
+                // WHEN
+                m_func->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fboId);
+
+                Attachment attachment;
+                attachment.m_point = QRenderTargetOutput::Color0;
+                attachment.m_face = Qt3DRender::QAbstractTexture::AllFaces;
+
+                m_glHelper.bindFrameBufferAttachment(&texture, attachment);
+
+                // THEN
+                GLenum status = m_func->glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
+                QVERIFY(status == GL_FRAMEBUFFER_COMPLETE);
+
+                error = m_func->glGetError();
+                QVERIFY(error == 0);
+
+                // Texture should be layered and attached to layer 0 since CubeMapArray textures
+                // are bound to entire texture, not a specific layer
+                GLint textureIsLayered = 0;
+                m_func->glGetFramebufferAttachmentParameteriv(
+                        GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                        GL_FRAMEBUFFER_ATTACHMENT_LAYERED, &textureIsLayered);
+                QCOMPARE(textureIsLayered, GL_TRUE);
+
+                GLint textureLayer = 0;
+                m_func->glGetFramebufferAttachmentParameteriv(
+                        GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                        GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER, &textureLayer);
+                QCOMPARE(textureLayer, 0);
+
+                // Restore state
+                m_func->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+                m_func->glDeleteFramebuffers(1, &fboId);
+            }
+            { // Check Specific Faces
+
+                // GIVEN
+                GLuint fboId;
+                m_func->glGenFramebuffers(1, &fboId);
+
+                // THEN
+                QVERIFY(fboId != 0);
+
+                // WHEN
+                m_func->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fboId);
+
+                Attachment attachment;
+                attachment.m_point = QRenderTargetOutput::Color0;
+                attachment.m_face = Qt3DRender::QAbstractTexture::CubeMapNegativeZ;
+                attachment.m_layer = 1;
+
+                m_glHelper.bindFrameBufferAttachment(&texture, attachment);
+
+                // THEN
+                GLenum status = m_func->glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
+                QVERIFY(status == GL_FRAMEBUFFER_COMPLETE);
+
+                error = m_func->glGetError();
+                QVERIFY(error == 0);
+
+                GLint textureIsLayered = 0;
+                m_func->glGetFramebufferAttachmentParameteriv(
+                        GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                        GL_FRAMEBUFFER_ATTACHMENT_LAYERED, &textureIsLayered);
+                QCOMPARE(textureIsLayered, GL_FALSE);
+
+                GLint textureLayer = 0;
+                m_func->glGetFramebufferAttachmentParameteriv(
+                        GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                        GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER, &textureLayer);
+                // actual layer should be 6 * layer + face
+                const auto faceNo =
+                        attachment.m_face - Qt3DRender::QAbstractTexture::CubeMapPositiveX;
+                QCOMPARE(textureLayer, 6 * attachment.m_layer + faceNo);
+
+                // Restore state
+                m_func->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+                m_func->glDeleteFramebuffers(1, &fboId);
+            }
+        }
     }
 
     void bindFrameBufferObject()
