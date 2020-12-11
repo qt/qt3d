@@ -69,14 +69,14 @@ qt_internal_add_module(3DExtras
     LIBRARIES
         Qt::CorePrivate
     PUBLIC_LIBRARIES
+        Qt::Core
+        Qt::Gui
         Qt::3DCore
         Qt::3DCorePrivate
         Qt::3DInput
-        3DLogic
+        Qt::3DLogic
         Qt::3DRender
         Qt::3DRenderPrivate
-        Qt::Core
-        Qt::Gui
     PRIVATE_MODULE_INTERFACE
         Qt::CorePrivate
 )
