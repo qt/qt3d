@@ -254,7 +254,7 @@
     QParameter *parameter = new QParameter();
     parameter->setName("myColor");
     parameter->setValue(QVariant::fromValue(QColor(Qt::blue)));
-    \code
+    \endcode
 
     Textures still have to be defined as standalone uniforms.
 
@@ -269,7 +269,7 @@
     {
         fragColor = texture(source, vec2(0.5, 0.5));
     }
-    \code
+    \endcode
 */
 
 /*!
