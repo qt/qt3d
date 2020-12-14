@@ -9,8 +9,6 @@
     "commandline": {
         "options": {
             "qt3d-assimp": { "type": "enum", "values": [ "qt", "system", "no" ] },
-            "qt3d-profile-jobs": "boolean",
-            "qt3d-profile-gl": "boolean",
             "qt3d-render": "boolean",
             "qt3d-input": "boolean",
             "qt3d-logic": "boolean",
@@ -41,16 +39,6 @@
             "enable": "input.assimp == 'system'",
             "disable": "input.assimp == 'qt'",
             "condition": "features.qt3d-assimp && libs.qt3d-assimp",
-            "output": [ "privateFeature" ]
-        },
-        "qt3d-profile-jobs": {
-            "label": "Output Qt3D Job traces (deprecated)",
-            "autoDetect": false,
-            "output": [ "privateFeature" ]
-        },
-        "qt3d-profile-gl": {
-            "label": "Output Qt3D GL traces",
-            "autoDetect": false,
             "output": [ "privateFeature" ]
         },
         "qt3d-render": {
@@ -112,7 +100,6 @@
             "entries": [
                 "qt3d-assimp",
                 "qt3d-system-assimp",
-                "qt3d-profile-gl",
                 "qt3d-simd-sse2",
                 "qt3d-simd-avx2",
                 {
