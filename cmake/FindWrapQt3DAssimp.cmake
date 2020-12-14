@@ -1,14 +1,14 @@
-if(TARGET WrapAssimp::WrapAssimp)
-  set(WrapAssimp_FOUND TRUE)
+if(TARGET WrapQt3DAssimp::WrapQt3DAssimp)
+  set(WrapQt3DAssimp_FOUND TRUE)
   return()
 endif()
 
-set(WrapAssimp_FOUND FALSE)
+set(WrapQt3DAssimp_FOUND FALSE)
 
-find_package(assimp ${WrapAssimp_FIND_VERSION} CONFIG QUIET)
+find_package(assimp ${WrapQt3DAssimp_FIND_VERSION} CONFIG QUIET)
 if (assimp_FOUND AND TARGET assimp::assimp)
-  add_library(WrapAssimp::WrapAssimp INTERFACE IMPORTED)
-  target_link_libraries(WrapAssimp::WrapAssimp INTERFACE assimp::assimp)
+  add_library(WrapQt3DAssimp::WrapQt3DAssimp INTERFACE IMPORTED)
+  target_link_libraries(WrapQt3DAssimp::WrapQt3DAssimp INTERFACE assimp::assimp)
 
   # The Assimp configuration file is broken, and sets only the Release location, without advertising
   # that it's available via IMPORTED_CONFIGURATIONS. Thus when configuring with a different
@@ -23,13 +23,13 @@ if (assimp_FOUND AND TARGET assimp::assimp)
       endif()
   endif()
 
-  set(WrapAssimp_FOUND TRUE)
+  set(WrapQt3DAssimp_FOUND TRUE)
 elseif(assimp_FOUND AND assimp_LIBRARIES AND assimp_INCLUDE_DIRS)
-  add_library(WrapAssimp::WrapAssimp INTERFACE IMPORTED)
-  target_link_libraries(WrapAssimp::WrapAssimp INTERFACE ${assimp_LIBRARIES})
-  target_include_directories(WrapAssimp::WrapAssimp INTERFACE ${assimp_INCLUDE_DIRS})
-  set(WrapAssimp_FOUND TRUE)
+  add_library(WrapQt3DAssimp::WrapQt3DAssimp INTERFACE IMPORTED)
+  target_link_libraries(WrapQt3DAssimp::WrapQt3DAssimp INTERFACE ${assimp_LIBRARIES})
+  target_include_directories(WrapQt3DAssimp::WrapQt3DAssimp INTERFACE ${assimp_INCLUDE_DIRS})
+  set(WrapQt3DAssimp_FOUND TRUE)
 endif()
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(WrapAssimp DEFAULT_MSG WrapAssimp_FOUND)
+find_package_handle_standard_args(WrapQt3DAssimp DEFAULT_MSG WrapQt3DAssimp_FOUND)
