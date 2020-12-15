@@ -709,6 +709,11 @@ void GraphicsHelperES2::memoryBarrier(QMemoryBarrier::Operations barriers)
 
 void GraphicsHelperES2::enablePrimitiveRestart(int)
 {
+    static bool showWarning = true;
+    if (!showWarning)
+        return;
+    showWarning = false;
+    qWarning() << "primitive restart is not supported by OpenGL ES 2.0 (since GL 3.1, ES 3.0)";
 }
 
 void GraphicsHelperES2::enableVertexAttributeArray(int location)
