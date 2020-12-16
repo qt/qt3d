@@ -2650,12 +2650,13 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
         QRhiScissor scissor;
         bool hasScissor = false;
         {
-            const float x = rv->viewport().x() * rv->surfaceSize().width();
-            const float y = (1. - rv->viewport().y() - rv->viewport().height())
-                    * rv->surfaceSize().height();
-            const float w = rv->viewport().width() * rv->surfaceSize().width();
-            const float h = rv->viewport().height() * rv->surfaceSize().height();
-            //            qDebug() << x << y << w << h;
+            const QSize surfaceSize = rhiRenderTarget->pixelSize();
+
+            const float x = rv->viewport().x() * surfaceSize.width();
+            const float y = (1. - rv->viewport().y() - rv->viewport().height()) * surfaceSize.height();
+            const float w = rv->viewport().width() * surfaceSize.width();
+            const float h = rv->viewport().height() * surfaceSize.height();
+            // qDebug() << surfaceSize << x << y << w << h;
             vp = { x, y, w, h };
         }
         // Scissoring
