@@ -915,7 +915,7 @@ Render::AbstractRenderer *QRenderAspectPrivate::loadRendererPlugin()
     // plugin would best be loaded
 
     const QByteArray envTarget = qgetenv("QT3D_RENDERER");
-    const QString targetKey = !envTarget.isEmpty() ? QString::fromLatin1(envTarget) : QStringLiteral("opengl");
+    const QString targetKey = !envTarget.isEmpty() ? QString::fromLatin1(envTarget) : QStringLiteral("rhi");
     const QStringList keys = Render::QRendererPluginFactory::keys();
     for (const QString &key : keys) {
         if (key != targetKey)
