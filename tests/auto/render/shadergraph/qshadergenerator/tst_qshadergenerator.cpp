@@ -516,7 +516,7 @@ namespace {
         case QShaderLanguage::Sampler1DArrayShadow:
             return "sampler1DArrayShadow";
         case QShaderLanguage::Sampler2DArrayShadow:
-            return "sample2DArrayShadow";
+            return "sampler2DArrayShadow";
         case QShaderLanguage::SamplerCubeShadow:
             return "samplerCubeShadow";
         case QShaderLanguage::SamplerCubeArrayShadow:
