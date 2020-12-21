@@ -121,8 +121,8 @@ inline bool operator!=(const QShaderNode::Rule &lhs, const QShaderNode::Rule &rh
 
 }
 
-Q_DECLARE_TYPEINFO(Qt3DRender::QShaderNode, Q_MOVABLE_TYPE);
-Q_DECLARE_TYPEINFO(Qt3DRender::QShaderNode::Rule, Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(Qt3DRender::QShaderNode, Q_RELOCATABLE_TYPE);
+Q_DECLARE_TYPEINFO(Qt3DRender::QShaderNode::Rule, Q_RELOCATABLE_TYPE);
 QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(Qt3DRender::QShaderNode)

@@ -100,7 +100,7 @@ private:
     Vector3D m_direction;
     float m_distance;
 };
-QT3D_DECLARE_TYPEINFO_2(Qt3DRender, RayCasting, QRay3D, Q_MOVABLE_TYPE)
+QT3D_DECLARE_TYPEINFO_2(Qt3DRender, RayCasting, QRay3D, Q_RELOCATABLE_TYPE)
 
 
 #ifndef QT_NO_DEBUG_STREAM

@@ -115,7 +115,7 @@ struct RenderPassParameterData
     RenderPass *pass;
     ParameterInfoList parameterInfo;
 };
-QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, RenderPassParameterData, Q_MOVABLE_TYPE)
+QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, RenderPassParameterData, Q_RELOCATABLE_TYPE)
 
 using MaterialParameterGathererData = QMultiHash<Qt3DCore::QNodeId, std::vector<RenderPassParameterData>>;
 

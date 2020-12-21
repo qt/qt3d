@@ -73,7 +73,7 @@ public:
 };
 
 }
-Q_DECLARE_TYPEINFO(Qt3DRender::QShaderGenerator, Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(Qt3DRender::QShaderGenerator, Q_RELOCATABLE_TYPE);
 QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(Qt3DRender::QShaderGenerator)

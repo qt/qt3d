@@ -77,7 +77,7 @@ struct ShaderAttribute
     int m_size;
     int m_location;
 };
-QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, OpenGL, ShaderAttribute, Q_MOVABLE_TYPE)
+QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, OpenGL, ShaderAttribute, Q_RELOCATABLE_TYPE)
 
 struct Q_AUTOTEST_EXPORT ShaderUniform
 {
@@ -105,7 +105,7 @@ struct Q_AUTOTEST_EXPORT ShaderUniform
     uint m_rawByteSize; // contains byte size (size / type / strides)
     // size, offset and strides are in bytes
 };
-QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, OpenGL, ShaderUniform, Q_MOVABLE_TYPE)
+QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, OpenGL, ShaderUniform, Q_RELOCATABLE_TYPE)
 
 struct Q_AUTOTEST_EXPORT ShaderUniformBlock
 {
@@ -124,7 +124,7 @@ struct Q_AUTOTEST_EXPORT ShaderUniformBlock
     int m_activeUniformsCount;
     int m_size;
 };
-QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, OpenGL, ShaderUniformBlock, Q_MOVABLE_TYPE)
+QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, OpenGL, ShaderUniformBlock, Q_RELOCATABLE_TYPE)
 
 struct Q_AUTOTEST_EXPORT ShaderStorageBlock
 {
@@ -143,7 +143,7 @@ struct Q_AUTOTEST_EXPORT ShaderStorageBlock
     int m_size;
     int m_activeVariablesCount;
 };
-QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, OpenGL, ShaderStorageBlock, Q_MOVABLE_TYPE)
+QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, OpenGL, ShaderStorageBlock, Q_RELOCATABLE_TYPE)
 
 } // namespace OpenGL
 

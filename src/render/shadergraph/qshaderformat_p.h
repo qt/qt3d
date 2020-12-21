@@ -118,7 +118,7 @@ inline bool operator!=(const QShaderFormat &lhs, const QShaderFormat &rhs) noexc
 
 
 }
-Q_DECLARE_TYPEINFO(Qt3DRender::QShaderFormat, Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(Qt3DRender::QShaderFormat, Q_RELOCATABLE_TYPE);
 QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(Qt3DRender::QShaderFormat)

@@ -88,7 +88,7 @@ private:
     Q_DECLARE_PRIVATE(QTextureDataUpdate)
     QExplicitlySharedDataPointer<QTextureDataUpdatePrivate> d_ptr;
 };
-QT3D_DECLARE_TYPEINFO(Qt3DRender, QTextureDataUpdate, Q_MOVABLE_TYPE)
+QT3D_DECLARE_TYPEINFO(Qt3DRender, QTextureDataUpdate, Q_RELOCATABLE_TYPE)
 
 inline bool operator!=(const QTextureDataUpdate &lhs, const QTextureDataUpdate &rhs) noexcept
 { return !operator==(lhs, rhs); }

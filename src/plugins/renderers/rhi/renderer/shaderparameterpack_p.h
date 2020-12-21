@@ -82,7 +82,7 @@ struct BlockToUBO
     bool m_needsUpdate;
     QHash<QString, QVariant> m_updatedProperties;
 };
-QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, Rhi, BlockToUBO, Q_MOVABLE_TYPE)
+QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, Rhi, BlockToUBO, Q_RELOCATABLE_TYPE)
 
 struct BlockToSSBO
 {

@@ -114,9 +114,9 @@ inline bool operator!=(const QShaderGraph::Statement &lhs, const QShaderGraph::S
 
 }
 
-Q_DECLARE_TYPEINFO(Qt3DRender::QShaderGraph, Q_MOVABLE_TYPE);
-Q_DECLARE_TYPEINFO(Qt3DRender::QShaderGraph::Edge, Q_MOVABLE_TYPE);
-Q_DECLARE_TYPEINFO(Qt3DRender::QShaderGraph::Statement, Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(Qt3DRender::QShaderGraph, Q_RELOCATABLE_TYPE);
+Q_DECLARE_TYPEINFO(Qt3DRender::QShaderGraph::Edge, Q_RELOCATABLE_TYPE);
+Q_DECLARE_TYPEINFO(Qt3DRender::QShaderGraph::Statement, Q_RELOCATABLE_TYPE);
 QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(Qt3DRender::QShaderGraph)

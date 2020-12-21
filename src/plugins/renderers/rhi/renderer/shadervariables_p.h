@@ -71,7 +71,7 @@ struct ShaderAttribute
     int m_size {};
     int m_location { -1 };
 };
-QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, Rhi, ShaderAttribute, Q_MOVABLE_TYPE)
+QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, Rhi, ShaderAttribute, Q_RELOCATABLE_TYPE)
 
 struct ShaderUniform
 {
@@ -91,7 +91,7 @@ struct ShaderUniform
     uint m_rawByteSize { 0 }; // contains byte size (size / type / strides)
     // size, offset and strides are in bytes
 };
-QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, Rhi, ShaderUniform, Q_MOVABLE_TYPE)
+QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, Rhi, ShaderUniform, Q_RELOCATABLE_TYPE)
 
 struct ShaderUniformBlock
 {
@@ -102,7 +102,7 @@ struct ShaderUniformBlock
     int m_activeUniformsCount { 0 };
     int m_size { 0 };
 };
-QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, Rhi, ShaderUniformBlock, Q_MOVABLE_TYPE)
+QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, Rhi, ShaderUniformBlock, Q_RELOCATABLE_TYPE)
 
 struct ShaderStorageBlock
 {
@@ -113,7 +113,7 @@ struct ShaderStorageBlock
     int m_size { 0 };
     int m_activeVariablesCount { 0 };
 };
-QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, Rhi, ShaderStorageBlock, Q_MOVABLE_TYPE)
+QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, Rhi, ShaderStorageBlock, Q_RELOCATABLE_TYPE)
 
 } // namespace Rhi
 

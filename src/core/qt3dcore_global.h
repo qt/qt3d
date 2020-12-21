@@ -77,14 +77,14 @@ QT_BEGIN_NAMESPACE
     inline void swap(Class &lhs, Class &rhs) \
         noexcept(noexcept(lhs.swap(rhs))) \
     { lhs.swap(rhs); } \
-    QT3D_DECLARE_TYPEINFO(NS, Class, Q_MOVABLE_TYPE) \
+    QT3D_DECLARE_TYPEINFO(NS, Class, Q_RELOCATABLE_TYPE) \
     /*end*/
 
 #define QT3D_DECLARE_SHARED_2(OuterNS, InnerNS, Class) \
     inline void swap(Class &lhs, Class &rhs) \
         noexcept(noexcept(lhs.swap(rhs))) \
     { lhs.swap(rhs); } \
-    QT3D_DECLARE_TYPEINFO_2(OuterNS, InnerNS, Class, Q_MOVABLE_TYPE) \
+    QT3D_DECLARE_TYPEINFO_2(OuterNS, InnerNS, Class, Q_RELOCATABLE_TYPE) \
     /*end*/
 
 QT_END_NAMESPACE

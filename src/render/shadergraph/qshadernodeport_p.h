@@ -83,7 +83,7 @@ inline bool operator!=(const QShaderNodePort &lhs, const QShaderNodePort &rhs) n
 
 
 }
-Q_DECLARE_TYPEINFO(Qt3DRender::QShaderNodePort, Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(Qt3DRender::QShaderNodePort, Q_RELOCATABLE_TYPE);
 QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(Qt3DRender::QShaderNodePort)
