@@ -302,16 +302,26 @@ void setupWindowSurface(QWindow *window, Qt3DRender::API api) noexcept
     default:
         break;
     }
+
+    // Default to using RHI backend is not specified We want to set the
+    // variable to ensure any 3rd party relying on it to detect which rendering
+    // backend is in use will get a valid value.
+    if (qEnvironmentVariableIsEmpty("QT3D_RENDERER"))
+        qputenv("QT3D_RENDERER", "rhi");
+
     QSurfaceFormat format = QSurfaceFormat::defaultFormat();
+    const QByteArray renderingBackend = qgetenv("QT3D_RENDERER");
+    const bool usesRHI = renderingBackend.isEmpty() || renderingBackend == QByteArrayLiteral("rhi");
+    if (!usesRHI) {
 #if QT_CONFIG(opengles2)
-    format.setRenderableType(QSurfaceFormat::OpenGLES);
+        format.setRenderableType(QSurfaceFormat::OpenGLES);
 #else
-    if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {
-        format.setVersion(4, 3);
-        format.setProfile(QSurfaceFormat::CoreProfile);
-    } else
+        if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {
+            format.setVersion(4, 3);
+            format.setProfile(QSurfaceFormat::CoreProfile);
+        }
 #endif
-    if (!userRequestedApi.isEmpty()) {
+    } else {
         // This is used for RHI
         format.setVersion(1, 0);
     }
