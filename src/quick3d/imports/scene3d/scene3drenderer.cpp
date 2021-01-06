@@ -602,7 +602,7 @@ void Scene3DRenderer::RHIRenderer::shutdown(Scene3DRenderer *scene3DRenderer)
 
 bool Scene3DRenderer::RHIRenderer::isYUp() const
 {
-    return m_rhi->isYUpInNDC();
+    return m_rhi->isYUpInFramebuffer();
 }
 
 void Scene3DRenderer::RHIRenderer::releaseRHIResources()
