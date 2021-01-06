@@ -166,7 +166,7 @@ void applyStateHelper(const GenericState *state, QRhiGraphicsPipeline *gp) noexc
 {
     Q_UNUSED(state);
     Q_UNUSED(gp);
-    qWarning() << "RHI Unhandled render state" << typeid(GenericState).name();
+    qCWarning(Backend) << "RHI Unhandled render state" << typeid(GenericState).name();
 }
 
 void applyStateHelper(const BlendEquationArguments *state, QRhiGraphicsPipeline *gp) noexcept
@@ -331,7 +331,7 @@ void applyStateHelper(const CullFace *state, QRhiGraphicsPipeline *gp) noexcept
         gp->setCullMode(QRhiGraphicsPipeline::Back);
         break;
     case QCullFace::FrontAndBack:
-        qWarning() << "RHI doesn't handle FrontAndBack CullFace";
+        qCWarning(Backend) << "RHI doesn't handle FrontAndBack CullFace";
         break;
     }
 }
@@ -610,7 +610,7 @@ void SubmissionContext::initialize()
     }
 
     if (requestedApi != Qt3DRender::API::OpenGL && m_rhi == nullptr) {
-        qWarning() << "RHI: Unable to use requested RHI Api, trying to fall back on OpenGL";
+        qCWarning(Backend) << "RHI: Unable to use requested RHI Api, trying to fall back on OpenGL";
         requestedApi = Qt3DRender::API::OpenGL;
     }
 
@@ -623,7 +623,7 @@ void SubmissionContext::initialize()
         m_rhi = QRhi::create(QRhi::OpenGLES2, &params, rhiFlags);
         qCWarning(Backend) << "Initializing RHI with OpenGL backend";
 #else
-        qWarning() << "RHI: OpenGL not supported";
+        qCWarning(Backend) << "RHI: OpenGL not supported";
 #endif
     }
 
