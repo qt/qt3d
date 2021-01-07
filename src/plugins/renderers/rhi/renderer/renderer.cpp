@@ -915,8 +915,8 @@ void Renderer::buildGraphicsPipelines(RHIGraphicsPipeline *graphicsPipeline,
         rhiSwapChain = swapchain->swapChain;
     }
 
-    auto onFailure = [&] {
-        qCWarning(Backend) << "Failed to build graphics pipeline";
+    auto onFailure = [&](const char* msg) {
+        qCWarning(Backend) << "Failed to build graphics pipeline:" << msg;
     };
 
     PipelineUBOSet *uboSet = graphicsPipeline->uboSet();
@@ -924,16 +924,12 @@ void Renderer::buildGraphicsPipelines(RHIGraphicsPipeline *graphicsPipeline,
 
     // Setup shaders
     const QShader& vertexShader = shader->shaderStage(QShader::VertexStage);
-    if (!vertexShader.isValid()) {
-        qCWarning(Backend) << "Invalid vertex shader";
-        return onFailure();
-    }
+    if (!vertexShader.isValid())
+        return onFailure("Invalid vertex shader");
 
     const QShader& fragmentShader = shader->shaderStage(QShader::FragmentStage);
-    if (!fragmentShader.isValid()) {
-        qCWarning(Backend) << "Invalid fragment shader";
-        return onFailure();
-    }
+    if (!fragmentShader.isValid())
+        return onFailure("Invalid fragment shader");
 
     // Set Resource Bindings
     const std::vector<QRhiShaderResourceBinding> resourceBindings = uboSet->resourceLayout(shader);
@@ -942,10 +938,8 @@ void Renderer::buildGraphicsPipelines(RHIGraphicsPipeline *graphicsPipeline,
     graphicsPipeline->setShaderResourceBindings(shaderResourceBindings);
 
     shaderResourceBindings->setBindings(resourceBindings.cbegin(), resourceBindings.cend());
-    if (!shaderResourceBindings->create()) {
-        qCWarning(Backend) << "Unable to create resource bindings";
-        return onFailure();
-    }
+    if (!shaderResourceBindings->create())
+        return onFailure("Unable to create resource bindings");
 
     // Setup attributes
     const Geometry *geom = cmd.m_geometry.data();
@@ -955,10 +949,8 @@ void Renderer::buildGraphicsPipelines(RHIGraphicsPipeline *graphicsPipeline,
 
     if (!prepareGeometryInputBindings(geom, cmd.m_rhiShader,
                                       inputBindings, rhiAttributes,
-                                      attributeNameToBinding)) {
-        qCWarning(Backend) << "Geometry doesn't match expected layout";
-        return onFailure();
-    }
+                                      attributeNameToBinding))
+        return onFailure("Geometry doesn't match expected layout");
 
     // Create pipeline
     QRhiGraphicsPipeline *pipeline = m_submissionContext->rhi()->newGraphicsPipeline();
@@ -1038,10 +1030,10 @@ void Renderer::buildGraphicsPipelines(RHIGraphicsPipeline *graphicsPipeline,
     // Setup potential texture render target
     const bool renderTargetIsSet = setupRenderTarget(rv, graphicsPipeline, rhiSwapChain);
     if (!renderTargetIsSet)
-        return onFailure();
+        return onFailure("No Render Target Set");
 
     if (!pipeline->create())
-        return onFailure();
+        return onFailure("Creation Failed");
 
     graphicsPipeline->markComplete();
 }
@@ -1145,16 +1137,6 @@ void Renderer::createRenderTarget(RenderTarget *target)
     Q_ASSERT(!m_RHIResourceManagers->rhiRenderTargetManager()->contains(renderTargetId));
     RHIRenderTarget *rhiTarget = rhiRenderTargetManager->getOrCreateResource(renderTargetId);
 
-    // Used in case of failure
-    QVarLengthArray<QRhiResource*> resourcesToClean;
-    auto cleanAllocatedResources = [&] {
-        qCWarning(Backend) << "Failed to create RenderTarget";
-        for (auto res : resourcesToClean) {
-            res->destroy();
-            delete res;
-        }
-    };
-
     RHITextureManager *texman = rhiResourceManagers()->rhiTextureManager();
     // TO DO: We use all render targets and ignore the fact that
     // QRenderTargetSelector can specify a subset of outputs
@@ -1168,6 +1150,34 @@ void Renderer::createRenderTarget(RenderTarget *target)
     QVarLengthArray<QRhiColorAttachment, 8> rhiAttachments;
 
     bool hasDepthTexture = false;
+
+    // Used in case of failure
+    QVarLengthArray<QRhiResource*> resourcesToClean;
+    auto cleanAllocatedResources = [&] {
+        QStringList descDetails;
+        auto texDetails = [](QRhiTexture *tex) {
+            return QString("Texture format: %1; flags: %2; samples: %3").arg(tex->format()).arg(tex->flags()).arg(tex->sampleCount());
+        };
+        auto bufferDetails = [](QRhiRenderBuffer* buffer) {
+            return QString("Buffer Type: %1; flags: %2; samples: %3").arg(buffer->type()).arg(buffer->flags()).arg(buffer->sampleCount());
+        };
+        const auto itEnd = desc.cendColorAttachments();
+        for (auto it = desc.cbeginColorAttachments(); it != itEnd; ++it) {
+            QString attDetails = QString("Layer: %1; Level: %2; ").arg(it->layer()).arg(it->level());
+            if (it->texture())
+                attDetails += texDetails(it->texture());
+            descDetails << attDetails;
+        }
+        if (desc.depthTexture())
+            descDetails << QString("Depth Texture: %1").arg(texDetails(desc.depthTexture()));
+        if (desc.depthStencilBuffer())
+            descDetails << QString("Depth Buffer: %1").arg(bufferDetails(desc.depthStencilBuffer()));
+        qCWarning(Backend) << "Failed to create RenderTarget" << renderTargetId << "\n" << descDetails;
+        for (auto res : resourcesToClean) {
+            res->destroy();
+            delete res;
+        }
+    };
 
     // Look up attachments to populate the RT description
     // Attachments are sorted by attachment point (Color0 is first)
@@ -1221,14 +1231,14 @@ void Renderer::createRenderTarget(RenderTarget *target)
     // Potentially create a depth & stencil renderbuffer
     QRhiRenderBuffer *ds{};
     if (!hasDepthTexture) {
-      ds = m_submissionContext->rhi()->newRenderBuffer(QRhiRenderBuffer::DepthStencil, targetSize, targetSamples);
-      resourcesToClean << ds;
+        ds = m_submissionContext->rhi()->newRenderBuffer(QRhiRenderBuffer::DepthStencil, targetSize, targetSamples);
+        resourcesToClean << ds;
 
-      if (!ds->create()) {
-          cleanAllocatedResources();
-          return;
-      }
-      desc.setDepthStencilBuffer(ds);
+        if (!ds->create()) {
+            cleanAllocatedResources();
+            return;
+        }
+        desc.setDepthStencilBuffer(ds);
     }
 
     // Create the render target
@@ -1266,10 +1276,9 @@ bool Renderer::setupRenderTarget(RenderView *rv,
         const Qt3DCore::QNodeId &renderTargetId = renderTarget->peerId();
         RHIRenderTargetManager *rhiRenderTargetManager = m_RHIResourceManagers->rhiRenderTargetManager();
         RHIRenderTarget *rhiTarget = rhiRenderTargetManager->lookupResource(renderTargetId);
-        Q_ASSERT(rhiTarget);
 
-        if (!rhiTarget->renderTarget) {
-            qWarning(Backend) << "Invalid RenderTarget for Pipeline";
+        if (!rhiTarget || !rhiTarget->renderTarget) {
+            qWarning(Backend) << "Invalid RenderTarget " << renderTargetId << " for Pipeline";
             return false;
         }
 
@@ -1920,9 +1929,6 @@ void Renderer::updateResources()
             }
         }
     }
-
-
-
 
     // Record list of buffer that might need uploading
     lookForDownloadableBuffers();
