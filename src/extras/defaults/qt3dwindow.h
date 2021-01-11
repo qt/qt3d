@@ -91,7 +91,7 @@ class Q_3DEXTRASSHARED_EXPORT Qt3DWindow : public QWindow
 {
     Q_OBJECT
 public:
-    Qt3DWindow(QScreen *screen = nullptr, Qt3DRender::API = Qt3DRender::API::OpenGL);
+    Qt3DWindow(QScreen *screen = nullptr, Qt3DRender::API = Qt3DRender::API::RHI);
     ~Qt3DWindow();
 
     void registerAspect(Qt3DCore::QAbstractAspect *aspect);

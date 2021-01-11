@@ -269,10 +269,32 @@ void setupWindowSurface(QWindow *window, Qt3DRender::API api) noexcept
         }
     }
 
+    // Default to using RHI backend is not specified We want to set the
+    // variable to ensure any 3rd party relying on it to detect which rendering
+    // backend is in use will get a valid value.
+    bool useRhi = true;
+    if (qEnvironmentVariableIsEmpty("QT3D_RENDERER"))
+        qputenv("QT3D_RENDERER", "rhi");
+    else
+        useRhi = qEnvironmentVariable("QT3D_RENDERER") == QStringLiteral("rhi");
+
+    if (!useRhi)
+        api = Qt3DRender::API::OpenGL;
+
     // We have to set the environment so that the backend is able to read it.
-    // Qt6: FIXME
-    switch (api)
-    {
+    if (api == Qt3DRender::API::RHI && useRhi) {
+#if defined(Q_OS_WIN)
+        api = Qt3DRender::API::DirectX;
+#elif defined(Q_OS_MACOS) || defined(Q_OS_IOS)
+        api = Qt3DRender::API::Metal;
+#elif QT_CONFIG(opengl)
+        api = Qt3DRender::API::OpenGL;
+#else
+        api = Qt3DRender::API::Vulkan;
+#endif
+    }
+
+    switch (api) {
     case Qt3DRender::API::OpenGL:
         qputenv("QSG_RHI_BACKEND", "opengl");
         window->setSurfaceType(QSurface::OpenGLSurface);
@@ -302,12 +324,6 @@ void setupWindowSurface(QWindow *window, Qt3DRender::API api) noexcept
     default:
         break;
     }
-
-    // Default to using RHI backend is not specified We want to set the
-    // variable to ensure any 3rd party relying on it to detect which rendering
-    // backend is in use will get a valid value.
-    if (qEnvironmentVariableIsEmpty("QT3D_RENDERER"))
-        qputenv("QT3D_RENDERER", "rhi");
 
     QSurfaceFormat format = QSurfaceFormat::defaultFormat();
     const QByteArray renderingBackend = qgetenv("QT3D_RENDERER");
