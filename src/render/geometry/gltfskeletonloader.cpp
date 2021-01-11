@@ -356,8 +356,8 @@ SkeletonData GLTFSkeletonLoader::createSkeletonFromSkin(const Skin &skin) const
 {
     SkeletonData skel;
 
-    const auto jointCount = skin.jointNodeIndices.size();
-    skel.reserve(int(jointCount));
+    const int jointCount = int(skin.jointNodeIndices.size());
+    skel.reserve(jointCount);
 
     QHash<const Node *, int> jointIndexMap;
     for (int i = 0; i < jointCount; ++i) {
@@ -500,7 +500,7 @@ bool GLTFSkeletonLoader::processJSONBufferView(const QJsonObject &json)
 
     // Perform sanity checks
     const auto bufferIndex = bufferView.bufferIndex;
-    if (Q_UNLIKELY(bufferIndex) >= m_bufferDatas.size()) {
+    if (Q_UNLIKELY(bufferIndex >= int(m_bufferDatas.size()))) {
         qCWarning(Jobs, "Unknown buffer %d when processing buffer view", bufferIndex);
         return false;
     }

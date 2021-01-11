@@ -189,7 +189,7 @@ void BaseGeometryLoader::generateGeometry()
         ty = QAttribute::UnsignedShort;
         indexBytes.resize(m_indices.size() * sizeof(quint16));
         quint16 *usptr = reinterpret_cast<quint16*>(indexBytes.data());
-        for (int i = 0; i < m_indices.size(); ++i)
+        for (int i = 0; i < int(m_indices.size()); ++i)
             *usptr++ = static_cast<quint16>(m_indices.at(i));
     } else {
         // use UINT - no conversion needed, but let's ensure int is 32-bit!
