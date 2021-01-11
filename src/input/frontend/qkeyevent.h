@@ -43,6 +43,7 @@
 #include <Qt3DInput/qt3dinput_global.h>
 #include <QtCore/QObject>
 #include <QtGui/QKeyEvent>
+#include <memory>
 
 QT_BEGIN_NAMESPACE
 

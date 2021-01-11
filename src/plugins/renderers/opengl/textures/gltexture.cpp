@@ -692,7 +692,11 @@ void GLTexture::introspectPropertiesFromSharedTextureId()
     if (ctxGLVersion.first > 4 || (ctxGLVersion.first == 4 && ctxGLVersion.second >= 5)) {
         // Only for GL 4.5+
 #ifdef GL_TEXTURE_TARGET
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         QOpenGLFunctions_4_5_Core *gl5 = QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_4_5_Core>();
+#else
+        QOpenGLFunctions_4_5_Core *gl5 = ctx->versionFunctions<QOpenGLFunctions_4_5_Core>();
+#endif
         if (gl5 != nullptr)
             gl5->glGetTextureParameteriv(m_sharedTextureId, GL_TEXTURE_TARGET, reinterpret_cast<int *>(&m_properties.target));
 #endif

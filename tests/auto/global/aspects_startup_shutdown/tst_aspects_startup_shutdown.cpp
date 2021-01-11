@@ -72,6 +72,7 @@
 #include <Qt3DExtras/QTorusMesh>
 
 #include <QPropertyAnimation>
+#include <QThread>
 
 namespace {
 

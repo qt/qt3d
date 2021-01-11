@@ -4,7 +4,11 @@ PLUGIN_TYPE = renderers
 PLUGIN_CLASS_NAME = RhiRendererPlugin
 load(qt_plugin)
 
-QT += core-private gui-private 3dcore 3dcore-private 3drender 3drender-private shadertools shadertools-private
+QT += core-private gui-private 3dcore 3dcore-private 3drender 3drender-private
+
+greaterThan(QT_MAJOR_VERSION, 5) {
+    QT += shadertools shadertools-private
+}
 
 # Qt3D is free of Q_FOREACH - make sure it stays that way:
 DEFINES += QT_NO_FOREACH

@@ -571,7 +571,7 @@ QByteArray QShaderGenerator::createShaderCode(const QStringList &enabledLayers) 
     // just use vertexPosition directly.
     // The added benefit is when having arrays, we don't try to create
     // mat4 v38 = skinningPalelette[100] which would be invalid
-    QList<Variable> temporaryVariables;
+    std::vector<Variable> temporaryVariables;
     // Reserve more than enough space to ensure no reallocation will take place
     temporaryVariables.reserve(nodes.size() * 8);
 
@@ -580,7 +580,7 @@ QByteArray QShaderGenerator::createShaderCode(const QStringList &enabledLayers) 
     auto createVariable = [&] () -> Variable * {
         Q_ASSERT(temporaryVariables.capacity() > 0);
         temporaryVariables.resize(temporaryVariables.size() + 1);
-        return &temporaryVariables.last();
+        return &temporaryVariables.back();
     };
 
     auto findVariable = [&] (const QString &name) -> Variable * {

@@ -9,7 +9,7 @@ HEADERS += \
     $$PWD/qt3dcore_global_p.h \
     $$PWD/qurlhelper_p.h \
     $$PWD/qscene_p.h \
-    $$PWD/qabstractfrontendnodemanager.h
+    $$PWD/qabstractfrontendnodemanager_p.h
 
 SOURCES += \
     $$PWD/qtickclock.cpp \

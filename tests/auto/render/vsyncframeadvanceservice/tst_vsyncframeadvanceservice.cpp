@@ -28,7 +28,7 @@
 
 #include <QtTest/QTest>
 #include <QSemaphore>
-
+#include <QThread>
 #include <Qt3DRender/private/vsyncframeadvanceservice_p.h>
 
 class FakeRenderThread final : public QThread

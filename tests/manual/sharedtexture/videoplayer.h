@@ -48,8 +48,14 @@
 **
 ****************************************************************************/
 
-#include <QtOpenGLWidgets/QOpenGLWidget>
 #include <QtGui/QOpenGLFunctions>
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QtOpenGLWidgets/QOpenGLWidget>
+#else
+#include <QtWidgets/QOpenGLWidget>
+#endif
+
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLBuffer>
 #include <QOpenGLTexture>

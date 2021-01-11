@@ -30,6 +30,7 @@
 #include <QList>
 #include <Qt3DCore/private/qhandle_p.h>
 #include <Qt3DCore/private/qresourcemanager_p.h>
+#include <QThread>
 
 class tst_QResourceManager : public QObject
 {
