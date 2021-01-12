@@ -1,6 +1,6 @@
 #############################################################################
 ##
-## Copyright (C) 2020 The Qt Company Ltd.
+## Copyright (C) 2021 The Qt Company Ltd.
 ## Contact: https://www.qt.io/licensing/
 ##
 ## This file is part of the release tools of the Qt Toolkit.
@@ -36,7 +36,7 @@ class QtConanError(Exception):
 
 class Qt3D(ConanFile):
     name = "qt3d"
-    version = "6.0.0"
+    version = "6.1.0"
     license = "LGPL-3.0+, GPL-2.0+, Commercial Qt License Agreement"
     author = "The Qt Company <https://www.qt.io/contact-us>"
     url = "https://code.qt.io/cgit/qt/qt3d.git/"
