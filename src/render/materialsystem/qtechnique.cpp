@@ -69,9 +69,9 @@ QTechniquePrivate::~QTechniquePrivate()
     Parameter objects and a GraphicsApiFilter, which together define a
     rendering technique the given graphics API can render. The filter keys are
     used by TechniqueFilter to select specific techniques at specific parts of
-    the FrameGraph. If two Parameter instances with the same name are specified
-    in a Technique and a RenderPass, the one in Technique overrides the one
-    used in the RenderPass.
+    the FrameGraph. A Parameter defined on a Technique overrides parameter
+    (of the same name) defined in RenderPass, but are overridden by
+    parameter in RenderPassFilter, TechniqueFilter, Material and Effect.
 
     When creating an Effect that targets several versions of a graphics API, it
     is useful to create several Technique nodes each with a graphicsApiFilter
@@ -136,9 +136,9 @@ QTechniquePrivate::~QTechniquePrivate()
     a Qt3DRender::QGraphicsApiFilter, which together define a rendering
     technique the given graphics API can render. The filter keys are used by
     Qt3DRender::QTechniqueFilter to select specific techniques at specific
-    parts of the FrameGraph. If two QParameter instances with the same name are
-    specified in a QTechnique and a QRenderPass, the one in Technique overrides
-    the one used in the QRenderPass.
+    parts of the FrameGraph. A QParameter defined on a QTechnique overrides parameter
+    (of the same name) defined in QRenderPass, but are overridden by
+    parameter in QRenderPassFilter, QTechniqueFilter, QMaterial and QEffect.
 
     When creating an QEffect that targets several versions of a graphics API,
     it is useful to create several QTechnique nodes each with a
