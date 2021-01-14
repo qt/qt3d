@@ -91,8 +91,9 @@ QEffectPrivate::QEffectPrivate()
     effect->addTechnique(gl3Technique);
     \endcode
 
-    A QParameter defined on an Effect is overridden by a QParameter (of the same
-    name) defined in a QMaterial, QTechniqueFilter, QRenderPassFilter.
+    A QParameter defined on a QEffect overrides parameter (of the same
+    name) defined in QTechnique and QRenderPass, but are overridden by parameter in
+    QRenderPassFilter, QTechniqueFilter and QMaterial.
 
     \sa QMaterial, QTechnique, QParameter
 */
@@ -110,8 +111,9 @@ QEffectPrivate::QEffectPrivate()
 
     An Effect instance should be shared among several Material instances when possible.
 
-    A Parameter defined on an Effect is overridden by a QParameter (of the same
-    name) defined in a Material, TechniqueFilter, RenderPassFilter.
+    A Parameter defined on a Effect overrides parameter (of the same
+    name) defined in Technique and RenderPass, but are overridden by parameter in
+    RenderPassFilter, TechniqueFilter and Material.
 
     \note Effect node can not be disabled.
 

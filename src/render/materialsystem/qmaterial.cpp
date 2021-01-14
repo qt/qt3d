@@ -65,8 +65,9 @@
     techniques, passes and shaders once while allowing to specify the material
     by adding Parameter instances.
 
-    A Parameter defined on a Material is overridden by a Parameter (of the same
-    name) defined in a TechniqueFilter or a RenderPassFilter.
+    A Parameter defined on a Material overrides parameter (of the same
+    name) defined in a Effect, Technique and RenderPass, but are overridden by parameters in
+    RenderPassFilter and TechniqueFilter.
 
     \code
     Effect {
@@ -133,8 +134,9 @@
     techniques, passes and shaders once while allowing to specify the material
     by adding QParameter instances.
 
-    A QParameter defined on a QMaterial is overridden by a QParameter (of the same
-    name) defined in a QTechniqueFilter or a QRenderPassFilter.
+    A QParameter defined on a QMaterial overrides parameter (of the same
+    name) defined in a QEffect, QTechnique and QRenderPass, but are overridden by parameter in
+    QRenderPassFilter and QTechniqueFilter.
 
     \code
     QMaterial *material1 = new QMaterial();

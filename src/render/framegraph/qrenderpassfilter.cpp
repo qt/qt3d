@@ -63,8 +63,8 @@ namespace Qt3DRender {
     whose Qt3DRender::QFilterKey objects match the keys in QRenderPassFilter are
     selected for rendering. If no QRenderPassFilter is present, then all QRenderPass
     objects are selected for rendering. The parameters in the list can be used
-    to set values for shader parameters. The parameters in QRenderPassFilter are
-    overridden by parameters in QTechniqueFilter, QTechnique and QRenderPass.
+    to set values for shader parameters. The parameters in QRenderPassFilter
+    override parameters in QTechniqueFilter, QMaterial, QEffect, QTechnique and QRenderPass.
 */
 
 /*!
@@ -79,7 +79,10 @@ namespace Qt3DRender {
     objects are selected for drawing. When RenderPassFilter is present in the FrameGraph,
     only the RenderPass objects, whose FilterKey objects match the keys
     in RenderPassFilter are selected for rendering. If no RenderPassFilter is present,
-    then all RenderPass objects are selected for rendering.
+    then all RenderPass objects are selected for rendering. RenderPassFilter
+    specifies a list of Parameter objects. The parameters in the list can be used
+    to set values for shader parameters. The parameters in RenderPassFilter
+    override parameters in TechniqueFilter, Material, Effect, Technique and RenderPass.
 */
 
 /*!

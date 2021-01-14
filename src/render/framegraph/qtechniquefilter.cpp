@@ -65,8 +65,9 @@ QTechniqueFilterPrivate::QTechniqueFilterPrivate()
     a list of Qt3DRender::QFilterKey objects and Qt3DRender::QParameter objects.
     When QTechniqueFilter is present in the FrameGraph, only the techiques matching
     the keys in the list are used for rendering. The parameters in the list can be used
-    to set values for shader parameters. The parameters in QTechniqueFilter are
-    overridden by parameters in QTechnique and QRenderPass.
+    to set values for shader parameters. The parameters in QTechniqueFilter
+    override parameters in QMaterial, QEffect, QTechnique and QRenderPass, but are overridden
+    by parameters in QRenderPassFilter.
 */
 
 /*!
@@ -82,8 +83,9 @@ QTechniqueFilterPrivate::QTechniqueFilterPrivate()
     a list of FilterKey objects and Parameter objects.
     When TechniqueFilter is present in the FrameGraph, only the techiques matching
     the keys in list are used for rendering. The parameters in the list can be used
-    to set values for shader parameters. The parameters in TechniqueFilter are
-    overridden by parameters in Technique and RenderPass.
+    to set values for shader parameters. The parameters in TechniqueFilter
+    override parameters in Material, Effect, Technique and RenderPass, but are overridden
+    by parameters in RenderPassFilter.
 */
 
 /*!
