@@ -38,6 +38,9 @@
 ****************************************************************************/
 
 #include "vulkaninstance_p.h"
+
+#if QT_CONFIG(vulkan)
+
 #include <QVulkanInstance>
 
 QT_BEGIN_NAMESPACE
@@ -68,3 +71,5 @@ QVulkanInstance &staticVulkanInstance() noexcept
 } // Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif
