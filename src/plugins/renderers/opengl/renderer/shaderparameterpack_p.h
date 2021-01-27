@@ -100,6 +100,11 @@ struct PackUniformHash
         values.reserve(count);
     }
 
+    size_t size() const
+    {
+        return keys.size();
+    }
+
     inline int indexForKey(int key) const
     {
         const auto b = keys.cbegin();

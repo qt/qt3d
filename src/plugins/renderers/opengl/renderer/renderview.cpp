@@ -1323,6 +1323,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
         command->m_parameterPack.reserve(shader->parameterPackSize());
     }
 
+    const size_t previousUniformCount = command->m_parameterPack.uniforms().size();
     if (shader->hasActiveVariables()) {
         const std::vector<int> &standardUniformNamesIds = shader->standardUniformNameIds();
 
@@ -1347,8 +1348,9 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
         updateLightUniforms(command, entity);
     }
 
+    const size_t actualUniformCount = command->m_parameterPack.uniforms().size();
     // Prepare the ShaderParameterPack based on the active uniforms of the shader
-    if (!updateUniformsOnly)
+    if (!updateUniformsOnly || previousUniformCount != actualUniformCount)
         shader->prepareUniforms(command->m_parameterPack);
 }
 
