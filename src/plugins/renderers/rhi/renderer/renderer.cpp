@@ -1400,7 +1400,7 @@ Renderer::prepareCommandsSubmission(const std::vector<RenderView *> &renderViews
                 if (!shader)
                     return;
 
-                updateComputePipeline(command, rv, i);
+                updateComputePipeline(command, rv, int(i));
             }
         });
     }
@@ -1732,7 +1732,7 @@ bool Renderer::prepareGeometryInputBindings(const Geometry *geometry, const RHIS
                     && binding.attributeDivisor == a.attributeDivisor;
         });
 
-        int bindingIndex = uniqueBindings.size();
+        int bindingIndex = int(uniqueBindings.size());
         if (it == uniqueBindings.end())
             uniqueBindings.push_back(binding);
         else
@@ -1761,7 +1761,7 @@ bool Renderer::prepareGeometryInputBindings(const Geometry *geometry, const RHIS
     }
 
     inputBindings.resize(uniqueBindings.size());
-    for (int i = 0, m = uniqueBindings.size(); i < m; ++i) {
+    for (int i = 0, m = int(uniqueBindings.size()); i < m; ++i) {
         const BufferBinding binding = uniqueBindings.at(i);
 
         /*
@@ -2068,9 +2068,9 @@ Renderer::submitRenderViews(const std::vector<RHIPassInfo> &rhiPassesInfo)
     QSurface *previousSurface = nullptr;
     QSurface *lastUsedSurface = nullptr;
 
-    const int rhiPassesCount = rhiPassesInfo.size();
+    const size_t rhiPassesCount = rhiPassesInfo.size();
 
-    for (int i = 0; i < rhiPassesCount; ++i) {
+    for (size_t i = 0; i < rhiPassesCount; ++i) {
         // Initialize GraphicsContext for drawing
         const RHIPassInfo &rhiPassInfo = rhiPassesInfo.at(i);
 
@@ -2323,7 +2323,7 @@ std::vector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
 
         const size_t fgBranchCount = m_frameGraphLeaves.size();
         if (fgBranchCount > 1) {
-            int workBranches = fgBranchCount;
+            int workBranches = int(fgBranchCount);
             for (auto leaf: m_frameGraphLeaves)
                 if (leaf->nodeType() == FrameGraphNode::NoDraw)
                     --workBranches;
@@ -2334,7 +2334,7 @@ std::vector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
 
         for (size_t i = 0; i < fgBranchCount; ++i) {
             FrameGraphNode *leaf = m_frameGraphLeaves.at(i);
-            RenderViewBuilder builder(leaf, i, this);
+            RenderViewBuilder builder(leaf, int(i), this);
             builder.setOptimalJobCount(leaf->nodeType() == FrameGraphNode::NoDraw ? 1 : idealThreadCount);
 
             // If we have a new RV (wasn't in the cache before, then it contains no cached data)
@@ -2355,7 +2355,7 @@ std::vector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
         }
 
         // Set target number of RenderViews
-        m_renderQueue.setTargetRenderViewCount(fgBranchCount);
+        m_renderQueue.setTargetRenderViewCount(int(fgBranchCount));
     } else {
         // FilterLayerEntityJob is part of the RenderViewBuilder jobs and must be run later
         // if none of those jobs are started this frame
@@ -2396,7 +2396,7 @@ bool Renderer::performCompute(QRhiCommandBuffer *cb, RenderCommand &command)
 
     const std::vector<QRhiCommandBuffer::DynamicOffset> offsets = pipeline->uboSet()->offsets(command);
     cb->setShaderResources(command.shaderResourceBindings,
-                           offsets.size(),
+                           int(offsets.size()),
                            offsets.data());
 
     cb->dispatch(command.m_workGroups[0], command.m_workGroups[1], command.m_workGroups[2]);
@@ -2580,7 +2580,7 @@ bool Renderer::setBindingAndShaderResourcesForCommand(QRhiCommandBuffer *cb,
     const std::vector<QRhiCommandBuffer::DynamicOffset> offsets = uboSet->offsets(command);
 
     cb->setShaderResources(command.shaderResourceBindings,
-                           offsets.size(),
+                           int(offsets.size()),
                            offsets.data());
     return true;
 }

@@ -350,7 +350,7 @@ void GraphicsContext::activateDrawBuffers(const AttachmentPack &attachments)
         if (activeDrawBuffers.size() > 1) {// We need MRT
             if (m_glHelper->supportsFeature(GraphicsHelperInterface::MRT)) {
                 // Set up MRT, glDrawBuffers...
-                m_glHelper->drawBuffers(activeDrawBuffers.size(), activeDrawBuffers.data());
+                m_glHelper->drawBuffers(GLsizei(activeDrawBuffers.size()), activeDrawBuffers.data());
             }
         }
     } else {

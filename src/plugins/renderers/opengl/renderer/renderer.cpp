@@ -1866,7 +1866,7 @@ std::vector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
 
     const size_t fgBranchCount = m_frameGraphLeaves.size();
     if (fgBranchCount > 1) {
-        int workBranches = fgBranchCount;
+        int workBranches = int(fgBranchCount);
         for (auto leaf: m_frameGraphLeaves)
             if (leaf->nodeType() == FrameGraphNode::NoDraw)
                 --workBranches;
@@ -1877,7 +1877,7 @@ std::vector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
 
     for (size_t i = 0; i < fgBranchCount; ++i) {
         FrameGraphNode *leaf = m_frameGraphLeaves[i];
-        RenderViewBuilder builder(leaf, i, this);
+        RenderViewBuilder builder(leaf, int(i), this);
         builder.setOptimalJobCount(leaf->nodeType() == FrameGraphNode::NoDraw ? 1 : idealThreadCount);
 
         // If we have a new RV (wasn't in the cache before, then it contains no cached data)
@@ -1896,7 +1896,7 @@ std::vector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     }
 
     // Set target number of RenderViews
-    m_renderQueue.setTargetRenderViewCount(fgBranchCount);
+    m_renderQueue.setTargetRenderViewCount(int(fgBranchCount));
 
     if (isRunning() && m_submissionContext->isInitialized()) {
         if (dirtyBitsForFrame & AbstractRenderer::TechniquesDirty )

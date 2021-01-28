@@ -1138,7 +1138,7 @@ void SubmissionContext::applyStateSet(const RenderStateSet *ss,
 StateVariant *SubmissionContext::getState(RenderStateSet *ss, StateMask type) const
 {
     const auto &statesToSet = ss->states();
-    for (int i = 0, m = statesToSet.size(); i < m; ++i) {
+    for (qsizetype i = 0, m = statesToSet.size(); i < m; ++i) {
         const StateVariant &ds = statesToSet.at(i);
         if (ds.type == type)
             return ss->states().data() + i;
@@ -1367,7 +1367,7 @@ constexpr int getFirstAvailableBit(const std::bitset<N> &bits)
 {
     for (std::size_t i = 0; i < N; i++) {
         if (!bits.test(i))
-            return i;
+            return int(i);
     }
     return -1;
 }

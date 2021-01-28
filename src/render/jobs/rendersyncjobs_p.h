@@ -112,8 +112,8 @@ public:
         rv->setMaterialParameterTable(dataCacheForLeaf.materialParameterGatherer);
 
         // Split among the ideal number of command builders
-        const int jobCount = m_renderViewCommandBuilderJobs.size();
-        const int entityCount = entities.size();
+        const int jobCount = int(m_renderViewCommandBuilderJobs.size());
+        const int entityCount = int(entities.size());
         const int idealPacketSize = std::min(std::max(10, entityCount / jobCount), entityCount);
         // Try to split work into an ideal number of workers
         const int m = findIdealNumberOfWorkers(entityCount, idealPacketSize, jobCount);
@@ -319,7 +319,7 @@ public:
                 {
                     int totalCommandCount = 0;
                     for (const RenderViewCommandBuilderJobPtrAlias &renderViewCommandBuilder : qAsConst(m_renderViewCommandBuilderJobs))
-                        totalCommandCount += renderViewCommandBuilder->commandData().size();
+                        totalCommandCount += int(renderViewCommandBuilder->commandData().size());
                     commandData.reserve(totalCommandCount);
                     for (const RenderViewCommandBuilderJobPtrAlias &renderViewCommandBuilder : qAsConst(m_renderViewCommandBuilderJobs))
                         commandData += std::move(renderViewCommandBuilder->commandData());
@@ -439,8 +439,8 @@ public:
             }
 
             // Split among the number of command updaters
-            const int jobCount = m_renderViewCommandUpdaterJobs.size();
-            const int commandCount = filteredCommandData->size();
+            const int jobCount = int(m_renderViewCommandUpdaterJobs.size());
+            const int commandCount = int(filteredCommandData->size());
             const int idealPacketSize = std::min(std::max(10, commandCount), commandCount);
             const int m = findIdealNumberOfWorkers(commandCount, idealPacketSize, jobCount);
 

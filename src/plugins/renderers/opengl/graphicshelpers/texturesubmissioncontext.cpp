@@ -193,7 +193,7 @@ int TextureSubmissionContext::assignUnitForTexture(GLTexture *tex)
 
     for (size_t u=0; u<m_activeTextures.size(); ++u) {
         if (m_activeTextures[u].texture == tex)
-            return u;
+            return int(u);
     }
 
     for (size_t u=0; u<m_activeTextures.size(); ++u) {
@@ -204,7 +204,7 @@ int TextureSubmissionContext::assignUnitForTexture(GLTexture *tex)
             int score = m_activeTextures[u].score;
             if (score < lowestScore) {
                 lowestScore = score;
-                lowestScoredUnit = u;
+                lowestScoredUnit = int(u);
             }
         }
     } // of units iteration
