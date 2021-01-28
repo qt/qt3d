@@ -88,10 +88,10 @@ public:
     const_reverse_iterator rend()    const noexcept { return const_reverse_iterator(begin()); }
     const_reverse_iterator crend()   const noexcept { return rend(); }
 
-    friend bool operator==(const QAnimationClipData &,
-                           const QAnimationClipData &) noexcept;
-    friend bool operator!=(const QAnimationClipData &,
-                           const QAnimationClipData &) noexcept;
+    friend bool Q_3DANIMATIONSHARED_EXPORT operator==(const QAnimationClipData &,
+                                                      const QAnimationClipData &) noexcept;
+    friend bool Q_3DANIMATIONSHARED_EXPORT operator!=(const QAnimationClipData &,
+                                                      const QAnimationClipData &) noexcept;
 
 private:
     QScopedPointer<QAnimationClipDataPrivate> d;
