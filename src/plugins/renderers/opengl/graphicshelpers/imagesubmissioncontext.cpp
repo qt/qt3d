@@ -255,7 +255,7 @@ int ImageSubmissionContext::activateImage(ShaderImage *image, GLTexture *tex)
 // Unset pinned Active Image and reduce their score
 void ImageSubmissionContext::deactivateImages()
 {
-    for (int u = 0, m = m_activeImages.size();  u < m; ++u) {
+    for (size_t u = 0, m = m_activeImages.size();  u < m; ++u) {
         if (m_activeImages[u].pinned) {
             m_activeImages[u].pinned = false;
             m_activeImages[u].score = qMax(m_activeImages[u].score - 1, 0);
@@ -267,7 +267,7 @@ void ImageSubmissionContext::deactivateImages()
 // Reduce score of all active images (pinned or not)
 void ImageSubmissionContext::decayImageScores()
 {
-    for (int u = 0, m = m_activeImages.size();  u < m; ++u)
+    for (size_t u = 0, m = m_activeImages.size();  u < m; ++u)
         m_activeImages[u].score = qMax(m_activeImages[u].score - 1, 0);
 }
 
@@ -276,13 +276,13 @@ int ImageSubmissionContext::assignUnitForImage(Qt3DCore::QNodeId shaderImageId)
     int lowestScoredUnit = -1;
     int lowestScore = 0xfffffff;
 
-    const int m = m_activeImages.size();
-    for (int u = 0; u < m; ++u) {
+    const size_t m = m_activeImages.size();
+    for (size_t u = 0; u < m; ++u) {
         if (m_activeImages[u].shaderImageId == shaderImageId)
-            return u;
+            return int(u);
     }
 
-    for (int u = 0; u < m; ++u) {
+    for (size_t u = 0; u < m; ++u) {
         // No image is currently active on the image unit
         // we save the image unit with the texture that has been on there
         // the longest time while not being used
@@ -290,7 +290,7 @@ int ImageSubmissionContext::assignUnitForImage(Qt3DCore::QNodeId shaderImageId)
             const int score = m_activeImages[u].score;
             if (score < lowestScore) {
                 lowestScore = score;
-                lowestScoredUnit = u;
+                lowestScoredUnit = int(u);
             }
         }
     }

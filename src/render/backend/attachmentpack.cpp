@@ -92,7 +92,7 @@ int AttachmentPack::getDrawBufferIndex(QRenderTargetOutput::AttachmentPoint atta
 {
     for (size_t i = 0; i < m_drawBuffers.size(); i++)
         if (m_drawBuffers.at(i) == (int)attachmentPoint)
-            return i;
+            return int(i);
     return -1;
 }
 

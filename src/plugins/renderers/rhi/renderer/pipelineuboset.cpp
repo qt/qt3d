@@ -293,7 +293,7 @@ std::vector<QRhiShaderResourceBinding> PipelineUBOSet::resourceBindings(const Re
                     QRhiShaderResourceBinding::uniformBufferWithDynamicOffset(1,
                                                                               stages,
                                                                               commandUBO->rhiBuffer(),
-                                                                              m_commandsUBO.alignedBlockSize));
+                                                                              int(m_commandsUBO.alignedBlockSize)));
     }
 
     // Create additional empty UBO Buffer for UBO with binding point > 1 (since
@@ -304,7 +304,7 @@ std::vector<QRhiShaderResourceBinding> PipelineUBOSet::resourceBindings(const Re
         const HRHIBuffer &materialUBO = ubo.bufferForCommand(dToCmd);
         bindings.push_back(
                     QRhiShaderResourceBinding::uniformBufferWithDynamicOffset(
-                        ubo.binding, stages, materialUBO->rhiBuffer(), ubo.alignedBlockSize));
+                        ubo.binding, stages, materialUBO->rhiBuffer(), int(ubo.alignedBlockSize)));
     }
 
     // Samplers
@@ -433,7 +433,7 @@ inline void uploadDataToUBO(const QByteArray rawData,
 {
     const HRHIBuffer &buffer = ubo->bufferForCommand(distanceToCommand);
     const size_t localOffset = ubo->localOffsetInBufferForCommand(distanceToCommand);
-    buffer->update(rawData, localOffset+ member.blockVariable.offset + arrayOffset);
+    buffer->update(rawData, int(localOffset) + member.blockVariable.offset + arrayOffset);
 }
 
 QByteArray rawDataForUniformValue(const QShaderDescription::BlockVariable &blockVariable,
@@ -574,7 +574,7 @@ void PipelineUBOSet::uploadUBOsForCommand(const RenderCommand &command,
         commandUBOBuffer->update(QByteArray::fromRawData(
                                      reinterpret_cast<const char *>(&command.m_commandUBO),
                                      sizeof(CommandUBO)),
-                                 localOffset);
+                                 int(localOffset));
     }
 
     const std::vector<RHIShader::UBO_Block> &uboBlocks = shader->uboBlocks();
@@ -671,7 +671,7 @@ void PipelineUBOSet::uploadUBOsForCommand(const RenderCommand &command,
 
         const HRHIBuffer &materialBuffer = materialsUBO->bufferForCommand(distanceToCommand);
         const size_t localOffsetIntoBuffer = materialsUBO->localOffsetInBufferForCommand(distanceToCommand);
-        materialBuffer->update(uboBuffer->data(), localOffsetIntoBuffer);
+        materialBuffer->update(uboBuffer->data(), int(localOffsetIntoBuffer));
     }
 
     // ShaderData -> convenience for filling a struct member of a UBO

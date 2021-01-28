@@ -171,7 +171,7 @@ void ImGuiRenderer::renderDebugOverlay(const std::vector<RenderView *> &renderVi
     if (!newFrame(renderView))
         return;
 
-    const int renderViewsCount = renderViews.size();
+    const int renderViewsCount = int(renderViews.size());
 
     int logIndex = qMin(IMGUI_PERF_LOG_SIZE - 1, ImGui::GetFrameCount());
     if (logIndex == IMGUI_PERF_LOG_SIZE - 1) {

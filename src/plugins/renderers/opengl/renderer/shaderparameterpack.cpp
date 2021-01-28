@@ -84,7 +84,7 @@ void ShaderParameterPack::setTexture(const int glslNameId, int uniformArrayIndex
 
 void ShaderParameterPack::setImage(const int glslNameId, int uniformArrayIndex, Qt3DCore::QNodeId id)
 {
-    for (int i=0, m = m_images.size(); i < m; ++i) {
+    for (qsizetype i=0, m = m_images.size(); i < m; ++i) {
         if (m_images[i].glslNameId != glslNameId || m_images[i].uniformArrayIndex != uniformArrayIndex)
             continue;
 

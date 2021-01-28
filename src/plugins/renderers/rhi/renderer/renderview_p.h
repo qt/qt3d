@@ -298,7 +298,7 @@ public:
         m_renderCommandDataView->forEachCommand(func);
     }
 
-    inline int commandCount() const { return m_renderCommandDataView ? m_renderCommandDataView->size() : 0; }
+    inline int commandCount() const { return m_renderCommandDataView ? int(m_renderCommandDataView->size()) : 0; }
 
     inline const RenderViewUBO *renderViewUBO() const { return &m_renderViewUBO; }
 

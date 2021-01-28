@@ -178,7 +178,7 @@ QJsonObject parameterPackToJson(const Render::OpenGL::ShaderParameterPack &pack)
 
     const Render::OpenGL::PackUniformHash &uniforms = pack.uniforms();
     QJsonArray uniformsArray;
-    for (int i = 0, m = uniforms.keys.size(); i < m; ++i) {
+    for (qsizetype i = 0, m = uniforms.keys.size(); i < m; ++i) {
         QJsonObject uniformObj;
         uniformObj.insert(QLatin1String("name"), Render::StringToInt::lookupString(uniforms.keys.at(i)));
         const Render::UniformValue::ValueType type = uniforms.values.at(i).valueType();

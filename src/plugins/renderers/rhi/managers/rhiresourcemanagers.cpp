@@ -94,7 +94,7 @@ int RHIGraphicsPipelineManager::getIdForAttributeVec(const std::vector<Attribute
                         attributesInfo);
     if (it == m_attributesInfo.end()) {
         m_attributesInfo.emplace_back(attributesInfo);
-        return m_attributesInfo.size() - 1;
+        return int(m_attributesInfo.size()) - 1;
     }
     return std::distance(m_attributesInfo.begin(), it);
 }
@@ -109,7 +109,7 @@ int RHIGraphicsPipelineManager::getIdForRenderStates(const RenderStateSetPtr &st
                         states);
     if (it == m_renderStates.end()) {
         m_renderStates.emplace_back(states);
-        return m_renderStates.size() - 1;
+        return int(m_renderStates.size()) - 1;
     }
     return std::distance(m_renderStates.begin(), it);
 }

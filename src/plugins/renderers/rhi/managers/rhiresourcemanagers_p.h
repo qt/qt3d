@@ -152,7 +152,7 @@ private:
     RHIComputePipelineManager *m_rhiComputePipelineManager;
 };
 
-inline uint qHash(const GraphicsPipelineIdentifier &key, uint seed = 0)
+inline size_t qHash(const GraphicsPipelineIdentifier &key, size_t seed = 0)
 {
     const QPair<int, Qt3DCore::QNodeId> p = { key.geometryLayoutKey, key.shader };
     using QT_PREPEND_NAMESPACE(qHash);
@@ -172,7 +172,7 @@ inline bool operator==(const GraphicsPipelineIdentifier &a, const GraphicsPipeli
            a.primitiveType == b.primitiveType;
 }
 
-inline uint qHash(const ComputePipelineIdentifier &key, uint seed = 0)
+inline size_t qHash(const ComputePipelineIdentifier &key, size_t seed = 0)
 {
     using QT_PREPEND_NAMESPACE(qHash);
     seed = qHash(key.shader, seed);

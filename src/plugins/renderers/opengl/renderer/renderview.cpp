@@ -569,7 +569,7 @@ int advanceUntilNonAdjacent(const EntityRenderCommandDataView *view,
             ++i;
         }
     }
-    return i;
+    return int(i);
 }
 
 
@@ -772,7 +772,7 @@ void RenderView::sort()
     assert(m_renderCommandDataView);
     // Compares the bitsetKey of the RenderCommands
     // Key[Depth | StateCost | Shader]
-    sortCommandRange(m_renderCommandDataView.data(), 0, m_renderCommandDataView->size(), 0, m_sortingTypes);
+    sortCommandRange(m_renderCommandDataView.data(), 0, int(m_renderCommandDataView->size()), 0, m_sortingTypes);
 
     // For RenderCommand with the same shader
     // We compute the adjacent change cost
@@ -815,7 +815,7 @@ void RenderView::sort()
                     const UniformValue &refValue = cachedUniforms.value(uniformNameId);
                     const UniformValue &newValue = uniforms.values.at(u);
                     if (newValue == refValue) {
-                        uniforms.erase(u);
+                        uniforms.erase(int(u));
                     } else {
                         // Record updated value so that subsequent comparison
                         // for the next command will be made againts latest

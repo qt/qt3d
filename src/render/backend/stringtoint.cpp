@@ -85,7 +85,7 @@ int StringToInt::lookupId(const QString &str)
         std::unique_lock writeLocker(cache.lock);
         idx = cache.map.value(str, -1);
         if (idx < 0) {
-            idx = cache.reverseMap.size();
+            idx = int(cache.reverseMap.size());
             Q_ASSERT(size_t(cache.map.size()) == cache.reverseMap.size());
             cache.map.insert(str, idx);
             cache.reverseMap.push_back(str);
