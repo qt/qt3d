@@ -158,7 +158,7 @@ void Scene3DSGMaterialShader::updateSampledImage(QSGMaterialShader::RenderState 
 
 const char * const *Qt3DRender::Scene3DSGMaterialShader::attributeNames() const
 {
-    static char const *const attr[] = { "qt_VertexPosition", "qt_VertexTexCoord", 0 };
+    static char const *const attr[] = { "qt_VertexPosition", "qt_VertexTexCoord", nullptr };
     return attr;
 }
 
