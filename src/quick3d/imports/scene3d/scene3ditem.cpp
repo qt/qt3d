@@ -197,8 +197,13 @@ Scene3DItem::Scene3DItem(QQuickItem *parent)
     setWidth(1);
     setHeight(1);
 
-    if (qgetenv("QT3D_RENDERER").isEmpty())
+    if (qgetenv("QT3D_RENDERER").isEmpty()) {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         qputenv("QT3D_RENDERER", "rhi"); // QtQuick requires RHI
+#else
+        qputenv("QT3D_RENDERER", "opengl"); // QtQuick requires OpenGL
+#endif
+    }
 }
 
 Scene3DItem::~Scene3DItem()
