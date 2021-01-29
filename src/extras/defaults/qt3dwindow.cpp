@@ -265,18 +265,26 @@ void setupWindowSurface(QWindow *window, Qt3DRender::API api) noexcept
         } else if (userRequestedApi == QByteArrayLiteral("null")) {
             api = Qt3DRender::API::Null;
         } else if (userRequestedApi == QByteArrayLiteral("auto")) {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
             api = Qt3DRender::API::RHI;
+#else
+            api = Qt3DRender::API::OpenGL;
+#endif
         }
     }
 
     // Default to using RHI backend is not specified We want to set the
     // variable to ensure any 3rd party relying on it to detect which rendering
     // backend is in use will get a valid value.
-    bool useRhi = true;
-    if (qEnvironmentVariableIsEmpty("QT3D_RENDERER"))
+    bool useRhi = false;
+    if (qEnvironmentVariableIsEmpty("QT3D_RENDERER")) {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         qputenv("QT3D_RENDERER", "rhi");
-    else
-        useRhi = qEnvironmentVariable("QT3D_RENDERER") == QStringLiteral("rhi");
+#else
+        qputenv("QT3D_RENDERER", "opengl");
+#endif
+    }
+    useRhi = qEnvironmentVariable("QT3D_RENDERER") == QStringLiteral("rhi");
 
     if (!useRhi)
         api = Qt3DRender::API::OpenGL;
