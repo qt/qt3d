@@ -182,10 +182,15 @@ void Scene3DRenderer::setWindow(QQuickWindow *window)
     m_window = window;
 
     if (m_window) {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         QObject::connect(m_window, &QQuickWindow::beforeRendering, this,
                          [this] () { m_quickRenderer->beforeRendering(this); }, Qt::DirectConnection);
         QObject::connect(m_window, &QQuickWindow::beforeRenderPassRecording, this,
                          [this] () { m_quickRenderer->beforeRenderPassRecording(this); }, Qt::DirectConnection);
+#else
+        QObject::connect(m_window, &QQuickWindow::beforeRendering, this,
+                         [this] () { m_quickRenderer->beforeRenderPassRecording(this); }, Qt::DirectConnection);
+#endif
     } else {
         shutdown();
     }
@@ -310,15 +315,16 @@ void Scene3DRenderer::GLRenderer::beforeSynchronize(Scene3DRenderer *scene3DRend
 
     scene3DRenderer->m_shouldRender = true;
 
+    m_multisample = scene3DRenderer->multisample();
     const QSize boundingRectSize = scene3DRenderer->boundingSize();
     const QSize currentSize = boundingRectSize * window->effectiveDevicePixelRatio();
     const bool sizeHasChanged = currentSize != m_lastSize;
-    const bool multisampleHasChanged = scene3DRenderer->multisample() != m_lastMultisample;
+    const bool multisampleHasChanged = m_multisample != m_lastMultisample;
     const bool forceRecreate = sizeHasChanged || multisampleHasChanged;
     // Store the current size as a comparison
     // point for the next frame
     m_lastSize = currentSize;
-    m_lastMultisample = scene3DRenderer->multisample();
+    m_lastMultisample = m_multisample;
 
     // Rebuild FBO if size/multisampling has changed
     const bool usesFBO = scene3DRenderer->m_compositingMode == Scene3DItem::FBO;
@@ -344,7 +350,7 @@ void Scene3DRenderer::GLRenderer::beforeSynchronize(Scene3DRenderer *scene3DRend
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
             m_texture.reset(QNativeInterface::QSGOpenGLTexture::fromNative(m_textureId, window, m_finalFBO->size(), QQuickWindow::TextureHasAlphaChannel));
 #else
-            m_texture.reset(window->createTextureFromNativeObject(QQuickWindow::NativeObjectTexture, (void*) &m_textureId,
+            m_texture.reset(window->createTextureFromNativeObject(QQuickWindow::NativeObjectTexture, &m_textureId,
                                                                   0, m_finalFBO->size(), QQuickWindow::TextureHasAlphaChannel));
 #endif
         }
@@ -378,6 +384,12 @@ void Scene3DRenderer::GLRenderer::beforeRenderPassRecording(Scene3DRenderer *sce
     // Reset flag for next frame
     scene3DRenderer->m_shouldRender = false;
     ContextSaver saver;
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    // The OpenGL state may be dirty from the previous QtQuick nodes, so reset
+    // it here to give Qt3D the clean state it expects
+    scene3DRenderer->m_window->resetOpenGLState();
+#endif
 
     // Create and bind FBO if using the FBO compositing mode
     const bool usesFBO = scene3DRenderer->m_compositingMode == Scene3DItem::FBO;
@@ -419,6 +431,12 @@ void Scene3DRenderer::GLRenderer::beforeRenderPassRecording(Scene3DRenderer *sce
         if (scene3DRenderer->m_node)
             scene3DRenderer->m_node->show();
     }
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    // Reset the state used by the QtQuick scenegraph to avoid any
+    // interference when rendering the rest of the UI
+    scene3DRenderer->m_window->resetOpenGLState();
+#endif
 }
 
 void Scene3DRenderer::GLRenderer::shutdown(Scene3DRenderer *sceneRenderer)
