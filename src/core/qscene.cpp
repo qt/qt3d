@@ -123,15 +123,10 @@ QList<QNode *> QScene::lookupNodes(const QList<QNodeId> &ids) const
 {
     Q_D(const QScene);
     QReadLocker lock(&d->m_lock);
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-    QList<QNode *> nodes(ids.size());
-#else
     QList<QNode *> nodes;
     nodes.reserve(ids.size());
-#endif
-    int index = 0;
     for (QNodeId id : ids)
-        nodes[index++] = d->m_nodeLookupTable.value(id);
+        nodes.push_back(d->m_nodeLookupTable.value(id));
     return nodes;
 }
 
