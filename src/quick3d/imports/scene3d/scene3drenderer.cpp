@@ -344,7 +344,7 @@ void Scene3DRenderer::GLRenderer::beforeSynchronize(Scene3DRenderer *scene3DRend
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
             m_texture.reset(QNativeInterface::QSGOpenGLTexture::fromNative(m_textureId, window, m_finalFBO->size(), QQuickWindow::TextureHasAlphaChannel));
 #else
-            m_texture.reset(window->createTextureFromNativeObject(QQuickWindow::NativeObjectTexture, (void*) m_textureId,
+            m_texture.reset(window->createTextureFromNativeObject(QQuickWindow::NativeObjectTexture, (void*) &m_textureId,
                                                                   0, m_finalFBO->size(), QQuickWindow::TextureHasAlphaChannel));
 #endif
         }
