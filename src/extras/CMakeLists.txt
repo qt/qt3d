@@ -122,7 +122,6 @@ set(extras_resource_files
     "shaders/gl3/unlittexture.vert"
     "shaders/graphs/metalrough.frag.json"
     "shaders/graphs/phong.frag.json"
-    "shaders/graphs/phong.graph"
     "shaders/rhi/coordinatesystems.inc"
     "shaders/rhi/default_pos_norm.vert"
     "shaders/rhi/default_pos_norm_tex.vert"
