@@ -5,14 +5,11 @@
             "type": "input",
             "parameters": {
                 "name": "worldPosition",
-                "qualifier": {
-                    "type": "QShaderLanguage::StorageQualifier",
-                    "value": "QShaderLanguage::Input"
-                },
                 "type": {
                     "type": "QShaderLanguage::VariableType",
                     "value": "QShaderLanguage::Vec3"
-                }
+                },
+                "location": "0"
             }
         },
         {
@@ -24,57 +21,50 @@
             "type": "input",
             "parameters": {
                 "name": "worldNormal",
-                "qualifier": {
-                    "type": "QShaderLanguage::StorageQualifier",
-                    "value": "QShaderLanguage::Input"
-                },
                 "type": {
                     "type": "QShaderLanguage::VariableType",
                     "value": "QShaderLanguage::Vec3"
-                }
+                },
+                "location": "1"
             }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000004}",
             "type": "input",
-            "layers": ["normalTexture"],
+            "layers": [
+                "normalTexture"
+            ],
             "parameters": {
                 "name": "worldTangent",
-                "qualifier": {
-                    "type": "QShaderLanguage::StorageQualifier",
-                    "value": "QShaderLanguage::Input"
-                },
                 "type": {
                     "type": "QShaderLanguage::VariableType",
                     "value": "QShaderLanguage::Vec4"
-                }
+                },
+                "location": "2"
             }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000005}",
             "type": "input",
-            "layers": ["diffuseTexture", "specularTexture", "normalTexture"],
+            "layers": [
+                "diffuseTexture",
+                "specularTexture",
+                "normalTexture"
+            ],
             "parameters": {
                 "name": "texCoord",
-                "qualifier": {
-                    "type": "QShaderLanguage::StorageQualifier",
-                    "value": "QShaderLanguage::Input"
-                },
                 "type": {
                     "type": "QShaderLanguage::VariableType",
                     "value": "QShaderLanguage::Vec2"
-                }
+                },
+                "location": "3"
             }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000006}",
-            "type": "input",
+            "type": "uniformInput",
             "parameters": {
                 "name": "ka",
-                "qualifier": {
-                    "type": "QShaderLanguage::StorageQualifier",
-                    "value": "QShaderLanguage::Uniform"
-                },
                 "type": {
                     "type": "QShaderLanguage::VariableType",
                     "value": "QShaderLanguage::Vec4"
@@ -83,14 +73,12 @@
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000007}",
-            "type": "input",
-            "layers": ["diffuse"],
+            "type": "uniformInput",
+            "layers": [
+                "diffuse"
+            ],
             "parameters": {
                 "name": "kd",
-                "qualifier": {
-                    "type": "QShaderLanguage::StorageQualifier",
-                    "value": "QShaderLanguage::Uniform"
-                },
                 "type": {
                     "type": "QShaderLanguage::VariableType",
                     "value": "QShaderLanguage::Vec4"
@@ -100,21 +88,21 @@
         {
             "uuid": "{00000000-0000-0000-0000-000000000008}",
             "type": "sampleTexture",
-            "layers": ["diffuseTexture"],
+            "layers": [
+                "diffuseTexture"
+            ],
             "parameters": {
                 "name": "diffuseTexture"
             }
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000009}",
-            "type": "input",
-            "layers": ["specular"],
+            "type": "uniformInput",
+            "layers": [
+                "specular"
+            ],
             "parameters": {
                 "name": "ks",
-                "qualifier": {
-                    "type": "QShaderLanguage::StorageQualifier",
-                    "value": "QShaderLanguage::Uniform"
-                },
                 "type": {
                     "type": "QShaderLanguage::VariableType",
                     "value": "QShaderLanguage::Vec4"
@@ -123,7 +111,9 @@
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000010}",
-            "layers": ["specularTexture"],
+            "layers": [
+                "specularTexture"
+            ],
             "type": "sampleTexture",
             "parameters": {
                 "name": "specularTexture"
@@ -131,13 +121,9 @@
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000011}",
-            "type": "input",
+            "type": "uniformInput",
             "parameters": {
                 "name": "shininess",
-                "qualifier": {
-                    "type": "QShaderLanguage::StorageQualifier",
-                    "value": "QShaderLanguage::Uniform"
-                },
                 "type": {
                     "type": "QShaderLanguage::VariableType",
                     "value": "QShaderLanguage::Float"
@@ -177,12 +163,16 @@
         {
             "uuid": "{00000000-0000-0000-0000-000000000015}",
             "type": "worldSpaceToTangentSpaceMatrix",
-            "layers": ["normalTexture"]
+            "layers": [
+                "normalTexture"
+            ]
         },
         {
             "uuid": "{00000000-0000-0000-0000-000000000016}",
             "type": "transpose",
-            "layers": ["normalTexture"],
+            "layers": [
+                "normalTexture"
+            ],
             "parameters": {
                 "type": {
                     "type": "QShaderLanguage::VariableType",
@@ -193,7 +183,9 @@
         {
             "uuid": "{00000000-0000-0000-0000-000000000017}",
             "type": "sampleTexture",
-            "layers": ["normalTexture"],
+            "layers": [
+                "normalTexture"
+            ],
             "parameters": {
                 "name": "normalTexture"
             }
@@ -201,7 +193,9 @@
         {
             "uuid": "{00000000-0000-0000-0000-000000000018}",
             "type": "swizzle",
-            "layers": ["normalTexture"],
+            "layers": [
+                "normalTexture"
+            ],
             "parameters": {
                 "fields": "rgb",
                 "type": {
@@ -213,7 +207,9 @@
         {
             "uuid": "{00000000-0000-0000-0000-000000000019}",
             "type": "constant",
-            "layers": ["normalTexture"],
+            "layers": [
+                "normalTexture"
+            ],
             "parameters": {
                 "constant": "2.0",
                 "type": {
@@ -225,7 +221,9 @@
         {
             "uuid": "{00000000-0000-0000-0000-000000000020}",
             "type": "multiply",
-            "layers": ["normalTexture"],
+            "layers": [
+                "normalTexture"
+            ],
             "parameters": {
                 "type": {
                     "type": "QShaderLanguage::VariableType",
@@ -236,7 +234,9 @@
         {
             "uuid": "{00000000-0000-0000-0000-000000000021}",
             "type": "constant",
-            "layers": ["normalTexture"],
+            "layers": [
+                "normalTexture"
+            ],
             "parameters": {
                 "constant": "1.0",
                 "type": {
@@ -310,91 +310,117 @@
             "sourcePort": "value",
             "targetUuid": "{00000000-0000-0000-0000-000000000014}",
             "targetPort": "input",
-            "layers": ["normal"]
+            "layers": [
+                "normal"
+            ]
         },
         {
             "sourceUuid": "{00000000-0000-0000-0000-000000000003}",
             "sourcePort": "value",
             "targetUuid": "{00000000-0000-0000-0000-000000000015}",
             "targetPort": "worldNormal",
-            "layers": ["normalTexture"]
+            "layers": [
+                "normalTexture"
+            ]
         },
         {
             "sourceUuid": "{00000000-0000-0000-0000-000000000004}",
             "sourcePort": "value",
             "targetUuid": "{00000000-0000-0000-0000-000000000015}",
             "targetPort": "worldTangent",
-            "layers": ["normalTexture"]
+            "layers": [
+                "normalTexture"
+            ]
         },
         {
             "sourceUuid": "{00000000-0000-0000-0000-000000000015}",
             "sourcePort": "matrix",
             "targetUuid": "{00000000-0000-0000-0000-000000000016}",
             "targetPort": "input",
-            "layers": ["normalTexture"]
+            "layers": [
+                "normalTexture"
+            ]
         },
         {
             "sourceUuid": "{00000000-0000-0000-0000-000000000016}",
             "sourcePort": "output",
             "targetUuid": "{00000000-0000-0000-0000-000000000023}",
             "targetPort": "first",
-            "layers": ["normalTexture"]
+            "layers": [
+                "normalTexture"
+            ]
         },
         {
             "sourceUuid": "{00000000-0000-0000-0000-000000000005}",
             "sourcePort": "value",
             "targetUuid": "{00000000-0000-0000-0000-000000000017}",
             "targetPort": "coord",
-            "layers": ["normalTexture"]
+            "layers": [
+                "normalTexture"
+            ]
         },
         {
             "sourceUuid": "{00000000-0000-0000-0000-000000000017}",
             "sourcePort": "color",
             "targetUuid": "{00000000-0000-0000-0000-000000000018}",
             "targetPort": "input",
-            "layers": ["normalTexture"]
+            "layers": [
+                "normalTexture"
+            ]
         },
         {
             "sourceUuid": "{00000000-0000-0000-0000-000000000018}",
             "sourcePort": "output",
             "targetUuid": "{00000000-0000-0000-0000-000000000020}",
             "targetPort": "first",
-            "layers": ["normalTexture"]
+            "layers": [
+                "normalTexture"
+            ]
         },
         {
             "sourceUuid": "{00000000-0000-0000-0000-000000000019}",
             "sourcePort": "value",
             "targetUuid": "{00000000-0000-0000-0000-000000000020}",
             "targetPort": "second",
-            "layers": ["normalTexture"]
+            "layers": [
+                "normalTexture"
+            ]
         },
         {
             "sourceUuid": "{00000000-0000-0000-0000-000000000020}",
             "sourcePort": "product",
             "targetUuid": "{00000000-0000-0000-0000-000000000022}",
             "targetPort": "minuend",
-            "layers": ["normalTexture"]
+            "layers": [
+                "normalTexture"
+            ]
         },
         {
             "sourceUuid": "{00000000-0000-0000-0000-000000000021}",
             "sourcePort": "value",
             "targetUuid": "{00000000-0000-0000-0000-000000000022}",
             "targetPort": "subtrahend",
-            "layers": ["normalTexture"]
+            "layers": [
+                "normalTexture"
+            ]
         },
         {
             "sourceUuid": "{00000000-0000-0000-0000-000000000022}",
             "sourcePort": "difference",
             "targetUuid": "{00000000-0000-0000-0000-000000000023}",
             "targetPort": "second",
-            "layers": ["normalTexture"]
+            "layers": [
+                "normalTexture"
+            ]
         },
         {
             "sourceUuid": "{00000000-0000-0000-0000-000000000023}",
             "sourcePort": "product",
             "targetUuid": "{00000000-0000-0000-0000-000000000014}",
             "targetPort": "input",
-            "layers": ["normalTexture"]
+            "layers": [
+                "normalTexture"
+            ]
         },
         {
             "sourceUuid": "{00000000-0000-0000-0000-000000000014}",
@@ -413,42 +439,54 @@
             "sourcePort": "value",
             "targetUuid": "{00000000-0000-0000-0000-000000000024}",
             "targetPort": "diffuse",
-            "layers": ["diffuse"]
+            "layers": [
+                "diffuse"
+            ]
         },
         {
             "sourceUuid": "{00000000-0000-0000-0000-000000000005}",
             "sourcePort": "value",
             "targetUuid": "{00000000-0000-0000-0000-000000000008}",
             "targetPort": "coord",
-            "layers": ["diffuseTexture"]
+            "layers": [
+                "diffuseTexture"
+            ]
         },
         {
             "sourceUuid": "{00000000-0000-0000-0000-000000000008}",
             "sourcePort": "color",
             "targetUuid": "{00000000-0000-0000-0000-000000000024}",
             "targetPort": "diffuse",
-            "layers": ["diffuseTexture"]
+            "layers": [
+                "diffuseTexture"
+            ]
         },
         {
             "sourceUuid": "{00000000-0000-0000-0000-000000000009}",
             "sourcePort": "value",
             "targetUuid": "{00000000-0000-0000-0000-000000000024}",
             "targetPort": "specular",
-            "layers": ["specular"]
+            "layers": [
+                "specular"
+            ]
         },
         {
             "sourceUuid": "{00000000-0000-0000-0000-000000000005}",
             "sourcePort": "value",
             "targetUuid": "{00000000-0000-0000-0000-000000000010}",
             "targetPort": "coord",
-            "layers": ["specularTexture"]
+            "layers": [
+                "specularTexture"
+            ]
         },
         {
             "sourceUuid": "{00000000-0000-0000-0000-000000000010}",
             "sourcePort": "color",
             "targetUuid": "{00000000-0000-0000-0000-000000000024}",
             "targetPort": "specular",
-            "layers": ["specularTexture"]
+            "layers": [
+                "specularTexture"
+            ]
         },
         {
             "sourceUuid": "{00000000-0000-0000-0000-000000000011}",
