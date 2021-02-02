@@ -80,6 +80,8 @@ public:
     void init();
 
     void handleTextureScaleChanged(const QVariant &var);
+    void updateLayersOnTechnique(const QStringList &layers);
+    void updateVertexShaderBasedOnLayers(const QStringList &layers);
 
     Qt3DRender::QParameter *m_baseColorParameter;
     Qt3DRender::QParameter *m_metalnessParameter;
