@@ -12,55 +12,60 @@ else: \
     QT_PRIVATE += zlib-private
 
 DEFINES += \
-    ASSIMP_BUILD_NO_X_IMPORTER \
-    ASSIMP_BUILD_NO_AMF_IMPORTER \
+    ASSIMP_BUILD_BOOST_WORKAROUND \
     ASSIMP_BUILD_NO_3DS_IMPORTER \
-    ASSIMP_BUILD_NO_MD3_IMPORTER \
-    ASSIMP_BUILD_NO_MDL_IMPORTER \
-    ASSIMP_BUILD_NO_MD2_IMPORTER \
-    ASSIMP_BUILD_NO_PLY_IMPORTER \
-    ASSIMP_BUILD_NO_ASE_IMPORTER \
-    ASSIMP_BUILD_NO_HMP_IMPORTER \
-    ASSIMP_BUILD_NO_SMD_IMPORTER \
-    ASSIMP_BUILD_NO_MDC_IMPORTER \
-    ASSIMP_BUILD_NO_MD5_IMPORTER \
-    ASSIMP_BUILD_NO_STL_IMPORTER \
-    ASSIMP_BUILD_NO_LWO_IMPORTER \
-    ASSIMP_BUILD_NO_DXF_IMPORTER \
-    ASSIMP_BUILD_NO_NFF_IMPORTER \
-    ASSIMP_BUILD_NO_RAW_IMPORTER \
-    ASSIMP_BUILD_NO_SIB_IMPORTER \
-    ASSIMP_BUILD_NO_OFF_IMPORTER \
+    ASSIMP_BUILD_NO_3D_IMPORTER \
+    ASSIMP_BUILD_NO_3MF_IMPORTER \
     ASSIMP_BUILD_NO_AC_IMPORTER \
+    ASSIMP_BUILD_NO_AMF_IMPORTER \
+    ASSIMP_BUILD_NO_ASE_IMPORTER \
+    ASSIMP_BUILD_NO_ASSBIN_IMPORTER \
+    ASSIMP_BUILD_NO_B3D_IMPORTER \
+    ASSIMP_BUILD_NO_BLEND_IMPORTER \
     ASSIMP_BUILD_NO_BVH_IMPORTER \
+    ASSIMP_BUILD_NO_C4D_IMPORTER \
+    ASSIMP_BUILD_NO_COB_IMPORTER \
+    ASSIMP_BUILD_NO_COMPRESSED_IFC \
+    ASSIMP_BUILD_NO_CSM_IMPORTER \
+    ASSIMP_BUILD_NO_DXF_IMPORTER \
+    ASSIMP_BUILD_NO_EXPORT \
+    ASSIMP_BUILD_NO_HMP_IMPORTER \
+    ASSIMP_BUILD_NO_IFC_IMPORTER \
     ASSIMP_BUILD_NO_IRRMESH_IMPORTER \
     ASSIMP_BUILD_NO_IRR_IMPORTER \
-    ASSIMP_BUILD_NO_Q3D_IMPORTER \
-    ASSIMP_BUILD_NO_B3D_IMPORTER \
-    ASSIMP_BUILD_NO_TERRAGEN_IMPORTER \
-    ASSIMP_BUILD_NO_CSM_IMPORTER \
-    ASSIMP_BUILD_NO_3D_IMPORTER \
+    ASSIMP_BUILD_NO_LIMITBONEWEIGHTS_PROCESS \
+    ASSIMP_BUILD_NO_LWO_IMPORTER \
     ASSIMP_BUILD_NO_LWS_IMPORTER \
+    ASSIMP_BUILD_NO_M3D_IMPORTER \
+    ASSIMP_BUILD_NO_MD2_IMPORTER \
+    ASSIMP_BUILD_NO_MD3_IMPORTER \
+    ASSIMP_BUILD_NO_MD5_IMPORTER \
+    ASSIMP_BUILD_NO_MDC_IMPORTER \
+    ASSIMP_BUILD_NO_MDL_IMPORTER \
+    ASSIMP_BUILD_NO_MMD_IMPORTER \
+    ASSIMP_BUILD_NO_MS3D_IMPORTER \
+    ASSIMP_BUILD_NO_NDO_IMPORTER \
+    ASSIMP_BUILD_NO_NFF_IMPORTER \
+    ASSIMP_BUILD_NO_OFF_IMPORTER \
     ASSIMP_BUILD_NO_OGRE_IMPORTER \
     ASSIMP_BUILD_NO_OPENGEX_IMPORTER \
-    ASSIMP_BUILD_NO_MS3D_IMPORTER \
-    ASSIMP_BUILD_NO_COB_IMPORTER \
-    ASSIMP_BUILD_NO_Q3BSP_IMPORTER \
-    ASSIMP_BUILD_NO_NDO_IMPORTER \
-    ASSIMP_BUILD_NO_IFC_IMPORTER \
-    ASSIMP_BUILD_NO_XGL_IMPORTER \
-    ASSIMP_BUILD_NO_ASSBIN_IMPORTER \
-    ASSIMP_BUILD_NO_C4D_IMPORTER \
-    ASSIMP_BUILD_NO_3MF_IMPORTER \
-    ASSIMP_BUILD_NO_X3D_IMPORTER \
-    ASSIMP_BUILD_NO_MMD_IMPORTER \
-    ASSIMP_BUILD_NO_STEP_IMPORTER \
     ASSIMP_BUILD_NO_OWN_ZLIB \
-    ASSIMP_BUILD_NO_COMPRESSED_IFC \
-    ASSIMP_BUILD_NO_EXPORT \
-    ASSIMP_BUILD_BOOST_WORKAROUND \
-    OPENDDL_STATIC_LIBARY \
-    NOUNCRYPT
+    ASSIMP_BUILD_NO_PLY_IMPORTER \
+    ASSIMP_BUILD_NO_Q3BSP_IMPORTER \
+    ASSIMP_BUILD_NO_Q3D_IMPORTER \
+    ASSIMP_BUILD_NO_RAW_IMPORTER \
+    ASSIMP_BUILD_NO_SIB_IMPORTER \
+    ASSIMP_BUILD_NO_SMD_IMPORTER \
+    ASSIMP_BUILD_NO_STEP_IMPORTER \
+    ASSIMP_BUILD_NO_TERRAGEN_IMPORTER \
+    ASSIMP_BUILD_NO_X3D_IMPORTER \
+    ASSIMP_BUILD_NO_XGL_IMPORTER \
+    ASSIMP_BUILD_NO_X_IMPORTER \
+    ASSIMP_BUILD_NO_BLEND_IMPORTER \
+    NOUNCRYPT \
+    RAPIDJSON_HAS_STDSTRING=1 \
+    RAPIDJSON_NOMEMBERITERATORCLASS \
+    ASSIMP_BUILD_NO_LIMITBONEWEIGHTS_PROCESS
 
 win32: DEFINES += WindowsStore
 
@@ -112,14 +117,14 @@ INCLUDEPATH += \
         $$PWD/src \
         $$PWD/src/code \
         $$PWD/src/code/Common \
-        $$PWD/src/code/Collada \
+        $$PWD/src/code/AssetLib/Collada \
         $$PWD/src/code/Material \
-        $$PWD/src/code/Obj \
-        $$PWD/src/code/Blender \
-        $$PWD/src/code/FBX \
+        $$PWD/src/code/AssetLib/Obj \
+        $$PWD/src/code/AssetLib/FBX \
         $$PWD/src/code/PostProcessing \
-        $$PWD/src/code/glTF \
-        $$PWD/src/code/glTF2 \
+        $$PWD/src/code/AssetLib/STL \
+        $$PWD/src/code/AssetLib/glTF \
+        $$PWD/src/code/AssetLib/glTF2 \
         $$PWD/src/code/CApi \
         $$PWD/src/include \
         $$PWD/src/include/assimp/Compiler
@@ -204,10 +209,8 @@ HEADERS += \
     $$PWD/src/include/assimp/XMLTools.h \
     $$PWD/src/include/assimp/IOStreamBuffer.h \
     $$PWD/src/include/assimp/CreateAnimMesh.h \
-    $$PWD/src/include/assimp/irrXMLWrapper.h \
     $$PWD/src/include/assimp/BlobIOSystem.h \
     $$PWD/src/include/assimp/MathFunctions.h \
-    $$PWD/src/include/assimp/Macros.h \
     $$PWD/src/include/assimp/Exceptional.h \
     $$PWD/src/include/assimp/ByteSwapper.h \
     $$PWD/src/include/assimp/DefaultLogger.hpp \
@@ -215,6 +218,7 @@ HEADERS += \
     $$PWD/src/include/assimp/Logger.hpp \
     $$PWD/src/include/assimp/NullLogger.hpp \
     $$PWD/src/include/assimp/ZipArchiveIOSystem.h \
+    $$PWD/src/code/Common/AssertHandler.h \
     $$PWD/src/code/Common/FileLogStream.h \
     $$PWD/src/code/Common/StdOStreamLogStream.h \
     $$PWD/src/code/Common/BaseProcess.h \
@@ -225,39 +229,29 @@ HEADERS += \
     $$PWD/src/code/Common/IFF.h \
     $$PWD/src/code/Common/VertexTriangleAdjacency.h \
     $$PWD/src/code/Common/ScenePreprocessor.h \
-    $$PWD/src/code/Common/SplitByBoneCountProcess.h \
     $$PWD/src/code/Common/TargetAnimation.h \
     $$PWD/src/code/Common/simd.h \
-    $$PWD/src/code/Collada/ColladaHelper.h \
-    $$PWD/src/code/Collada/ColladaLoader.h \
-    $$PWD/src/code/Collada/ColladaParser.h \
+    $$PWD/src/code/AssetLib/Collada/ColladaHelper.h \
+    $$PWD/src/code/AssetLib/Collada/ColladaLoader.h \
+    $$PWD/src/code/AssetLib/Collada/ColladaParser.h \
     $$PWD/src/code/Material/MaterialSystem.h \
-    $$PWD/src/code/Obj/ObjFileData.h \
-    $$PWD/src/code/Obj/ObjFileImporter.h \
-    $$PWD/src/code/Obj/ObjFileMtlImporter.h \
-    $$PWD/src/code/Obj/ObjFileParser.h \
-    $$PWD/src/code/Obj/ObjTools.h \
-    $$PWD/src/code/Blender/BlenderLoader.h \
-    $$PWD/src/code/Blender/BlenderDNA.h \
-    $$PWD/src/code/Blender/BlenderDNA.inl \
-    $$PWD/src/code/Blender/BlenderScene.h \
-    $$PWD/src/code/Blender/BlenderSceneGen.h \
-    $$PWD/src/code/Blender/BlenderIntermediate.h \
-    $$PWD/src/code/Blender/BlenderModifier.h \
-    $$PWD/src/code/Blender/BlenderBMesh.h \
-    $$PWD/src/code/Blender/BlenderTessellator.h \
-    $$PWD/src/code/Blender/BlenderCustomData.h \
-    $$PWD/src/code/FBX/FBXCompileConfig.h \
-    $$PWD/src/code/FBX/FBXImporter.h \
-    $$PWD/src/code/FBX/FBXParser.h \
-    $$PWD/src/code/FBX/FBXTokenizer.h \
-    $$PWD/src/code/FBX/FBXImportSettings.h \
-    $$PWD/src/code/FBX/FBXConverter.h \
-    $$PWD/src/code/FBX/FBXUtil.h \
-    $$PWD/src/code/FBX/FBXDocument.h \
-    $$PWD/src/code/FBX/FBXProperties.h \
-    $$PWD/src/code/FBX/FBXMeshGeometry.h \
-    $$PWD/src/code/FBX/FBXCommon.h \
+    $$PWD/src/code/AssetLib/Obj/ObjFileData.h \
+    $$PWD/src/code/AssetLib/Obj/ObjFileImporter.h \
+    $$PWD/src/code/AssetLib/Obj/ObjFileMtlImporter.h \
+    $$PWD/src/code/AssetLib/Obj/ObjFileParser.h \
+    $$PWD/src/code/AssetLib/Obj/ObjTools.h \
+    $$PWD/src/code/AssetLib/FBX/FBXCompileConfig.h \
+    $$PWD/src/code/AssetLib/FBX/FBXImporter.h \
+    $$PWD/src/code/AssetLib/FBX/FBXParser.h \
+    $$PWD/src/code/AssetLib/FBX/FBXTokenizer.h \
+    $$PWD/src/code/AssetLib/FBX/FBXImportSettings.h \
+    $$PWD/src/code/AssetLib/FBX/FBXConverter.h \
+    $$PWD/src/code/AssetLib/FBX/FBXUtil.h \
+    $$PWD/src/code/AssetLib/FBX/FBXDocument.h \
+    $$PWD/src/code/AssetLib/FBX/FBXProperties.h \
+    $$PWD/src/code/AssetLib/FBX/FBXMeshGeometry.h \
+    $$PWD/src/code/AssetLib/FBX/FBXCommon.h \
+    $$PWD/src/code/PostProcessing/ArmaturePopulate.h \
     $$PWD/src/code/PostProcessing/CalcTangentsProcess.h \
     $$PWD/src/code/PostProcessing/ComputeUVMappingProcess.h \
     $$PWD/src/code/PostProcessing/ConvertToLHProcess.h \
@@ -273,11 +267,11 @@ HEADERS += \
     $$PWD/src/code/PostProcessing/PretransformVertices.h \
     $$PWD/src/code/PostProcessing/ImproveCacheLocality.h \
     $$PWD/src/code/PostProcessing/JoinVerticesProcess.h \
-    $$PWD/src/code/PostProcessing/LimitBoneWeightsProcess.h \
     $$PWD/src/code/PostProcessing/RemoveRedundantMaterials.h \
     $$PWD/src/code/PostProcessing/RemoveVCProcess.h \
     $$PWD/src/code/PostProcessing/SortByPTypeProcess.h \
     $$PWD/src/code/PostProcessing/SplitLargeMeshes.h \
+    $$PWD/src/code/PostProcessing/SplitByBoneCountProcess.h \
     $$PWD/src/code/PostProcessing/TextureTransform.h \
     $$PWD/src/code/PostProcessing/TriangulateProcess.h \
     $$PWD/src/code/PostProcessing/ValidateDataStructure.h \
@@ -288,20 +282,22 @@ HEADERS += \
     $$PWD/src/code/Common/PolyTools.h \
     $$PWD/src/code/PostProcessing/MakeVerboseFormat.h \
     $$PWD/src/code/PostProcessing/ScaleProcess.h \
-    $$PWD/src/code/glTF/glTFAsset.h \
-    $$PWD/src/code/glTF/glTFAsset.inl \
-    $$PWD/src/code/glTF/glTFAssetWriter.inl \
-    $$PWD/src/code/glTF/glTFAssetWriter.h \
-    $$PWD/src/code/glTF/glTFImporter.h \
-    $$PWD/src/code/glTF/glTFCommon.h \
-    $$PWD/src/code/glTF2/glTF2AssetWriter.h \
-    $$PWD/src/code/glTF2/glTF2Asset.h \
-    $$PWD/src/code/glTF2/glTF2Asset.inl \
-    $$PWD/src/code/glTF2/glTF2AssetWriter.inl \
-    $$PWD/src/code/glTF2/glTF2Importer.h
+    $$PWD/src/code/AssetLib/glTF/glTFAsset.h \
+    $$PWD/src/code/AssetLib/glTF/glTFAsset.inl \
+    $$PWD/src/code/AssetLib/glTF/glTFAssetWriter.inl \
+    $$PWD/src/code/AssetLib/glTF/glTFAssetWriter.h \
+    $$PWD/src/code/AssetLib/glTF/glTFImporter.h \
+    $$PWD/src/code/AssetLib/glTF/glTFCommon.h \
+    $$PWD/src/code/AssetLib/glTF2/glTF2AssetWriter.h \
+    $$PWD/src/code/AssetLib/glTF2/glTF2Asset.h \
+    $$PWD/src/code/AssetLib/glTF2/glTF2Asset.inl \
+    $$PWD/src/code/AssetLib/glTF2/glTF2AssetWriter.inl \
+    $$PWD/src/code/AssetLib/glTF2/glTF2Importer.h \
+    $$PWD/src/code/AssetLib/STL/STLLoader.h
 
 SOURCES += \
     $$PWD/src/code/Common/Assimp.cpp \
+    $$PWD/src/code/Common/AssertHandler.cpp \
     $$PWD/src/code/Common/DefaultLogger.cpp \
     $$PWD/src/code/Common/BaseImporter.cpp \
     $$PWD/src/code/Common/BaseProcess.cpp \
@@ -309,6 +305,7 @@ SOURCES += \
     $$PWD/src/code/Common/ImporterRegistry.cpp \
     $$PWD/src/code/Common/DefaultIOStream.cpp \
     $$PWD/src/code/Common/DefaultIOSystem.cpp \
+    $$PWD/src/code/Common/Exceptional.cpp \
     $$PWD/src/code/CApi/CInterfaceIOWrapper.cpp \
     $$PWD/src/code/Common/Importer.cpp \
     $$PWD/src/code/Common/SGSpatialSort.cpp \
@@ -317,7 +314,6 @@ SOURCES += \
     $$PWD/src/code/Common/SceneCombiner.cpp \
     $$PWD/src/code/Common/ScenePreprocessor.cpp \
     $$PWD/src/code/Common/SkeletonMeshBuilder.cpp \
-    $$PWD/src/code/Common/SplitByBoneCountProcess.cpp \
     $$PWD/src/code/Common/StandardShapes.cpp \
     $$PWD/src/code/Common/TargetAnimation.cpp \
     $$PWD/src/code/Common/RemoveComments.cpp \
@@ -327,35 +323,31 @@ SOURCES += \
     $$PWD/src/code/Common/Version.cpp \
     $$PWD/src/code/Common/CreateAnimMesh.cpp \
     $$PWD/src/code/Common/simd.cpp \
+    $$PWD/src/code/Common/material.cpp \
     $$PWD/src/code/Common/ZipArchiveIOSystem.cpp \
-    $$PWD/src/code/Collada/ColladaLoader.cpp \
-    $$PWD/src/code/Collada/ColladaParser.cpp \
+    $$PWD/src/code/AssetLib/Collada/ColladaHelper.cpp \
+    $$PWD/src/code/AssetLib/Collada/ColladaLoader.cpp \
+    $$PWD/src/code/AssetLib/Collada/ColladaParser.cpp \
     $$PWD/src/code/Material/MaterialSystem.cpp \
-    $$PWD/src/code/Obj/ObjFileImporter.cpp \
-    $$PWD/src/code/Obj/ObjFileMtlImporter.cpp \
-    $$PWD/src/code/Obj/ObjFileParser.cpp \
-    $$PWD/src/code/Blender/BlenderLoader.cpp \
-    $$PWD/src/code/Blender/BlenderDNA.cpp \
-    $$PWD/src/code/Blender/BlenderScene.cpp \
-    $$PWD/src/code/Blender/BlenderModifier.cpp \
-    $$PWD/src/code/Blender/BlenderBMesh.cpp \
-    $$PWD/src/code/Blender/BlenderTessellator.cpp \
-    $$PWD/src/code/Blender/BlenderCustomData.cpp \
-    $$PWD/src/code/FBX/FBXImporter.cpp \
-    $$PWD/src/code/FBX/FBXParser.cpp \
-    $$PWD/src/code/FBX/FBXTokenizer.cpp \
-    $$PWD/src/code/FBX/FBXConverter.cpp \
-    $$PWD/src/code/FBX/FBXUtil.cpp \
-    $$PWD/src/code/FBX/FBXDocument.cpp \
-    $$PWD/src/code/FBX/FBXProperties.cpp \
-    $$PWD/src/code/FBX/FBXMeshGeometry.cpp \
-    $$PWD/src/code/FBX/FBXMaterial.cpp \
-    $$PWD/src/code/FBX/FBXModel.cpp \
-    $$PWD/src/code/FBX/FBXAnimation.cpp \
-    $$PWD/src/code/FBX/FBXNodeAttribute.cpp \
-    $$PWD/src/code/FBX/FBXDeformer.cpp \
-    $$PWD/src/code/FBX/FBXBinaryTokenizer.cpp \
-    $$PWD/src/code/FBX/FBXDocumentUtil.cpp \
+    $$PWD/src/code/AssetLib/Obj/ObjFileImporter.cpp \
+    $$PWD/src/code/AssetLib/Obj/ObjFileMtlImporter.cpp \
+    $$PWD/src/code/AssetLib/Obj/ObjFileParser.cpp \
+    $$PWD/src/code/AssetLib/FBX/FBXImporter.cpp \
+    $$PWD/src/code/AssetLib/FBX/FBXParser.cpp \
+    $$PWD/src/code/AssetLib/FBX/FBXTokenizer.cpp \
+    $$PWD/src/code/AssetLib/FBX/FBXConverter.cpp \
+    $$PWD/src/code/AssetLib/FBX/FBXUtil.cpp \
+    $$PWD/src/code/AssetLib/FBX/FBXDocument.cpp \
+    $$PWD/src/code/AssetLib/FBX/FBXProperties.cpp \
+    $$PWD/src/code/AssetLib/FBX/FBXMeshGeometry.cpp \
+    $$PWD/src/code/AssetLib/FBX/FBXMaterial.cpp \
+    $$PWD/src/code/AssetLib/FBX/FBXModel.cpp \
+    $$PWD/src/code/AssetLib/FBX/FBXAnimation.cpp \
+    $$PWD/src/code/AssetLib/FBX/FBXNodeAttribute.cpp \
+    $$PWD/src/code/AssetLib/FBX/FBXDeformer.cpp \
+    $$PWD/src/code/AssetLib/FBX/FBXBinaryTokenizer.cpp \
+    $$PWD/src/code/AssetLib/FBX/FBXDocumentUtil.cpp \
+    $$PWD/src/code/PostProcessing/ArmaturePopulate.cpp \
     $$PWD/src/code/PostProcessing/CalcTangentsProcess.cpp \
     $$PWD/src/code/PostProcessing/ComputeUVMappingProcess.cpp \
     $$PWD/src/code/PostProcessing/ConvertToLHProcess.cpp \
@@ -371,11 +363,11 @@ SOURCES += \
     $$PWD/src/code/PostProcessing/PretransformVertices.cpp \
     $$PWD/src/code/PostProcessing/ImproveCacheLocality.cpp \
     $$PWD/src/code/PostProcessing/JoinVerticesProcess.cpp \
-    $$PWD/src/code/PostProcessing/LimitBoneWeightsProcess.cpp \
     $$PWD/src/code/PostProcessing/RemoveRedundantMaterials.cpp \
     $$PWD/src/code/PostProcessing/RemoveVCProcess.cpp \
     $$PWD/src/code/PostProcessing/SortByPTypeProcess.cpp \
     $$PWD/src/code/PostProcessing/SplitLargeMeshes.cpp \
+    $$PWD/src/code/PostProcessing/SplitByBoneCountProcess.cpp \
     $$PWD/src/code/PostProcessing/TextureTransform.cpp \
     $$PWD/src/code/PostProcessing/TriangulateProcess.cpp \
     $$PWD/src/code/PostProcessing/ValidateDataStructure.cpp \
@@ -385,23 +377,21 @@ SOURCES += \
     $$PWD/src/code/PostProcessing/ProcessHelper.cpp \
     $$PWD/src/code/PostProcessing/MakeVerboseFormat.cpp \
     $$PWD/src/code/PostProcessing/ScaleProcess.cpp \
-    $$PWD/src/code/glTF/glTFImporter.cpp \
-    $$PWD/src/code/glTF/glTFCommon.cpp \
-    $$PWD/src/code/glTF2/glTF2Importer.cpp
+    $$PWD/src/code/AssetLib/glTF/glTFImporter.cpp \
+    $$PWD/src/code/AssetLib/glTF/glTFCommon.cpp \
+    $$PWD/src/code/AssetLib/glTF2/glTF2Importer.cpp \
+    $$PWD/src/code/AssetLib/STL/STLLoader.cpp
 
-# IrrXML (needed for DAE/Collada support)
+# pugixml (needed for DAE/Collada support)
 HEADERS += \
-    $$PWD/src/contrib/irrXML/CXMLReaderImpl.h \
-    $$PWD/src/contrib/irrXML/heapsort.h \
-    $$PWD/src/contrib/irrXML/irrArray.h \
-    $$PWD/src/contrib/irrXML/irrString.h \
-    $$PWD/src/contrib/irrXML/irrTypes.h \
-    $$PWD/src/contrib/irrXML/irrXML.h
+    $$PWD/src/contrib/pugixml/src/pugixml.hpp \
+    $$PWD/src/contrib/pugixml/contrib/foreach.hpp
 
-SOURCES += $$PWD/src/contrib/irrXML/irrXML.cpp
+SOURCES += $$PWD/src/contrib/pugixml/src/pugixml.cpp
 
-VPATH += $$PWD/src/contrib/irrXML
-INCLUDEPATH += $$PWD/src/contrib/irrXML
+VPATH += $$PWD/src/contrib/pugixml/src
+INCLUDEPATH += $$PWD/src/contrib/pugixml/src \
+        $PWD/src/contrib/pugixml/contrib
 
 msvc: DEFINES += _SCL_SECURE_NO_WARNINGS _CRT_SECURE_NO_WARNINGS
 
