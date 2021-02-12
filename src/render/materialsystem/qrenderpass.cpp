@@ -71,8 +71,8 @@ QRenderPassPrivate::QRenderPassPrivate()
 
     RenderPass executes the ShaderProgram using the given RenderState and
     Parameter nodes when at least one of FilterKey nodes being referenced
-    matches any of the FilterKey nodes in RenderPassFilter or when no FilterKey
-    nodes are specified and no RenderPassFilter is present in the FrameGraph.
+    matches any of the FilterKey nodes in RenderPassFilter or when no
+    RenderPassFilter is present in the FrameGraph.
 
     If the RenderPass defines a Parameter, it will be overridden by a Parameter
     with the same name if it exists in any of the Technique, Effect, Material,
