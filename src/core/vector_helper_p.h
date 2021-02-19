@@ -61,7 +61,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 
 template<typename T, typename U>
-void moveAtEnd(std::vector<T>& destination, std::vector<U>&& source)
+inline void moveAtEnd(std::vector<T>& destination, std::vector<U>&& source)
 {
     destination.insert(destination.end(),
                        std::make_move_iterator(source.begin()),
@@ -77,7 +77,7 @@ inline T moveAndClear(T &data)
 }
 
 template<typename T, typename U>
-void append(std::vector<T>& destination, const U& source)
+inline void append(std::vector<T>& destination, const U& source)
 {
     destination.insert(destination.end(),
                        source.cbegin(),
@@ -85,13 +85,13 @@ void append(std::vector<T>& destination, const U& source)
 }
 
 template<typename T, typename U>
-bool contains(const std::vector<T>& destination, const U& element) noexcept
+inline bool contains(const std::vector<T>& destination, const U& element) noexcept
 {
     return std::find(destination.begin(), destination.end(), element) != destination.end();
 }
 
 template <typename ForwardIterator>
-void deleteAll(ForwardIterator begin, ForwardIterator end)
+inline void deleteAll(ForwardIterator begin, ForwardIterator end)
 {
     while (begin != end) {
         delete *begin;
