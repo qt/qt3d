@@ -213,10 +213,11 @@ QBackendNode *ShaderFunctor::get(QNodeId id) const
 
 void ShaderFunctor::destroy(QNodeId id) const
 {
-    m_shaderManager->addShaderIdToCleanup(id);
     // We only add ourselves to the dirty list
     // The actual removal needs to be performed after we have
     // destroyed the associated APIShader in the RenderThread
+    if (m_shaderManager->lookupResource(id))
+        m_shaderManager->addShaderIdToCleanup(id);
 }
 
 } // namespace Render
