@@ -85,6 +85,7 @@
 #include <Qt3DRender/private/joint_p.h>
 #include <Qt3DRender/private/shaderimage_p.h>
 #include <Qt3DRender/private/pickingproxy_p.h>
+#include <Qt3DCore/private/vector_helper_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -230,7 +231,7 @@ public:
     // Called by RenderThread in updateGLResources (locked)
     QList<Qt3DCore::QNodeId> takeShaderIdsToCleanup()
     {
-        return std::move(m_shaderIdsToCleanup);
+        return Qt3DCore::moveAndClear(m_shaderIdsToCleanup);
     }
 
 private:
@@ -269,7 +270,7 @@ public:
     // Called by RenderThread in updateGLResources (locked)
     QList<Qt3DCore::QNodeId> takeTexturesIdsToCleanup()
     {
-        return std::move(m_textureIdsToCleanup);
+        return Qt3DCore::moveAndClear(m_textureIdsToCleanup);
     }
 
 #ifdef QT_BUILD_INTERNAL
@@ -317,7 +318,7 @@ public:
     // Called by RenderThread in updateGLResources (locked)
     QList<Qt3DCore::QNodeId> takeRenderTargetIdsToCleanup()
     {
-        return std::move(m_renderTargetIdsToCleanup);
+         return Qt3DCore::moveAndClear(m_renderTargetIdsToCleanup);
     }
 
 #ifdef QT_BUILD_INTERNAL

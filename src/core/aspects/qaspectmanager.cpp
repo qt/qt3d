@@ -65,6 +65,7 @@
 #include <Qt3DCore/private/qnodevisitor_p.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/vector_helper_p.h>
 
 #include <QtCore/QCoreApplication>
 #if QT_CONFIG(animation)
@@ -528,7 +529,7 @@ void QAspectManager::processFrame()
         m_postConstructorInit->processNodes();
 
         // Add and Remove Nodes
-        const QList<NodeTreeChange> nodeTreeChanges = std::move(m_nodeTreeChanges);
+        const QList<NodeTreeChange> nodeTreeChanges = Qt3DCore::moveAndClear(m_nodeTreeChanges);
         for (const NodeTreeChange &change : nodeTreeChanges) {
             // Buckets ensure that even if we have intermingled node added / removed
             // buckets, we preserve the order of the sequences

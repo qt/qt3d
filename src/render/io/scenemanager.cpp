@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "scenemanager_p.h"
+#include <Qt3DCore/private/vector_helper_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -78,10 +79,9 @@ void SceneManager::addSceneData(const QUrl &source,
     m_pendingJobs.push_back(newJob);
 }
 
-std::vector<LoadSceneJobPtr> &&SceneManager::takePendingSceneLoaderJobs()
+std::vector<LoadSceneJobPtr> SceneManager::takePendingSceneLoaderJobs()
 {
-    // Explicitly use std::move to clear the m_pendingJobs vector
-    return std::move(m_pendingJobs);
+    return Qt3DCore::moveAndClear(m_pendingJobs);
 }
 
 void SceneManager::startSceneDownload(const QUrl &source, Qt3DCore::QNodeId sceneUuid)

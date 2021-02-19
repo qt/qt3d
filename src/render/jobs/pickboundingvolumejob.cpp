@@ -228,7 +228,7 @@ bool PickBoundingVolumeJob::runHelper()
 {
     // Move to clear the events so that we don't process them several times
     // if run is called several times
-    const auto mouseEvents = std::move(m_pendingMouseEvents);
+    const auto mouseEvents = Qt3DCore::moveAndClear(m_pendingMouseEvents);
 
     // If we have no events return early
     if (mouseEvents.empty())

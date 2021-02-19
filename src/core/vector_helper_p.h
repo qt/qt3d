@@ -68,6 +68,14 @@ void moveAtEnd(std::vector<T>& destination, std::vector<U>&& source)
                        std::make_move_iterator(source.end()));
 }
 
+template<typename T>
+inline T moveAndClear(T &data)
+{
+    T ret(std::move(data));
+    data.clear();
+    return ret;
+}
+
 template<typename T, typename U>
 void append(std::vector<T>& destination, const U& source)
 {

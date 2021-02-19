@@ -175,13 +175,13 @@ public:
     std::vector<APIShader *> takeAbandonned()
     {
         QWriteLocker lock(&m_readWriteLock);
-        return std::move(m_abandonedShaders);
+        return Qt3DCore::moveAndClear(m_abandonedShaders);
     }
 
     std::vector<APIShader *> takeUpdated()
     {
         QWriteLocker lock(&m_readWriteLock);
-        return std::move(m_updatedShaders);
+        return Qt3DCore::moveAndClear(m_updatedShaders);
     }
 
     std::vector<Qt3DCore::QNodeId> shaderIdsForProgram(APIShader *glShader) const

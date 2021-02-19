@@ -1298,7 +1298,7 @@ void SubmissionContext::uploadDataToRHIBuffer(Buffer *buffer, RHIBuffer *b)
     // Note: we are only storing the updates data CPU side at this point
     // actually upload will be performed when the buffer will be bound
     // as we would otherwise need to know the usage type of the buffer
-    auto updates = std::move(buffer->pendingBufferUpdates());
+    auto updates = Qt3DCore::moveAndClear(buffer->pendingBufferUpdates());
 
     if (updates.empty())
         qCWarning(Backend) << "Buffer has no data to upload";

@@ -570,7 +570,7 @@ void GLTexture::uploadGLTextureData()
     m_imageData.clear();
 
     // Update data from TextureUpdates
-    const std::vector<QTextureDataUpdate> textureDataUpdates = std::move(m_pendingTextureDataUpdates);
+    const std::vector<QTextureDataUpdate> textureDataUpdates = Qt3DCore::moveAndClear(m_pendingTextureDataUpdates);
     for (const QTextureDataUpdate &update : textureDataUpdates) {
         const QTextureImageDataPtr imgData = update.data();
 

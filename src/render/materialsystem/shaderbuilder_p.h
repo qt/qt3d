@@ -54,6 +54,7 @@
 #include <Qt3DRender/qshaderprogram.h>
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/qgraphicsapifilter_p.h>
+#include <Qt3DCore/private/vector_helper_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -95,7 +96,7 @@ public:
 
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
-    std::vector<ShaderBuilderUpdate> &&takePendingUpdates() { return std::move(m_pendingUpdates); }
+    std::vector<ShaderBuilderUpdate> takePendingUpdates() { return Qt3DCore::moveAndClear(m_pendingUpdates); }
 
     QByteArray hashKeyForShaderGraph(QShaderProgram::ShaderType type) const;
 

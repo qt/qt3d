@@ -144,7 +144,7 @@ void UpdateWorldTransformJob::run()
 
 void UpdateWorldTransformJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
 {
-    const QList<TransformUpdate> updatedTransforms = std::move(m_updatedTransforms);
+    const QList<TransformUpdate> updatedTransforms = Qt3DCore::moveAndClear(m_updatedTransforms);
     for (const TransformUpdate &t : updatedTransforms) {
         Qt3DCore::QTransform *node =
                 qobject_cast<Qt3DCore::QTransform *>(manager->lookupNode(t.peerId));

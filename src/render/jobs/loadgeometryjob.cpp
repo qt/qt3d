@@ -42,6 +42,7 @@
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DRender/private/job_common_p.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
+#include <Qt3DCore/private/vector_helper_p.h>
 #include <Qt3DRender/private/qmesh_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -83,7 +84,7 @@ void LoadGeometryJob::run()
 
 void LoadGeometryJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
 {
-    const auto updates = std::move(m_updates);
+    const auto updates = Qt3DCore::moveAndClear(m_updates);
     for (const auto &update : updates) {
         QGeometryRenderer *gR = static_cast<decltype(gR)>(manager->lookupNode(update.first));
         const GeometryFunctorResult &result = update.second;

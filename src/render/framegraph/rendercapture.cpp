@@ -80,7 +80,7 @@ void RenderCapture::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool first
     FrameGraphNode::syncFromFrontEnd(frontEnd, firstTime);
 
     const QRenderCapturePrivate *d = static_cast<const QRenderCapturePrivate *>(QFrameGraphNodePrivate::get(node));
-    const auto newPendingsCaptures = std::move(d->m_pendingRequests);
+    const auto newPendingsCaptures = Qt3DCore::moveAndClear(d->m_pendingRequests);
     if (newPendingsCaptures.size() > 0) {
         m_requestedCaptures.append(newPendingsCaptures);
         markDirty(AbstractRenderer::FrameGraphDirty);

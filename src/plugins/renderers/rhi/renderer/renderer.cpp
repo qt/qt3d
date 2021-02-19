@@ -1631,7 +1631,7 @@ void Renderer::sendTextureChangesToFrontend(Qt3DCore::QAspectManager *manager)
 void Renderer::sendDisablesToFrontend(Qt3DCore::QAspectManager *manager)
 {
     // SubtreeEnabled
-    const auto updatedDisables = std::move(m_updatedDisableSubtreeEnablers);
+    const auto updatedDisables = Qt3DCore::moveAndClear(m_updatedDisableSubtreeEnablers);
     for (const auto &nodeId : updatedDisables) {
         QSubtreeEnabler *frontend = static_cast<decltype(frontend)>(manager->lookupNode(nodeId));
         frontend->setEnabled(false);
@@ -1792,7 +1792,7 @@ bool Renderer::prepareGeometryInputBindings(const Geometry *geometry, const RHIS
 void Renderer::updateResources()
 {
     {
-        const std::vector<HBuffer> dirtyBufferHandles = std::move(m_dirtyBuffers);
+        const std::vector<HBuffer> dirtyBufferHandles = Qt3DCore::moveAndClear(m_dirtyBuffers);
         for (const HBuffer &handle : dirtyBufferHandles) {
             Buffer *buffer = m_nodesManager->bufferManager()->data(handle);
 
@@ -1814,7 +1814,7 @@ void Renderer::updateResources()
     RHIComputePipelineManager *computePipelineManager = m_RHIResourceManagers->rhiComputePipelineManager();
 
     {
-        const std::vector<HShader> dirtyShaderHandles = std::move(m_dirtyShaders);
+        const std::vector<HShader> dirtyShaderHandles = Qt3DCore::moveAndClear(m_dirtyShaders);
         ShaderManager *shaderManager = m_nodesManager->shaderManager();
         for (const HShader &handle : dirtyShaderHandles) {
             Shader *shader = shaderManager->data(handle);
@@ -1835,7 +1835,7 @@ void Renderer::updateResources()
     }
 
     {
-        const std::vector<HTexture> activeTextureHandles = std::move(m_dirtyTextures);
+        const std::vector<HTexture> activeTextureHandles = Qt3DCore::moveAndClear(m_dirtyTextures);
         for (const HTexture &handle : activeTextureHandles) {
             Texture *texture = m_nodesManager->textureManager()->data(handle);
 
@@ -2034,7 +2034,7 @@ void Renderer::cleanupRenderTarget(const Qt3DCore::QNodeId &renderTargetId)
 // Called by SubmitRenderView
 void Renderer::downloadRHIBuffers()
 {
-    const std::vector<Qt3DCore::QNodeId> downloadableHandles = std::move(m_downloadableBuffers);
+    const std::vector<Qt3DCore::QNodeId> downloadableHandles = Qt3DCore::moveAndClear(m_downloadableBuffers);
     for (const Qt3DCore::QNodeId &bufferId : downloadableHandles) {
         BufferManager *bufferManager = m_nodesManager->bufferManager();
         BufferManager::ReadLocker locker(const_cast<const BufferManager *>(bufferManager));
@@ -2200,7 +2200,7 @@ void Renderer::jobsDone(Qt3DCore::QAspectManager *manager)
 
     // sync captured renders to frontend
     const std::vector<Qt3DCore::QNodeId> pendingCaptureIds =
-            std::move(m_pendingRenderCaptureSendRequests);
+            Qt3DCore::moveAndClear(m_pendingRenderCaptureSendRequests);
     for (const Qt3DCore::QNodeId &id : qAsConst(pendingCaptureIds)) {
         auto *backend = static_cast<Qt3DRender::Render::RenderCapture *>(
                 m_nodesManager->frameGraphManager()->lookupNode(id));
@@ -2867,7 +2867,7 @@ void Renderer::cleanGraphicsResources()
 
     // When Textures are cleaned up, their id is saved so that they can be
     // cleaned up in the render thread
-    const QList<Qt3DCore::QNodeId> cleanedUpTextureIds = std::move(m_textureIdsToCleanup);
+    const QList<Qt3DCore::QNodeId> cleanedUpTextureIds = Qt3DCore::moveAndClear(m_textureIdsToCleanup);
     for (const Qt3DCore::QNodeId &textureCleanedUpId : cleanedUpTextureIds)
         cleanupTexture(textureCleanedUpId);
 

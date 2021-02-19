@@ -45,6 +45,7 @@
 #include <Qt3DAnimation/private/buildblendtreesjob_p.h>
 #include <Qt3DAnimation/private/evaluateblendclipanimatorjob_p.h>
 #include <Qt3DCore/private/qaspectjob_p.h>
+#include <Qt3DCore/private/vector_helper_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -218,7 +219,7 @@ std::vector<Qt3DCore::QAspectJobPtr> Handler::jobsToExecute(qint64 time)
     // Rebuild blending trees if a blend tree is dirty
     const bool hasBuildBlendTreesJob = !m_dirtyBlendedAnimators.isEmpty();
     if (hasBuildBlendTreesJob) {
-        const QVector<HBlendedClipAnimator> dirtyBlendedAnimators = std::move(m_dirtyBlendedAnimators);
+        const QVector<HBlendedClipAnimator> dirtyBlendedAnimators = Qt3DCore::moveAndClear(m_dirtyBlendedAnimators);
         m_buildBlendTreesJob->setBlendedClipAnimators(dirtyBlendedAnimators);
         jobs.push_back(m_buildBlendTreesJob);
     }

@@ -60,7 +60,7 @@ void TechniqueManager::addDirtyTechnique(Qt3DCore::QNodeId techniqueId)
 // AspectThread
 std::vector<Qt3DCore::QNodeId> TechniqueManager::takeDirtyTechniques()
 {
-    return std::move(m_dirtyTechniques);
+    return Qt3DCore::moveAndClear(m_dirtyTechniques);
 }
 
 } // Render

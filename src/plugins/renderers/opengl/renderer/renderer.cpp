@@ -1102,7 +1102,7 @@ void Renderer::sendShaderChangesToFrontend(Qt3DCore::QAspectManager *manager)
     }
 
     // Sync ShaderBuilder
-    const std::vector<ShaderBuilderUpdate> shaderBuilderUpdates = std::move(m_shaderBuilderUpdates);
+    const std::vector<ShaderBuilderUpdate> shaderBuilderUpdates = Qt3DCore::moveAndClear(m_shaderBuilderUpdates);
     for (const ShaderBuilderUpdate &update : shaderBuilderUpdates) {
         QShaderProgramBuilder *builder = static_cast<decltype(builder)>(manager->lookupNode(update.builderId));
         QShaderProgramBuilderPrivate *dBuilder = static_cast<decltype(dBuilder)>(QNodePrivate::get(builder));
@@ -1113,7 +1113,7 @@ void Renderer::sendShaderChangesToFrontend(Qt3DCore::QAspectManager *manager)
 // Executed in a job (in main thread when jobs are done)
 void Renderer::sendTextureChangesToFrontend(Qt3DCore::QAspectManager *manager)
 {
-    const std::vector<QPair<Texture::TextureUpdateInfo, Qt3DCore::QNodeIdVector>> updateTextureProperties = std::move(m_updatedTextureProperties);
+    const std::vector<QPair<Texture::TextureUpdateInfo, Qt3DCore::QNodeIdVector>> updateTextureProperties = Qt3DCore::moveAndClear(m_updatedTextureProperties);
     for (const auto &pair : updateTextureProperties) {
         const Qt3DCore::QNodeIdVector targetIds = pair.second;
         for (const Qt3DCore::QNodeId &targetId: targetIds) {
@@ -1149,7 +1149,7 @@ void Renderer::sendTextureChangesToFrontend(Qt3DCore::QAspectManager *manager)
 // Executed in main thread when jobs done
 void Renderer::sendSetFenceHandlesToFrontend(Qt3DCore::QAspectManager *manager)
 {
-    const std::vector<QPair<Qt3DCore::QNodeId, GLFence>> updatedSetFence = std::move(m_updatedSetFences);
+    const std::vector<QPair<Qt3DCore::QNodeId, GLFence>> updatedSetFence = Qt3DCore::moveAndClear(m_updatedSetFences);
     FrameGraphManager *fgManager = m_nodesManager->frameGraphManager();
     for (const auto &pair : updatedSetFence) {
         FrameGraphNode *fgNode = fgManager->lookupNode(pair.first);
@@ -1167,7 +1167,7 @@ void Renderer::sendSetFenceHandlesToFrontend(Qt3DCore::QAspectManager *manager)
 void Renderer::sendDisablesToFrontend(Qt3DCore::QAspectManager *manager)
 {
     // SubtreeEnabled
-    const auto updatedDisables = std::move(m_updatedDisableSubtreeEnablers);
+    const auto updatedDisables = Qt3DCore::moveAndClear(m_updatedDisableSubtreeEnablers);
     for (const auto &nodeId : updatedDisables) {
         QSubtreeEnabler *frontend = static_cast<decltype(frontend)>(manager->lookupNode(nodeId));
         frontend->setEnabled(false);
@@ -1218,7 +1218,7 @@ void Renderer::updateGLResources()
 
     {
         Profiling::GLTimeRecorder recorder(Profiling::BufferUpload, activeProfiler());
-        const std::vector<HBuffer> dirtyBufferHandles = std::move(m_dirtyBuffers);
+        const std::vector<HBuffer> dirtyBufferHandles = Qt3DCore::moveAndClear(m_dirtyBuffers);
         for (const HBuffer &handle: dirtyBufferHandles) {
             Buffer *buffer = m_nodesManager->bufferManager()->data(handle);
 
@@ -1238,7 +1238,7 @@ void Renderer::updateGLResources()
 
     {
         Profiling::GLTimeRecorder recorder(Profiling::ShaderUpload, activeProfiler());
-        const std::vector<HShader> dirtyShaderHandles = std::move(m_dirtyShaders);
+        const std::vector<HShader> dirtyShaderHandles = Qt3DCore::moveAndClear(m_dirtyShaders);
         ShaderManager *shaderManager = m_nodesManager->shaderManager();
         for (const HShader &handle: dirtyShaderHandles) {
             Shader *shader = shaderManager->data(handle);
@@ -1272,7 +1272,7 @@ void Renderer::updateGLResources()
 
     {
         Profiling::GLTimeRecorder recorder(Profiling::TextureUpload, activeProfiler());
-        const std::vector<HTexture> activeTextureHandles = std::move(m_dirtyTextures);
+        const std::vector<HTexture> activeTextureHandles = Qt3DCore::moveAndClear(m_dirtyTextures);
         for (const HTexture &handle: activeTextureHandles) {
             Texture *texture = m_nodesManager->textureManager()->data(handle);
 
@@ -1424,7 +1424,7 @@ void Renderer::cleanupShader(const Shader *shader)
 // Called by SubmitRenderView
 void Renderer::downloadGLBuffers()
 {
-    const std::vector<Qt3DCore::QNodeId> downloadableHandles = std::move(m_downloadableBuffers);
+    const std::vector<Qt3DCore::QNodeId> downloadableHandles = Qt3DCore::moveAndClear(m_downloadableBuffers);
     for (const Qt3DCore::QNodeId &bufferId : downloadableHandles) {
         BufferManager *bufferManager = m_nodesManager->bufferManager();
         BufferManager::ReadLocker locker(const_cast<const BufferManager *>(bufferManager));
@@ -1738,7 +1738,7 @@ void Renderer::jobsDone(Qt3DCore::QAspectManager *manager)
     // called in main thread once all jobs are done running
 
     // sync captured renders to frontend
-    const std::vector<Qt3DCore::QNodeId> pendingCaptureIds = std::move(m_pendingRenderCaptureSendRequests);
+    const std::vector<Qt3DCore::QNodeId> pendingCaptureIds = Qt3DCore::moveAndClear(m_pendingRenderCaptureSendRequests);
     for (const Qt3DCore::QNodeId &id : pendingCaptureIds) {
         auto *backend = static_cast<Qt3DRender::Render::RenderCapture *>
             (m_nodesManager->frameGraphManager()->lookupNode(id));
@@ -2231,13 +2231,13 @@ void Renderer::cleanGraphicsResources()
 
     // When Textures are cleaned up, their id is saved so that they can be
     // cleaned up in the render thread
-    const QList<Qt3DCore::QNodeId> cleanedUpTextureIds = std::move(m_textureIdsToCleanup);
+    const QList<Qt3DCore::QNodeId> cleanedUpTextureIds = Qt3DCore::moveAndClear(m_textureIdsToCleanup);
     for (const Qt3DCore::QNodeId &textureCleanedUpId: cleanedUpTextureIds)
         cleanupTexture(textureCleanedUpId);
 
     // Delete abandoned VAOs
     m_abandonedVaosMutex.lock();
-    const std::vector<HVao> abandonedVaos = std::move(m_abandonedVaos);
+    const std::vector<HVao> abandonedVaos = Qt3DCore::moveAndClear(m_abandonedVaos);
     m_abandonedVaosMutex.unlock();
     for (const HVao &vaoHandle : abandonedVaos) {
         // might have already been destroyed last frame, but added by the cleanup job before, so

@@ -49,6 +49,7 @@
 #include <Qt3DCore/private/corelogging_p.h>
 #include <Qt3DCore/private/qabstractaspectjobmanager_p.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/vector_helper_p.h>
 
 #include <mutex>
 
@@ -101,12 +102,12 @@ void QChangeArbiter::removeDirtyFrontEndNode(QNode *node)
 
 QList<QNode *> QChangeArbiter::takeDirtyFrontEndNodes()
 {
-    return std::move(m_dirtyFrontEndNodes);
+    return Qt3DCore::moveAndClear(m_dirtyFrontEndNodes);
 }
 
 QList<ComponentRelationshipChange> QChangeArbiter::takeDirtyEntityComponentNodes()
 {
-    return std::move(m_dirtyEntityComponentNodeChanges);
+    return Qt3DCore::moveAndClear(m_dirtyEntityComponentNodeChanges);
 }
 
 } // namespace Qt3DCore

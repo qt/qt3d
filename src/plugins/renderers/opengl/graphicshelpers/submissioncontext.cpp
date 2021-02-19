@@ -1520,7 +1520,7 @@ void SubmissionContext::uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool r
     // * partial buffer updates where received
 
     // TO DO: Handle usage pattern
-    std::vector<Qt3DCore::QBufferUpdate> updates = std::move(buffer->pendingBufferUpdates());
+    std::vector<Qt3DCore::QBufferUpdate> updates = Qt3DCore::moveAndClear(buffer->pendingBufferUpdates());
     for (auto it = updates.begin(); it != updates.end(); ++it) {
         auto update = it;
         // We have a partial update
