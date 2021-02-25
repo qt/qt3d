@@ -40,6 +40,21 @@ class tst_ObjectPicker : public Qt3DCore::QBackendNodeTester
     Q_OBJECT
 private Q_SLOTS:
 
+    void checkInitialSync()
+    {
+        // GIVEN
+        TestRenderer renderer;
+        Qt3DRender::Render::ObjectPicker objectPicker;
+        Qt3DRender::QObjectPicker picker;
+
+        // WHEN
+        objectPicker.setRenderer(&renderer);
+        simulateInitializationSync(&picker, &objectPicker);
+
+        // THEN
+        QVERIFY(renderer.dirtyBits() != 0);
+    }
+
     void checkPeerPropertyMirroring()
     {
         // GIVEN
