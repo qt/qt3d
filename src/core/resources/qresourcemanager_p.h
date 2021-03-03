@@ -293,9 +293,9 @@ private:
         HandleData data[NumEntries];
     };
 
-    Bucket *firstBucket = 0;
+    Bucket *firstBucket = nullptr;
     std::vector<Handle> m_activeHandles;
-    typename Handle::Data *freeList = 0;
+    typename Handle::Data *freeList = nullptr;
     int allocCounter = 1;
 
     void allocateBucket()
