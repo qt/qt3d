@@ -36,7 +36,7 @@ class QtConanError(Exception):
 
 class Qt3D(ConanFile):
     name = "qt3d"
-    version = "6.0.2"
+    version = "6.0.3"
     license = "LGPL-3.0+, GPL-2.0+, Commercial Qt License Agreement"
     author = "The Qt Company <https://www.qt.io/contact-us>"
     url = "https://code.qt.io/cgit/qt/qt3d.git/"
