@@ -39,7 +39,7 @@
 
 #include "vulkaninstance_p.h"
 
-#if QT_CONFIG(vulkan)
+#if QT_CONFIG(qt3d_vulkan)
 
 #include <QVulkanInstance>
 

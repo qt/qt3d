@@ -67,7 +67,7 @@
 
 #include <QEvent>
 
-#if QT_CONFIG(vulkan)
+#if QT_CONFIG(qt3d_vulkan)
 #include <QVulkanInstance>
 #endif
 
@@ -319,7 +319,7 @@ void setupWindowSurface(QWindow *window, Qt3DRender::API api) noexcept
         qputenv("QSG_RHI_BACKEND", "metal");
         window->setSurfaceType(QSurface::MetalSurface);
         break;
-#if QT_CONFIG(vulkan)
+#if QT_CONFIG(qt3d_vulkan)
     case Qt3DRender::API::Vulkan:
     {
         qputenv("QSG_RHI_BACKEND", "vulkan");

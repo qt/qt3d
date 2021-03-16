@@ -6,7 +6,7 @@
 
 #### Libraries
 
-
+find_package(Vulkan)
 
 #### Tests
 
@@ -23,8 +23,14 @@ qt_feature("qt3d-rhi-renderer" PRIVATE
     SECTION "Qt 3D Renderers"
     LABEL "RHI Renderer"
     PURPOSE "Use the RHI renderer"
-    AUTODETECT OFF
 )
+qt_feature("qt3d-vulkan" PUBLIC
+    LABEL "Vulkan"
+    CONDITION Vulkan_FOUND AND QT_FEATURE_qt3d_rhi_renderer
+)
+qt_configure_add_summary_section(NAME "Qt 3D APIs")
+qt_configure_add_summary_entry(ARGS "qt3d-vulkan")
+qt_configure_end_summary_section() # end of "Qt 3D APIs" section
 qt_configure_add_summary_section(NAME "Qt 3D Renderers")
 qt_configure_add_summary_entry(ARGS "qt3d-opengl-renderer")
 qt_configure_add_summary_entry(ARGS "qt3d-rhi-renderer")

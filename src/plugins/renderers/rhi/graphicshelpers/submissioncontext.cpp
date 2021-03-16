@@ -89,7 +89,7 @@
 #include <QtGui/private/qrhigles2_p.h>
 #endif
 
-#if QT_CONFIG(vulkan)
+#if QT_CONFIG(qt3d_vulkan)
 #include <QtGui/private/qrhivulkan_p.h>
 #endif
 #include <bitset>
@@ -578,7 +578,7 @@ void SubmissionContext::initialize()
 
     QRhi::Flags rhiFlags = QRhi::EnableDebugMarkers;
 
-#if QT_CONFIG(vulkan)
+#if QT_CONFIG(qt3d_vulkan)
     if (requestedApi == Qt3DRender::API::Vulkan) {
         QRhiVulkanInitParams params;
         params.inst = &Qt3DRender::staticVulkanInstance();
