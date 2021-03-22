@@ -95,6 +95,7 @@
 #include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QTexture>
 #include <qmath.h>
+#include <Qt3DRender/qt3drender-config.h>
 
 static const constexpr auto vertex_shader = R"_(#version 450
 
@@ -247,7 +248,7 @@ int main(int argc, char* argv[])
         if (argv[1] == QByteArrayLiteral("--d3d11")) api = Qt3DRender::API::DirectX;
 #endif
 
-#if QT_CONFIG(vulkan)
+#if QT_CONFIG(qt3d_vulkan)
         if (argv[1] == QByteArrayLiteral("--vulkan")) api = Qt3DRender::API::Vulkan;
 #endif
 

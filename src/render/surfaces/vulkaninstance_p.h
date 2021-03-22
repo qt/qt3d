@@ -52,11 +52,12 @@
 //
 
 #include <QtGui/qtguiglobal.h>
+#include <Qt3DRender/qt3drender-config.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
-#if QT_CONFIG(vulkan)
+#if QT_CONFIG(qt3d_vulkan)
 class QVulkanInstance;
 namespace Qt3DRender {
 Q_3DRENDERSHARED_PRIVATE_EXPORT
