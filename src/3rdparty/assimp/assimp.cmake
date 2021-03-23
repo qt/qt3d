@@ -11,7 +11,7 @@ function(qt3d_extend_target_for_assimp target)
     set(assimpDir ${PROJECT_SOURCE_DIR}/src/3rdparty/assimp)
     qt_internal_extend_target(${target} CONDITION QT_FEATURE_qt3d_system_assimp AND (NOT CMAKE_CROSSCOMPILING OR NOT host_build)
         LIBRARIES
-            WrapAssimp::WrapAssimp
+            WrapQt3DAssimp::WrapQt3DAssimp
     )
 
     qt_internal_extend_target(${target} CONDITION NOT QT_FEATURE_qt3d_system_assimp OR (CMAKE_CROSSCOMPILING AND host_build)
