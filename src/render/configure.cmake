@@ -6,7 +6,9 @@
 
 #### Libraries
 
-find_package(Vulkan)
+if(NOT QT_CONFIGURE_RUNNING)
+    find_package(Vulkan)
+endif()
 
 #### Tests
 
