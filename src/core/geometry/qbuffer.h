@@ -55,7 +55,7 @@ class Q_3DCORESHARED_EXPORT QBuffer : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(UsageType usage READ usage WRITE setUsage NOTIFY usageChanged)
-    Q_PROPERTY(AccessType accessType READ accessType WRITE setAccessType NOTIFY accessTypeChanged REVISION 9)
+    Q_PROPERTY(AccessType accessType READ accessType WRITE setAccessType NOTIFY accessTypeChanged QT3D_PROPERTY_REVISION(2, 9))
 
 public:
     enum UsageType

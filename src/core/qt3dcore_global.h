@@ -87,6 +87,14 @@ QT_BEGIN_NAMESPACE
     QT3D_DECLARE_TYPEINFO_2(OuterNS, InnerNS, Class, Q_RELOCATABLE_TYPE) \
     /*end*/
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#define QT3D_REVISION(major, minor) Q_REVISION(minor)
+#define QT3D_PROPERTY_REVISION(major, minor) REVISION minor
+#else
+#define QT3D_REVISION(major, minor) Q_REVISION(major, minor)
+#define QT3D_PROPERTY_REVISION(major, minor) REVISION(major, minor)
+#endif
+
 QT_END_NAMESPACE
 
 #endif // QT3DCORE_GLOBAL_H

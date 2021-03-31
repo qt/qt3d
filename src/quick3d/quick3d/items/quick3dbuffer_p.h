@@ -72,6 +72,8 @@ class Q_3DQUICKSHARED_PRIVATE_EXPORT Quick3DBuffer : public Qt3DCore::QBuffer
 {
     Q_OBJECT
     Q_PROPERTY(QVariant data READ bufferData WRITE setBufferData NOTIFY bufferDataChanged)
+    QML_NAMED_ELEMENT(Buffer)
+    QML_ADDED_IN_VERSION(2, 0)
 public:
     explicit Quick3DBuffer(Qt3DCore::QNode *parent = nullptr);
 

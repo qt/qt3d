@@ -54,8 +54,8 @@ class Q_3DCORESHARED_EXPORT QGeometry : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DCore::QAttribute *boundingVolumePositionAttribute READ boundingVolumePositionAttribute WRITE setBoundingVolumePositionAttribute NOTIFY boundingVolumePositionAttributeChanged)
-    Q_PROPERTY(QVector3D minExtent READ minExtent NOTIFY minExtentChanged REVISION 13)
-    Q_PROPERTY(QVector3D maxExtent READ maxExtent NOTIFY maxExtentChanged REVISION 13)
+    Q_PROPERTY(QVector3D minExtent READ minExtent NOTIFY minExtentChanged QT3D_PROPERTY_REVISION(2, 13))
+    Q_PROPERTY(QVector3D maxExtent READ maxExtent NOTIFY maxExtentChanged QT3D_PROPERTY_REVISION(2, 13))
 public:
     explicit QGeometry(Qt3DCore::QNode *parent = nullptr);
     ~QGeometry();
@@ -73,8 +73,8 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void boundingVolumePositionAttributeChanged(QAttribute *boundingVolumePositionAttribute);
-    Q_REVISION(13) void minExtentChanged(const QVector3D &minExtent);
-    Q_REVISION(13) void maxExtentChanged(const QVector3D &maxExtent);
+    QT3D_REVISION(2, 13) void minExtentChanged(const QVector3D &minExtent);
+    QT3D_REVISION(2, 13) void maxExtentChanged(const QVector3D &maxExtent);
 protected:
     explicit QGeometry(QGeometryPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 

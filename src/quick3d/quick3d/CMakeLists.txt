@@ -17,6 +17,7 @@ qt_internal_add_module(3DQuick
         qqmlaspectengine.cpp qqmlaspectengine.h qqmlaspectengine_p.h
         qquaternionanimation.cpp qquaternionanimation_p.h
         qt3dquick_global.cpp qt3dquick_global.h qt3dquick_global_p.h
+        qt3dquickforeign_p.h
         qt3dquicknodefactory.cpp qt3dquicknodefactory_p.h
         qt3dquickvaluetypes.cpp qt3dquickvaluetypes_p.h
     INCLUDE_DIRECTORIES

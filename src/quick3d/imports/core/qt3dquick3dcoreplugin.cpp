@@ -66,41 +66,11 @@ QT_BEGIN_NAMESPACE
 
 void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
 {
+    Q_UNUSED(uri);
     Qt3DCore::Quick::Quick3D_initialize();
-
-    qmlRegisterUncreatableType<Qt3DCore::QComponent>(uri, 2, 0, "Component3D", QLatin1String(""));
-
-    Qt3DCore::Quick::registerExtendedType<Qt3DCore::QEntity, Qt3DCore::Quick::Quick3DEntity>("QEntity", "Qt3D.Core/Entity", uri, 2, 0, "Entity");
-    qmlRegisterType<Qt3DCore::Quick::Quick3DEntityLoader>(uri, 2, 0, "EntityLoader");
-    qmlRegisterType<Qt3DCore::Quick::Quick3DEntityLoader, 12>(uri, 2, 12, "EntityLoader");
-    qmlRegisterType<Qt3DCore::Quick::Quick3DNodeInstantiator>(uri, 2, 0, "NodeInstantiator");
-    qmlRegisterType<Qt3DCore::QTransform>(uri, 2, 0, "Transform");
-    qmlRegisterType<Qt3DCore::QTransform, 14>(uri, 2, 14, "Transform");
-    qmlRegisterType<Qt3DCore::QArmature>(uri, 2, 10, "Armature");
-    qmlRegisterUncreatableType<Qt3DCore::QAbstractSkeleton>(uri, 2, 10, "AbstractSkeleton", QStringLiteral("AbstractSkeleton is an abstract base class"));
-    qmlRegisterType<Qt3DCore::QSkeletonLoader>(uri, 2, 10, "SkeletonLoader");
-    qmlRegisterType<Qt3DCore::QAttribute>(uri, 2, 0, "Attribute");
-    qmlRegisterType<Qt3DCore::QAttribute, 10>(uri, 2, 10, "Attribute");
-    qmlRegisterType<Qt3DCore::QAttribute, 11>(uri, 2, 11, "Attribute");
-    qmlRegisterUncreatableType<Qt3DCore::QBuffer>(uri, 2, 0, "BufferBase", QStringLiteral("Use Quick3DBuffer in QML"));
-    qmlRegisterUncreatableType<Qt3DCore::QBuffer, 9>(uri, 2, 9, "BufferBase", QStringLiteral("Use Quick3DBuffer in QML"));
-    qmlRegisterType<Qt3DCore::Quick::Quick3DBuffer>(uri, 2, 0, "Buffer");
-    Qt3DCore::Quick::registerExtendedType<Qt3DCore::QGeometry, Qt3DCore::Quick::Quick3DGeometry>("QGeometry", "Qt3D.Core/Geometry", uri, 2, 0, "Geometry");
-    qmlRegisterType<Qt3DCore::QGeometryView>(uri, 2, 16, "GeometryView");
-    qmlRegisterType<Qt3DCore::QBoundingVolume>(uri, 2, 16, "BoundingVolume");
-
-    qmlRegisterType<Qt3DCore::Quick::QQuaternionAnimation>(uri, 2, 0, "QuaternionAnimation");
+    Qt3DCore::Quick::Quick3D_registerType("QEntity", "Qt3D.Core/Entity", 2, 0);
+    Qt3DCore::Quick::Quick3D_registerType("QGeometry", "Qt3D.Core/Geometry", 2, 0);
     qRegisterAnimationInterpolator<QQuaternion>(Qt3DCore::Quick::q_quaternionInterpolator);
-
-    // Ideally we want to make Node an uncreatable type
-    // We would need qmlRegisterUncreatableExtendedType for that
-    qmlRegisterExtendedUncreatableType<Qt3DCore::QNode, Qt3DCore::Quick::Quick3DNode>(uri, 2, 0, "Node", QStringLiteral("Node is a base class"));
-
-    Qt3DCore::Quick::registerExtendedType<Qt3DCore::QJoint, Qt3DCore::Quick::Quick3DJoint>("QJoint", "Qt3D.Core/Joint", uri, 2, 10, "Joint");
-
-    // The minor version used to be the current Qt 5 minor. For compatibility it is the last
-    // Qt 5 release.
-    qmlRegisterModule(uri, 2, 15);
 }
 
 Qt3DQuick3DCorePlugin::~Qt3DQuick3DCorePlugin()
