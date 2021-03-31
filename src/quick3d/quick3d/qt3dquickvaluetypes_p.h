@@ -68,7 +68,6 @@ namespace Qt3DCore {
 namespace Quick {
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-#define QML_ADDED_IN_VERSION(major, minor) QML_ADDED_IN_MINOR_VERSION(minor)
 #define QML_VALUE_TYPE(v)
 #endif
 
@@ -357,7 +356,6 @@ public:
 };
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-#undef QML_ADDED_IN_VERSION
 #undef QML_VALUE_TYPE
 #endif
 

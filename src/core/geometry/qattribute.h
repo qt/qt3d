@@ -69,11 +69,11 @@ class Q_3DCORESHARED_EXPORT QAttribute : public QNode
     Q_PROPERTY(QString defaultNormalAttributeName READ defaultNormalAttributeName CONSTANT)
     Q_PROPERTY(QString defaultColorAttributeName READ defaultColorAttributeName CONSTANT)
     Q_PROPERTY(QString defaultTextureCoordinateAttributeName READ defaultTextureCoordinateAttributeName CONSTANT)
-    Q_PROPERTY(QString defaultTextureCoordinate1AttributeName READ defaultTextureCoordinate1AttributeName CONSTANT REVISION 11)
-    Q_PROPERTY(QString defaultTextureCoordinate2AttributeName READ defaultTextureCoordinate2AttributeName CONSTANT REVISION 11)
+    Q_PROPERTY(QString defaultTextureCoordinate1AttributeName READ defaultTextureCoordinate1AttributeName CONSTANT QT3D_PROPERTY_REVISION(2, 11))
+    Q_PROPERTY(QString defaultTextureCoordinate2AttributeName READ defaultTextureCoordinate2AttributeName CONSTANT QT3D_PROPERTY_REVISION(2, 11))
     Q_PROPERTY(QString defaultTangentAttributeName READ defaultTangentAttributeName CONSTANT)
-    Q_PROPERTY(QString defaultJointIndicesAttributeName READ defaultJointIndicesAttributeName CONSTANT REVISION 10)
-    Q_PROPERTY(QString defaultJointWeightsAttributeName READ defaultJointWeightsAttributeName CONSTANT REVISION 10)
+    Q_PROPERTY(QString defaultJointIndicesAttributeName READ defaultJointIndicesAttributeName CONSTANT QT3D_PROPERTY_REVISION(2, 10))
+    Q_PROPERTY(QString defaultJointWeightsAttributeName READ defaultJointWeightsAttributeName CONSTANT QT3D_PROPERTY_REVISION(2, 10))
 
 public:
     enum AttributeType {

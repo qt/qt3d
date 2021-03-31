@@ -78,6 +78,8 @@ class Q_3DQUICKSHARED_PRIVATE_EXPORT Quick3DNodeInstantiator : public QNode, pub
     Q_PROPERTY(QQmlComponent *delegate READ delegate WRITE setDelegate NOTIFY delegateChanged)
     Q_PROPERTY(QObject *object READ object NOTIFY objectChanged)
     Q_CLASSINFO("DefaultProperty", "delegate")
+    QML_NAMED_ELEMENT(NodeInstantiator)
+    QML_ADDED_IN_VERSION(2, 0)
 
 public:
     Quick3DNodeInstantiator(QNode *parent = 0);

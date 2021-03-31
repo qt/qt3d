@@ -79,6 +79,9 @@ class Q_3DQUICKSHARED_PRIVATE_EXPORT QQuaternionAnimation : public QQuickPropert
     Q_PROPERTY(float toYRotation READ toYRotation WRITE setToYRotation NOTIFY toYRotationChanged)
     Q_PROPERTY(float toZRotation READ toZRotation WRITE setToZRotation NOTIFY toZRotationChanged)
 
+    QML_NAMED_ELEMENT(QuaternionAnimation)
+    QML_ADDED_IN_VERSION(2, 0)
+
 public:
     enum Type {
         Slerp = 0,

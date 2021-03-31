@@ -76,7 +76,9 @@ class Q_3DQUICKSHARED_PRIVATE_EXPORT Quick3DEntityLoader : public QEntity
     Q_PROPERTY(QObject *entity READ entity NOTIFY entityChanged)
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
     Q_PROPERTY(Status status READ status NOTIFY statusChanged)
-    Q_PROPERTY(QQmlComponent *sourceComponent READ sourceComponent WRITE setSourceComponent NOTIFY sourceComponentChanged REVISION 12)
+    Q_PROPERTY(QQmlComponent *sourceComponent READ sourceComponent WRITE setSourceComponent NOTIFY sourceComponentChanged QT3D_PROPERTY_REVISION(2, 12))
+    QML_NAMED_ELEMENT(EntityLoader)
+    QML_ADDED_IN_VERSION(2, 0)
 public:
     enum Status {
         Null = 0,
