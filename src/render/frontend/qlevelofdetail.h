@@ -105,6 +105,4 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::QLevelOfDetailBoundingSphere)
-
 #endif // QT3DRENDER_QLEVELOFDETAIL_H
