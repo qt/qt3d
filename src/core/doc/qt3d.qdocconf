@@ -102,7 +102,6 @@ imagedirs   += images \
 
 manifestmeta.highlighted.names = \
                 "Qt3D/Qt 3D: Advanced custom material QML Example" \
-                "Qt3D/Qt 3D: Audio Visualizer Example" \
                 "Qt3D/Qt 3D: Planets QML Example"
 
 manifestmeta.thumbnail.names += "Qt3D/Qt 3D: Deferred Renderer C++ Example"
