@@ -6,7 +6,7 @@
 
 qt_internal_add_qml_module(quick3dinputplugin
     URI "Qt3D.Input"
-    VERSION "2.${CMAKE_PROJECT_VERSION_MINOR}"
+    VERSION "2.${PROJECT_VERSION_MINOR}"
     CLASSNAME Qt3DQuick3DInputPlugin
     SKIP_TYPE_REGISTRATION
     SOURCES

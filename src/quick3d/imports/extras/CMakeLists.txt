@@ -6,7 +6,7 @@
 
 qt_internal_add_qml_module(quick3dextrasplugin
     URI "Qt3D.Extras"
-    VERSION "2.${CMAKE_PROJECT_VERSION_MINOR}"
+    VERSION "2.${PROJECT_VERSION_MINOR}"
     CLASSNAME Qt3DQuick3DExtrasPlugin
     DEPENDENCIES
         Qt3D.Logic/2.0
