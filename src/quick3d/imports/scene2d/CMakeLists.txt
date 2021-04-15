@@ -6,7 +6,7 @@
 
 qt_internal_add_qml_module(qtquickscene2dplugin
     URI "QtQuick.Scene2D"
-    VERSION "2.${CMAKE_PROJECT_VERSION_MINOR}"
+    VERSION "2.${PROJECT_VERSION_MINOR}"
     CLASSNAME QtQuickScene2DPlugin
     SKIP_TYPE_REGISTRATION
     SOURCES
