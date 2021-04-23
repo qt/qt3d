@@ -34,7 +34,7 @@ qtHaveModule(quick) {
         simplecustommaterial \
         qardboard \
         pbr-materials \
-        scene2d \
+#        scene2d \ # Restore once Scene2D has been ported to Qt6
         multiviewport \
         wireframe \
         wave \

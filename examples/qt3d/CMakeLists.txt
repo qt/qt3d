@@ -16,7 +16,7 @@ if(TARGET Qt::Quick)
     add_subdirectory(instanced-arrays-qml)
     add_subdirectory(multiviewport)
     add_subdirectory(planets-qml)
-    add_subdirectory(scene2d)
+#    add_subdirectory(scene2d) # Restore once Scene2D support has been ported to Qt6
     add_subdirectory(scene3d)
     add_subdirectory(simple-qml)
     add_subdirectory(simplecustommaterial)
