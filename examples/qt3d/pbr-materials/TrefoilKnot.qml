@@ -81,6 +81,6 @@ Entity {
 
     Mesh {
         id: mesh
-        source: "assets/obj/trefoil.obj"
+        source: "qrc:/assets/obj/trefoil.obj"
     }
 }
