@@ -91,7 +91,7 @@ Entity {
                 enabled: parent.enabled
 
                 irradiance: TextureLoader {
-                    source: "assets/cubemaps/default/default_irradiance.dds"
+                    source: "qrc:/assets/cubemaps/default/default_irradiance.dds"
                     wrapMode {
                         x: WrapMode.ClampToEdge
                         y: WrapMode.ClampToEdge
@@ -99,7 +99,7 @@ Entity {
                     generateMipMaps: false
                 }
                 specular: TextureLoader {
-                    source: "assets/cubemaps/default/default_specular.dds"
+                    source: "qrc:/assets/cubemaps/default/default_specular.dds"
                     wrapMode {
                         x: WrapMode.ClampToEdge
                         y: WrapMode.ClampToEdge
@@ -115,18 +115,18 @@ Entity {
 
         components: [
             Mesh {
-                source: "assets/obj/plane-10x10.obj"
+                source: "qrc:/assets/obj/plane-10x10.obj"
             },
             MetalRoughMaterial {
                 baseColor: TextureLoader {
-                    source: "assets/textures/ceramic_small_diamond/ceramic_small_diamond_basecolor.png"
+                    source: "qrc:/assets/textures/ceramic_small_diamond/ceramic_small_diamond_basecolor.png"
                     format: Texture.SRGB8_Alpha8
                     generateMipMaps: true
                 }
-                metalness: TextureLoader { source: "assets/textures/ceramic_small_diamond/ceramic_small_diamond_metallic.png"; generateMipMaps: true }
-                roughness: TextureLoader { source: "assets/textures/ceramic_small_diamond/ceramic_small_diamond_roughness.png"; generateMipMaps: true }
-                normal: TextureLoader { source: "assets/textures/ceramic_small_diamond/ceramic_small_diamond_normal.png"; generateMipMaps: true }
-                ambientOcclusion: TextureLoader { source: "assets/textures/ceramic_small_diamond/ceramic_small_diamond_ambient_occlusion.png" }
+                metalness: TextureLoader { source: "qrc:/assets/textures/ceramic_small_diamond/ceramic_small_diamond_metallic.png"; generateMipMaps: true }
+                roughness: TextureLoader { source: "qrc:/assets/textures/ceramic_small_diamond/ceramic_small_diamond_roughness.png"; generateMipMaps: true }
+                normal: TextureLoader { source: "qrc:/assets/textures/ceramic_small_diamond/ceramic_small_diamond_normal.png"; generateMipMaps: true }
+                ambientOcclusion: TextureLoader { source: "qrc:/assets/textures/ceramic_small_diamond/ceramic_small_diamond_ambient_occlusion.png" }
             }
         ]
     }
@@ -159,7 +159,7 @@ Entity {
 
     Mesh {
         id: matSphere
-        source: "assets/obj/material-sphere.obj"
+        source: "qrc:/assets/obj/material-sphere.obj"
     }
 
     Entity {
@@ -180,14 +180,14 @@ Entity {
         MetalRoughMaterial {
             id: matSphere1Material
             baseColor:  TextureLoader {
-                source: "assets/textures/aluminium_random_brushed/aluminium_random_brushed_basecolor.png"
+                source: "qrc:/assets/textures/aluminium_random_brushed/aluminium_random_brushed_basecolor.png"
                 format: Texture.SRGB8_Alpha8
                 generateMipMaps: true
             }
-            metalness: TextureLoader { source: "assets/textures/aluminium_random_brushed/aluminium_random_brushed_metallic.png"; generateMipMaps: true }
-            roughness: TextureLoader { source: "assets/textures/aluminium_random_brushed/aluminium_random_brushed_roughness.png"; generateMipMaps: true}
-            normal: TextureLoader { source: "assets/textures/aluminium_random_brushed/aluminium_random_brushed_normal.png"; generateMipMaps: true }
-            ambientOcclusion: TextureLoader { source: "assets/textures/no-ao.png" }
+            metalness: TextureLoader { source: "qrc:/assets/textures/aluminium_random_brushed/aluminium_random_brushed_metallic.png"; generateMipMaps: true }
+            roughness: TextureLoader { source: "qrc:/assets/textures/aluminium_random_brushed/aluminium_random_brushed_roughness.png"; generateMipMaps: true}
+            normal: TextureLoader { source: "qrc:/assets/textures/aluminium_random_brushed/aluminium_random_brushed_normal.png"; generateMipMaps: true }
+            ambientOcclusion: TextureLoader { source: "qrc:/assets/textures/no-ao.png" }
         }
     }
 
@@ -209,14 +209,14 @@ Entity {
         MetalRoughMaterial {
             id: matSphere2Material
             baseColor:  TextureLoader {
-                source: "assets/textures/american_walnut_crown_cut/american_walnut_crown_cut_basecolor.png"
+                source: "qrc:/assets/textures/american_walnut_crown_cut/american_walnut_crown_cut_basecolor.png"
                 format: Texture.SRGB8_Alpha8
                 generateMipMaps: true
             }
-            metalness: TextureLoader { source: "assets/textures/american_walnut_crown_cut/american_walnut_crown_cut_metallic.png"; generateMipMaps: true }
-            roughness: TextureLoader { source: "assets/textures/american_walnut_crown_cut/american_walnut_crown_cut_roughness.png"; generateMipMaps: true }
-            normal: TextureLoader { source: "assets/textures/american_walnut_crown_cut/american_walnut_crown_cut_normal.png"; generateMipMaps: true }
-            ambientOcclusion: TextureLoader { source: "assets/textures/no-ao.png" }
+            metalness: TextureLoader { source: "qrc:/assets/textures/american_walnut_crown_cut/american_walnut_crown_cut_metallic.png"; generateMipMaps: true }
+            roughness: TextureLoader { source: "qrc:/assets/textures/american_walnut_crown_cut/american_walnut_crown_cut_roughness.png"; generateMipMaps: true }
+            normal: TextureLoader { source: "qrc:/assets/textures/american_walnut_crown_cut/american_walnut_crown_cut_normal.png"; generateMipMaps: true }
+            ambientOcclusion: TextureLoader { source: "qrc:/assets/textures/no-ao.png" }
         }
     }
 
@@ -238,14 +238,14 @@ Entity {
         MetalRoughMaterial {
             id: matSphere3Material
             baseColor:  TextureLoader {
-                source: "assets/textures/ceramic_tiles_brown_tomato/ceramic_tiles_brown_tomato_basecolor.png"
+                source: "qrc:/assets/textures/ceramic_tiles_brown_tomato/ceramic_tiles_brown_tomato_basecolor.png"
                 format: Texture.SRGB8_Alpha8
                 generateMipMaps: true
             }
-            metalness: TextureLoader { source: "assets/textures/ceramic_tiles_brown_tomato/ceramic_tiles_brown_tomato_metallic.png"; generateMipMaps: true }
-            roughness: TextureLoader { source: "assets/textures/ceramic_tiles_brown_tomato/ceramic_tiles_brown_tomato_roughness.png"; generateMipMaps: true }
-            normal: TextureLoader { source: "assets/textures/ceramic_tiles_brown_tomato/ceramic_tiles_brown_tomato_normal.png"; generateMipMaps: true }
-            ambientOcclusion: TextureLoader { source: "assets/textures/no-ao.png" }
+            metalness: TextureLoader { source: "qrc:/assets/textures/ceramic_tiles_brown_tomato/ceramic_tiles_brown_tomato_metallic.png"; generateMipMaps: true }
+            roughness: TextureLoader { source: "qrc:/assets/textures/ceramic_tiles_brown_tomato/ceramic_tiles_brown_tomato_roughness.png"; generateMipMaps: true }
+            normal: TextureLoader { source: "qrc:/assets/textures/ceramic_tiles_brown_tomato/ceramic_tiles_brown_tomato_normal.png"; generateMipMaps: true }
+            ambientOcclusion: TextureLoader { source: "qrc:/assets/textures/no-ao.png" }
         }
     }
 
@@ -267,14 +267,14 @@ Entity {
         MetalRoughMaterial {
             id: matSphere4Material
             baseColor:  TextureLoader {
-                source: "assets/textures/copper_brushed/copper_brushed_basecolor.png"
+                source: "qrc:/assets/textures/copper_brushed/copper_brushed_basecolor.png"
                 format: Texture.SRGB8_Alpha8
                 generateMipMaps: true
             }
-            metalness: TextureLoader { source: "assets/textures/copper_brushed/copper_brushed_metallic.png"; generateMipMaps: true }
-            roughness: TextureLoader { source: "assets/textures/copper_brushed/copper_brushed_roughness.png"; generateMipMaps: true }
-            normal: TextureLoader { source: "assets/textures/copper_brushed/copper_brushed_normal.png"; generateMipMaps: true }
-            ambientOcclusion: TextureLoader { source: "assets/textures/no-ao.png" }
+            metalness: TextureLoader { source: "qrc:/assets/textures/copper_brushed/copper_brushed_metallic.png"; generateMipMaps: true }
+            roughness: TextureLoader { source: "qrc:/assets/textures/copper_brushed/copper_brushed_roughness.png"; generateMipMaps: true }
+            normal: TextureLoader { source: "qrc:/assets/textures/copper_brushed/copper_brushed_normal.png"; generateMipMaps: true }
+            ambientOcclusion: TextureLoader { source: "qrc:/assets/textures/no-ao.png" }
         }
     }
 
@@ -296,14 +296,14 @@ Entity {
         MetalRoughMaterial {
             id: matSphere5Material
             baseColor:  TextureLoader {
-                source: "assets/textures/gold_leaf_waste/gold_leaf_waste_basecolor.png"
+                source: "qrc:/assets/textures/gold_leaf_waste/gold_leaf_waste_basecolor.png"
                 format: Texture.SRGB8_Alpha8
                 generateMipMaps: true
             }
-            metalness: TextureLoader { source: "assets/textures/gold_leaf_waste/gold_leaf_waste_metallic.png"; generateMipMaps: true }
-            roughness: TextureLoader { source: "assets/textures/gold_leaf_waste/gold_leaf_waste_roughness.png"; generateMipMaps: true }
-            normal: TextureLoader { source: "assets/textures/gold_leaf_waste/gold_leaf_waste_normal.png"; generateMipMaps: true }
-            ambientOcclusion: TextureLoader { source: "assets/textures/no-ao.png" }
+            metalness: TextureLoader { source: "qrc:/assets/textures/gold_leaf_waste/gold_leaf_waste_metallic.png"; generateMipMaps: true }
+            roughness: TextureLoader { source: "qrc:/assets/textures/gold_leaf_waste/gold_leaf_waste_roughness.png"; generateMipMaps: true }
+            normal: TextureLoader { source: "qrc:/assets/textures/gold_leaf_waste/gold_leaf_waste_normal.png"; generateMipMaps: true }
+            ambientOcclusion: TextureLoader { source: "qrc:/assets/textures/no-ao.png" }
         }
     }
 }
