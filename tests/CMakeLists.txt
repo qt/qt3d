@@ -8,9 +8,4 @@ endif()
 # many tests rely on extras to load data
 if(QT_FEATURE_qt3d_extras)
     qt_build_tests()
-
-    add_subdirectory(manual)  # add here since default seems to be to not build them
-    if(NOT QT_FEATURE_testcocoon AND CMAKE_BUILD_TYPE STREQUAL Release)
-        add_subdirectory(benchmarks)
-    endif()
 endif()
