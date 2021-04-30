@@ -1598,7 +1598,7 @@ void SubmissionContext::blitFramebuffer(Qt3DCore::QNodeId inputRenderTargetId,
     if (!outputBufferIsDefault) {
         // Note that we use glDrawBuffers, not glDrawBuffer. The
         // latter is not available with GLES.
-        const int buf = glAttachmentPoint(outputAttachmentPoint);
+        const int buf = outputAttachmentPoint;
         drawBuffers(1, &buf);
     }
 
