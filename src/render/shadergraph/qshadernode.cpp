@@ -152,11 +152,14 @@ QList<QShaderFormat> QShaderNode::availableFormats() const
 
 QShaderNode::Rule QShaderNode::rule(const QShaderFormat &format) const
 {
-    const auto it = std::find_if(m_rules.crbegin(), m_rules.crend(),
-                                 [format](const QPair<QShaderFormat, Rule> &entry) {
-        return format.supports(entry.first);
-    });
-    return it != m_rules.crend() ? it->second : Rule();
+    const QPair<QShaderFormat, Rule> *selected = nullptr;
+    for (const auto &entry : qAsConst(m_rules)) {
+        if (format.supports(entry.first)) {
+            if (!selected || entry.first.version() > selected->first.version())
+                selected = &entry;
+        }
+    }
+    return selected ? selected->second : Rule();
 }
 
 QShaderNode::Rule::Rule(const QByteArray &subs, const QByteArrayList &snippets) noexcept
