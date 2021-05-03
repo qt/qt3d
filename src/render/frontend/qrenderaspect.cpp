@@ -717,17 +717,20 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         if (entitiesEnabledDirty)
             jobs.push_back(d->m_updateTreeEnabledJob);
 
-        if (dirtyBitsForFrame & AbstractRenderer::TransformDirty) {
+        if (entitiesEnabledDirty ||
+            dirtyBitsForFrame & AbstractRenderer::TransformDirty) {
             jobs.push_back(d->m_worldTransformJob);
             jobs.push_back(d->m_updateWorldBoundingVolumeJob);
         }
 
-        if (dirtyBitsForFrame & AbstractRenderer::GeometryDirty ||
+        if (entitiesEnabledDirty ||
+            dirtyBitsForFrame & AbstractRenderer::GeometryDirty ||
             dirtyBitsForFrame & AbstractRenderer::BuffersDirty) {
             jobs.push_back(d->m_calculateBoundingVolumeJob);
         }
 
-        if (dirtyBitsForFrame & AbstractRenderer::GeometryDirty ||
+        if (entitiesEnabledDirty ||
+            dirtyBitsForFrame & AbstractRenderer::GeometryDirty ||
             dirtyBitsForFrame & AbstractRenderer::TransformDirty) {
             jobs.push_back(d->m_expandBoundingVolumeJob);
         }
