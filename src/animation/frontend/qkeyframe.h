@@ -47,7 +47,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
-class Q_3DANIMATIONSHARED_EXPORT QKeyFrame
+class QKeyFrame
 {
 public:
     enum InterpolationType : quint8 {
