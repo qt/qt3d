@@ -23,6 +23,10 @@ find_package(Qt6 COMPONENTS Quick)
 qt_add_executable(simplecustommaterial
     main.cpp
 )
+set_target_properties(simplecustommaterial PROPERTIES
+    WIN32_EXECUTABLE TRUE
+    MACOSX_BUNDLE TRUE
+)
 target_link_libraries(simplecustommaterial PUBLIC
     Qt::Core
     Qt::Gui

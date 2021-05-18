@@ -28,6 +28,10 @@ find_package(Qt6 COMPONENTS 3DQuickExtras)
 qt_add_executable(wireframe
     main.cpp
 )
+set_target_properties(wireframe PROPERTIES
+    WIN32_EXECUTABLE TRUE
+    MACOSX_BUNDLE TRUE
+)
 target_link_libraries(wireframe PUBLIC
     Qt::3DCore
     Qt::3DInput

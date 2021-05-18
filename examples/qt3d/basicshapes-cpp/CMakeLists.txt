@@ -27,6 +27,10 @@ qt_add_executable(basicshapes-cpp
     main.cpp
     scenemodifier.cpp scenemodifier.h
 )
+set_target_properties(basicshapes-cpp PROPERTIES
+    WIN32_EXECUTABLE TRUE
+    MACOSX_BUNDLE TRUE
+)
 target_link_libraries(basicshapes-cpp PUBLIC
     Qt::3DCore
     Qt::3DExtras

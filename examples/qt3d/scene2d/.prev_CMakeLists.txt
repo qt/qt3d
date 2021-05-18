@@ -25,6 +25,10 @@ find_package(Qt6 COMPONENTS 3DQuickExtras)
 qt_add_executable(scene2d
     main.cpp
 )
+set_target_properties(scene2d PROPERTIES
+    WIN32_EXECUTABLE TRUE
+    MACOSX_BUNDLE TRUE
+)
 target_link_libraries(scene2d PUBLIC
     Qt::3DQuick
     Qt::3DQuickExtras

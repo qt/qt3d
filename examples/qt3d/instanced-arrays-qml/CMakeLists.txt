@@ -29,6 +29,10 @@ qt_add_executable(instanced-arrays-qml
     instancebuffer.cpp instancebuffer.h
     main.cpp
 )
+set_target_properties(instanced-arrays-qml PROPERTIES
+    WIN32_EXECUTABLE TRUE
+    MACOSX_BUNDLE TRUE
+)
 target_link_libraries(instanced-arrays-qml PUBLIC
     Qt::3DCore
     Qt::3DInput

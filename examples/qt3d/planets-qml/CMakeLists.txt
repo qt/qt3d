@@ -33,6 +33,10 @@ qt_add_executable(planets-qml
     main.cpp
     networkcontroller.cpp networkcontroller.h
 )
+set_target_properties(planets-qml PROPERTIES
+    WIN32_EXECUTABLE TRUE
+    MACOSX_BUNDLE TRUE
+)
 target_link_libraries(planets-qml PUBLIC
     Qt::3DCore
     Qt::3DInput

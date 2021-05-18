@@ -27,6 +27,10 @@ qt_add_executable(audio-visualizer-qml
     main.cpp
     touchsettings.cpp touchsettings.h
 )
+set_target_properties(audio-visualizer-qml PROPERTIES
+    WIN32_EXECUTABLE TRUE
+    MACOSX_BUNDLE TRUE
+)
 target_link_libraries(audio-visualizer-qml PUBLIC
     Qt::3DCore
     Qt::3DQuick

@@ -28,6 +28,10 @@ find_package(Qt6 COMPONENTS 3DQuickExtras)
 qt_add_executable(phong-cubes
     main.cpp
 )
+set_target_properties(phong-cubes PROPERTIES
+    WIN32_EXECUTABLE TRUE
+    MACOSX_BUNDLE TRUE
+)
 target_link_libraries(phong-cubes PUBLIC
     Qt::3DCore
     Qt::3DInput

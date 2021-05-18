@@ -23,6 +23,10 @@ find_package(Qt6 COMPONENTS Quick)
 qt_add_executable(advancedcustommaterial
     main.cpp
 )
+set_target_properties(advancedcustommaterial PROPERTIES
+    WIN32_EXECUTABLE TRUE
+    MACOSX_BUNDLE TRUE
+)
 target_link_libraries(advancedcustommaterial PUBLIC
     Qt::Core
     Qt::Gui
@@ -75,6 +79,8 @@ set(shaders_resource_files
     "shaders/es2/water.vert"
     "shaders/gl3/water.frag"
     "shaders/gl3/water.vert"
+    "shaders/rhi/water.frag"
+    "shaders/rhi/water.vert"
 )
 
 qt6_add_resources(advancedcustommaterial "shaders"
