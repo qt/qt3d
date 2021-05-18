@@ -31,11 +31,8 @@ qt_internal_add_resource(assimp "assimp"
     FILES
         ${assimp_resource_files}
 )
-set_source_files_properties("../../../examples/qt3d/exampleresources/assets/test_scene.dae"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/test_scene.dae"
-)
 set(test_scene_resource_files
-    "assets/test_scene.dae"
+    "../../../examples/qt3d/exampleresources/assets/test_scene.dae"
 )
 
 qt_internal_add_resource(assimp "test_scene"
@@ -46,27 +43,12 @@ qt_internal_add_resource(assimp "test_scene"
     FILES
         ${test_scene_resource_files}
 )
-set_source_files_properties("../../../examples/qt3d/exampleresources/assets/obj/ball.obj"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/obj/ball.obj"
-)
-set_source_files_properties("../../../examples/qt3d/exampleresources/assets/obj/material-sphere.obj"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/obj/material-sphere.obj"
-)
-set_source_files_properties("../../../examples/qt3d/exampleresources/assets/obj/plane-10x10.obj"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/obj/plane-10x10.obj"
-)
-set_source_files_properties("../../../examples/qt3d/exampleresources/assets/obj/toyplane.obj"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/obj/toyplane.obj"
-)
-set_source_files_properties("../../../examples/qt3d/exampleresources/assets/obj/trefoil.obj"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/obj/trefoil.obj"
-)
 set(obj_resource_files
-    "assets/obj/ball.obj"
-    "assets/obj/material-sphere.obj"
-    "assets/obj/plane-10x10.obj"
-    "assets/obj/toyplane.obj"
-    "assets/obj/trefoil.obj"
+    "../../../examples/qt3d/exampleresources/assets/obj/ball.obj"
+    "../../../examples/qt3d/exampleresources/assets/obj/material-sphere.obj"
+    "../../../examples/qt3d/exampleresources/assets/obj/plane-10x10.obj"
+    "../../../examples/qt3d/exampleresources/assets/obj/toyplane.obj"
+    "../../../examples/qt3d/exampleresources/assets/obj/trefoil.obj"
 )
 
 qt_internal_add_resource(assimp "obj"

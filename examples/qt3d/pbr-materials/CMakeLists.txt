@@ -59,39 +59,15 @@ qt6_add_resources(pbr-materials "materials"
     FILES
         ${materials_resource_files}
 )
-set_source_files_properties("../exampleresources/assets/cubemaps/default/default_irradiance.dds"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/cubemaps/default/default_irradiance.dds"
-)
-set_source_files_properties("../exampleresources/assets/cubemaps/default/default_specular.dds"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/cubemaps/default/default_specular.dds"
-)
-set_source_files_properties("../exampleresources/assets/cubemaps/miramar/miramar_negx.webp"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/cubemaps/miramar/miramar_negx.webp"
-)
-set_source_files_properties("../exampleresources/assets/cubemaps/miramar/miramar_negy.webp"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/cubemaps/miramar/miramar_negy.webp"
-)
-set_source_files_properties("../exampleresources/assets/cubemaps/miramar/miramar_negz.webp"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/cubemaps/miramar/miramar_negz.webp"
-)
-set_source_files_properties("../exampleresources/assets/cubemaps/miramar/miramar_posx.webp"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/cubemaps/miramar/miramar_posx.webp"
-)
-set_source_files_properties("../exampleresources/assets/cubemaps/miramar/miramar_posy.webp"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/cubemaps/miramar/miramar_posy.webp"
-)
-set_source_files_properties("../exampleresources/assets/cubemaps/miramar/miramar_posz.webp"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/cubemaps/miramar/miramar_posz.webp"
-)
 set(cubemaps_resource_files
-    "assets/cubemaps/default/default_irradiance.dds"
-    "assets/cubemaps/default/default_specular.dds"
-    "assets/cubemaps/miramar/miramar_negx.webp"
-    "assets/cubemaps/miramar/miramar_negy.webp"
-    "assets/cubemaps/miramar/miramar_negz.webp"
-    "assets/cubemaps/miramar/miramar_posx.webp"
-    "assets/cubemaps/miramar/miramar_posy.webp"
-    "assets/cubemaps/miramar/miramar_posz.webp"
+    "../exampleresources/assets/cubemaps/default/default_irradiance.dds"
+    "../exampleresources/assets/cubemaps/default/default_specular.dds"
+    "../exampleresources/assets/cubemaps/miramar/miramar_negx.webp"
+    "../exampleresources/assets/cubemaps/miramar/miramar_negy.webp"
+    "../exampleresources/assets/cubemaps/miramar/miramar_negz.webp"
+    "../exampleresources/assets/cubemaps/miramar/miramar_posx.webp"
+    "../exampleresources/assets/cubemaps/miramar/miramar_posy.webp"
+    "../exampleresources/assets/cubemaps/miramar/miramar_posz.webp"
 )
 
 qt6_add_resources(pbr-materials "cubemaps"
@@ -102,27 +78,12 @@ qt6_add_resources(pbr-materials "cubemaps"
     FILES
         ${cubemaps_resource_files}
 )
-set_source_files_properties("../exampleresources/assets/obj/ball.obj"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/obj/ball.obj"
-)
-set_source_files_properties("../exampleresources/assets/obj/material-sphere.obj"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/obj/material-sphere.obj"
-)
-set_source_files_properties("../exampleresources/assets/obj/plane-10x10.obj"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/obj/plane-10x10.obj"
-)
-set_source_files_properties("../exampleresources/assets/obj/toyplane.obj"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/obj/toyplane.obj"
-)
-set_source_files_properties("../exampleresources/assets/obj/trefoil.obj"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/obj/trefoil.obj"
-)
 set(obj_resource_files
-    "assets/obj/ball.obj"
-    "assets/obj/material-sphere.obj"
-    "assets/obj/plane-10x10.obj"
-    "assets/obj/toyplane.obj"
-    "assets/obj/trefoil.obj"
+    "../exampleresources/assets/obj/ball.obj"
+    "../exampleresources/assets/obj/material-sphere.obj"
+    "../exampleresources/assets/obj/plane-10x10.obj"
+    "../exampleresources/assets/obj/toyplane.obj"
+    "../exampleresources/assets/obj/trefoil.obj"
 )
 
 qt6_add_resources(pbr-materials "obj"
@@ -133,111 +94,33 @@ qt6_add_resources(pbr-materials "obj"
     FILES
         ${obj_resource_files}
 )
-set_source_files_properties("../exampleresources/assets/textures/aluminium_random_brushed/aluminium_random_brushed_basecolor.png"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/textures/aluminium_random_brushed/aluminium_random_brushed_basecolor.png"
-)
-set_source_files_properties("../exampleresources/assets/textures/aluminium_random_brushed/aluminium_random_brushed_metallic.png"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/textures/aluminium_random_brushed/aluminium_random_brushed_metallic.png"
-)
-set_source_files_properties("../exampleresources/assets/textures/aluminium_random_brushed/aluminium_random_brushed_normal.png"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/textures/aluminium_random_brushed/aluminium_random_brushed_normal.png"
-)
-set_source_files_properties("../exampleresources/assets/textures/aluminium_random_brushed/aluminium_random_brushed_roughness.png"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/textures/aluminium_random_brushed/aluminium_random_brushed_roughness.png"
-)
-set_source_files_properties("../exampleresources/assets/textures/american_walnut_crown_cut/american_walnut_crown_cut_basecolor.png"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/textures/american_walnut_crown_cut/american_walnut_crown_cut_basecolor.png"
-)
-set_source_files_properties("../exampleresources/assets/textures/american_walnut_crown_cut/american_walnut_crown_cut_metallic.png"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/textures/american_walnut_crown_cut/american_walnut_crown_cut_metallic.png"
-)
-set_source_files_properties("../exampleresources/assets/textures/american_walnut_crown_cut/american_walnut_crown_cut_normal.png"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/textures/american_walnut_crown_cut/american_walnut_crown_cut_normal.png"
-)
-set_source_files_properties("../exampleresources/assets/textures/american_walnut_crown_cut/american_walnut_crown_cut_roughness.png"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/textures/american_walnut_crown_cut/american_walnut_crown_cut_roughness.png"
-)
-set_source_files_properties("../exampleresources/assets/textures/ceramic_small_diamond/ceramic_small_diamond_ambient_occlusion.png"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/textures/ceramic_small_diamond/ceramic_small_diamond_ambient_occlusion.png"
-)
-set_source_files_properties("../exampleresources/assets/textures/ceramic_small_diamond/ceramic_small_diamond_basecolor.png"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/textures/ceramic_small_diamond/ceramic_small_diamond_basecolor.png"
-)
-set_source_files_properties("../exampleresources/assets/textures/ceramic_small_diamond/ceramic_small_diamond_metallic.png"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/textures/ceramic_small_diamond/ceramic_small_diamond_metallic.png"
-)
-set_source_files_properties("../exampleresources/assets/textures/ceramic_small_diamond/ceramic_small_diamond_normal.png"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/textures/ceramic_small_diamond/ceramic_small_diamond_normal.png"
-)
-set_source_files_properties("../exampleresources/assets/textures/ceramic_small_diamond/ceramic_small_diamond_roughness.png"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/textures/ceramic_small_diamond/ceramic_small_diamond_roughness.png"
-)
-set_source_files_properties("../exampleresources/assets/textures/ceramic_tiles_brown_tomato/ceramic_tiles_brown_tomato_basecolor.png"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/textures/ceramic_tiles_brown_tomato/ceramic_tiles_brown_tomato_basecolor.png"
-)
-set_source_files_properties("../exampleresources/assets/textures/ceramic_tiles_brown_tomato/ceramic_tiles_brown_tomato_metallic.png"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/textures/ceramic_tiles_brown_tomato/ceramic_tiles_brown_tomato_metallic.png"
-)
-set_source_files_properties("../exampleresources/assets/textures/ceramic_tiles_brown_tomato/ceramic_tiles_brown_tomato_normal.png"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/textures/ceramic_tiles_brown_tomato/ceramic_tiles_brown_tomato_normal.png"
-)
-set_source_files_properties("../exampleresources/assets/textures/ceramic_tiles_brown_tomato/ceramic_tiles_brown_tomato_roughness.png"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/textures/ceramic_tiles_brown_tomato/ceramic_tiles_brown_tomato_roughness.png"
-)
-set_source_files_properties("../exampleresources/assets/textures/copper_brushed/copper_brushed_basecolor.png"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/textures/copper_brushed/copper_brushed_basecolor.png"
-)
-set_source_files_properties("../exampleresources/assets/textures/copper_brushed/copper_brushed_metallic.png"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/textures/copper_brushed/copper_brushed_metallic.png"
-)
-set_source_files_properties("../exampleresources/assets/textures/copper_brushed/copper_brushed_normal.png"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/textures/copper_brushed/copper_brushed_normal.png"
-)
-set_source_files_properties("../exampleresources/assets/textures/copper_brushed/copper_brushed_roughness.png"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/textures/copper_brushed/copper_brushed_roughness.png"
-)
-set_source_files_properties("../exampleresources/assets/textures/gold_leaf_waste/gold_leaf_waste_basecolor.png"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/textures/gold_leaf_waste/gold_leaf_waste_basecolor.png"
-)
-set_source_files_properties("../exampleresources/assets/textures/gold_leaf_waste/gold_leaf_waste_metallic.png"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/textures/gold_leaf_waste/gold_leaf_waste_metallic.png"
-)
-set_source_files_properties("../exampleresources/assets/textures/gold_leaf_waste/gold_leaf_waste_normal.png"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/textures/gold_leaf_waste/gold_leaf_waste_normal.png"
-)
-set_source_files_properties("../exampleresources/assets/textures/gold_leaf_waste/gold_leaf_waste_roughness.png"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/textures/gold_leaf_waste/gold_leaf_waste_roughness.png"
-)
-set_source_files_properties("../exampleresources/assets/textures/no-ao.png"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/textures/no-ao.png"
-)
 set(textures_resource_files
-    "assets/textures/aluminium_random_brushed/aluminium_random_brushed_basecolor.png"
-    "assets/textures/aluminium_random_brushed/aluminium_random_brushed_metallic.png"
-    "assets/textures/aluminium_random_brushed/aluminium_random_brushed_normal.png"
-    "assets/textures/aluminium_random_brushed/aluminium_random_brushed_roughness.png"
-    "assets/textures/american_walnut_crown_cut/american_walnut_crown_cut_basecolor.png"
-    "assets/textures/american_walnut_crown_cut/american_walnut_crown_cut_metallic.png"
-    "assets/textures/american_walnut_crown_cut/american_walnut_crown_cut_normal.png"
-    "assets/textures/american_walnut_crown_cut/american_walnut_crown_cut_roughness.png"
-    "assets/textures/ceramic_small_diamond/ceramic_small_diamond_ambient_occlusion.png"
-    "assets/textures/ceramic_small_diamond/ceramic_small_diamond_basecolor.png"
-    "assets/textures/ceramic_small_diamond/ceramic_small_diamond_metallic.png"
-    "assets/textures/ceramic_small_diamond/ceramic_small_diamond_normal.png"
-    "assets/textures/ceramic_small_diamond/ceramic_small_diamond_roughness.png"
-    "assets/textures/ceramic_tiles_brown_tomato/ceramic_tiles_brown_tomato_basecolor.png"
-    "assets/textures/ceramic_tiles_brown_tomato/ceramic_tiles_brown_tomato_metallic.png"
-    "assets/textures/ceramic_tiles_brown_tomato/ceramic_tiles_brown_tomato_normal.png"
-    "assets/textures/ceramic_tiles_brown_tomato/ceramic_tiles_brown_tomato_roughness.png"
-    "assets/textures/copper_brushed/copper_brushed_basecolor.png"
-    "assets/textures/copper_brushed/copper_brushed_metallic.png"
-    "assets/textures/copper_brushed/copper_brushed_normal.png"
-    "assets/textures/copper_brushed/copper_brushed_roughness.png"
-    "assets/textures/gold_leaf_waste/gold_leaf_waste_basecolor.png"
-    "assets/textures/gold_leaf_waste/gold_leaf_waste_metallic.png"
-    "assets/textures/gold_leaf_waste/gold_leaf_waste_normal.png"
-    "assets/textures/gold_leaf_waste/gold_leaf_waste_roughness.png"
-    "assets/textures/no-ao.png"
+    "../exampleresources/assets/textures/aluminium_random_brushed/aluminium_random_brushed_basecolor.png"
+    "../exampleresources/assets/textures/aluminium_random_brushed/aluminium_random_brushed_metallic.png"
+    "../exampleresources/assets/textures/aluminium_random_brushed/aluminium_random_brushed_normal.png"
+    "../exampleresources/assets/textures/aluminium_random_brushed/aluminium_random_brushed_roughness.png"
+    "../exampleresources/assets/textures/american_walnut_crown_cut/american_walnut_crown_cut_basecolor.png"
+    "../exampleresources/assets/textures/american_walnut_crown_cut/american_walnut_crown_cut_metallic.png"
+    "../exampleresources/assets/textures/american_walnut_crown_cut/american_walnut_crown_cut_normal.png"
+    "../exampleresources/assets/textures/american_walnut_crown_cut/american_walnut_crown_cut_roughness.png"
+    "../exampleresources/assets/textures/ceramic_small_diamond/ceramic_small_diamond_ambient_occlusion.png"
+    "../exampleresources/assets/textures/ceramic_small_diamond/ceramic_small_diamond_basecolor.png"
+    "../exampleresources/assets/textures/ceramic_small_diamond/ceramic_small_diamond_metallic.png"
+    "../exampleresources/assets/textures/ceramic_small_diamond/ceramic_small_diamond_normal.png"
+    "../exampleresources/assets/textures/ceramic_small_diamond/ceramic_small_diamond_roughness.png"
+    "../exampleresources/assets/textures/ceramic_tiles_brown_tomato/ceramic_tiles_brown_tomato_basecolor.png"
+    "../exampleresources/assets/textures/ceramic_tiles_brown_tomato/ceramic_tiles_brown_tomato_metallic.png"
+    "../exampleresources/assets/textures/ceramic_tiles_brown_tomato/ceramic_tiles_brown_tomato_normal.png"
+    "../exampleresources/assets/textures/ceramic_tiles_brown_tomato/ceramic_tiles_brown_tomato_roughness.png"
+    "../exampleresources/assets/textures/copper_brushed/copper_brushed_basecolor.png"
+    "../exampleresources/assets/textures/copper_brushed/copper_brushed_metallic.png"
+    "../exampleresources/assets/textures/copper_brushed/copper_brushed_normal.png"
+    "../exampleresources/assets/textures/copper_brushed/copper_brushed_roughness.png"
+    "../exampleresources/assets/textures/gold_leaf_waste/gold_leaf_waste_basecolor.png"
+    "../exampleresources/assets/textures/gold_leaf_waste/gold_leaf_waste_metallic.png"
+    "../exampleresources/assets/textures/gold_leaf_waste/gold_leaf_waste_normal.png"
+    "../exampleresources/assets/textures/gold_leaf_waste/gold_leaf_waste_roughness.png"
+    "../exampleresources/assets/textures/no-ao.png"
 )
 
 qt6_add_resources(pbr-materials "textures"

@@ -311,7 +311,7 @@ qt_internal_add_module(3DRender
 
 # Resources:
 set(materialsystem_resource_files
-    "prototypes/default.json"
+    "materialsystem/prototypes/default.json"
 )
 
 qt_internal_add_resource(3DRender "materialsystem"

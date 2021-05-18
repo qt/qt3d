@@ -59,11 +59,8 @@ qt6_add_resources(multiviewport "multiviewport"
     FILES
         ${multiviewport_resource_files}
 )
-set_source_files_properties("../exampleresources/assets/test_scene.dae"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/test_scene.dae"
-)
 set(test_scene_resource_files
-    "assets/test_scene.dae"
+    "../exampleresources/assets/test_scene.dae"
 )
 
 qt6_add_resources(multiviewport "test_scene"

@@ -31,39 +31,15 @@ qt_internal_add_resource(skybox "skybox"
     FILES
         ${skybox_resource_files}
 )
-set_source_files_properties("../../../examples/qt3d/exampleresources/assets/cubemaps/default/default_irradiance.dds"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/cubemaps/default/default_irradiance.dds"
-)
-set_source_files_properties("../../../examples/qt3d/exampleresources/assets/cubemaps/default/default_specular.dds"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/cubemaps/default/default_specular.dds"
-)
-set_source_files_properties("../../../examples/qt3d/exampleresources/assets/cubemaps/miramar/miramar_negx.webp"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/cubemaps/miramar/miramar_negx.webp"
-)
-set_source_files_properties("../../../examples/qt3d/exampleresources/assets/cubemaps/miramar/miramar_negy.webp"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/cubemaps/miramar/miramar_negy.webp"
-)
-set_source_files_properties("../../../examples/qt3d/exampleresources/assets/cubemaps/miramar/miramar_negz.webp"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/cubemaps/miramar/miramar_negz.webp"
-)
-set_source_files_properties("../../../examples/qt3d/exampleresources/assets/cubemaps/miramar/miramar_posx.webp"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/cubemaps/miramar/miramar_posx.webp"
-)
-set_source_files_properties("../../../examples/qt3d/exampleresources/assets/cubemaps/miramar/miramar_posy.webp"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/cubemaps/miramar/miramar_posy.webp"
-)
-set_source_files_properties("../../../examples/qt3d/exampleresources/assets/cubemaps/miramar/miramar_posz.webp"
-    PROPERTIES QT_RESOURCE_ALIAS "assets/cubemaps/miramar/miramar_posz.webp"
-)
 set(cubemaps_resource_files
-    "assets/cubemaps/default/default_irradiance.dds"
-    "assets/cubemaps/default/default_specular.dds"
-    "assets/cubemaps/miramar/miramar_negx.webp"
-    "assets/cubemaps/miramar/miramar_negy.webp"
-    "assets/cubemaps/miramar/miramar_negz.webp"
-    "assets/cubemaps/miramar/miramar_posx.webp"
-    "assets/cubemaps/miramar/miramar_posy.webp"
-    "assets/cubemaps/miramar/miramar_posz.webp"
+    "../../../examples/qt3d/exampleresources/assets/cubemaps/default/default_irradiance.dds"
+    "../../../examples/qt3d/exampleresources/assets/cubemaps/default/default_specular.dds"
+    "../../../examples/qt3d/exampleresources/assets/cubemaps/miramar/miramar_negx.webp"
+    "../../../examples/qt3d/exampleresources/assets/cubemaps/miramar/miramar_negy.webp"
+    "../../../examples/qt3d/exampleresources/assets/cubemaps/miramar/miramar_negz.webp"
+    "../../../examples/qt3d/exampleresources/assets/cubemaps/miramar/miramar_posx.webp"
+    "../../../examples/qt3d/exampleresources/assets/cubemaps/miramar/miramar_posy.webp"
+    "../../../examples/qt3d/exampleresources/assets/cubemaps/miramar/miramar_posz.webp"
 )
 
 qt_internal_add_resource(skybox "cubemaps"
