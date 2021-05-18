@@ -31,6 +31,10 @@ qt_add_executable(qardboard
     dummydeviceorientation.cpp dummydeviceorientation.h
     main.cpp
 )
+set_target_properties(qardboard PROPERTIES
+    WIN32_EXECUTABLE TRUE
+    MACOSX_BUNDLE TRUE
+)
 target_link_libraries(qardboard PUBLIC
     Qt::3DCore
     Qt::3DExtras

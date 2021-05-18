@@ -24,6 +24,10 @@ find_package(Qt6 COMPONENTS 3DInput)
 qt_add_executable(scene3d
     main.cpp
 )
+set_target_properties(scene3d PROPERTIES
+    WIN32_EXECUTABLE TRUE
+    MACOSX_BUNDLE TRUE
+)
 target_link_libraries(scene3d PUBLIC
     Qt::3DInput
     Qt::Core

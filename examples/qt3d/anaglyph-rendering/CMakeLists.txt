@@ -29,6 +29,10 @@ find_package(Qt6 COMPONENTS 3DQuickExtras)
 qt_add_executable(anaglyph-rendering
     main.cpp
 )
+set_target_properties(anaglyph-rendering PROPERTIES
+    WIN32_EXECUTABLE TRUE
+    MACOSX_BUNDLE TRUE
+)
 target_link_libraries(anaglyph-rendering PUBLIC
     Qt::3DCore
     Qt::3DExtras

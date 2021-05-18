@@ -25,6 +25,10 @@ find_package(Qt6 COMPONENTS 3DExtras)
 qt_add_executable(3d-text
     main.cpp
 )
+set_target_properties(3d-text PROPERTIES
+    WIN32_EXECUTABLE TRUE
+    MACOSX_BUNDLE TRUE
+)
 target_link_libraries(3d-text PUBLIC
     Qt::3DCore
     Qt::3DExtras

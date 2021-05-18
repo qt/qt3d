@@ -27,6 +27,10 @@ find_package(Qt6 COMPONENTS Qml)
 qt_add_executable(compute-particles
     main.cpp
 )
+set_target_properties(compute-particles PROPERTIES
+    WIN32_EXECUTABLE TRUE
+    MACOSX_BUNDLE TRUE
+)
 target_link_libraries(compute-particles PUBLIC
     Qt::3DCore
     Qt::3DInput

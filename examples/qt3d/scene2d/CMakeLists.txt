@@ -25,6 +25,10 @@ find_package(Qt6 COMPONENTS 3DQuickExtras)
 qt_add_executable(scene2dsample # special case
     main.cpp
 )
+set_target_properties(scene2dsample PROPERTIES # special case
+    WIN32_EXECUTABLE TRUE
+    MACOSX_BUNDLE TRUE
+)
 target_link_libraries(scene2dsample PUBLIC # special case
     Qt::3DQuick
     Qt::3DQuickExtras
