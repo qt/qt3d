@@ -1,7 +1,7 @@
 
 # special case begin
 if(NOT QT_FEATURE_system_zlib)
-    find_package(Qt6 COMPONENTS Zlib)
+    find_package(Qt6 COMPONENTS ZlibPrivate)
 elseif(NOT TARGET WrapZLIB::WrapZLIB)
     qt_find_package(WrapZLIB PROVIDED_TARGETS WrapZLIB::WrapZLIB)
 endif()
