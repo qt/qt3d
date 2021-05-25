@@ -28,7 +28,7 @@
 /*!
     \qmltype DiffuseMapMaterial
     \inqmlmodule Qt3D.Extras
-    \obsolete
+    \deprecated
 
     \brief The DiffuseMapMaterial provides a default implementation of the phong lighting effect
     where the diffuse light component is read from a texture map.
@@ -92,7 +92,7 @@
 /*!
     \qmltype DiffuseSpecularMapMaterial
     \inqmlmodule Qt3D.Extras
-    \obsolete
+    \deprecated
 
     \brief The DiffuseSpecularMapMaterial provides a default implementation of the phong lighting
     effect where the diffuse and specular light components are read from texture maps.
@@ -232,7 +232,7 @@
 /*!
     \qmltype NormalDiffuseMapAlphaMaterial
     \inqmlmodule Qt3D.Extras
-    \obsolete
+    \deprecated
 
     \brief The NormalDiffuseMapAlphaMaterial provides a specialization of NormalDiffuseMapMaterial
     with alpha coverage and a depth test performed in the rendering pass.
@@ -309,7 +309,7 @@
 /*!
     \qmltype NormalDiffuseMapMaterial
     \inqmlmodule Qt3D.Extras
-    \obsolete
+    \deprecated
 
     \brief The NormalDiffuseMapMaterial provides a default implementation of the phong lighting
     and bump effect where the diffuse light component is read from a texture map and the normals of
@@ -387,7 +387,7 @@
 /*!
     \qmltype NormalDiffuseSpecularMapMaterial
     \inqmlmodule Qt3D.Extras
-    \obsolete
+    \deprecated
 
     \brief The NormalDiffuseSpecularMapMaterial provides a default implementation of the phong
     lighting and bump effect where the diffuse and specular light components are read from texture
@@ -495,7 +495,7 @@
 /*!
     \qmltype PhongAlphaMaterial
     \inqmlmodule Qt3D.Extras
-    \obsolete
+    \deprecated
 
     \brief The PhongAlphaMaterial class provides a default implementation of
     the phong lighting effect with alpha.
@@ -583,7 +583,7 @@
 /*!
     \qmltype PhongMaterial
     \inqmlmodule Qt3D.Extras
-    \obsolete
+    \deprecated
 
     \brief The PhongMaterial class provides a default implementation of the phong lighting effect.
     \since 5.7
