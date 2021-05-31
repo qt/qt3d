@@ -241,7 +241,7 @@ QStringList Scene3DItem::aspects() const
 /*!
     \qmlproperty Entity Scene3D::entity
 
-    \default
+    \qmldefault
 
     The root entity of the 3D scene to be displayed.
  */

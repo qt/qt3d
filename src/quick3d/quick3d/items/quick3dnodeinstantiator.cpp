@@ -352,7 +352,7 @@ int Quick3DNodeInstantiator::count() const
 
 /*!
     \qmlproperty QtQml::Component Qt3D.Core::NodeInstantiator::delegate
-    \default
+    \qmldefault
 
     The component used to create all objects.
 

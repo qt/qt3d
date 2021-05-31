@@ -62,7 +62,7 @@ Quick3DNode::Quick3DNode(QObject *parent)
 
 /*!
     \qmlproperty list<QtQml::QtObject> Qt3DCore::Node::data
-    \default
+    \qmldefault
 */
 
 QQmlListProperty<QObject> Quick3DNode::data()
