@@ -105,7 +105,8 @@ std::vector<QAspectJobPtr> QCoreAspect::jobsToExecute(qint64 time)
 
     if (d->m_boundingVolumesEnabled) {
         if (dirtyBits & QScene::GeometryDirty ||
-            dirtyBits & QScene::BuffersDirty) {
+            dirtyBits & QScene::BuffersDirty ||
+            dirtyBits & QScene::EntityEnabledDirty) {
             jobs.push_back(d->m_calculateBoundingVolumeJob);
         }
     }
