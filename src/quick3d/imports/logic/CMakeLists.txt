@@ -7,8 +7,12 @@
 qt_internal_add_qml_module(quick3dlogicplugin
     URI "Qt3D.Logic"
     VERSION "2.${PROJECT_VERSION_MINOR}"
-    CLASSNAME Qt3DQuick3DLogicPlugin
-    SKIP_TYPE_REGISTRATION
+    CLASS_NAME Qt3DQuick3DLogicPlugin
+    PLUGIN_TARGET quick3dlogicplugin
+    NO_PLUGIN_OPTIONAL
+    NO_GENERATE_PLUGIN_SOURCE
+    NO_GENERATE_QMLTYPES
+    INSTALL_SOURCE_QMLTYPES "plugins.qmltypes"
     SOURCES
         qt3dquick3dlogicplugin.cpp qt3dquick3dlogicplugin.h
     PUBLIC_LIBRARIES

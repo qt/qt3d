@@ -7,10 +7,14 @@
 qt_internal_add_qml_module(quick3dextrasplugin
     URI "Qt3D.Extras"
     VERSION "2.${PROJECT_VERSION_MINOR}"
-    CLASSNAME Qt3DQuick3DExtrasPlugin
+    CLASS_NAME Qt3DQuick3DExtrasPlugin
+    PLUGIN_TARGET quick3dextrasplugin
+    NO_PLUGIN_OPTIONAL
+    NO_GENERATE_PLUGIN_SOURCE
+    NO_GENERATE_QMLTYPES
+    INSTALL_SOURCE_QMLTYPES "plugins.qmltypes"
     DEPENDENCIES
         Qt3D.Logic/2.0
-    SKIP_TYPE_REGISTRATION
     SOURCES
         qt3dquick3dextrasplugin.cpp qt3dquick3dextrasplugin.h
     PUBLIC_LIBRARIES

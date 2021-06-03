@@ -7,8 +7,12 @@
 qt_internal_add_qml_module(qtquickscene3dplugin
     URI "QtQuick.Scene3D"
     VERSION "2.${PROJECT_VERSION_MINOR}"
-    CLASSNAME QtQuickScene3DPlugin
-    SKIP_TYPE_REGISTRATION
+    CLASS_NAME QtQuickScene3DPlugin
+    PLUGIN_TARGET qtquickscene3dplugin
+    NO_PLUGIN_OPTIONAL
+    NO_GENERATE_PLUGIN_SOURCE
+    NO_GENERATE_QMLTYPES
+    INSTALL_SOURCE_QMLTYPES "plugins.qmltypes"
     SOURCES
         qtquickscene3dplugin.cpp qtquickscene3dplugin.h
         scene3ditem.cpp scene3ditem_p.h

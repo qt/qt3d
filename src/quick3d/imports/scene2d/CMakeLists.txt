@@ -7,8 +7,12 @@
 qt_internal_add_qml_module(qtquickscene2dplugin
     URI "QtQuick.Scene2D"
     VERSION "2.${PROJECT_VERSION_MINOR}"
-    CLASSNAME QtQuickScene2DPlugin
-    SKIP_TYPE_REGISTRATION
+    CLASS_NAME QtQuickScene2DPlugin
+    PLUGIN_TARGET qtquickscene2dplugin
+    NO_PLUGIN_OPTIONAL
+    NO_GENERATE_PLUGIN_SOURCE
+    NO_GENERATE_QMLTYPES
+    INSTALL_SOURCE_QMLTYPES "plugins.qmltypes"
     SOURCES
         qtquickscene2dplugin.cpp qtquickscene2dplugin.h
     PUBLIC_LIBRARIES

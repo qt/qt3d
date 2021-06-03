@@ -4,7 +4,14 @@
 ## Qt::3DQuick Module:
 #####################################################################
 
-qt_internal_add_module(3DQuick
+qt_internal_add_qml_module(3DQuick
+    URI "Qt3D.Core"
+    VERSION "${PROJECT_VERSION}"
+    PAST_MAJOR_VERSIONS 2
+    CLASS_NAME Qt3DQuick3DCorePlugin
+    PLUGIN_TARGET quick3dcoreplugin
+    NO_PLUGIN_OPTIONAL
+    NO_GENERATE_PLUGIN_SOURCE
     SOURCES
         items/quick3dbuffer.cpp items/quick3dbuffer_p.h
         items/quick3dentity.cpp items/quick3dentity_p.h
@@ -56,12 +63,22 @@ qt_internal_extend_target(3DQuick CONDITION gcov
         "-ftest-coverage"
 )
 
-set_target_properties(3DQuick PROPERTIES
-    QT_QML_MODULE_VERSION ${PROJECT_VERSION}
-    QT_QML_MODULE_URI Qt3D.Core
-    QT_QML_MODULE_INSTALL_QMLTYPES TRUE
-    QT_QMLTYPES_FILENAME plugins.qmltypes
-    QT_QML_MODULE_INSTALL_DIR "${INSTALL_QMLDIR}/Qt3D/Core"
+# We can't move these sources into here because the directory structure needs
+# to be maintained to support Qt5 qmake builds.
+qt_internal_extend_target(quick3dcoreplugin
+    SOURCES
+        ../imports/core/qt3dquick3dcoreplugin.cpp
+        ../imports/core/qt3dquick3dcoreplugin.h
+    LIBRARIES
+        Qt::3DCore
+        Qt::3DCorePrivate
+        Qt::3DQuick
+        Qt::3DQuickPrivate
+        Qt::Core
+        Qt::CorePrivate
+        Qt::Gui
+        Qt::Qml
+        Qt::QmlPrivate
+        Qt::Quick
+        Qt::QuickPrivate
 )
-
-qt6_qml_type_registration(3DQuick)

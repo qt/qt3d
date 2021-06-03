@@ -7,8 +7,12 @@
 qt_internal_add_qml_module(quick3danimationplugin
     URI "Qt3D.Animation"
     VERSION "2.${PROJECT_VERSION_MINOR}"
-    CLASSNAME Qt3DQuick3DAnimationPlugin
-    SKIP_TYPE_REGISTRATION
+    CLASS_NAME Qt3DQuick3DAnimationPlugin
+    PLUGIN_TARGET quick3danimationplugin
+    NO_PLUGIN_OPTIONAL
+    NO_GENERATE_PLUGIN_SOURCE
+    NO_GENERATE_QMLTYPES
+    INSTALL_SOURCE_QMLTYPES "plugins.qmltypes"
     SOURCES
         qt3dquick3danimationplugin.cpp qt3dquick3danimationplugin.h
     PUBLIC_LIBRARIES
