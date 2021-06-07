@@ -17,7 +17,7 @@ qtHaveModule(widgets) {
 
 qtHaveModule(quick) {
     qtHaveModule(multimedia) {
-        SUBDIRS += audio-visualizer-qml
+#        SUBDIRS += audio-visualizer-qml
     }
 
     SUBDIRS += \

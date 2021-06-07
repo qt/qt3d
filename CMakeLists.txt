@@ -19,7 +19,7 @@ set(QT_USE_FIXED_QT_ADD_RESOURCE_BASE TRUE)
 
 find_package(Qt6 ${PROJECT_VERSION} CONFIG REQUIRED COMPONENTS BuildInternals Core)
 find_package(Qt6 ${PROJECT_VERSION} QUIET CONFIG OPTIONAL_COMPONENTS
-                                    Concurrent Widgets Qml Quick Gamepad OpenGL ShaderTools)
+             Concurrent Widgets Qml Quick Gamepad OpenGL ShaderTools Multimedia)
 # special case end
 
 if(NOT TARGET Qt::Gui)
