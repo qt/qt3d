@@ -82,10 +82,10 @@ public:
     const_reverse_iterator rend()    const noexcept { return const_reverse_iterator(begin()); }
     const_reverse_iterator crend()   const noexcept { return rend(); }
 
-    friend bool operator==(const QChannelComponent &,
-                           const QChannelComponent &) noexcept;
-    friend bool operator!=(const QChannelComponent &,
-                           const QChannelComponent &) noexcept;
+    friend Q_3DANIMATIONSHARED_EXPORT bool operator==(const QChannelComponent &,
+                                                      const QChannelComponent &) noexcept;
+    friend Q_3DANIMATIONSHARED_EXPORT bool operator!=(const QChannelComponent &,
+                                                      const QChannelComponent &) noexcept;
 
 private:
     QScopedPointer<QChannelComponentPrivate> d;
