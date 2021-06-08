@@ -112,6 +112,7 @@ private:
     bool m_pickersDirty;
     bool m_oneHoverAtLeast;
     HObjectPicker m_currentPicker;
+    Qt3DCore::QNodeId m_currentViewport;
     QVector<HObjectPicker> m_hoveredPickers;
     QVector<HObjectPicker> m_hoveredPickersToClear;
 };

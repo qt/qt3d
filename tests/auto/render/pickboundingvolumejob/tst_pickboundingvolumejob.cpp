@@ -287,7 +287,6 @@ private:
     }
 
 private Q_SLOTS:
-
     void viewportCameraAreaGather()
     {
         // GIVEN
@@ -1547,6 +1546,90 @@ private Q_SLOTS:
         QCOMPARE(mouseExited.count(), 0);
     }
 
+    void checkPickerAndLayerFilters()
+    {
+        // GIVEN
+        QmlSceneReader sceneReader(QUrl("qrc:/testscene_layerfilter.qml"));
+        QScopedPointer<Qt3DCore::QNode> root(qobject_cast<Qt3DCore::QNode *>(sceneReader.root()));
+        QVERIFY(root);
+
+        QScopedPointer<Qt3DRender::TestAspect> test(new Qt3DRender::TestAspect(root.data()));
+        TestArbiter arbiter;
+
+        // Runs Required jobs
+        runRequiredJobs(test.data());
+
+        // THEN
+        // object partially obscured by another viewport, make sure only visible portion is pickable
+        QList<Qt3DRender::QObjectPicker *> pickers = root->findChildren<Qt3DRender::QObjectPicker *>();
+        QCOMPARE(pickers.size(), 2);
+
+        Qt3DRender::QObjectPicker *picker1 = pickers.front();
+        QCOMPARE(picker1->objectName(), QLatin1String("Picker1"));
+
+        Qt3DRender::Render::ObjectPicker *backendPicker1 = test->nodeManagers()->objectPickerManager()->lookupResource(picker1->id());
+        QVERIFY(backendPicker1);
+
+        QSignalSpy mouseButtonPressedSpy1(picker1, &Qt3DRender::QObjectPicker::pressed);
+
+        QVERIFY(mouseButtonPressedSpy1.isValid());
+
+        Qt3DRender::QObjectPicker *picker2 = pickers.last();
+        QCOMPARE(picker2->objectName(), QLatin1String("Picker2"));
+
+        Qt3DRender::Render::ObjectPicker *backendPicker2 = test->nodeManagers()->objectPickerManager()->lookupResource(picker2->id());
+        QVERIFY(backendPicker2);
+
+        QSignalSpy mouseButtonPressedSpy2(picker2, &Qt3DRender::QObjectPicker::pressed);
+
+        QVERIFY(mouseButtonPressedSpy2.isValid());
+
+        // WHEN -> Pressed on object in vp1
+        Qt3DRender::Render::PickBoundingVolumeJob pickBVJob;
+        initializePickBoundingVolumeJob(&pickBVJob, test.data());
+
+        {
+            QList<QPair<QObject *, QMouseEvent>> events;
+            events.push_back({nullptr, QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(150., 300.),
+                              Qt::LeftButton, Qt::LeftButton, Qt::NoModifier) });
+            pickBVJob.setMouseEvents(events);
+            bool earlyReturn = !pickBVJob.runHelper();
+            Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
+
+            // THEN -> Pressed
+            QVERIFY(!earlyReturn);
+            QVERIFY(backendPicker1->isPressed());
+            QVERIFY(picker1->isPressed());
+            QVERIFY(!backendPicker2->isPressed());
+            QVERIFY(!picker2->isPressed());
+            QCOMPARE(mouseButtonPressedSpy1.count(), 1);
+            QCOMPARE(mouseButtonPressedSpy2.count(), 0);
+
+            events.clear();
+
+            events.push_back({nullptr, QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(150., 300.),
+                                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier)});
+            pickBVJob.setMouseEvents(events);
+            pickBVJob.runHelper();
+        }
+
+        {
+            QList<QPair<QObject *, QMouseEvent>> events;
+            events.push_back({nullptr, QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(450., 300.),
+                              Qt::LeftButton, Qt::LeftButton, Qt::NoModifier)});
+            pickBVJob.setMouseEvents(events);
+            bool earlyReturn = !pickBVJob.runHelper();
+            Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
+
+            // THEN -> Nothing happened
+            QVERIFY(!earlyReturn);
+            QVERIFY(backendPicker2->isPressed());
+            QVERIFY(picker2->isPressed());
+            QCOMPARE(mouseButtonPressedSpy1.count(), 1);
+            QCOMPARE(mouseButtonPressedSpy2.count(), 1);
+        }
+    }
+
     void checkMultipleRayDirections_data()
     {
         QTest::addColumn<QVector3D>("cameraOrigin");
@@ -1879,7 +1962,6 @@ private Q_SLOTS:
         QCOMPARE(vca.cameraId, camera->id());
         QCOMPARE(vca.viewport, QRectF(0., 0., 1., 1.));
     }
-
 };
 
 QTEST_MAIN(tst_PickBoundingVolumeJob)
