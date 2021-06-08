@@ -84,8 +84,10 @@ struct Q_AUTOTEST_EXPORT ViewportCameraAreaDetails
     QRectF viewport;
     QSize area;
     QSurface *surface = nullptr;
+    Qt3DCore::QNodeIdVector layers;
+    QAbstractRayCaster::FilterMode layerFilterMode = QAbstractRayCaster::AcceptAnyMatchingLayers;
 };
-QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, PickingUtils, ViewportCameraAreaDetails, Q_PRIMITIVE_TYPE)
+QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, PickingUtils, ViewportCameraAreaDetails, Q_COMPLEX_TYPE)
 
 struct PickConfiguration {
     std::vector<ViewportCameraAreaDetails> vcaDetails;
