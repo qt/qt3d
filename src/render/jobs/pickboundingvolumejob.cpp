@@ -329,6 +329,7 @@ void PickBoundingVolumeJob::processPickEvent(const PickingUtils::PickConfigurati
         }
 
         PickingUtils::HierarchicalEntityPicker entityPicker(ray);
+        entityPicker.setFilterLayers(vca.layers, vca.layerFilterMode);
         if (entityPicker.collectHits(m_manager, m_node)) {
             if (pickConfiguration.trianglePickingRequested) {
                 PickingUtils::TriangleCollisionGathererFunctor gathererFunctor;
@@ -468,6 +469,7 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent *event,
                 case QEvent::MouseButtonPress: {
                     // Store pressed object handle
                     m_currentPicker = objectPickerHandle;
+                    m_currentViewport = viewportNodeId;
                     // Send pressed event to m_currentPicker
                     d->dispatches.push_back({objectPicker->peerId(), event->type(), pickEvent, viewportNodeId});
                     objectPicker->setPressed(true);
@@ -485,6 +487,7 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent *event,
                                                  PickBoundingVolumeJobPrivate::MouseButtonClick,
                                                  pickEvent, viewportNodeId});
                         m_currentPicker = HObjectPicker();
+                        m_currentViewport = {};
                     }
                     break;
                 }
@@ -529,8 +532,9 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent *event,
         switch (event->type()) {
         case QEvent::MouseButtonRelease: {
             // Send release event to m_currentPicker
-            if (lastCurrentPicker != nullptr) {
+            if (lastCurrentPicker != nullptr && m_currentViewport == viewportNodeId) {
                 m_currentPicker = HObjectPicker();
+                m_currentViewport = {};
                 QPickEventPtr pickEvent(new QPickEvent);
                 lastCurrentPicker->setPressed(false);
                 d->dispatches.push_back({lastCurrentPicker->peerId(), event->type(), pickEvent, viewportNodeId});
