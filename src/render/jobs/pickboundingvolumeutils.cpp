@@ -52,6 +52,7 @@
 #include <Qt3DRender/private/segmentsvisitor_p.h>
 #include <Qt3DRender/private/pointsvisitor_p.h>
 #include <Qt3DRender/private/layer_p.h>
+#include <Qt3DRender/private/layerfilternode_p.h>
 #include <Qt3DRender/private/rendersettings_p.h>
 
 #include <vector>
@@ -130,6 +131,19 @@ ViewportCameraAreaDetails ViewportCameraAreaGatherer::gatherUpViewportCameraArea
                 // Return an empty/invalid ViewportCameraAreaDetails which will
                 // prevent picking in the presence of a NoPicking node
                 return {};
+            }
+            case FrameGraphNode::LayerFilter: {
+                auto fnode = static_cast<const LayerFilterNode *>(node);
+                const auto &layers = fnode->layerIds();
+                for (const auto &id: layers)
+                    vca.layers.append(id);
+                switch (fnode->filterMode()) {
+                case Qt3DRender::QLayerFilter::AcceptAllMatchingLayers: vca.layerFilterMode = Qt3DRender::QAbstractRayCaster::AcceptAllMatchingLayers; break;
+                case Qt3DRender::QLayerFilter::AcceptAnyMatchingLayers: vca.layerFilterMode = Qt3DRender::QAbstractRayCaster::AcceptAnyMatchingLayers; break;
+                case Qt3DRender::QLayerFilter::DiscardAllMatchingLayers: vca.layerFilterMode = Qt3DRender::QAbstractRayCaster::DiscardAllMatchingLayers; break;
+                case Qt3DRender::QLayerFilter::DiscardAnyMatchingLayers: vca.layerFilterMode = Qt3DRender::QAbstractRayCaster::DiscardAnyMatchingLayers; break;
+                }
+                break;
             }
             default:
                 break;

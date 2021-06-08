@@ -39,6 +39,7 @@ set(pickboundingvolumejob_resource_files
     "testscene_pickersdisabled.qml"
     "testscene_priorityoverlapping.qml"
     "testscene_viewports.qml"
+    "testscene_layerfilter.qml"
 )
 
 qt_internal_add_resource(tst_pickboundingvolumejob "pickboundingvolumejob"
