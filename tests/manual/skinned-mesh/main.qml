@@ -103,7 +103,7 @@ DefaultSceneEntity {
                     ]
                 }
 
-                onRunningChanged: console.log("running = " + running)
+                onRunningChanged: console.log("running = " + animator1.running)
             }
         ]
     }
@@ -128,7 +128,7 @@ DefaultSceneEntity {
                     ]
                 }
 
-                onRunningChanged: console.log("running = " + running)
+                onRunningChanged: console.log("running = " + animator2.running)
             }
         ]
     }
@@ -153,7 +153,7 @@ DefaultSceneEntity {
                     ]
                 }
 
-                onRunningChanged: console.log("running = " + running)
+                onRunningChanged: console.log("running = " + animator3.running)
             }
         ]
     }
@@ -178,7 +178,7 @@ DefaultSceneEntity {
                     ]
                 }
 
-                onRunningChanged: console.log("running = " + running)
+                onRunningChanged: console.log("running = " + animator4.running)
             }
         ]
     }
@@ -203,7 +203,7 @@ DefaultSceneEntity {
                     ]
                 }
 
-                onRunningChanged: console.log("running = " + running)
+//                onRunningChanged: console.log("running = " + running)
             }
         ]
     }

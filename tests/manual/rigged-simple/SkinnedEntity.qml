@@ -76,8 +76,8 @@ Entity {
             skeleton: SkeletonLoader {
                 id: skeleton
                 source: root.source
-                onStatusChanged: console.log("skeleton loader status: " + status)
-                onJointCountChanged: console.log("skeleton has " + jointCount + " joints")
+                onStatusChanged: console.log("skeleton loader status: " + skeleton.status)
+                onJointCountChanged: console.log("skeleton has " + skeleton.jointCount + " joints")
             }
         },
         Material {

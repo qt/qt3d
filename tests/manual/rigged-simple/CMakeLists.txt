@@ -61,8 +61,8 @@ set_source_files_properties("../../../examples/qt3d/exampleresources/assets/envm
     PROPERTIES QT_RESOURCE_ALIAS "assets/envmaps/cedar-bridge/cedar_bridge_specular.dds"
 )
 set(envmaps_resource_files
-    "assets/envmaps/cedar-bridge/cedar_bridge_irradiance.dds"
-    "assets/envmaps/cedar-bridge/cedar_bridge_specular.dds"
+    "../../../examples/qt3d/exampleresources/assets/envmaps/cedar-bridge/cedar_bridge_irradiance.dds"
+    "../../../examples/qt3d/exampleresources/assets/envmaps/cedar-bridge/cedar_bridge_specular.dds"
 )
 
 qt_internal_add_resource(rigged-simple "envmaps"
