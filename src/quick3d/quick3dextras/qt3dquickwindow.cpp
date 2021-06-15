@@ -118,7 +118,7 @@ Qt3DQuickWindow::Qt3DQuickWindow(QWindow *parent)
 
     resize(1024, 768);
 
-    Qt3DExtras::setupWindowSurface(this, Qt3DRender::API::OpenGL);
+    Qt3DExtras::setupWindowSurface(this, Qt3DRender::API::RHI);
 
     auto coreAspect = new Qt3DCore::QCoreAspect;
     d->m_renderAspect = new Qt3DRender::QRenderAspect;
