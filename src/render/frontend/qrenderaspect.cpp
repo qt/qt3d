@@ -183,6 +183,7 @@
 #include <Qt3DCore/private/qentity_p.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
+#include <Qt3DCore/private/calcboundingvolumejob_p.h>
 
 #include <QThread>
 #include <QOpenGLContext>
@@ -402,6 +403,20 @@ void QRenderAspectPrivate::onEngineStartup()
         auto *coreAspect = qobject_cast<Qt3DCore::QCoreAspect *>(m_aspectManager->aspect(&Qt3DCore::QCoreAspect::staticMetaObject));
         Q_ASSERT(coreAspect);
         m_calculateBoundingVolumeJob->addDependency(coreAspect->calculateBoundingVolumeJob());
+
+        auto bvJob = qSharedPointerCast<Qt3DCore::CalculateBoundingVolumeJob>(coreAspect->calculateBoundingVolumeJob());
+        bvJob->addWatcher(m_calculateBoundingVolumeJob);
+    }
+}
+
+void QRenderAspectPrivate::onEngineAboutToShutdown()
+{
+    if (m_aspectManager) {
+        auto *coreAspect = qobject_cast<Qt3DCore::QCoreAspect *>(m_aspectManager->aspect(&Qt3DCore::QCoreAspect::staticMetaObject));
+        Q_ASSERT(coreAspect);
+
+        auto bvJob = qSharedPointerCast<Qt3DCore::CalculateBoundingVolumeJob>(coreAspect->calculateBoundingVolumeJob());
+        bvJob->removeWatcher(m_calculateBoundingVolumeJob);
     }
 }
 

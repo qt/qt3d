@@ -94,6 +94,14 @@ struct Q_3DCORE_PRIVATE_EXPORT BoundingVolumeComputeData {
     BoundingVolumeComputeResult compute() const;
 };
 
+class Q_3DCORE_PRIVATE_EXPORT BoundingVolumeJobProcessor
+{
+public:
+    virtual ~BoundingVolumeJobProcessor() { }
+
+    virtual void process(const BoundingVolumeComputeResult &result, bool computedResult) = 0;
+};
+
 class Q_3DCORE_PRIVATE_EXPORT CalculateBoundingVolumeJob : public Qt3DCore::QAspectJob
 {
 public:
@@ -104,11 +112,15 @@ public:
     void run() override;
     void postFrame(QAspectEngine *aspectEngine) override;
 
+    void addWatcher(QWeakPointer<BoundingVolumeJobProcessor> watcher);
+    void removeWatcher(QWeakPointer<BoundingVolumeJobProcessor> watcher);
+
 private:
     Q_DECLARE_PRIVATE(CalculateBoundingVolumeJob)
     QCoreAspect *m_aspect;
     QEntity *m_root;
     std::vector<BoundingVolumeComputeResult> m_results;
+    std::vector<QWeakPointer<BoundingVolumeJobProcessor>> m_watchers;
 };
 
 typedef QSharedPointer<CalculateBoundingVolumeJob> CalculateBoundingVolumeJobPtr;
