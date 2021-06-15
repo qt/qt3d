@@ -242,7 +242,7 @@ void CalculateBoundingVolumeJob::run()
 
     QHash<QEntity *, BoundingVolumeComputeData> dirtyEntities;
     QNodeVisitor visitor;
-    visitor.traverse(m_root, [](QNode *) {}, [&dirtyEntities](QEntity *entity) {
+    visitor.traverse(m_root, [](QNode *) {}, [&dirtyEntities, this](QEntity *entity) {
         if (!isTreeEnabled(entity))
             return;
 
@@ -259,15 +259,32 @@ void CalculateBoundingVolumeJob::run()
                 continue;
 
             BoundingVolumeComputeData bvdata;
-            if (!dbv->m_explicitPointsValid && bv->view()) {
+            if (dbv->m_explicitPointsValid) {
+                // we have data explicitly set by the user, pass it to the
+                // watchers as computed data
+                BoundingVolumeComputeResult r;
+                r.entity = entity;
+                r.provider = bv;
+                r.m_min = dbv->m_minPoint;
+                r.m_max = dbv->m_maxPoint;
+                const auto diagonal = r.m_max - r.m_min;
+                r.m_center = r.m_min + diagonal * .5f;
+                r.m_radius = diagonal.length();
+
+                for (auto w: m_watchers) {
+                    auto wp = w.toStrongRef();
+                    if (wp)
+                        wp->process(r, false);
+                }
+                continue;
+            } else if (bv->view()) {
                 bvdata = findBoundingVolumeComputeData(bv->view());
                 if (!bvdata.valid())
                     continue;
                 bvdata.entity = entity;
                 bvdata.provider = bv;
             } else {
-                // bounds are explicitly set, don't bother computing
-                // or no view, can't compute
+                // no view, can't compute
                 continue;
             }
 
@@ -307,12 +324,14 @@ void CalculateBoundingVolumeJob::run()
         }
     }
 
-    // This is needed so that the matching job in the render aspect gets the right data.
-    // It is currently safe since the main thread is locked, there's no other
-    // core aspect jobs in existence, and other aspect jobs only access backend data.
-    // TODO: find a way for aspects to pass around data, or create groups of jobs
-    // that need to run first, sync, then process next group.
-    postFrame(nullptr);
+    // pass the computed results to the watchers
+    for (auto &watcher: m_watchers) {
+        auto watcherPtr = watcher.toStrongRef();
+        if (watcherPtr) {
+            for (const auto &r: m_results)
+                watcherPtr->process(r, true);
+        }
+    }
 }
 
 void CalculateBoundingVolumeJob::postFrame(QAspectEngine *aspectEngine)
@@ -336,6 +355,22 @@ void CalculateBoundingVolumeJob::postFrame(QAspectEngine *aspectEngine)
     }
 
     m_results.clear();
+}
+
+void CalculateBoundingVolumeJob::addWatcher(QWeakPointer<BoundingVolumeJobProcessor> watcher)
+{
+    m_watchers.push_back(watcher);
+}
+
+void CalculateBoundingVolumeJob::removeWatcher(QWeakPointer<BoundingVolumeJobProcessor> watcher)
+{
+    if (watcher.isNull()) {
+        m_watchers.erase(std::remove_if(m_watchers.begin(), m_watchers.end(), [](const QWeakPointer<BoundingVolumeJobProcessor> &w) { return w.isNull(); }),
+                         m_watchers.end());
+    } else {
+        m_watchers.erase(std::remove(m_watchers.begin(), m_watchers.end(), watcher),
+                         m_watchers.end());
+    }
 }
 
 } // namespace Qt3DCore
