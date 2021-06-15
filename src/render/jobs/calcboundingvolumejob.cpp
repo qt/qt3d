@@ -401,32 +401,6 @@ public:
         if (data.valid()) {
             // only valid if front end is a QGeometryRenderer without a view. All other cases handled by core aspect
             m_entities.push_back(data);
-        } else {
-            // TODO: this means data is copied at every frame, should track dirty
-            //       implicit or explicit objects and only copy data for those.
-            //       Ultimately would be best to avoid traversal altogether.
-            if (!data.renderer || data.renderer->primitiveType() == QGeometryRenderer::Patches
-                || !data.renderer->hasView())    // should have been handled above
-                return Continue;
-
-            // renderer has a view, we can pull the data from the front end
-            QBoundingVolume *frontEndBV = qobject_cast<QBoundingVolume *>(m_frontEndNodeManager->lookupNode(data.renderer->peerId()));
-            if (!frontEndBV)
-                return Continue;
-            auto dFrontEndBV = QGeometryRendererPrivate::get(frontEndBV);
-
-            // copy data to the entity
-            if (dFrontEndBV->m_explicitPointsValid) {
-                const auto diagonal = dFrontEndBV->m_maxPoint - dFrontEndBV->m_minPoint;
-                entity->localBoundingVolume()->setCenter(Vector3D(dFrontEndBV->m_minPoint + diagonal * .5f));
-                entity->localBoundingVolume()->setRadius(diagonal.length() * .5f);
-            } else {
-                entity->localBoundingVolume()->setCenter(Vector3D(dFrontEndBV->m_implicitCenter));
-                entity->localBoundingVolume()->setRadius(std::max(dFrontEndBV->m_implicitRadius, 0.0f));
-                entity->unsetBoundingVolumeDirty();
-                // copy the data to the geometry
-                data.geometry->updateExtent(dFrontEndBV->m_implicitMinPoint, dFrontEndBV->m_implicitMaxPoint);
-            }
         }
 
         return Continue;
@@ -435,6 +409,7 @@ public:
     Qt3DCore::QAbstractFrontEndNodeManager *m_frontEndNodeManager = nullptr;
     std::vector<BoundingVolumeComputeData> m_entities;
 };
+
 
 } // anonymous
 
@@ -504,6 +479,31 @@ void CalculateBoundingVolumeJob::postFrame(QAspectEngine *aspectEngine)
     }
 
     m_updatedGeometries.clear();
+}
+
+void CalculateBoundingVolumeJob::process(const Qt3DCore::BoundingVolumeComputeResult &result, bool computedResult)
+{
+    // This gets called from the thread of the CalculateBoundingVolumeJob in the core aspect.
+    // We receive the data calculated there and update our backend nodes
+
+    auto entity = m_manager->renderNodesManager()->lookupResource(result.entity->id());
+    if (!entity)
+        return;
+
+    // copy data to the entity
+    entity->localBoundingVolume()->setCenter(Vector3D(result.m_center));
+    entity->localBoundingVolume()->setRadius(std::max(result.m_radius, 0.0f));
+    entity->unsetBoundingVolumeDirty();
+    // copy the data to the geometry
+    if (computedResult) {
+        auto renderer = entity->renderComponent<GeometryRenderer>();
+        if (renderer) {
+            auto geometry = m_manager->geometryManager()->lookupResource(renderer->geometryId());
+
+            if (geometry)
+                geometry->updateExtent(result.m_min, result.m_max);
+        }
+    }
 }
 
 void CalculateBoundingVolumeJob::setRoot(Entity *node)

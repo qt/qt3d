@@ -49,9 +49,9 @@
 ****************************************************************************/
 
 import Qt3D.Core 2.16
-import Qt3D.Render 2.15
+import Qt3D.Render 2.16
 import Qt3D.Input 2.0
-import Qt3D.Extras 2.15
+import Qt3D.Extras 2.16
 
 import QtQuick 2.0 as QQ2
 
@@ -100,7 +100,7 @@ Entity {
             SphereMesh { radius: 4 },
             PhongMaterial { diffuse: "red" },
             Transform { translation: Qt.vector3d(mainAnimation.x, -9, 0) },
-            BoundingVolume { view: SphereMesh { radius: 2 } }
+            BoundingVolume { view: SphereGeometryView { radius: 2 } }
         ]
     }
 
@@ -110,8 +110,8 @@ Entity {
         components: [
             SphereMesh {
                 radius: 4
-                view.minPoint: Qt.vector3d(-.5, -.5, -.5)
-                view.maxPoint: Qt.vector3d(.5, .5, .5)
+                minPoint: Qt.vector3d(-.5, -.5, -.5)
+                maxPoint: Qt.vector3d(.5, .5, .5)
             },
             PhongMaterial { diffuse: "green" },
             Transform { translation: Qt.vector3d(mainAnimation.x, 0 , 0) }

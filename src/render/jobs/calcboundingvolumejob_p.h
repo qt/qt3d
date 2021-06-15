@@ -54,7 +54,7 @@
 
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
-
+#include <Qt3DCore/private/calcboundingvolumejob_p.h>
 #include <QSharedPointer>
 
 QT_BEGIN_NAMESPACE
@@ -70,7 +70,7 @@ class NodeManagers;
 class Entity;
 class Geometry;
 
-class Q_3DRENDERSHARED_PRIVATE_EXPORT CalculateBoundingVolumeJob : public Qt3DCore::QAspectJob
+class Q_3DRENDERSHARED_PRIVATE_EXPORT CalculateBoundingVolumeJob : public Qt3DCore::QAspectJob, public Qt3DCore::BoundingVolumeJobProcessor
 {
 public:
     explicit CalculateBoundingVolumeJob();
@@ -83,6 +83,8 @@ public:
     void postFrame(Qt3DCore::QAspectEngine *aspectEngine) override;
 
 private:
+    void process(const Qt3DCore::BoundingVolumeComputeResult &result, bool computedResult) override;
+
     NodeManagers *m_manager;
     Entity *m_node;
     Qt3DCore::QAbstractFrontEndNodeManager *m_frontEndNodeManager;

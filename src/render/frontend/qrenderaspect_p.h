@@ -108,6 +108,7 @@ public:
 
     void createNodeManagers();
     void onEngineStartup();
+    void onEngineAboutToShutdown() override;
 
     void registerBackendTypes();
     void unregisterBackendTypes();
