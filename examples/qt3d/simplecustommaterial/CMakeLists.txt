@@ -19,6 +19,7 @@ find_package(Qt6 COMPONENTS Core)
 find_package(Qt6 COMPONENTS Gui)
 find_package(Qt6 COMPONENTS Qml)
 find_package(Qt6 COMPONENTS Quick)
+find_package(Qt6 COMPONENTS 3DRender)
 
 qt_add_executable(simplecustommaterial
     main.cpp
@@ -32,6 +33,7 @@ target_link_libraries(simplecustommaterial PUBLIC
     Qt::Gui
     Qt::Qml
     Qt::Quick
+    Qt::3DRender
 )
 
 

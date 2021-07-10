@@ -36,6 +36,8 @@ if(QT_FEATURE_private_tests)
         textures
     )
 
+    find_package(Qt6 REQUIRED COMPONENTS ShaderTools)
+
     target_link_libraries(RhiRendererLib
         PUBLIC
             Qt::3DCore

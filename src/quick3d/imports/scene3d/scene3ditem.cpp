@@ -68,6 +68,7 @@
 #include <Qt3DRender/private/qrendersurfaceselector_p.h>
 #include <Qt3DRender/private/qrenderaspect_p.h>
 #include <Qt3DRender/private/rendersettings_p.h>
+#include <Qt3DRender/qt3drender-config.h>
 #include <scene3dlogging_p.h>
 #include <scene3drenderer_p.h>
 #include <scene3dsgnode_p.h>
@@ -198,7 +199,7 @@ Scene3DItem::Scene3DItem(QQuickItem *parent)
     setHeight(1);
 
     if (qgetenv("QT3D_RENDERER").isEmpty()) {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if QT_CONFIG(qt3d_rhi_renderer)
         qputenv("QT3D_RENDERER", "rhi"); // QtQuick requires RHI
 #else
         qputenv("QT3D_RENDERER", "opengl"); // QtQuick requires OpenGL
@@ -829,6 +830,17 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
         auto renderAspectPriv = static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(renderAspect));
         renderAspectPriv->m_screen = (rw ? rw->screen() : window()->screen());
         updateWindowSurface();
+
+#if !QT_CONFIG(qt3d_rhi_renderer)
+        QSGRendererInterface::GraphicsApi windowApi = window()->rendererInterface()->graphicsApi();
+
+        if (windowApi != QSGRendererInterface::OpenGLRhi &&
+            windowApi != QSGRendererInterface::OpenGL) {
+
+            qFatal("Qt3D's RHI Renderer is not enabled, please configure RHI to use the OpenGL backend "
+                   "by calling qputenv(\"QSG_RHI_BACKEND\", \"opengl\")");
+        }
+#endif
         managerNode->init();
         // Note: ChangeArbiter is only set after aspect was registered
         QObject::connect(

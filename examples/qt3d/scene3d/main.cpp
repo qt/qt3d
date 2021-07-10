@@ -51,6 +51,9 @@
 #include <QGuiApplication>
 #include <QQuickView>
 
+#include <Qt3DRender/qt3drender-config.h>
+
+
 int main(int argc, char **argv)
 {
     {
@@ -67,6 +70,11 @@ int main(int argc, char **argv)
 #endif
         QSurfaceFormat::setDefaultFormat(format);
     }
+
+#if !QT_CONFIG(qt3d_rhi_renderer)
+    qputenv("QSG_RHI_BACKEND", "opengl");
+#endif
+
     QGuiApplication app(argc, argv);
 
     // Force OpenGL backend
