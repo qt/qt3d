@@ -62,6 +62,7 @@
 #include <Qt3DLogic/qlogicaspect.h>
 #include <Qt3DRender/qcamera.h>
 #include <Qt3DRender/private/vulkaninstance_p.h>
+#include <Qt3DRender/qt3drender-config.h>
 #include <qopenglcontext.h>
 #include <private/qrendersettings_p.h>
 
@@ -278,13 +279,15 @@ void setupWindowSurface(QWindow *window, Qt3DRender::API api) noexcept
     // backend is in use will get a valid value.
     bool useRhi = false;
     if (qEnvironmentVariableIsEmpty("QT3D_RENDERER")) {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0) && QT_CONFIG(qt3d_rhi_renderer)
         qputenv("QT3D_RENDERER", "rhi");
 #else
         qputenv("QT3D_RENDERER", "opengl");
 #endif
     }
+#if QT_CONFIG(qt3d_rhi_renderer)
     useRhi = qEnvironmentVariable("QT3D_RENDERER") == QStringLiteral("rhi");
+#endif
 
     if (!useRhi)
         api = Qt3DRender::API::OpenGL;

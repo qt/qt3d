@@ -51,6 +51,7 @@
 #include <QGuiApplication>
 #include <QQuickView>
 #include <QOpenGLContext>
+#include <Qt3DRender/qt3drender-config.h>
 
 void setSurfaceFormat()
 {
@@ -67,6 +68,10 @@ void setSurfaceFormat()
     format.setSamples(4);
     format.setStencilBufferSize(8);
     QSurfaceFormat::setDefaultFormat(format);
+
+#if !QT_CONFIG(qt3d_rhi_renderer)
+    qputenv("QSG_RHI_BACKEND", "opengl");
+#endif
 }
 
 int main(int argc, char **argv)

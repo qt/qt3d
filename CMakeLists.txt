@@ -13,7 +13,7 @@ project(Qt3D # special case
 # special case begin
 find_package(Qt6 ${PROJECT_VERSION} CONFIG REQUIRED COMPONENTS BuildInternals Core)
 find_package(Qt6 ${PROJECT_VERSION} QUIET CONFIG OPTIONAL_COMPONENTS
-             Concurrent Widgets Qml Quick Gamepad OpenGL ShaderTools Multimedia)
+             Concurrent Widgets Qml Quick Gamepad OpenGL Multimedia)
 # special case end
 
 if(NOT TARGET Qt::Gui)

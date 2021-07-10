@@ -16,15 +16,16 @@ endif()
 
 #### Features
 
-qt_feature("qt3d-opengl-renderer" PRIVATE
+qt_feature("qt3d-opengl-renderer" PUBLIC
     SECTION "Qt 3D Renderers"
     LABEL "OpenGL Renderer"
     PURPOSE "Use the OpenGL renderer"
 )
-qt_feature("qt3d-rhi-renderer" PRIVATE
+qt_feature("qt3d-rhi-renderer" PUBLIC
     SECTION "Qt 3D Renderers"
     LABEL "RHI Renderer"
-    PURPOSE "Use the RHI renderer"
+    PURPOSE "Use the RHI renderer (requires qtShaderTools module)"
+    AUTODETECT false
 )
 qt_feature("qt3d-vulkan" PUBLIC
     LABEL "Vulkan"
