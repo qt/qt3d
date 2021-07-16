@@ -1501,7 +1501,7 @@ SubmissionContext::ShaderCreationInfo SubmissionContext::createShaderProgram(RHI
         generatedShaders.emplace_back(QShader::HlslShader, QShaderVersion(50));
 #endif
 
-#ifdef Q_OS_MACOS
+#if defined(Q_OS_MACOS) || defined(Q_OS_IOS)
     if (m_rhi->backend() == QRhi::Metal)
         generatedShaders.emplace_back(QShader::MslShader, QShaderVersion(12));
 #endif
