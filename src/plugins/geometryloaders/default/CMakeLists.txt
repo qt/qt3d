@@ -13,7 +13,7 @@ qt_internal_add_plugin(DefaultGeometryLoaderPlugin
         objgeometryloader.cpp
         plygeometryloader.cpp
         stlgeometryloader.cpp
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate
         Qt::3DRender

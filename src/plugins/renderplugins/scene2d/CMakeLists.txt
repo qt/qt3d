@@ -10,7 +10,7 @@ qt_internal_add_plugin(Scene2DPlugin
     SOURCES
         main.cpp
         scene2dplugin.cpp scene2dplugin.h
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate
         Qt::3DQuickScene2D
