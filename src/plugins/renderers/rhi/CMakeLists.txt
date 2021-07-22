@@ -81,7 +81,7 @@ qt_internal_add_plugin(RhiRendererPlugin
         managers
         renderer
         textures
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate
         Qt::3DRender

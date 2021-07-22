@@ -12,7 +12,7 @@ qt_internal_add_plugin(AssimpSceneImportPlugin
         assimphelpers.cpp assimphelpers.h
         assimpimporter.cpp assimpimporter.h
         main.cpp
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DAnimation
         Qt::3DCore
         Qt::3DCorePrivate
