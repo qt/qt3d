@@ -153,7 +153,8 @@ QList<QShaderFormat> QShaderNode::availableFormats() const
 QShaderNode::Rule QShaderNode::rule(const QShaderFormat &format) const
 {
     const QPair<QShaderFormat, Rule> *selected = nullptr;
-    for (const auto &entry : qAsConst(m_rules)) {
+    for (auto it = m_rules.crbegin(); it != m_rules.crend(); ++it) {
+        const auto &entry = *it;
         if (format.supports(entry.first)) {
             if (!selected || entry.first.version() > selected->first.version())
                 selected = &entry;
