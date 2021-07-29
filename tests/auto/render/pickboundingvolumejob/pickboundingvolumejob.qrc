@@ -13,5 +13,6 @@
         <file>testscene_priorityoverlapping.qml</file>
         <file>testscene_nopicking.qml</file>
         <file>testscene_layerfilter.qml</file>
+        <file>testscene_nested_layerfilter.qml</file>
     </qresource>
 </RCC>
