@@ -50,6 +50,11 @@ public :
 
 private Q_SLOTS:
 
+    void initTestCase()
+    {
+        qputenv("QT3D_RENDERER", "opengl");
+    }
+
     void checkPreRenderBinJobs()
     {
         // GIVEN
