@@ -215,6 +215,11 @@ class tst_RenderViewBuilder : public QObject
 
 private Q_SLOTS:
 
+    void initTestCase()
+    {
+        qputenv("QT3D_RENDERER", "opengl");
+    }
+
     void checkInitialState()
     {
         // GIVEN
