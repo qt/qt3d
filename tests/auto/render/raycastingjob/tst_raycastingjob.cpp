@@ -56,6 +56,7 @@
 #include <Qt3DRender/private/updateworldtransformjob_p.h>
 #include <Qt3DRender/private/expandboundingvolumejob_p.h>
 #include <Qt3DRender/private/calcboundingvolumejob_p.h>
+#include <Qt3DRender/private/updateentitylayersjob_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 
@@ -229,6 +230,10 @@ void runRequiredJobs(Qt3DRender::TestAspect *test)
     expandBVolume.setRoot(test->sceneRoot());
     expandBVolume.setManagers(test->nodeManagers());
     expandBVolume.run();
+
+    Qt3DRender::Render::UpdateEntityLayersJob updateEntityLayer;
+    updateEntityLayer.setManager(test->nodeManagers());
+    updateEntityLayer.run();
 }
 
 void initializeJob(Qt3DRender::Render::RayCastingJob *job, Qt3DRender::TestAspect *test)

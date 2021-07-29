@@ -329,7 +329,8 @@ void PickBoundingVolumeJob::processPickEvent(const PickingUtils::PickConfigurati
         }
 
         PickingUtils::HierarchicalEntityPicker entityPicker(ray);
-        entityPicker.setFilterLayers(vca.layers, vca.layerFilterMode);
+        entityPicker.setLayerFilterIds(vca.layersFilters);
+
         if (entityPicker.collectHits(m_manager, m_node)) {
             if (pickConfiguration.trianglePickingRequested) {
                 PickingUtils::TriangleCollisionGathererFunctor gathererFunctor;

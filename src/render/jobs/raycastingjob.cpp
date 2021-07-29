@@ -201,7 +201,7 @@ bool RayCastingJob::pick(const QList<QPair<Entity *, RayCaster *>> &entities)
         for (const QRay3D &ray: qAsConst(rays)) {
             PickingUtils::HitList sphereHits;
             PickingUtils::HierarchicalEntityPicker entityPicker(ray, false);
-            entityPicker.setFilterLayers(pair.second->layerIds(), pair.second->filterMode());
+            entityPicker.setLayerIds(pair.second->layerIds(), pair.second->filterMode());
             if (entityPicker.collectHits(m_manager, m_node)) {
                 if (pickConfiguration.trianglePickingRequested) {
                     PickingUtils::TriangleCollisionGathererFunctor gathererFunctor;
