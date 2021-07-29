@@ -211,14 +211,17 @@ void runRequiredJobs(Qt3DRender::TestAspect *test)
 
     Qt3DCore::CalculateBoundingVolumeJob calcCBVolume(nullptr);
     calcCBVolume.setRoot(test->root());
+
+    Qt3DRender::Render::CalculateBoundingVolumeJobPtr calcRBVolume = Qt3DRender::Render::CalculateBoundingVolumeJobPtr::create();
+    calcRBVolume->setManagers(test->nodeManagers());
+    calcRBVolume->setFrontEndNodeManager(test);
+    calcRBVolume->setRoot(test->sceneRoot());
+
+    calcCBVolume.addWatcher(calcRBVolume);
+
     calcCBVolume.run();
     calcCBVolume.postFrame(nullptr);
-
-    Qt3DRender::Render::CalculateBoundingVolumeJob calcRBVolume;
-    calcRBVolume.setManagers(test->nodeManagers());
-    calcRBVolume.setFrontEndNodeManager(test);
-    calcRBVolume.setRoot(test->sceneRoot());
-    calcRBVolume.run();
+    calcRBVolume->run();
 
     Qt3DRender::Render::UpdateWorldBoundingVolumeJob updateWorldBVolume;
     updateWorldBVolume.setManager(test->nodeManagers()->renderNodesManager());
