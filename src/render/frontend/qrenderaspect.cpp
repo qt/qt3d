@@ -318,7 +318,9 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::SubmissionType submiss
     m_expandBoundingVolumeJob->addDependency(m_updateWorldBoundingVolumeJob);
     m_updateLevelOfDetailJob->addDependency(m_expandBoundingVolumeJob);
     m_pickBoundingVolumeJob->addDependency(m_expandBoundingVolumeJob);
+    m_pickBoundingVolumeJob->addDependency(m_updateEntityLayersJob);
     m_rayCastingJob->addDependency(m_expandBoundingVolumeJob);
+    m_rayCastingJob->addDependency(m_updateEntityLayersJob);
 }
 
 /*! \internal */
