@@ -51,7 +51,7 @@
 import Qt3D.Core 2.0
 import Qt3D.Render 2.16
 import Qt3D.Input 2.0
-import Qt3D.Extras 2.0
+import Qt3D.Extras 2.16
 
 import QtQuick 2.0 as QQ2
 import QtQuick.Window 2.2 as W
@@ -279,7 +279,7 @@ Entity {
             onExited: sphere2.material.diffuse = "green"
         }
         readonly property PickingProxy pickingProxy: PickingProxy {
-            view: CuboidMesh { xExtent: 2; yExtent: 2; zExtent: 2 }
+            view: CuboidGeometryView { xExtent: 2; yExtent: 2; zExtent: 2 }
         }
 
         readonly property Transform transform: Transform {
