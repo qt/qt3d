@@ -1,5 +1,9 @@
 # Generated from manual.pro.
 
+if(NOT QT_FEATURE_qt3d_extras)
+    return()
+endif()
+
 add_subdirectory(bigscene-cpp)
 add_subdirectory(component-changes)
 add_subdirectory(custom-mesh-cpp)
