@@ -34,7 +34,6 @@ target_link_libraries(3d-text PUBLIC
     Qt::3DExtras
     Qt::3DInput
     Qt::3DRender
-    Qt::3DRenderPrivate
     Qt::Core
     Qt::Gui
 )

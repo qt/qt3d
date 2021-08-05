@@ -18,19 +18,22 @@ qt_internal_add_module(3DQuickScene2D
     INCLUDE_DIRECTORIES
         items
     LIBRARIES
+        Qt::3DCorePrivate
+        Qt::3DQuickPrivate
+        Qt::3DRenderPrivate
         Qt::CorePrivate
         Qt::QmlPrivate
     PUBLIC_LIBRARIES
         Qt::3DCore
-        Qt::3DCorePrivate
         Qt::3DQuick
-        Qt::3DQuickPrivate
         Qt::3DRender
-        Qt::3DRenderPrivate
         Qt::Core
         Qt::Gui
         Qt::Qml
     PRIVATE_MODULE_INTERFACE
+        Qt::3DCorePrivate
+        Qt::3DQuickPrivate
+        Qt::3DRenderPrivate
         Qt::CorePrivate
         Qt::QmlPrivate
 )
