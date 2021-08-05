@@ -6,7 +6,7 @@
 
 qt_internal_add_plugin(AssimpSceneImportPlugin
     OUTPUT_NAME assimpsceneimport
-    TYPE sceneparsers
+    PLUGIN_TYPE sceneparsers
     EXCEPTIONS # special case
     SOURCES
         assimphelpers.cpp assimphelpers.h

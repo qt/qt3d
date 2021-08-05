@@ -90,7 +90,7 @@ endif()
 
 qt_internal_add_plugin(OpenGLRendererPlugin
     OUTPUT_NAME openglrenderer
-    TYPE renderers
+    PLUGIN_TYPE renderers
     SOURCES
         main.cpp
         ${openGLRendererSources}

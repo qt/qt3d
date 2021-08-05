@@ -6,7 +6,7 @@
 
 qt_internal_add_plugin(DefaultGeometryLoaderPlugin
     OUTPUT_NAME defaultgeometryloader
-    TYPE geometryloaders
+    PLUGIN_TYPE geometryloaders
     SOURCES
         basegeometryloader.cpp basegeometryloader_p.h
         main.cpp
