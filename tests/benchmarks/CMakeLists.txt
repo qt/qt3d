@@ -2,5 +2,6 @@
 
 add_subdirectory(core)
 if(QT_FEATURE_qt3d_render)
-    add_subdirectory(render)
+# Disabled temporarily as some benchmarks fail to build on Mac
+#    add_subdirectory(render)
 endif()
