@@ -66,7 +66,7 @@ endif()
 
 qt_internal_add_plugin(RhiRendererPlugin
     OUTPUT_NAME rhirenderer
-    TYPE renderers
+    PLUGIN_TYPE renderers
     SOURCES
         main.cpp
         ${rhiRendererSources}

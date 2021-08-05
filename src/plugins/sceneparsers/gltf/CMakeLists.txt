@@ -6,7 +6,7 @@
 
 qt_internal_add_plugin(GLTFSceneImportPlugin
     OUTPUT_NAME gltfsceneimport
-    TYPE sceneparsers
+    PLUGIN_TYPE sceneparsers
     SOURCES
         gltfimporter.cpp gltfimporter.h
         main.cpp

@@ -6,7 +6,7 @@
 
 qt_internal_add_plugin(GLTFGeometryLoaderPlugin
     OUTPUT_NAME gltfgeometryloader
-    TYPE geometryloaders
+    PLUGIN_TYPE geometryloaders
     SOURCES
         gltfgeometryloader.cpp gltfgeometryloader.h
         main.cpp

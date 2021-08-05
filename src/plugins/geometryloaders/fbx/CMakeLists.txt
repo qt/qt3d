@@ -6,7 +6,7 @@
 
 qt_internal_add_plugin(fbxGeometryLoaderPlugin
     OUTPUT_NAME fbxgeometryloader
-    TYPE geometryloaders
+    PLUGIN_TYPE geometryloaders
     SOURCES
         fbxgeometryloader.cpp fbxgeometryloader.h
         main.cpp

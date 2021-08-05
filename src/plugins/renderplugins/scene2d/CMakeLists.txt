@@ -6,7 +6,7 @@
 
 qt_internal_add_plugin(Scene2DPlugin
     OUTPUT_NAME scene2d
-    TYPE renderplugins
+    PLUGIN_TYPE renderplugins
     SOURCES
         main.cpp
         scene2dplugin.cpp scene2dplugin.h
