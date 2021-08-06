@@ -15,7 +15,7 @@ qt_internal_add_qml_module(quick3danimationplugin
     INSTALL_SOURCE_QMLTYPES "plugins.qmltypes"
     SOURCES
         qt3dquick3danimationplugin.cpp qt3dquick3danimationplugin.h
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DAnimation
         Qt::3DCore
         Qt::3DQuick

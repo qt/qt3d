@@ -15,7 +15,7 @@ qt_internal_add_qml_module(quick3dlogicplugin
     INSTALL_SOURCE_QMLTYPES "plugins.qmltypes"
     SOURCES
         qt3dquick3dlogicplugin.cpp qt3dquick3dlogicplugin.h
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         3DLogic
         Qt::Core
