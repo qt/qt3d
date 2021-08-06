@@ -15,7 +15,7 @@ qt_internal_add_qml_module(quick3dinputplugin
     INSTALL_SOURCE_QMLTYPES "plugins.qmltypes"
     SOURCES
         qt3dquick3dinputplugin.cpp qt3dquick3dinputplugin.h
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         Qt::3DInput
         Qt::3DInputPrivate

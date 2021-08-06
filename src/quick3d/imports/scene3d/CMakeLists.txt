@@ -21,7 +21,7 @@ qt_internal_add_qml_module(qtquickscene3dplugin
         scene3dsgmaterial.cpp scene3dsgmaterial_p.h
         scene3dsgmaterialshader.cpp scene3dsgmaterialshader_p.h
         scene3dsgnode.cpp scene3dsgnode_p.h
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         Qt::3DRender
         Qt::3DRenderPrivate
@@ -42,17 +42,17 @@ qt_internal_add_qml_module(qtquickscene3dplugin
 #####################################################################
 
 qt_internal_extend_target(qtquickscene3dplugin CONDITION QT_FEATURE_qt3d_input
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DInput
 )
 
 qt_internal_extend_target(qtquickscene3dplugin CONDITION QT_FEATURE_qt3d_logic
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DLogic
 )
 
 qt_internal_extend_target(qtquickscene3dplugin CONDITION QT_FEATURE_qt3d_animation
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DAnimation
 )
 

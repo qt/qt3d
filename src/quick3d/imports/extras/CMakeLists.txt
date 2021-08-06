@@ -17,7 +17,7 @@ qt_internal_add_qml_module(quick3dextrasplugin
         Qt3D.Logic/2.0
     SOURCES
         qt3dquick3dextrasplugin.cpp qt3dquick3dextrasplugin.h
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate
         Qt::3DExtras
