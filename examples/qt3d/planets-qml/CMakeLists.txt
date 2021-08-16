@@ -1,6 +1,6 @@
 # Generated from planets-qml.pro.
 
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.16)
 project(planets-qml LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
