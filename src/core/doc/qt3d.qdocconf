@@ -18,10 +18,6 @@ qhp.Qt3D.virtualFolder       = qt3d
 qhp.Qt3D.indexTitle          = Qt 3D
 qhp.Qt3D.indexRoot           =
 
-qhp.Qt3D.filterAttributes                   = qt3d $QT_VERSION qtrefdoc
-qhp.Qt3D.customFilters.Qt.name              = Qt3D $QT_VERSION
-qhp.Qt3D.customFilters.Qt.filterAttributes  = qt3d $QT_VERSION
-
 qhp.Qt3D.subprojects                    = classes qmltypes examples
 
 qhp.Qt3D.subprojects.classes.title      = C++ Classes
