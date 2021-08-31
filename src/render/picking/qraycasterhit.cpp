@@ -51,7 +51,7 @@ public:
     QRayCasterHitData(QRayCasterHit::HitType type, Qt3DCore::QNodeId id, float distance,
                       const QVector3D &localIntersect, const QVector3D &worldIntersect,
                       uint primitiveIndex, uint v1 = 0, uint v2 = 0, uint v3 = 0);
-    QRayCasterHitData(const QRayCasterHitData& other) : m_type(other.m_type), m_entityId(other.m_entityId), m_entity(other.m_entity),
+    QRayCasterHitData(const QRayCasterHitData& other) : QSharedData(), m_type(other.m_type), m_entityId(other.m_entityId), m_entity(other.m_entity),
                                                         m_distance(other.m_distance), m_localIntersection(other.m_localIntersection),
                                                         m_worldIntersection(other.m_worldIntersection), m_primitiveIndex(other.m_primitiveIndex),
                                                         m_vertex1Index(other.m_vertex1Index), m_vertex2Index(other.m_vertex2Index), m_vertex3Index(other.m_vertex3Index) { }
