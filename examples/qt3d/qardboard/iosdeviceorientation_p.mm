@@ -1,5 +1,6 @@
 /****************************************************************************
 **
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
@@ -53,10 +54,7 @@
 
 #include "iosdeviceorientation.h"
 #import "iosdeviceorientation_p.h"
-
-#define RADIANS_TO_DEGREES(radians) ((radians) * (180.0 / M_PI))
-#define DEGREES_TO_RADIANS(angle) ((angle) / 180.0 * M_PI)
-
+#include <QtCore/qmath.h>
 
 @interface QIOSMotionManager : NSObject {
 }
@@ -146,9 +144,9 @@
     //    body of the device, with its origin at the center of gravity and directed toward the bottom of the device.
 
     CMAttitude *attitude = motion.attitude;
-    handler->setRoll(90 - RADIANS_TO_DEGREES(attitude.roll));
-    handler->setPitch(RADIANS_TO_DEGREES(attitude.pitch));
-    handler->setYaw(RADIANS_TO_DEGREES(attitude.yaw));
+    handler->setRoll(90 - qRadiansToDegrees(attitude.roll));
+    handler->setPitch(qRadiansToDegrees(attitude.pitch));
+    handler->setYaw(qRadiansToDegrees(attitude.yaw));
 }
 
 @end
