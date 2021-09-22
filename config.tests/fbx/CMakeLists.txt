@@ -1,6 +1,6 @@
 # Generated from fbx.pro.
 
-cmake_minimum_required(VERSION 3.14.0)
+cmake_minimum_required(VERSION 3.16)
 project(config_test_fbx LANGUAGES C CXX)
 
 foreach(p ${QT_CONFIG_COMPILE_TEST_PACKAGES})
