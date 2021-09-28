@@ -115,6 +115,7 @@ void ClipAnimator::cleanup()
     m_running = false;
     m_loops = 1;
     m_clipFormat = ClipFormat();
+    m_currentLoop = 0;
     m_normalizedLocalTime = m_lastNormalizedLocalTime = -1.0f;
 }
 
