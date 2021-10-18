@@ -80,11 +80,14 @@ void ObjectPicker::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstT
     if (!node)
         return;
 
-    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
-
     if (firstTime) {
         markDirty(AbstractRenderer::AllDirty);
         notifyJob();
+    }
+
+    if (isEnabled() != node->isEnabled()) {
+        markDirty(AbstractRenderer::AllDirty);
+        // We let QBackendNode::syncFromFrontEnd change the enabled property
     }
 
     if (node->isHoverEnabled() != m_hoverEnabled) {
@@ -104,6 +107,8 @@ void ObjectPicker::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstT
         markDirty(AbstractRenderer::AllDirty);
         notifyJob();
     }
+
+    BackendNode::syncFromFrontEnd(frontEnd, firstTime);
 }
 
 void ObjectPicker::notifyJob()
