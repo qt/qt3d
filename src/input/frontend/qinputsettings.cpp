@@ -97,7 +97,7 @@ QInputSettings::~QInputSettings()
  */
 
 /*!
-    \qmlproperty Object InputSettings::eventSource
+    \qmlproperty QtObject InputSettings::eventSource
 
     Holds the current event source. An event source is an object that is capable
     of receiving various input events, such as mouse or keyboard events.

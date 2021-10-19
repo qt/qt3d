@@ -285,7 +285,7 @@ Qt3DCore::QEntity *QForwardRenderer::camera() const
 }
 
 /*!
-    \qmlproperty Object ForwardRenderer::window
+    \qmlproperty QtObject ForwardRenderer::window
 
     Holds the current render surface.
 
@@ -300,7 +300,7 @@ Qt3DCore::QEntity *QForwardRenderer::camera() const
 */
 
 /*!
-    \qmlproperty Object ForwardRenderer::surface
+    \qmlproperty QtObject ForwardRenderer::surface
 
     Holds the current render surface.
 */
