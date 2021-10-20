@@ -42,6 +42,7 @@
 
 #include <QtCore/qscopedpointer.h>
 #include <QtCore/qstring.h>
+#include <QtCore/qvector.h>
 #include <Qt3DAnimation/qt3danimation_global.h>
 #include <Qt3DAnimation/qkeyframe.h>
 
@@ -70,7 +71,7 @@ public:
     void clearKeyFrames();
 
     // Iterator API
-    typedef const QKeyFrame *const_iterator;
+    typedef QVector<QKeyFrame>::const_iterator const_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
     const_iterator begin()  const noexcept;
