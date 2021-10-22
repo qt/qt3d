@@ -122,12 +122,12 @@ bool QAnimationClipData::isValid() const noexcept
 
 QAnimationClipData::const_iterator QAnimationClipData::begin() const noexcept
 {
-    return d->m_channels.cbegin();
+    return d->m_channels.cbegin().operator->();
 }
 
 QAnimationClipData::const_iterator QAnimationClipData::end() const noexcept
 {
-    return d->m_channels.cend();
+    return d->m_channels.cend().operator->();
 }
 
 

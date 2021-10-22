@@ -117,12 +117,12 @@ void QChannelComponent::clearKeyFrames()
 
 QChannelComponent::const_iterator QChannelComponent::begin() const noexcept
 {
-    return d->m_keyFrames.cbegin();
+    return d->m_keyFrames.cbegin().operator->();
 }
 
 QChannelComponent::const_iterator QChannelComponent::end() const noexcept
 {
-    return d->m_keyFrames.cend();
+    return d->m_keyFrames.cend().operator->();
 }
 
 bool operator==(const QChannelComponent &lhs, const QChannelComponent &rhs) noexcept

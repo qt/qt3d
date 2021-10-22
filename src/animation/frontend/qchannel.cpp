@@ -138,12 +138,12 @@ void QChannel::clearChannelComponents()
 
 QChannel::const_iterator QChannel::begin() const noexcept
 {
-    return d->m_channelComponents.cbegin();
+    return d->m_channelComponents.cbegin().operator->();
 }
 
 QChannel::const_iterator QChannel::end() const noexcept
 {
-    return d->m_channelComponents.cend();
+    return d->m_channelComponents.cend().operator->();
 }
 
 bool operator==(const QChannel &lhs, const QChannel &rhs) noexcept
