@@ -42,7 +42,6 @@
 
 #include <QtCore/qscopedpointer.h>
 #include <QtCore/qstring.h>
-#include <QtCore/qvector.h>
 #include <Qt3DAnimation/qt3danimation_global.h>
 #include <Qt3DAnimation/qchannelcomponent.h>
 
@@ -74,7 +73,7 @@ public:
     void clearChannelComponents();
 
     // Iterator API
-    typedef QVector<QChannelComponent>::const_iterator const_iterator;
+    typedef const QChannelComponent *const_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
     const_iterator begin()  const noexcept;
