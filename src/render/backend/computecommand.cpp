@@ -81,7 +81,10 @@ void ComputeCommand::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firs
     if (!node)
         return;
 
+    const bool wasEnabled = isEnabled();
     BackendNode::syncFromFrontEnd(frontEnd, firstTime);
+    if (wasEnabled != isEnabled())
+        markDirty(AbstractRenderer::ComputeDirty);
 
     if (m_workGroups[0] != node->workGroupX()) {
         m_workGroups[0] = node->workGroupX();
