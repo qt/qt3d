@@ -64,9 +64,8 @@ class QSceneExporter;
 class Q_3DRENDERSHARED_PRIVATE_EXPORT QSceneExportFactory
 {
 public:
-    static QStringList keys(const QString &pluginPath = QString());
-    static QSceneExporter *create(const QString &name, const QStringList &args,
-                                  const QString &pluginPath = QString());
+    static QStringList keys();
+    static QSceneExporter *create(const QString &name, const QStringList &args);
 };
 
 } // namespace Qt3DRender

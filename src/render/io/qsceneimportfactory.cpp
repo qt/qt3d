@@ -50,46 +50,14 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader, (QSceneImportFactoryInterface_iid, QLatin1String("/sceneparsers"), Qt::CaseInsensitive))
-#ifndef QT_NO_LIBRARY
-Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, directLoader, (QSceneImportFactoryInterface_iid, QLatin1String(""), Qt::CaseInsensitive))
-#endif
 
-QStringList QSceneImportFactory::keys(const QString &pluginPath)
+QStringList QSceneImportFactory::keys()
 {
-    QStringList list;
-    if (!pluginPath.isEmpty()) {
-#if QT_CONFIG(library)
-        QCoreApplication::addLibraryPath(pluginPath);
-        list = directLoader()->keyMap().values();
-        if (!list.isEmpty()) {
-            const QString postFix = QLatin1String(" (from ")
-                    + QDir::toNativeSeparators(pluginPath)
-                    + QLatin1Char(')');
-            const QStringList::iterator end = list.end();
-            for (QStringList::iterator it = list.begin(); it != end; ++it)
-                (*it).append(postFix);
-        }
-#else
-        qWarning() << QSceneImporter::tr("Cannot query QSceneImporter plugins at %1. "
-                                         "Library loading is disabled.").arg(pluginPath);
-#endif
-    }
-    list.append(loader()->keyMap().values());
-    return list;
+    return loader->keyMap().values();
 }
 
-QSceneImporter *QSceneImportFactory::create(const QString &name, const QStringList &args, const QString &pluginPath)
+QSceneImporter *QSceneImportFactory::create(const QString &name, const QStringList &args)
 {
-    if (!pluginPath.isEmpty()) {
-#if QT_CONFIG(library)
-        QCoreApplication::addLibraryPath(pluginPath);
-        if (QSceneImporter *ret = qLoadPlugin<QSceneImporter, QSceneImportPlugin>(directLoader(), name, args))
-            return ret;
-#else
-        qWarning() << QSceneImporter::tr("Cannot load QSceneImporter plugin from %1. "
-                                         "Library loading is disabled.").arg(pluginPath);
-#endif
-    }
     return qLoadPlugin<QSceneImporter, QSceneImportPlugin>(loader(), name, args);
 }
 

@@ -63,8 +63,8 @@ class QInputDeviceIntegration;
 class QInputDeviceIntegrationFactory
 {
 public:
-    static QStringList keys(const QString &pluginPath = QString());
-    static QInputDeviceIntegration *create(const QString &name, const QStringList &args, const QString &pluginPath = QString());
+    static QStringList keys();
+    static QInputDeviceIntegration *create(const QString &name, const QStringList &args);
 };
 
 } // Qt3DInput
