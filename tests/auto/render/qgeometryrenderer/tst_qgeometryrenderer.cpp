@@ -56,7 +56,7 @@ public:
         return nullptr;
     }
 
-    bool operator ==(const Qt3DRender::QGeometryFactory &other) const final
+    bool equals(const Qt3DRender::QGeometryFactory &other) const final
     {
         const TestFactory *otherFactory = Qt3DRender::functor_cast<TestFactory>(&other);
         if (otherFactory != nullptr)
