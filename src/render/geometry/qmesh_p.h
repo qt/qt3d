@@ -119,7 +119,7 @@ public :
     QMesh::Status status() const { return m_status; }
 
     Qt3DCore::QGeometry *operator()() override;
-    bool operator ==(const Qt3DCore::QGeometryFactory &other) const override;
+    bool equals(const Qt3DCore::QGeometryFactory &other) const override;
     QT3D_FUNCTOR(MeshLoaderFunctor)
 
 private:
