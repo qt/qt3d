@@ -47,7 +47,7 @@ public:
         return nullptr;
     }
 
-    bool operator ==(const Qt3DCore::QGeometryFactory &other) const override
+    bool equals(const Qt3DCore::QGeometryFactory &other) const override
     {
         return Qt3DCore::functor_cast<MeshFunctorA>(&other);
     }
@@ -69,7 +69,7 @@ public:
         return nullptr;
     }
 
-    bool operator ==(const Qt3DCore::QGeometryFactory &other) const override
+    bool equals(const Qt3DCore::QGeometryFactory &other) const override
     {
         return Qt3DCore::functor_cast<MeshFunctorB>(&other);
     }
@@ -86,7 +86,7 @@ public:
     ~MeshFunctorASub()
     {}
 
-    bool operator ==(const Qt3DCore::QGeometryFactory &other) const override
+    bool equals(const Qt3DCore::QGeometryFactory &other) const override
     {
         return Qt3DCore::functor_cast<MeshFunctorASub>(&other);
     }
