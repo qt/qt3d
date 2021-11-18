@@ -107,6 +107,7 @@ class QDiffuseMapMaterialPrivate : public Qt3DRender::QMaterialPrivate
     Qt3DRender::QShaderProgramBuilder *m_diffuseMapRHIShaderBuilder;
     Qt3DRender::QFilterKey *m_filterKey;
 
+public:
     Q_DECLARE_PUBLIC(QDiffuseMapMaterial)
 };
 

@@ -104,6 +104,7 @@ class QTextureMaterialPrivate : public Qt3DRender::QMaterialPrivate
     Qt3DRender::QBlendEquation *m_blendEquation;
     Qt3DRender::QFilterKey *m_filterKey;
 
+public:
     Q_DECLARE_PUBLIC(QTextureMaterial)
 };
 
