@@ -1872,6 +1872,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     // Remove previous dependencies
     m_cleanupJob->removeDependency(QWeakPointer<QAspectJob>());
 
+    const bool dirtyParametersForCurrentFrame = m_dirtyBits.marked & AbstractRenderer::ParameterDirty;
     const BackendNodeDirtySet dirtyBitsForFrame = m_dirtyBits.marked | m_dirtyBits.remaining;
     m_dirtyBits.marked = {};
     m_dirtyBits.remaining = {};
@@ -1994,6 +1995,10 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     }
 
     m_dirtyBits.remaining = dirtyBitsForFrame & notCleared;
+
+    // Dirty Parameters might need 2 frames to react if the parameter references a texture
+    if (dirtyParametersForCurrentFrame)
+        m_dirtyBits.remaining |= AbstractRenderer::ParameterDirty;
 
     return renderBinJobs;
 }
