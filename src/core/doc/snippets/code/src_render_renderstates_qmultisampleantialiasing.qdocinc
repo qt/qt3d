@@ -1,8 +1,9 @@
 Further, the shader code must use multisampling sampler types and texelFetch() instead
     of texture().
 
-\oldcode
+For example, if you have code like
 
+\code
 #version 150
 
 uniform sampler2D colorTexture;
@@ -13,9 +14,11 @@ void main()
 {
     fragColor = texture(colorTexture, texCoord);
 }
+\endcode
 
-\newcode
+you can rewrite it as
 
+\code
 #version 150
 
 uniform sampler2DMS colorTexture;
@@ -31,5 +34,4 @@ void main()
                 texelFetch(colorTexture, tc, 3);
     fragColor = c / 4.0;
 }
-
 \endcode
