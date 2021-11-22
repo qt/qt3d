@@ -713,7 +713,7 @@ void sortByMaterial(EntityRenderCommandDataView *view, int begin, const int end)
     while (begin != end) {
         if (begin + 1 < rangeEnd) {
             std::stable_sort(commandIndices.begin() + begin + 1, commandIndices.begin() + rangeEnd,
-                             [&commands] (const int &iA, const int &iB) {
+                             [&commands] (size_t iA, size_t iB) {
                 const RenderCommand &a = commands[iA];
                 const RenderCommand &b = commands[iB];
                 return a.m_material.handle() < b.m_material.handle();
