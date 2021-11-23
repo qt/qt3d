@@ -358,14 +358,17 @@ float AnimationClip::findDuration()
 {
     // Iterate over the contained fcurves and find the longest one
     float tMax = 0.f;
+    float tMin = 1.0f;
     for (const Channel &channel : qAsConst(m_channels)) {
         for (const ChannelComponent &channelComponent : qAsConst(channel.channelComponents)) {
-            const float t = channelComponent.fcurve.endTime();
-            if (t > tMax)
-                tMax = t;
+            const float tStart = channelComponent.fcurve.startTime();
+            const float tEnd = channelComponent.fcurve.endTime();
+            tMax = std::max(tEnd, tMax);
+            tMin = std::min(tStart, tMin);
         }
     }
-    return tMax;
+    // We can't have a negative duration
+    return std::max(tMax - tMin, 0.0f);
 }
 
 int AnimationClip::findChannelComponentCount()
