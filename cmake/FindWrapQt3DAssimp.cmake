@@ -23,6 +23,24 @@ if (assimp_FOUND AND TARGET assimp::assimp)
       endif()
   endif()
 
+  # Work around Debian bug #973361
+  set(_assimp_fixed_include_dirs)
+  get_target_property(_assimp_include_dirs assimp::assimp INTERFACE_INCLUDE_DIRECTORIES)
+  if(NOT _assimp_include_dirs MATCHES "-NOTFOUND$")
+      foreach(dir IN LISTS _assimp_include_dirs)
+          if(dir STREQUAL "/usr/lib/include"
+                  AND NOT EXISTS "/usr/lib/include"
+                  AND EXISTS "/usr/include")
+              set(dir "/usr/include")
+          endif()
+          list(APPEND _assimp_fixed_include_dirs "${dir}")
+      endforeach()
+  endif()
+  set_property(TARGET assimp::assimp
+      PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${_assimp_fixed_include_dirs}")
+  unset(_assimp_fixed_include_dirs)
+  unset(_assimp_include_dirs)
+
   set(WrapQt3DAssimp_FOUND TRUE)
 elseif(assimp_FOUND AND assimp_LIBRARIES AND assimp_INCLUDE_DIRS)
   add_library(WrapQt3DAssimp::WrapQt3DAssimp INTERFACE IMPORTED)
