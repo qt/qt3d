@@ -1,4 +1,3 @@
-
 # special case begin
 if(NOT QT_FEATURE_system_zlib)
     find_package(Qt6 COMPONENTS ZlibPrivate)
@@ -119,7 +118,7 @@ function(qt3d_extend_target_for_assimp target)
             ${assimpDir}/src/code/AssetLib/glTF2/glTF2AssetWriter.h ${assimpDir}/src/code/AssetLib/glTF2/glTF2AssetWriter.inl
             ${assimpDir}/src/code/AssetLib/glTF2/glTF2Importer.cpp ${assimpDir}/src/code/AssetLib/glTF2/glTF2Importer.h
             ${assimpDir}/src/contrib/pugixml/contrib/foreach.hpp
-            ${assimpDir}/src/contrib/pugixml/src/pugixml.cpp ${assimpDir}/src/contrib/pugixml/src/pugixml.hpp
+            ${assimpDir}/src/contrib/pugixml/src/pugixml.hpp
             ${assimpDir}/src/contrib/poly2tri/poly2tri/common/shapes.cc ${assimpDir}/src/contrib/poly2tri/poly2tri/common/shapes.h
             ${assimpDir}/src/contrib/poly2tri/poly2tri/common/utils.h
             ${assimpDir}/src/contrib/poly2tri/poly2tri/sweep/advancing_front.cc ${assimpDir}/src/contrib/poly2tri/poly2tri/sweep/advancing_front.h
