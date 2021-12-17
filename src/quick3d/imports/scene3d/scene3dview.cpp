@@ -118,6 +118,10 @@ namespace Qt3DRender {
 
     There are no restriction on the sharing of elements between different scenes
     in different Scene3DView instances.
+
+    By default, you are in charge of ensuring the lifetime of the referenced
+    Entity. If you wish to transfer this duty to the Scene3DView, the
+    ownsEntity property can be set to true (defaults to false).
  */
 
 namespace {
@@ -146,6 +150,7 @@ Scene3DView::Scene3DView(QQuickItem *parent)
     , m_holderViewport(new Qt3DRender::QViewport())
     , m_dirtyFlags(DirtyNode|DirtyTexture)
     , m_texture(nullptr)
+    , m_ownsEntity(false)
 {
     setFlag(QQuickItem::ItemHasContents, true);\
 
@@ -157,8 +162,11 @@ Scene3DView::Scene3DView(QQuickItem *parent)
 
 Scene3DView::~Scene3DView()
 {
-    if (m_entity)
-        abandonSubtree(m_entity);
+    if (m_entity) {
+        abandonSubtree(m_entity.data());
+        if (m_ownsEntity)
+            m_entity->deleteLater();
+    }
 
     if (m_scene3D)
         m_scene3D->removeView(this);
@@ -166,7 +174,7 @@ Scene3DView::~Scene3DView()
 
 Qt3DCore::QEntity *Scene3DView::entity() const
 {
-    return m_entity;
+    return m_entity.data();
 }
 
 Scene3DItem *Scene3DView::scene3D() const
@@ -197,6 +205,11 @@ QSGTexture *Scene3DView::texture() const
     return m_texture;
 }
 
+bool Scene3DView::ownsEntity() const
+{
+    return m_ownsEntity;
+}
+
 // Called by Scene3DRender::beforeSynchronizing in RenderThread
 void Scene3DView::markSGNodeDirty()
 {
@@ -207,17 +220,20 @@ void Scene3DView::markSGNodeDirty()
 // Main Thread
 void Scene3DView::setEntity(Qt3DCore::QEntity *entity)
 {
-    if (m_entity == entity)
+    if (m_entity.data() == entity)
         return;
 
-    if (m_entity)
-        abandonSubtree(m_entity);
+    if (m_entity) {
+        abandonSubtree(m_entity.data());
+        if (m_ownsEntity)
+            m_entity->deleteLater();
+    }
 
     m_entity = entity;
     emit entityChanged();
 
     if (m_entity)
-        adoptSubtree(m_entity);
+        adoptSubtree(m_entity.data());
 }
 
 // Main Thread
@@ -245,6 +261,14 @@ void Scene3DView::setScene3D(Scene3DItem *scene3D)
         });
         m_scene3D->addView(this);
     }
+}
+
+void Scene3DView::setOwnsEntity(bool ownsEntity)
+{
+    if (ownsEntity == m_ownsEntity)
+        return;
+    m_ownsEntity = ownsEntity;
+    emit ownsEntityChanged();
 }
 
 // Render Thread
