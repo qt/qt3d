@@ -84,10 +84,10 @@ qt_internal_add_module(3DCore
         services
         transforms
     LIBRARIES
-        Qt::Concurrent
         Qt::CorePrivate
         Qt::GuiPrivate
     PUBLIC_LIBRARIES
+        Qt::Concurrent # TODO: QTBUG-86533 workaround, Qt::Concurrent should be linked privately.
         Qt::Core
         Qt::Gui
         Qt::Network
