@@ -52,7 +52,7 @@
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #define DEVICE QInputDevice
-#include <QtGui/QInputDevice
+#include <QtGui/QInputDevice>
 #else
 #define DEVICE QTouchDevice
 #include <QtGui/QTouchDevice>
