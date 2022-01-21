@@ -1,41 +1,32 @@
-# Generated from simplecustommaterial.pro.
-
 cmake_minimum_required(VERSION 3.16)
 project(simplecustommaterial LANGUAGES CXX)
 
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
 set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
-set(CMAKE_AUTOUIC ON)
 
 if(NOT DEFINED INSTALL_EXAMPLESDIR)
-  set(INSTALL_EXAMPLESDIR "examples")
+    set(INSTALL_EXAMPLESDIR "examples")
 endif()
 
 set(INSTALL_EXAMPLEDIR "${INSTALL_EXAMPLESDIR}")
 
-find_package(Qt6 COMPONENTS Core)
-find_package(Qt6 COMPONENTS Gui)
-find_package(Qt6 COMPONENTS Qml)
-find_package(Qt6 COMPONENTS Quick)
-find_package(Qt6 COMPONENTS 3DRender)
+find_package(Qt6 REQUIRED COMPONENTS 3DRender Core Gui Qml Quick)
 
 qt_add_executable(simplecustommaterial
     main.cpp
 )
+
 set_target_properties(simplecustommaterial PROPERTIES
     WIN32_EXECUTABLE TRUE
     MACOSX_BUNDLE TRUE
 )
+
 target_link_libraries(simplecustommaterial PUBLIC
+    Qt::3DRender
     Qt::Core
     Qt::Gui
     Qt::Qml
     Qt::Quick
-    Qt::3DRender
 )
-
 
 # Resources:
 set(qml_resource_files
@@ -51,6 +42,7 @@ qt6_add_resources(simplecustommaterial "qml"
     FILES
         ${qml_resource_files}
 )
+
 set(shaders_resource_files
     "shaders/es2/simpleColor.frag"
     "shaders/es2/simpleColor.vert"

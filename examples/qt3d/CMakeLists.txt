@@ -1,5 +1,3 @@
-# Generated from qt3d.pro.
-
 qt_internal_add_example(3d-text)
 qt_internal_add_example(simple-cpp)
 if(TARGET Qt::Widgets)
