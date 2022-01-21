@@ -1,42 +1,26 @@
-# Generated from planets-qml.pro.
-
 cmake_minimum_required(VERSION 3.16)
 project(planets-qml LANGUAGES CXX)
 
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
 set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
-set(CMAKE_AUTOUIC ON)
 
 if(NOT DEFINED INSTALL_EXAMPLESDIR)
-  set(INSTALL_EXAMPLESDIR "examples")
+    set(INSTALL_EXAMPLESDIR "examples")
 endif()
 
 set(INSTALL_EXAMPLEDIR "${INSTALL_EXAMPLESDIR}")
 
-find_package(Qt6 COMPONENTS Core)
-find_package(Qt6 COMPONENTS Gui)
-find_package(Qt6 COMPONENTS Qml)
-find_package(Qt6 COMPONENTS Quick)
-find_package(Qt6 COMPONENTS Concurrent)
-find_package(Qt6 COMPONENTS 3DCore)
-find_package(Qt6 COMPONENTS 3DRender)
-find_package(Qt6 COMPONENTS 3DInput)
-find_package(Qt6 COMPONENTS 3DQuick)
-find_package(Qt6 COMPONENTS 3DQuickRender)
-find_package(Qt6 COMPONENTS 3DQuickInput)
-find_package(Qt6 COMPONENTS 3DQuickExtras)
-find_package(Qt6 COMPONENTS Network)
+find_package(Qt6 REQUIRED COMPONENTS 3DCore 3DInput 3DQuick 3DQuickExtras 3DQuickInput 3DQuickRender 3DRender Concurrent Core Gui Network Qml Quick)
 
 qt_add_executable(planets-qml
     main.cpp
     networkcontroller.cpp networkcontroller.h
 )
+
 set_target_properties(planets-qml PROPERTIES
     WIN32_EXECUTABLE TRUE
     MACOSX_BUNDLE TRUE
 )
+
 target_link_libraries(planets-qml PUBLIC
     Qt::3DCore
     Qt::3DInput
@@ -52,7 +36,6 @@ target_link_libraries(planets-qml PUBLIC
     Qt::Qml
     Qt::Quick
 )
-
 
 # Resources:
 set(planets-qml_resource_files
@@ -114,6 +97,7 @@ qt6_add_resources(planets-qml "planets-qml"
     FILES
         ${planets-qml_resource_files}
 )
+
 set(planets-qml-images_resource_files
     "images/earth.png"
     "images/jupiter.png"
