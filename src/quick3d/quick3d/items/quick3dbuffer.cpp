@@ -73,13 +73,14 @@ QByteArray Quick3DBuffer::convertToRawData(const QJSValue &jsValue)
     QV4::Scoped<QV4::TypedArray> typedArray(scope,
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
                                             QJSValuePrivate::convertToReturnedValue(m_v4engine, jsValue));
+    char *dataPtr = reinterpret_cast<char *>(typedArray->arrayData());
 #else
                                             QJSValuePrivate::convertedToValue(m_v4engine, jsValue));
+    char *dataPtr = reinterpret_cast<char *>(typedArray->arrayData()->data());
 #endif
     if (!typedArray)
         return QByteArray();
 
-    char *dataPtr = reinterpret_cast<char *>(typedArray->arrayData()->data());
     dataPtr += typedArray->d()->byteOffset;
     uint byteLength = typedArray->byteLength();
     return QByteArray(dataPtr, byteLength);
