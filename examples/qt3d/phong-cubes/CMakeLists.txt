@@ -57,43 +57,9 @@ qt6_add_resources(phong-cubes "phong-cubes"
     FILES
         ${phong-cubes_resource_files}
 )
-set(textures_resource_files
-    "../exampleresources/assets/textures/aluminium_random_brushed/aluminium_random_brushed_basecolor.png"
-    "../exampleresources/assets/textures/aluminium_random_brushed/aluminium_random_brushed_metallic.png"
-    "../exampleresources/assets/textures/aluminium_random_brushed/aluminium_random_brushed_normal.png"
-    "../exampleresources/assets/textures/aluminium_random_brushed/aluminium_random_brushed_roughness.png"
-    "../exampleresources/assets/textures/american_walnut_crown_cut/american_walnut_crown_cut_basecolor.png"
-    "../exampleresources/assets/textures/american_walnut_crown_cut/american_walnut_crown_cut_metallic.png"
-    "../exampleresources/assets/textures/american_walnut_crown_cut/american_walnut_crown_cut_normal.png"
-    "../exampleresources/assets/textures/american_walnut_crown_cut/american_walnut_crown_cut_roughness.png"
-    "../exampleresources/assets/textures/ceramic_small_diamond/ceramic_small_diamond_ambient_occlusion.png"
-    "../exampleresources/assets/textures/ceramic_small_diamond/ceramic_small_diamond_basecolor.png"
-    "../exampleresources/assets/textures/ceramic_small_diamond/ceramic_small_diamond_metallic.png"
-    "../exampleresources/assets/textures/ceramic_small_diamond/ceramic_small_diamond_normal.png"
-    "../exampleresources/assets/textures/ceramic_small_diamond/ceramic_small_diamond_roughness.png"
-    "../exampleresources/assets/textures/ceramic_tiles_brown_tomato/ceramic_tiles_brown_tomato_basecolor.png"
-    "../exampleresources/assets/textures/ceramic_tiles_brown_tomato/ceramic_tiles_brown_tomato_metallic.png"
-    "../exampleresources/assets/textures/ceramic_tiles_brown_tomato/ceramic_tiles_brown_tomato_normal.png"
-    "../exampleresources/assets/textures/ceramic_tiles_brown_tomato/ceramic_tiles_brown_tomato_roughness.png"
-    "../exampleresources/assets/textures/copper_brushed/copper_brushed_basecolor.png"
-    "../exampleresources/assets/textures/copper_brushed/copper_brushed_metallic.png"
-    "../exampleresources/assets/textures/copper_brushed/copper_brushed_normal.png"
-    "../exampleresources/assets/textures/copper_brushed/copper_brushed_roughness.png"
-    "../exampleresources/assets/textures/gold_leaf_waste/gold_leaf_waste_basecolor.png"
-    "../exampleresources/assets/textures/gold_leaf_waste/gold_leaf_waste_metallic.png"
-    "../exampleresources/assets/textures/gold_leaf_waste/gold_leaf_waste_normal.png"
-    "../exampleresources/assets/textures/gold_leaf_waste/gold_leaf_waste_roughness.png"
-    "../exampleresources/assets/textures/no-ao.png"
-)
 
-qt6_add_resources(phong-cubes "textures"
-    PREFIX
-        "/"
-    BASE
-        "../exampleresources"
-    FILES
-        ${textures_resource_files}
-)
+qt6_add_big_resources(big_resources ../exampleresources/textures.qrc)
+target_sources(phong-cubes PRIVATE ${big_resources})
 
 install(TARGETS phong-cubes
     RUNTIME DESTINATION "${INSTALL_EXAMPLEDIR}"
