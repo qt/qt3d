@@ -204,7 +204,7 @@ void addStatesToRenderStateSet(RenderStateSet *stateSet,
 {
     for (const Qt3DCore::QNodeId &stateId : stateIds) {
         RenderStateNode *node = manager->lookupResource(stateId);
-        if (node->isEnabled() && stateSet->canAddStateOfType(node->type())) {
+        if (node && node->isEnabled() && stateSet->canAddStateOfType(node->type())) {
             stateSet->addState(node->impl());
         }
     }
