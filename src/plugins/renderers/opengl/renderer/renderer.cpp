@@ -1426,6 +1426,9 @@ void Renderer::cleanupTexture(Qt3DCore::QNodeId cleanedUpTextureId)
 // Render Thread
 void Renderer::cleanupShader(const Shader *shader)
 {
+    if (!shader)
+        return;
+
     GLShaderManager *glShaderManager = m_glResourceManagers->glShaderManager();
     GLShader *glShader = glShaderManager->lookupResource(shader->peerId());
 
