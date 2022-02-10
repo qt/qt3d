@@ -52,6 +52,7 @@
 //
 
 #include "qt3dinput_global.h"
+#include <private/qglobal_p.h>
 
 #define Q_3DINPUTSHARED_PRIVATE_EXPORT Q_3DINPUTSHARED_EXPORT
 

@@ -53,6 +53,7 @@
 
 #include <Qt3DQuickInput/qt3dquickinput_global.h>
 #include <QtQml/qqml.h>
+#include <private/qglobal_p.h>
 
 #define Q_3DQUICKINPUTSHARED_PRIVATE_EXPORT Q_3DQUICKINPUTSHARED_EXPORT
 

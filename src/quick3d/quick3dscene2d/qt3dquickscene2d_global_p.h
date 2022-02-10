@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -36,7 +36,6 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-
 #ifndef QT3DQUICKSCENE2D_GLOBAL_P_H
 #define QT3DQUICKSCENE2D_GLOBAL_P_H
 
@@ -53,6 +52,7 @@
 
 #include <Qt3DQuickScene2D/qt3dquickscene2d_global.h>
 #include <QtQml/qqml.h>
+#include <private/qglobal_p.h>
 
 #define Q_3DQUICKSCENE2DSHARED_PRIVATE_EXPORT Q_3DQUICKSCENE2DSHARED_EXPORT
 

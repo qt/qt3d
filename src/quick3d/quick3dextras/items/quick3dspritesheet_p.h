@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -36,7 +36,6 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-
 #ifndef QT3DEXTRAS_EXTRAS_QUICK_QUICK3DSPRITESHEET_P_H
 #define QT3DEXTRAS_EXTRAS_QUICK_QUICK3DSPRITESHEET_P_H
 
@@ -54,6 +53,7 @@
 #include <Qt3DQuickExtras/qt3dquickextras_global.h>
 #include <Qt3DExtras/qspritesheet.h>
 #include <QtQml/QQmlListProperty>
+#include <private/qglobal_p.h>
 
 QT_BEGIN_NAMESPACE
 

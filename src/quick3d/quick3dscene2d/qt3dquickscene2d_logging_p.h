@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -36,7 +36,6 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-
 #ifndef QT3DQUICKSCENE2D_LOGGING_P_H
 #define QT3DQUICKSCENE2D_LOGGING_P_H
 
@@ -52,6 +51,7 @@
 //
 
 #include <QLoggingCategory>
+#include <private/qglobal_p.h>
 
 QT_BEGIN_NAMESPACE
 

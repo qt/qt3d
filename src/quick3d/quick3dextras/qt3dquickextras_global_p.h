@@ -53,6 +53,7 @@
 
 #include <Qt3DQuickExtras/qt3dquickextras_global.h>
 #include <QtQml/qqml.h>
+#include <private/qglobal_p.h>
 
 #define Q_3DQUICKEXTRASSHARED_PRIVATE_EXPORT Q_3DQUICKEXTRASSHARED_EXPORT
 

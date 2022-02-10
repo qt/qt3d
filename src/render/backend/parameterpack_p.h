@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -36,7 +36,6 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-
 #ifndef QT3DRENDER_RENDER_PARAMETERPACK_H
 #define QT3DRENDER_RENDER_PARAMETERPACK_H
 
@@ -53,6 +52,7 @@
 
 #include <Qt3DCore/qnodeid.h>
 #include <QList>
+#include <private/qglobal_p.h>
 
 QT_BEGIN_NAMESPACE
 

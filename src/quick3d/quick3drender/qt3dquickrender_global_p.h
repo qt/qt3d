@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-** Copyright (C) 2016 The Qt Company Ltd and/or its subsidiary(-ies).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2019 The Qt Company Ltd and/or its subsidiary(-ies).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,7 +37,6 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-
 #ifndef QT3DQUICKRENDER_GLOBAL_P_H
 #define QT3DQUICKRENDER_GLOBAL_P_H
 
@@ -54,6 +53,7 @@
 
 #include <Qt3DQuickRender/qt3dquickrender_global.h>
 #include <QtQml/qqml.h>
+#include <private/qglobal_p.h>
 
 #define Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Q_3DQUICKRENDERSHARED_EXPORT
 

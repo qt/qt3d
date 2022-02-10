@@ -53,6 +53,7 @@
 
 #include <Qt3DInput/qt3dinput_global.h>
 #include <QtCore/QStringList>
+#include <private/qglobal_p.h>
 
 QT_BEGIN_NAMESPACE
 

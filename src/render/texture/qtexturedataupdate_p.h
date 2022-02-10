@@ -53,6 +53,7 @@
 
 #include <Qt3DRender/qtextureimagedata.h>
 #include <Qt3DRender/qabstracttexture.h>
+#include <private/qglobal_p.h>
 
 #include <QtCore/qshareddata.h>
 

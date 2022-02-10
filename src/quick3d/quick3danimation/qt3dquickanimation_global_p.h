@@ -53,6 +53,7 @@
 
 #include <Qt3DQuickAnimation/qt3dquickanimation_global.h>
 #include <QtQml/qqml.h>
+#include <private/qglobal_p.h>
 
 #define Q_3DQUICKANIMATIONSHARED_PRIVATE_EXPORT Q_3DQUICKANIMATIONSHARED_EXPORT
 

@@ -53,6 +53,7 @@
 
 #include <Qt3DExtras/qt3dextras_global.h>
 #include <Qt3DRender/qabstracttexture.h>
+#include <private/qglobal_p.h>
 
 QT_BEGIN_NAMESPACE
 

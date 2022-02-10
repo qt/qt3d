@@ -53,6 +53,7 @@
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <QUrl>
+#include <private/qglobal_p.h>
 
 QT_BEGIN_NAMESPACE
 

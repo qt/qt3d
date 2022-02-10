@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -36,7 +36,6 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-
 #ifndef SCENE3DITEM_H
 #define SCENE3DITEM_H
 
@@ -54,6 +53,7 @@
 #include <QtCore/qpointer.h>
 #include <QtQuick/QQuickItem>
 #include <Qt3DCore/qentity.h>
+#include <private/qglobal_p.h>
 
 QT_BEGIN_NAMESPACE
 

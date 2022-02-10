@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -36,7 +36,6 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-
 #ifndef QT3DEXTRAS_DISTANCEFIELDTEXTRENDERER_P_H
 #define QT3DEXTRAS_DISTANCEFIELDTEXTRENDERER_P_H
 
@@ -55,6 +54,7 @@
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DExtras/qt3dextras_global.h>
+#include <private/qglobal_p.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2019 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -36,7 +36,6 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-
 #ifndef QT3DINPUT_INPUT_LOADPROXYDEVICEJOB_P_H
 #define QT3DINPUT_INPUT_LOADPROXYDEVICEJOB_P_H
 
@@ -53,6 +52,7 @@
 
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qnodeid.h>
+#include <private/qglobal_p.h>
 
 QT_BEGIN_NAMESPACE
 

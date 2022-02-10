@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -36,7 +36,6 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-
 #ifndef QT3DQUICK_GLOBAL_P_H
 #define QT3DQUICK_GLOBAL_P_H
 
@@ -53,6 +52,7 @@
 
 #include <Qt3DQuick/qt3dquick_global.h>
 #include <QtQml/qqml.h>
+#include <private/qglobal_p.h>
 
 #include <QColor>
 #include <QMatrix4x4>

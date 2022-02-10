@@ -54,6 +54,7 @@
 #include <Qt3DExtras/qt3dextras_global.h>
 #include <Qt3DRender/qmaterial.h>
 #include <QColor>
+#include <private/qglobal_p.h>
 
 QT_BEGIN_NAMESPACE
 

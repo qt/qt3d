@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Milian Wolff <milian.wolff@kdab.com>
+** Copyright (C) 2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Milian Wolff <milian.wolff@kdab.com>
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the QtWebChannel module of the Qt Toolkit.
@@ -36,7 +36,6 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-
 #ifndef SIGNALHANDLER_H
 #define SIGNALHANDLER_H
 
@@ -56,6 +55,7 @@
 #include <QtCore/QHash>
 #include <QtCore/QMetaMethod>
 #include <QtCore/QObject>
+#include <private/qglobal_p.h>
 
 QT_BEGIN_NAMESPACE
 

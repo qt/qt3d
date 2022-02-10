@@ -54,6 +54,7 @@
 #include <QtCore/QRectF>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DExtras/qt3dextras_global.h>
+#include <private/qglobal_p.h>
 
 QT_BEGIN_NAMESPACE
 

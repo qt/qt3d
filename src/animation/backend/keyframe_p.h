@@ -53,6 +53,7 @@
 
 #include <Qt3DAnimation/qkeyframe.h>
 #include <QtGui/qvector2d.h>
+#include <private/qglobal_p.h>
 
 QT_BEGIN_NAMESPACE
 

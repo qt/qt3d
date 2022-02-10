@@ -54,6 +54,7 @@
 
 #include <functional>
 #include <Qt3DCore/qnodeid.h>
+#include <private/qglobal_p.h>
 
 QT_BEGIN_NAMESPACE
 

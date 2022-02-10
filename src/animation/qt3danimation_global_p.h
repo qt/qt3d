@@ -52,6 +52,7 @@
 //
 
 #include "qt3danimation_global.h"
+#include <private/qglobal_p.h>
 
 #define Q_3DANIMATIONSHARED_PRIVATE_EXPORT Q_3DANIMATIONSHARED_EXPORT
 

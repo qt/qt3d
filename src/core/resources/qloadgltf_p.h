@@ -46,6 +46,7 @@
 #include <QtCore/qjsonarray.h>
 #include <QtCore/qjsondocument.h>
 #include <QtCore/qjsonobject.h>
+#include <private/qglobal_p.h>
 
 //
 //  W A R N I N G
