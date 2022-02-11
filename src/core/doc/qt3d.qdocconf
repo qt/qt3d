@@ -96,10 +96,6 @@ imagedirs   += images \
                ../../../examples/qt3d/scene2d/doc/images \
                ../../../examples/qt3d/advancedcustommaterial/doc/images
 
-manifestmeta.highlighted.names = \
-                "Qt3D/Qt 3D: Advanced custom material QML Example" \
-                "Qt3D/Qt 3D: Planets QML Example"
-
 manifestmeta.thumbnail.names += "Qt3D/Qt 3D: Deferred Renderer C++ Example"
 
 navigation.landingpage = "Qt 3D"
