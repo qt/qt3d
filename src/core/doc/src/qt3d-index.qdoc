@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
@@ -30,7 +30,7 @@
     \page qt3d-index.html
     \title Qt 3D
 
-    \e{Qt 3D} provides functionality for near-realtime simulation systems
+    Qt 3D provides functionality for near-realtime simulation systems
     with support for 2D and 3D rendering in both Qt C++ and Qt Quick
     applications.
 
@@ -52,20 +52,13 @@
 
     \annotatedlist qt3d-qmlmodules-preliminary
 
-    \section1 Getting Started
+    \section1 Using the Module
 
-    For a C++ application that performs 2D or 3D rendering, collision
-    detection, and also handle user input, add the following line to its
-    qmake \c .pro file:
+    For a C++ application that performs 2D or 3D rendering, collision detection,
+    and handles user input, include the following directives of the modules'
+    classes:
 
-    \badcode
-    QT += 3dcore 3drender 3dinput 3dlogic 3dextras 3danimation
-    \endcode
-
-    To include the definitions of the modules' classes, use the following
-    directives:
-
-    \badcode
+    \code
     #include <Qt3DCore>
     #include <Qt3DRender>
     #include <Qt3DInput>
@@ -74,17 +67,35 @@
     #include <Qt3DAnimation>
     \endcode
 
-    A Qt Quick application requires also additional dependencies:
+    To import the QML types into your application, use the following import
+    statement in your .qml file:
 
-    \badcode
-    QT += 3dcore 3drender 3dinput 3dlogic 3dextras qml quick 3dquick 3danimation
-    \endcode
+    \qml
+    import Qt3D.Core
+    import Qt3D.Render
+    import Qt3D.Input
+    import Qt3D.Logic
+    import Qt3D.Extras
+    import Qt3D.Animation
+    import QtQuick.Scene2D
+    import QtQuick.Scene3D
+    \endqml
+
+    \include {module-use.qdocinc} {using the c++ api}
+
+    \section2 Building with CMake
+
+    \include qt3d-module-use.qdocinc cmakebuild
+
+    \section2 Building with qmake
+
+    \include qt3d-module-use.qdocinc qmakebuild
 
     \section1 Overview
 
     The high level design and motivation for Qt 3D is described in the \l {Qt 3D
-    Overview}. The Qt 3D Render aspect offers support for data-driven
-    configuration as described in \l {Qt 3D Render Framegraph}.
+    Overview}. The Qt 3D Render offers support for data-driven configuration as
+    described in \l {Qt 3D Render Framegraph}.
 
     \section1 Reference
     \list
