@@ -76,6 +76,7 @@ qt_feature("qt3d-simd-avx2" PRIVATE
     LABEL "Use AVX2 instructions"
     PURPOSE "Use AVX2 SIMD instructions to accelerate matrix operations"
     AUTODETECT TEST_arch_${TEST_architecture_arch}_subarch_avx2
+    CONDITION QT_FEATURE_avx2
     ENABLE INPUT_qt3d_simd STREQUAL 'avx2'
     DISABLE INPUT_qt3d_simd STREQUAL 'sse2' OR INPUT_qt3d_simd STREQUAL 'no' OR ( TEST_architecture_arch STREQUAL i386 )
 )
