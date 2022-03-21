@@ -72,7 +72,7 @@ public:
 
     inline int key() const { return m_event->key(); }
     inline QString text() const { return m_event->text(); }
-    inline int modifiers() const { return m_event->modifiers(); }
+    inline int modifiers() const { return int(m_event->modifiers().toInt()); }
     inline bool isAutoRepeat() const { return m_event->isAutoRepeat(); }
     inline int count() const { return m_event->count(); }
     inline quint32 nativeScanCode() const { return m_event->nativeScanCode(); }
