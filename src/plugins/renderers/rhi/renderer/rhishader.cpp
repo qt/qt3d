@@ -662,7 +662,7 @@ void RHIShader::initializeUniformBlocks(const std::vector<ShaderUniformBlock> &u
         const std::vector<ShaderUniform>::const_iterator uniformsEnd = m_uniforms.cend();
 
         std::vector<QString>::const_iterator uniformNamesIt = m_uniformsNames.cbegin();
-        const std::vector<QString>::const_iterator uniformNamesEnd = m_attributesNames.cend();
+        const std::vector<QString>::const_iterator uniformNamesEnd = m_uniformsNames.cend();
 
         QHash<QString, ShaderUniform> activeUniformsInBlock;
 
