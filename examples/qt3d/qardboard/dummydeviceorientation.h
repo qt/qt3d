@@ -51,7 +51,7 @@
 #ifndef DUMMY_DEVICEORIENTATION_H
 #define DUMMY_DEVICEORIENTATION_H
 
-#include <abstractdeviceorientation.h>
+#include "abstractdeviceorientation.h"
 
 class DummyDeviceOrientation : public AbstractDeviceOrientation
 {
