@@ -200,7 +200,7 @@ public:
 class Q_3DRENDERSHARED_PRIVATE_EXPORT ShaderManager : public Qt3DCore::QResourceManager<
         Shader,
         Qt3DCore::QNodeId,
-        Qt3DCore::NonLockingPolicy>
+        Qt3DCore::ObjectLevelLockingPolicy>
 {
 public:
     ShaderManager() {}
