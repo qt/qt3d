@@ -936,7 +936,7 @@ QByteArray QShaderProgramPrivate::deincludify(const QByteArray &contents, const 
     for (int i = 0; i < lines.count(); ++i) {
         const auto line = lines[i].simplified();
         if (line.startsWith(includeDirective)) {
-            const QString includePartialPath = QString::fromUtf8(line.mid(includeDirective.count() + 1));
+            const QString includePartialPath = QString::fromUtf8(line.mid(includeDirective.size() + 1));
 
             QString includePath = QFileInfo(includePartialPath).isAbsolute() ? includePartialPath
                                 : QFileInfo(filePath).absolutePath() + QLatin1Char('/') + includePartialPath;

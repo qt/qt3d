@@ -544,7 +544,7 @@ QTextureImageDataPtr setKtxFile(QIODevice *source)
     }
 
     const int bytesToSkip = decode(header.bytesOfKeyValueData);
-    if (source->read(bytesToSkip).count() != bytesToSkip) {
+    if (source->read(bytesToSkip).size() != bytesToSkip) {
         qWarning("Unexpected end of ktx data");
         return imageData;
     }

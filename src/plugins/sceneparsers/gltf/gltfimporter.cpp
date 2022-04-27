@@ -1509,7 +1509,7 @@ void GLTFImporter::processJSONBufferView(const QString &id, const QJsonObject& j
     quint64 len = json.value(KEY_BYTE_LENGTH).toInt();
 
     QByteArray bytes = bufferData.data->mid(offset, len);
-    if (Q_UNLIKELY(bytes.count() != int(len))) {
+    if (Q_UNLIKELY(bytes.size() != qsizetype(len))) {
         qCWarning(GLTFImporterLog, "failed to read sufficient bytes from: %ls for view %ls",
                   qUtf16PrintableImpl(bufferData.path), qUtf16PrintableImpl(id));
     }

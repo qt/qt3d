@@ -323,7 +323,7 @@ void GLTFGeometryLoader::processJSONBufferView(const QString &id, const QJsonObj
     const quint64 len = json.value(KEY_BYTE_LENGTH).toInt();
 
     QByteArray bytes = bufferData.data->mid(offset, len);
-    if (Q_UNLIKELY(bytes.count() != int(len))) {
+    if (Q_UNLIKELY(bytes.size() != qsizetype(len))) {
         qCWarning(GLTFGeometryLoaderLog, "failed to read sufficient bytes from: %ls for view %ls",
                   qUtf16PrintableImpl(bufferData.path), qUtf16PrintableImpl(id));
     }
@@ -360,7 +360,7 @@ void GLTFGeometryLoader::processJSONBufferViewV2(const QJsonObject &json)
 
     const quint64 len = json.value(KEY_BYTE_LENGTH).toInt();
     QByteArray bytes = bufferData.data->mid(offset, len);
-    if (Q_UNLIKELY(bytes.count() != int(len))) {
+    if (Q_UNLIKELY(bytes.size() != qsizetype(len))) {
         qCWarning(GLTFGeometryLoaderLog, "failed to read sufficient bytes from: %ls for view",
                   qUtf16PrintableImpl(bufferData.path));
     }
