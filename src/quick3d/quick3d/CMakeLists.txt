@@ -9,6 +9,8 @@ qt_internal_add_qml_module(3DQuick
     VERSION "${PROJECT_VERSION}"
     PAST_MAJOR_VERSIONS 2
     CLASS_NAME Qt3DQuick3DCorePlugin
+    DEPENDENCIES
+        QtQuick/auto
     PLUGIN_TARGET quick3dcoreplugin
     NO_PLUGIN_OPTIONAL
     NO_GENERATE_PLUGIN_SOURCE
