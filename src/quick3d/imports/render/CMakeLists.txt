@@ -8,6 +8,8 @@ qt_internal_add_qml_module(quick3drenderplugin
     URI "Qt3D.Render"
     VERSION "2.${PROJECT_VERSION_MINOR}"
     CLASS_NAME Qt3DQuick3DRenderPlugin
+    DEPENDENCIES
+        QtQml/auto
     PLUGIN_TARGET quick3drenderplugin
     NO_PLUGIN_OPTIONAL
     NO_GENERATE_PLUGIN_SOURCE
