@@ -14,7 +14,8 @@ qt_internal_add_qml_module(quick3dextrasplugin
     NO_GENERATE_QMLTYPES
     INSTALL_SOURCE_QMLTYPES "plugins.qmltypes"
     DEPENDENCIES
-        Qt3D.Logic/2.0
+        QtQuick/auto
+        Qt3D.Logic/auto
     SOURCES
         qt3dquick3dextrasplugin.cpp qt3dquick3dextrasplugin.h
     LIBRARIES
