@@ -65,7 +65,7 @@ public:
     { swap(other); return *this; }
     ~QTextureDataUpdate();
 
-    void swap(QTextureDataUpdate &other) noexcept { qSwap(d_ptr, other.d_ptr); }
+    void swap(QTextureDataUpdate &other) noexcept { d_ptr.swap(other.d_ptr); }
 
     int x() const;
     int y() const;
