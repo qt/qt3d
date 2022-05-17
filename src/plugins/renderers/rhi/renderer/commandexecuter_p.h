@@ -75,7 +75,7 @@ class RenderView;
 } // Rhi
 } // Render
 
-namespace Debug {
+namespace DebugRhi {
 
 class CommandExecuter
 {
@@ -92,7 +92,7 @@ private:
     QMutex m_pendingCommandsMutex;
 };
 
-} // Debug
+} // DebugRhi
 
 } // Qt3DRender
 
