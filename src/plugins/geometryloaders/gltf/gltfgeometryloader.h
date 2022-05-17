@@ -51,6 +51,7 @@
 // We mean it.
 //
 
+#include <QtCore/QHash>
 #include <QtCore/QJsonDocument>
 
 #include <Qt3DRender/private/qgeometryloaderinterface_p.h>
