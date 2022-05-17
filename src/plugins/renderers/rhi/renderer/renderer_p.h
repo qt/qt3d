@@ -118,7 +118,7 @@ class QAbstractShapeMesh;
 struct GraphicsApiFilterData;
 class QSceneImporter;
 
-namespace Debug {
+namespace DebugRhi {
 class CommandExecuter;
 }
 
@@ -389,7 +389,7 @@ private:
     RHIResourceManagers *m_RHIResourceManagers;
     QMutex m_offscreenSurfaceMutex;
 
-    QScopedPointer<Qt3DRender::Debug::CommandExecuter> m_commandExecuter;
+    QScopedPointer<Qt3DRender::DebugRhi::CommandExecuter> m_commandExecuter;
 
 #ifdef QT_BUILD_INTERNAL
     friend class ::tst_Renderer;

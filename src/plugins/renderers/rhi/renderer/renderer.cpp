@@ -266,7 +266,7 @@ Renderer::Renderer()
               JobTypes::DirtyShaderGathering)),
       m_ownedContext(false),
       m_RHIResourceManagers(nullptr),
-      m_commandExecuter(new Qt3DRender::Debug::CommandExecuter(this)),
+      m_commandExecuter(new Qt3DRender::DebugRhi::CommandExecuter(this)),
       m_shouldSwapBuffers(true)
 {
     std::fill_n(m_textureTransform, 4, 0.f);

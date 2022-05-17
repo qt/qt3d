@@ -58,9 +58,11 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-namespace Debug {
+namespace DebugRhi {
 
 namespace {
+
+#if 0 // unused for now
 
 template<typename Type>
 QJsonObject typeToJsonObj(const Type &) noexcept
@@ -298,6 +300,8 @@ QJsonObject parameterPackToJson(const Render::Rhi::ShaderParameterPack &pack) no
     return obj;
 }
 
+#endif // 0
+
 } // anonymous
 
 CommandExecuter::CommandExecuter(Render::Rhi::Renderer *renderer) : m_renderer(renderer) { }
@@ -398,7 +402,7 @@ QVariant CommandExecuter::executeCommand(const QStringList &args)
     return QVariant();
 }
 
-} // Debug
+} // DebugRhi
 
 } // Qt3DRenderer
 
