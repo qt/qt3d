@@ -35,7 +35,7 @@ set(scene3d_resource_files
     "main.qml"
 )
 
-qt6_add_resources(scene3d "scene3d"
+qt6_add_resources(scene3d "scene3dres"
     PREFIX
         "/"
     FILES
