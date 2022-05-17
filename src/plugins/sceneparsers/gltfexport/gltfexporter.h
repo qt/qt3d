@@ -54,6 +54,7 @@
 #include <QtCore/qjsondocument.h>
 #include <QtCore/qjsonobject.h>
 #include <QtCore/qhash.h>
+#include <QtCore/qset.h>
 #include <QtGui/qvector3d.h>
 
 #include <Qt3DRender/qabstractlight.h>

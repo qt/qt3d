@@ -40,6 +40,7 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qcomponent_p.h>
 #include <Qt3DCore/private/vector_helper_p.h>
+#include <QSet>
 #include <QSignalSpy>
 #include <testarbiter.h>
 #include <vector>
