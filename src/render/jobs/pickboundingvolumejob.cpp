@@ -416,7 +416,7 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent *event,
                 // Send the corresponding event
                 Vector3D localIntersection = hit.m_intersection;
                 if (entity && entity->worldTransform())
-                    localIntersection = entity->worldTransform()->inverted() * hit.m_intersection;
+                    localIntersection = entity->worldTransform()->inverted().map(hit.m_intersection);
 
                 QPickEventPtr pickEvent;
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)

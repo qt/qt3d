@@ -224,9 +224,9 @@ QVariant ShaderData::getTransformedProperty(const PropertyValue *v, const Matrix
             const TransformType transformType = static_cast<TransformType>(transformedValue.value.toInt());
             switch (transformType) {
             case ModelToEye:
-                return QVariant::fromValue(viewMatrix * m_worldMatrix * Vector3D(v->value.value<QVector3D>()));
+                return QVariant::fromValue(viewMatrix.map(m_worldMatrix.map(Vector3D(v->value.value<QVector3D>()))));
             case ModelToWorld:
-                return QVariant::fromValue(m_worldMatrix * Vector3D(v->value.value<QVector3D>()));
+                return QVariant::fromValue(m_worldMatrix.map(Vector3D(v->value.value<QVector3D>())));
             case ModelToWorldDirection:
                 return QVariant::fromValue(Vector3D(m_worldMatrix * Vector4D(v->value.value<QVector3D>(), 0.0f)));
             case NoTransform:

@@ -120,13 +120,13 @@ private:
         const QList<qreal> thresholds = lod->thresholds();
         Vector3D center(lod->center());
         if (lod->hasBoundingVolumeOverride() || entity->worldBoundingVolume() == nullptr) {
-            center = *entity->worldTransform() * center;
+            center = entity->worldTransform()->map(center);
         } else {
             center = entity->worldBoundingVolume()->center();
         }
 
-        const Vector3D tcenter = viewMatrix * center;
-        const float dist = tcenter.length();
+        const Vector3D tcenter = viewMatrix.map(center);
+        const double dist = double(tcenter.length());
         const int n = thresholds.size();
         for (int i=0; i<n; ++i) {
             if (dist <= thresholds[i] || i == n -1) {
@@ -171,7 +171,7 @@ private:
         float area = vca.viewport.width() * sideLength * vca.viewport.height() * sideLength;
 
         const QRect r = windowViewport(vca.area, vca.viewport);
-        area =  std::sqrt(area * r.width() * r.height());
+        area =  std::sqrt(area * float(r.width()) * float(r.height()));
 
         const int n = thresholds.size();
         for (int i = 0; i < n; ++i) {

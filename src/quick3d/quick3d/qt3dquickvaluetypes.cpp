@@ -89,7 +89,7 @@ namespace Quick {
 
 QVariant QQuick3DColorValueType::create(const QJSValue &params)
 {
-    return params.isString() ? QColor(params.toString()) : QVariant();
+    return params.isString() ? QColor::fromString(params.toString()) : QVariant();
 }
 
 QString QQuick3DColorValueType::toString() const
@@ -302,7 +302,7 @@ QVector4D QQuick3DMatrix4x4ValueType::times(const QVector4D &vec) const
 
 QVector3D QQuick3DMatrix4x4ValueType::times(const QVector3D &vec) const
 {
-    return v * vec;
+    return v.map(vec);
 }
 
 QMatrix4x4 QQuick3DMatrix4x4ValueType::times(qreal factor) const
@@ -422,7 +422,7 @@ qreal QQuick3DVector3DValueType::dotProduct(const QVector3D &vec) const
 
 QVector3D QQuick3DVector3DValueType::times(const QMatrix4x4 &m) const
 {
-    return v * m;
+    return (QVector4D(v, 1.f) * m).toVector3DAffine();
 }
 
 QVector3D QQuick3DVector3DValueType::times(const QVector3D &vec) const

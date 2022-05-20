@@ -116,7 +116,7 @@ private Q_SLOTS:
         Qt3DRender::QMesh mesh;
         arbiter.setArbiterOnNode(&mesh);
 
-        Qt3DCore::QAspectEngine *engine = reinterpret_cast<Qt3DCore::QAspectEngine*>(0xdeadbeef);
+        Qt3DCore::QAspectEngine *engine = reinterpret_cast<Qt3DCore::QAspectEngine*>(0xdeadbeefL);
         Qt3DCore::QScene *scene = new Qt3DCore::QScene(engine);
         Qt3DCore::QNodePrivate *meshd = Qt3DCore::QNodePrivate::get(&mesh);
         meshd->setScene(scene);
@@ -153,7 +153,7 @@ private Q_SLOTS:
         Qt3DRender::QMesh mesh;
         arbiter.setArbiterOnNode(&mesh);
 
-        Qt3DCore::QAspectEngine *engine = reinterpret_cast<Qt3DCore::QAspectEngine*>(0xdeadbeef);
+        Qt3DCore::QAspectEngine *engine = reinterpret_cast<Qt3DCore::QAspectEngine*>(0xdeadbeefL);
         Qt3DCore::QScene *scene = new Qt3DCore::QScene(engine);
         Qt3DCore::QNodePrivate *meshd = Qt3DCore::QNodePrivate::get(&mesh);
         meshd->setScene(scene);

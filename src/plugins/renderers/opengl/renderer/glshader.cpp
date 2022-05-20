@@ -236,7 +236,7 @@ void GLShader::prepareUniforms(ShaderParameterPack &pack)
     auto it = values.keys.cbegin();
     const auto end = values.keys.cend();
 
-    const int shaderUniformsCount = m_uniforms.size();
+    const int shaderUniformsCount = int(m_uniforms.size());
     const auto uIt = m_uniforms.cbegin();
 
     while (it != end) {
@@ -325,7 +325,7 @@ void GLShader::initializeUniforms(const std::vector<ShaderUniform> &uniformsDesc
     }
     m_uniformBlockIndexToShaderUniforms.insert(-1, activeUniformsInDefaultBlock);
 
-    m_parameterPackSize += m_standardUniformNamesIds.size() + m_lightUniformsNamesIds.size() + m_uniformsNamesIds.size();
+    m_parameterPackSize += int(m_standardUniformNamesIds.size()) + int(m_lightUniformsNamesIds.size()) + int(m_uniformsNamesIds.size());
     m_hasActiveVariables |= (m_parameterPackSize > 0);
 
     // Sort by ascending order to make contains check faster
@@ -343,7 +343,7 @@ void GLShader::initializeAttributes(const std::vector<ShaderAttribute> &attribut
     m_attributes = attributesDescription;
     m_attributesNames.resize(attributesDescription.size());
     m_attributeNamesIds.resize(attributesDescription.size());
-    for (int i = 0, m = attributesDescription.size(); i < m; i++) {
+    for (int i = 0, m = int(attributesDescription.size()); i < m; i++) {
         m_attributesNames[i] = attributesDescription[i].m_name;
         m_attributes[i].m_nameId = StringToInt::lookupId(m_attributesNames[i]);
         m_attributeNamesIds[i] = m_attributes[i].m_nameId;
@@ -357,7 +357,7 @@ void GLShader::initializeUniformBlocks(const std::vector<ShaderUniformBlock> &un
     m_uniformBlocks = uniformBlockDescription;
     m_uniformBlockNames.resize(uniformBlockDescription.size());
     m_uniformBlockNamesIds.resize(uniformBlockDescription.size());
-    for (int i = 0, m = uniformBlockDescription.size(); i < m; ++i) {
+    for (int i = 0, m = int(uniformBlockDescription.size()); i < m; ++i) {
         m_uniformBlockNames[i] = m_uniformBlocks[i].m_name;
         m_uniformBlockNamesIds[i] = StringToInt::lookupId(m_uniformBlockNames[i]);
         m_uniformBlocks[i].m_nameId = m_uniformBlockNamesIds[i];
@@ -386,7 +386,7 @@ void GLShader::initializeUniformBlocks(const std::vector<ShaderUniformBlock> &un
         m_uniformBlockIndexToShaderUniforms.insert(uniformBlockDescription[i].m_index, activeUniformsInBlock);
     }
 
-    m_parameterPackSize += m_uniformsNamesIds.size();
+    m_parameterPackSize += int(m_uniformsNamesIds.size());
     m_hasActiveVariables |= (m_parameterPackSize > 0);
 
     // Sort by ascending order to make contains check faster
@@ -399,14 +399,14 @@ void GLShader::initializeShaderStorageBlocks(const std::vector<ShaderStorageBloc
     m_shaderStorageBlockNames.resize(shaderStorageBlockDescription.size());
     m_shaderStorageBlockNamesIds.resize(shaderStorageBlockDescription.size());
 
-    for (int i = 0, m = shaderStorageBlockDescription.size(); i < m; ++i) {
+    for (int i = 0, m = int(shaderStorageBlockDescription.size()); i < m; ++i) {
         m_shaderStorageBlockNames[i] = m_shaderStorageBlocks[i].m_name;
         m_shaderStorageBlockNamesIds[i] = StringToInt::lookupId(m_shaderStorageBlockNames[i]);
         m_shaderStorageBlocks[i].m_nameId =m_shaderStorageBlockNamesIds[i];
         qCDebug(Shaders) << "Initializing Shader Storage Block {" << m_shaderStorageBlockNames[i] << "}";
     }
 
-    m_parameterPackSize += m_shaderStorageBlockNamesIds.size();
+    m_parameterPackSize += int(m_shaderStorageBlockNamesIds.size());
     m_hasActiveVariables |= (m_parameterPackSize > 0);
 
     // Sort by ascending order to make contains check faster

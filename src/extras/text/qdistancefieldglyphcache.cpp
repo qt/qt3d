@@ -63,12 +63,11 @@ namespace Qt3DExtras {
 class StoredGlyph {
 public:
     StoredGlyph() = default;
-    StoredGlyph(const StoredGlyph &) = default;
     StoredGlyph(const QRawFont &font, quint32 glyph, bool doubleResolution);
 
-    int refCount() const { return m_ref; }
+    int refCount() const { return int(m_ref); }
     void ref() { ++m_ref; }
-    int deref() { return m_ref = std::max(m_ref - 1, (quint32) 0); }
+    int deref() { m_ref = std::max(m_ref - 1, quint32(0)); return int(m_ref); }
 
     bool addToTextureAtlas(QTextureAtlas *atlas);
     void removeFromTextureAtlas();

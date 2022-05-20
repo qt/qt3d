@@ -342,4 +342,14 @@ function(qt3d_extend_target_for_assimp target)
         COMPILE_OPTIONS
             /bigobj
     )
+
+    # Silence warnings in 3rdparty code
+    if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+        set_source_files_properties(${assimpDir}/src/code/AssetLib/Collada/ColladaParser.cpp PROPERTIES COMPILE_FLAGS "-Wno-strict-aliasing")
+        set_source_files_properties(${assimpDir}/src/code/Common/ZipArchiveIOSystem.cpp PROPERTIES COMPILE_FLAGS "-Wno-cast-function-type")
+    endif()
+    if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        set_source_files_properties(${assimpDir}/src/code/Common/Assimp.cpp PROPERTIES COMPILE_FLAGS "-Wno-ordered-compare-function-pointers")
+    endif()
+
 endfunction()

@@ -177,7 +177,7 @@ Vector3D QRay3D::point(float t) const
 
 QRay3D &QRay3D::transform(const Matrix4x4 &matrix)
 {
-    m_origin = matrix * m_origin;
+    m_origin = matrix.map(m_origin);
     m_direction = matrix.mapVector(m_direction).normalized();
 
     return *this;
@@ -185,7 +185,7 @@ QRay3D &QRay3D::transform(const Matrix4x4 &matrix)
 
 QRay3D QRay3D::transformed(const Matrix4x4 &matrix) const
 {
-    return QRay3D(matrix * m_origin, matrix.mapVector(m_direction).normalized());
+    return QRay3D(matrix.map(m_origin), matrix.mapVector(m_direction).normalized());
 }
 
 bool QRay3D::operator==(const QRay3D &other) const

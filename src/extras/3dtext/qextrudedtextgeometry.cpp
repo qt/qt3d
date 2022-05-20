@@ -130,7 +130,7 @@ TriangulationData triangulate(const QString &text, const QFont &font)
     result.indices.resize(result.indices.size() + size_t(triangles.indices.size()));
     memcpy(&result.indices[prevNumIndices], triangles.indices.data(), size_t(triangles.indices.size()) * sizeof(IndexType));
     for (size_t i = prevNumIndices, m = result.indices.size(); i < m; ++i)
-        result.indices[i] += result.vertices.size();
+        result.indices[i] += IndexType(result.vertices.size());
 
     // Append new triangles to result.vertices
     result.vertices.reserve(size_t(triangles.vertices.size()) / 2);
@@ -307,7 +307,7 @@ void QExtrudedTextGeometryPrivate::update()
 
     TriangulationData data = triangulate(m_text, m_font);
 
-    const size_t numVertices = data.vertices.size();
+    const IndexType numVertices = IndexType(data.vertices.size());
     const size_t numIndices = data.indices.size();
 
     struct Vertex {
@@ -327,7 +327,8 @@ void QExtrudedTextGeometryPrivate::update()
         vertices.push_back({ QVector3D(v.x(), v.y(), m_depth), // vertex
                              QVector3D(0.0f, 0.0f, 1.0f) }); // normal
 
-    for (size_t i = 0, verticesIndex = vertices.size(); i < data.outlines.size(); ++i) {
+    int verticesIndex = int(vertices.size());
+    for (size_t i = 0; i < data.outlines.size(); ++i) {
         const int begin = data.outlines[i].begin;
         const int end = data.outlines[i].end;
         const int verticesIndexBegin = verticesIndex;
@@ -380,12 +381,12 @@ void QExtrudedTextGeometryPrivate::update()
         memcpy(data.data(), vertices.data(), vertices.size() * sizeof(Vertex));
 
         m_vertexBuffer->setData(data);
-        m_positionAttribute->setCount(vertices.size());
-        m_normalAttribute->setCount(vertices.size());
+        m_positionAttribute->setCount(int(vertices.size()));
+        m_normalAttribute->setCount(int(vertices.size()));
     }
 
     // resize for following insertions
-    const int indicesOffset = indices.size();
+    const int indicesOffset = int(indices.size());
     indices.resize(indices.size() + numIndices * 2);
 
     // copy values for back faces
@@ -405,7 +406,7 @@ void QExtrudedTextGeometryPrivate::update()
         memcpy(data.data(), indices.data(), indices.size() * sizeof(IndexType));
 
         m_indexBuffer->setData(data);
-        m_indexAttribute->setCount(indices.size());
+        m_indexAttribute->setCount(uint(indices.size()));
     }
 }
 

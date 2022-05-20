@@ -121,7 +121,7 @@ void BaseGeometryLoader::generateAveragedNormals(const std::vector<QVector3D> &p
 void BaseGeometryLoader::generateGeometry()
 {
     QByteArray bufferBytes;
-    const size_t count = m_points.size();
+    const uint count = uint(m_points.size());
     const quint32 elementSize = 3 + (hasTextureCoordinates() ? 2 : 0)
         + (hasNormals() ? 3 : 0)
         + (hasTangents() ? 4 : 0);
@@ -201,7 +201,7 @@ void BaseGeometryLoader::generateGeometry()
 
     auto *indexBuffer = new Qt3DCore::QBuffer();
     indexBuffer->setData(indexBytes);
-    QAttribute *indexAttribute = new QAttribute(indexBuffer, ty, 1, m_indices.size());
+    QAttribute *indexAttribute = new QAttribute(indexBuffer, ty, 1, uint(m_indices.size()));
     indexAttribute->setAttributeType(QAttribute::IndexAttribute);
     m_geometry->addAttribute(indexAttribute);
 }

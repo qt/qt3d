@@ -61,7 +61,7 @@ namespace Qt3DExtras {
 
 QMetalRoughMaterialPrivate::QMetalRoughMaterialPrivate()
     : QMaterialPrivate()
-    , m_baseColorParameter(new QParameter(QStringLiteral("baseColor"), QColor("grey")))
+    , m_baseColorParameter(new QParameter(QStringLiteral("baseColor"), QColor::fromString("grey")))
     , m_metalnessParameter(new QParameter(QStringLiteral("metalness"), 0.0f))
     , m_roughnessParameter(new QParameter(QStringLiteral("roughness"), 0.0f))
     , m_baseColorMapParameter(new QParameter(QStringLiteral("baseColorMap"), QVariant()))

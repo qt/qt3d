@@ -560,7 +560,7 @@ void GLTFSkeletonLoader::setupNodeParentLinks()
         const Node &node = m_nodes[i];
         const std::vector<int> &childNodeIndices = node.childNodeIndices;
         for (const auto childNodeIndex : childNodeIndices) {
-            Q_ASSERT(childNodeIndex < m_nodes.size());
+            Q_ASSERT(childNodeIndex < int(m_nodes.size()));
             Node &childNode = m_nodes[size_t(childNodeIndex)];
             Q_ASSERT(childNode.parentNodeIndex == -1);
             childNode.parentNodeIndex = int(i);

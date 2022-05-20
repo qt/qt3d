@@ -304,7 +304,9 @@ QJsonObject parameterPackToJson(const Render::Rhi::ShaderParameterPack &pack) no
 
 } // anonymous
 
-CommandExecuter::CommandExecuter(Render::Rhi::Renderer *renderer) : m_renderer(renderer) { }
+CommandExecuter::CommandExecuter(Render::Rhi::Renderer *renderer) : m_renderer(renderer) {
+    Q_UNUSED(m_renderer)
+}
 
 // Render thread
 void CommandExecuter::performAsynchronousCommandExecution(
