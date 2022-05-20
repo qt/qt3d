@@ -80,6 +80,7 @@ protected:
             auto mouseEvent = QT_PREPEND_NAMESPACE(QMouseEvent)(QEvent::MouseMove,
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
                                                                 he->position(),
+                                                                he->globalPosition(),
 #else
                                                                 he->pos(),
 #endif

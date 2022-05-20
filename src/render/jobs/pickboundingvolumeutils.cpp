@@ -209,9 +209,9 @@ private:
 void TriangleCollisionVisitor::visit(uint andx, const Vector3D &a, uint bndx, const Vector3D &b, uint cndx, const Vector3D &c)
 {
     const Matrix4x4 &mat = *m_root->worldTransform();
-    const Vector3D tA = mat * a;
-    const Vector3D tB = mat * b;
-    const Vector3D tC = mat * c;
+    const Vector3D tA = mat.map(a);
+    const Vector3D tB = mat.map(b);
+    const Vector3D tC = mat.map(c);
 
     bool intersected = m_frontFaceRequested &&
             intersectsSegmentTriangle(cndx, tC, bndx, tB, andx, tA);    // front facing
@@ -273,8 +273,8 @@ private:
 void LineCollisionVisitor::visit(uint andx, const Vector3D &a, uint bndx, const Vector3D &b)
 {
     const Matrix4x4 &mat = *m_root->worldTransform();
-    const Vector3D tA = mat * a;
-    const Vector3D tB = mat * b;
+    const Vector3D tA = mat.map(a);
+    const Vector3D tB = mat.map(b);
 
     intersectsSegmentSegment(andx, tA, bndx, tB);
 
@@ -398,7 +398,7 @@ private:
 void PointCollisionVisitor::visit(uint ndx, const Vector3D &p)
 {
     const Matrix4x4 &mat = *m_root->worldTransform();
-    const Vector3D tP = mat * p;
+    const Vector3D tP = mat.map(p);
     Vector3D intersection;
 
     float d = pointToRayDistance(tP, intersection);

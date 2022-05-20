@@ -28,6 +28,7 @@
 
 #include <QtTest/QTest>
 #include <Qt3DCore/private/matrix4x4_sse_p.h>
+#include <QVector4D>
 
 using namespace Qt3DCore;
 
@@ -351,7 +352,7 @@ private Q_SLOTS:
         const Vector3D resultingVec = mat * vec3;
 
         // THEN
-        QCOMPARE(resultingVec.toQVector3D(), tmpMat * tmpVec3);
+        QCOMPARE(resultingVec.toQVector3D(), tmpMat.map(tmpVec3));
     }
 
     void checkVector3DMatrixMultiplication()
@@ -369,7 +370,7 @@ private Q_SLOTS:
         const Vector3D resultingVec = vec3 * mat;
 
         // THEN
-        QCOMPARE(resultingVec.toQVector3D(), tmpVec3 * tmpMat);
+        QCOMPARE(resultingVec.toQVector3D(), (QVector4D(tmpVec3, 1.f) * tmpMat).toVector3DAffine());
     }
 
     void checkRows()

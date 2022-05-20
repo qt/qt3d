@@ -392,7 +392,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(207., 303.), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(207., 303.), QPointF(207., 303.), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
 
@@ -406,7 +406,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            auto event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(207., 303.), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            auto event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(207., 303.), QPointF(207., 303.), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
 
@@ -417,7 +417,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(390., 300.), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(390., 300.), QPointF(390., 300.), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
 
@@ -431,7 +431,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            auto event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(390., 300.), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            auto event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(390., 300.), QPointF(390., 300.), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
 
@@ -491,7 +491,7 @@ private Q_SLOTS:
         QVERIFY(earlyReturn);
 
         // WHEN
-        auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(400., 440.),
+        auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(400., 440.), QPointF(400., 440.),
                                  Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
         pickBVJob.processMouseEvent(nullptr, &event);
         earlyReturn = !pickBVJob.runHelper();
@@ -540,7 +540,7 @@ private Q_SLOTS:
         Qt3DRender::Render::PickBoundingVolumeJob pickBVJob;
         initializePickBoundingVolumeJob(&pickBVJob, test.data());
 
-        auto event = QMouseEvent(QMouseEvent::MouseMove, QPointF(207., 303.),
+        auto event = QMouseEvent(QMouseEvent::MouseMove, QPointF(207., 303.), QPointF(207., 303.),
                                  Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
         pickBVJob.processMouseEvent(nullptr, &event);
 
@@ -596,7 +596,7 @@ private Q_SLOTS:
         Qt3DRender::Render::PickBoundingVolumeJob pickBVJob;
         initializePickBoundingVolumeJob(&pickBVJob, test.data());
 
-        auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(207., 303.),
+        auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(207., 303.), QPointF(207., 303.),
                                  Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
         pickBVJob.processMouseEvent(nullptr, &event);
         bool earlyReturn = !pickBVJob.runHelper();
@@ -646,7 +646,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(207., 303.),
+            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(207., 303.), QPointF(207., 303.),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
@@ -658,7 +658,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            auto event = QMouseEvent(QMouseEvent::MouseMove, QPointF(207., 303.),
+            auto event = QMouseEvent(QMouseEvent::MouseMove, QPointF(207., 303.), QPointF(207., 303.),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
@@ -709,7 +709,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(207., 303.),
+            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(207., 303.), QPointF(207., 303.),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
@@ -721,7 +721,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            auto event = QMouseEvent(QMouseEvent::MouseMove, QPointF(207., 303.),
+            auto event = QMouseEvent(QMouseEvent::MouseMove, QPointF(207., 303.), QPointF(207., 303.),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
@@ -771,7 +771,7 @@ private Q_SLOTS:
         Qt3DRender::Render::PickBoundingVolumeJob pickBVJob;
         initializePickBoundingVolumeJob(&pickBVJob, test.data());
 
-        auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(207., 303.),
+        auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(207., 303.), QPointF(207., 303.),
                                  Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
         pickBVJob.processMouseEvent(nullptr, &event);
         const bool earlyReturn = !pickBVJob.runHelper();
@@ -846,7 +846,7 @@ private Q_SLOTS:
         QVERIFY(mouseClickedSpy.isValid());
 
         {
-            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(207.0, 303.0),
+            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(207.0, 303.0), QPointF(207.0, 303.0),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
@@ -864,7 +864,7 @@ private Q_SLOTS:
 
         {
             // WHEN -> Move on same object
-            auto event = QMouseEvent(QMouseEvent::MouseMove, QPointF(207.0, 303.0),
+            auto event = QMouseEvent(QMouseEvent::MouseMove, QPointF(207.0, 303.0), QPointF(207.0, 303.0),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
@@ -882,7 +882,7 @@ private Q_SLOTS:
 
         {
             // WHEN -> Release on object
-            auto event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(207.0, 303.0),
+            auto event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(207.0, 303.0), QPointF(207.0, 303.0),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
@@ -905,10 +905,10 @@ private Q_SLOTS:
 
         {
             // WHEN -> Release outside of object
-            auto event1 = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(207.0, 303.0),
+            auto event1 = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(207.0, 303.0), QPointF(207.0, 303.0),
                                       Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event1);
-            auto event2 = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(0.0, 0.0),
+            auto event2 = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(0.0, 0.0), QPointF(0.0, 0.0),
                                       Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event2);
             bool earlyReturn = !pickBVJob.runHelper();
@@ -974,7 +974,7 @@ private Q_SLOTS:
         initializePickBoundingVolumeJob(&pickBVJob, test.data());
 
         {
-            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(207.0, 303.0),
+            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(207.0, 303.0), QPointF(207.0, 303.0),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
@@ -991,7 +991,7 @@ private Q_SLOTS:
 
         {
             // WHEN -> Releasing out of the viewport
-            auto event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(10000.0, 10000.0),
+            auto event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(10000.0, 10000.0), QPointF(10000.0, 10000.0),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
@@ -1012,10 +1012,11 @@ private Q_SLOTS:
 
         {
             // WHEN -> Releasing out of the viewport
-            auto event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(10000.0, 10000.0),
+            auto event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(10000.0, 10000.0), QPointF(10000.0, 10000.0),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
+            Q_UNUSED(earlyReturn);
             Qt3DCore::QAspectJobPrivate::get(&pickBVJob)->postFrame(test->aspectManager());
 
             // THEN -> Should have received nothing
@@ -1084,7 +1085,7 @@ private Q_SLOTS:
         initializePickBoundingVolumeJob(&pickBVJob, test.data());
 
         {
-            auto event = QMouseEvent(QMouseEvent::HoverMove, QPointF(207.0, 303.0),
+            auto event = QMouseEvent(QMouseEvent::HoverMove, QPointF(207.0, 303.0), QPointF(207.0, 303.0),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
@@ -1100,7 +1101,7 @@ private Q_SLOTS:
 
         {
             // WHEN -> HoverMove Out
-            auto event = QMouseEvent(QEvent::HoverMove, QPointF(20.0, 40.0),
+            auto event = QMouseEvent(QEvent::HoverMove, QPointF(20.0, 40.0), QPointF(20.0, 40.0),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
@@ -1119,10 +1120,10 @@ private Q_SLOTS:
 
         // WHEN -> HoverMove In + Pressed other
         {
-            auto event1 = QMouseEvent(QEvent::HoverMove, QPointF(207.0, 303.0),
+            auto event1 = QMouseEvent(QEvent::HoverMove, QPointF(207.0, 303.0), QPointF(207.0, 303.0),
                                       Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event1);
-            auto event2 = QMouseEvent(QEvent::MouseButtonPress, QPointF(0.0, 0.0),
+            auto event2 = QMouseEvent(QEvent::MouseButtonPress, QPointF(0.0, 0.0), QPointF(0.0, 0.0),
                                       Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event2);
             bool earlyReturn = !pickBVJob.runHelper();
@@ -1200,7 +1201,7 @@ private Q_SLOTS:
         initializePickBoundingVolumeJob(&pickBVJob, test.data());
 
         {
-            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(400.0, 300.0),
+            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(400.0, 300.0), QPointF(400.0, 300.0),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
@@ -1220,7 +1221,7 @@ private Q_SLOTS:
 
         {
             // WHEN -> Move on same object
-            auto event = QMouseEvent(QMouseEvent::MouseMove, QPointF(400.0, 300.0),
+            auto event = QMouseEvent(QMouseEvent::MouseMove, QPointF(400.0, 300.0), QPointF(400.0, 300.0),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
@@ -1240,7 +1241,7 @@ private Q_SLOTS:
 
         // WHEN -> Release on object
         {
-            auto event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(400.0, 300.0),
+            auto event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(400.0, 300.0), QPointF(400.0, 300.0),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
@@ -1262,10 +1263,10 @@ private Q_SLOTS:
         mouseButtonReleasedSpy.clear();
 
         {
-            auto event1 = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(400., 300.),
+            auto event1 = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(400., 300.), QPointF(400., 300.),
                                       Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event1);
-            auto event2 = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(0., 0.),
+            auto event2 = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(0., 0.), QPointF(0., 0.),
                                       Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event2);
             bool earlyReturn = !pickBVJob.runHelper();
@@ -1374,7 +1375,7 @@ private Q_SLOTS:
         initializePickBoundingVolumeJob(&pickBVJob, test.data());
 
         {
-            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(320., 303.),
+            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(320., 303.), QPointF(320., 303.),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
@@ -1395,7 +1396,7 @@ private Q_SLOTS:
 
         {
             // WHEN -> Move on next object, show stay on previous picker unless all picks are requested
-            auto event = QMouseEvent(QMouseEvent::MouseMove, QPointF(280., 303.),
+            auto event = QMouseEvent(QMouseEvent::MouseMove, QPointF(280., 303.), QPointF(280., 303.),
                                 Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
@@ -1474,7 +1475,7 @@ private Q_SLOTS:
         Qt3DRender::Render::PickBoundingVolumeJob pickBVJob;
         initializePickBoundingVolumeJob(&pickBVJob, test.data());
 
-        auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(400., 300.),
+        auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(400., 300.), QPointF(400., 300.),
                                  Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
         pickBVJob.processMouseEvent(nullptr, &event);
         bool earlyReturn = !pickBVJob.runHelper();
@@ -1543,7 +1544,7 @@ private Q_SLOTS:
         initializePickBoundingVolumeJob(&pickBVJob, test.data());
 
         {
-            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(280., 300.),
+            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(280., 300.), QPointF(280., 300.),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
@@ -1566,7 +1567,7 @@ private Q_SLOTS:
         backendPicker->setEnabled(true);
 
         {
-            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(320., 300.),
+            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(320., 300.), QPointF(320., 300.),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
@@ -1628,7 +1629,7 @@ private Q_SLOTS:
         initializePickBoundingVolumeJob(&pickBVJob, test.data());
 
         {
-            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(150., 300.),
+            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(150., 300.), QPointF(150., 300.),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
@@ -1643,14 +1644,14 @@ private Q_SLOTS:
             QCOMPARE(mouseButtonPressedSpy1.count(), 1);
             QCOMPARE(mouseButtonPressedSpy2.count(), 0);
 
-            auto event2 = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(150., 300.),
+            auto event2 = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(150., 300.), QPointF(150., 300.),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event2);
             pickBVJob.runHelper();
         }
 
         {
-            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(450., 300.),
+            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(450., 300.), QPointF(450., 300.),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
@@ -1735,7 +1736,7 @@ private Q_SLOTS:
 
         // WHEN -> Pressed on object1 in VP1
         {
-            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(200.0f, 300.0f),
+            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(200.0, 300.0), QPointF(200.0, 300.0),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
@@ -1759,15 +1760,15 @@ private Q_SLOTS:
             QCOMPARE(mouseButtonPressedSpy4.count(), 0);
             QCOMPARE(mouseButtonPressedSpy5.count(), 0);
 
-            auto event2 = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(200.0f, 300.0f),
-                                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            auto event2 = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(200.0, 300.0), QPointF(200.0, 300.0),
+                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event2);
             pickBVJob.runHelper();
         }
 
         // WHEN -> Pressed on object2 in VP2
         {
-            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(541.0f, 183.0f),
+            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(541.0, 183.0), QPointF(541.0, 183.0),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
@@ -1791,7 +1792,7 @@ private Q_SLOTS:
             QCOMPARE(mouseButtonPressedSpy4.count(), 0);
             QCOMPARE(mouseButtonPressedSpy5.count(), 0);
 
-            auto event2 = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(541.0f, 183.0f),
+            auto event2 = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(541.0, 183.0), QPointF(541.0, 183.0),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event2);
             pickBVJob.runHelper();
@@ -1799,7 +1800,7 @@ private Q_SLOTS:
 
         // WHEN -> Pressed on object3 in VP1
         {
-            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(80.0f, 150.0f),
+            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(80.0, 150.0), QPointF(80.0, 150.0),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
@@ -1826,7 +1827,7 @@ private Q_SLOTS:
 
         // WHEN -> Pressed on object3 in VP2
         {
-            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(504.0f, 263.0f),
+            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(504.0, 263.0), QPointF(504.0, 263.0),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
@@ -1853,7 +1854,7 @@ private Q_SLOTS:
 
         // WHEN -> Pressed on object4 in VP1
         {
-            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(160.0f, 431.0f),
+            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(160.0, 431.0), QPointF(160.0, 431.0),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
@@ -1877,7 +1878,7 @@ private Q_SLOTS:
             QCOMPARE(mouseButtonPressedSpy4.count(), 1);
             QCOMPARE(mouseButtonPressedSpy5.count(), 0);
 
-            auto event2 = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(160.0f, 431.0f),
+            auto event2 = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(160.0, 431.0), QPointF(160.0, 431.0),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event2);
             pickBVJob.runHelper();
@@ -1885,7 +1886,7 @@ private Q_SLOTS:
 
         // WHEN -> Pressed on object4 in VP2
         {
-            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(447.0f, 472.0f),
+            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(447.0, 472.0), QPointF(447.0, 472.0),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
@@ -1909,7 +1910,7 @@ private Q_SLOTS:
             QCOMPARE(mouseButtonPressedSpy4.count(), 2);
             QCOMPARE(mouseButtonPressedSpy5.count(), 0);
 
-            auto event2 = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(447.0f, 472.0f),
+            auto event2 = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(447.0, 472.0), QPointF(447.0, 472.0),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event2);
             pickBVJob.runHelper();
@@ -1917,7 +1918,7 @@ private Q_SLOTS:
 
         // WHEN -> Pressed on object5 in VP1
         {
-            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(153.0f, 195.0f),
+            auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(153.0, 195.0), QPointF(153.0, 195.0),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event);
             bool earlyReturn = !pickBVJob.runHelper();
@@ -1941,7 +1942,7 @@ private Q_SLOTS:
             QCOMPARE(mouseButtonPressedSpy4.count(), 2);
             QCOMPARE(mouseButtonPressedSpy5.count(), 1);
 
-            auto event2 = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(153.0f, 195.0f),
+            auto event2 = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(153.0, 195.0), QPointF(153.0, 195.0),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             pickBVJob.processMouseEvent(nullptr, &event2);
             pickBVJob.runHelper();
@@ -1959,12 +1960,12 @@ private Q_SLOTS:
             QMatrix4x4 m;
             m.rotate(360.f / float(n) * float(j), 0.f, 0.f, 1.f);
             for (int i=0; i<n; i++) {
-                const double angle = M_PI * 2. / double(n) * i;
-                const double x = std::sin(angle) * 10.;
-                const double z = std::cos(angle) * 10.;
+                const float angle = float(M_PI) * 2.f / float(n) * float(i);
+                const float x = std::sin(angle) * 10.f;
+                const float z = std::cos(angle) * 10.f;
                 QVector3D pos(x, 0.f, z);
                 QVector3D up(0.f, 1.f, 0.f);
-                QTest::newRow(QString::number(k++).toLatin1().data()) << m * pos << m * up;
+                QTest::newRow(QString::number(k++).toLatin1().data()) << m.map(pos) << m.map(up);
             }
         }
     }
@@ -2025,7 +2026,7 @@ private Q_SLOTS:
         Qt3DRender::Render::PickBoundingVolumeJob pickBVJob;
         initializePickBoundingVolumeJob(&pickBVJob, test.data());
 
-        auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(303., 303.),
+        auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(303., 303.), QPointF(303., 303.),
                                  Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
         pickBVJob.processMouseEvent(nullptr, &event);
         bool earlyReturn = !pickBVJob.runHelper();
@@ -2112,7 +2113,7 @@ private Q_SLOTS:
 
             // WHEN -> Pressed on object
             {
-                auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(300., 300.),
+                auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(300., 300.), QPointF(300., 300.),
                                          Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
                 pickBVJob.processMouseEvent(nullptr, &event);
                 bool earlyReturn = !pickBVJob.runHelper();
@@ -2140,7 +2141,7 @@ private Q_SLOTS:
             }
 
             {
-                auto event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(300., 300.),
+                auto event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(300., 300.), QPointF(300., 300.),
                                          Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
                 pickBVJob.processMouseEvent(nullptr, &event);
                 pickBVJob.runHelper();
@@ -2180,7 +2181,7 @@ private Q_SLOTS:
 
             // WHEN -> Pressed on object
             {
-                auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(300., 300.),
+                auto event = QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(300., 300.), QPointF(300., 300.),
                                          Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
                 pickBVJob.processMouseEvent(nullptr, &event);
                 bool earlyReturn = !pickBVJob.runHelper();
@@ -2208,7 +2209,7 @@ private Q_SLOTS:
             }
 
             {
-                auto event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(300., 300.),
+                auto event = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(300., 300.), QPointF(300., 300.),
                                          Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
                 pickBVJob.processMouseEvent(nullptr, &event);
                 pickBVJob.runHelper();
@@ -2275,7 +2276,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(results.size(), 1);
-        auto vca = results.front();
+        const auto &vca = results.front();
         QCOMPARE(vca.area, QSize(600, 600));
         QCOMPARE(vca.cameraId, camera->id());
         QCOMPARE(vca.viewport, QRectF(0., 0., 1., 1.));

@@ -641,7 +641,7 @@ void sortByMaterial(EntityRenderCommandDataView *view, int begin, const int end)
     while (begin != end) {
         if (begin + 1 < rangeEnd) {
             std::stable_sort(commandIndices.begin() + begin + 1, commandIndices.begin() + rangeEnd,
-                             [&commands] (const int &iA, const int &iB) {
+                             [&commands] (const size_t &iA, const size_t &iB) {
                 const RenderCommand &a = commands[iA];
                 const RenderCommand &b = commands[iB];
                 return a.m_material.handle() < b.m_material.handle();
@@ -1465,7 +1465,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, ParameterInfoList 
                 break;
             const Entity *lightEntity = lightSource.entity;
             const Matrix4x4 lightWorldTransform = *(lightEntity->worldTransform());
-            const Vector3D worldPos = lightWorldTransform * Vector3D(0.0f, 0.0f, 0.0f);
+            const Vector3D worldPos = lightWorldTransform.map(Vector3D(0.0f, 0.0f, 0.0f));
             for (Light *light : lightSource.lights) {
                 if (!light->isEnabled())
                     continue;

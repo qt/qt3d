@@ -65,6 +65,10 @@
 #define GL_VERTEX_ARRAY_BINDING           0x85B5
 #endif
 
+#ifdef _MSC_VER
+#pragma warning (disable: 4996)     // 'This function or variable may be unsafe': strcpy, strdup, sprintf, vsnprintf, sscanf, fopen
+#endif
+
 QT_BEGIN_NAMESPACE
 
 using namespace Qt3DRender;

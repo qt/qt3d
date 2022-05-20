@@ -220,14 +220,14 @@ std::vector<QRhiCommandBuffer::DynamicOffset> PipelineUBOSet::offsets(const Rend
     const size_t dToCmd = distanceToCommand(cmd);
     {
         // Compute offset relative to the select UBO in the subset
-        const size_t localOffset = m_commandsUBO.localOffsetInBufferForCommand(dToCmd);
-        offsets.push_back({1, localOffset});
+        const auto localOffset = m_commandsUBO.localOffsetInBufferForCommand(dToCmd);
+        offsets.push_back({1, quint32(localOffset)});
     }
 
     for (const MultiUBOBufferWithBindingAndBlockSize &materialUBO : m_materialsUBOs) {
         // Compute offset relative to the select UBO in the subset
         const size_t localOffset = materialUBO.localOffsetInBufferForCommand(dToCmd);
-        offsets.push_back({materialUBO.binding, localOffset});
+        offsets.push_back({materialUBO.binding, quint32(localOffset)});
     }
 
     return offsets;

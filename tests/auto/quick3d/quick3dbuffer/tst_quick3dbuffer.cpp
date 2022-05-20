@@ -70,7 +70,7 @@ private Q_SLOTS:
         const QVector<QVector3D> dataArray = { QVector3D(327.0f, 350.0f, 355.0f),
                                               QVector3D(383.0f, 427.0f, 454.0f) };
 
-        const int bufferByteSize = dataArray.size() * sizeof(QVector3D);
+        const int bufferByteSize = int(dataArray.size()) * sizeof(QVector3D);
         const QLatin1String filePath("binary_data.bin");
         const bool writingSucceeded = writeBinaryFile(filePath, dataArray.constData(), bufferByteSize);
         Q_ASSERT(writingSucceeded);

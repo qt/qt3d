@@ -90,7 +90,7 @@ bool StlGeometryLoader::loadAscii(QIODevice *ioDev)
                 const float y = tokens.floatAt(2);
                 const float z = tokens.floatAt(3);
                 m_points.push_back(QVector3D(x, y, z));
-                m_indices.push_back(m_indices.size());
+                m_indices.push_back(uint(m_indices.size()));
             }
         }
     }

@@ -492,7 +492,7 @@ QHash<QString, ShaderUniform> RHIShader::activeUniformsForUniformBlock(int block
 
 ShaderUniformBlock RHIShader::uniformBlockForBlockIndex(int blockIndex) const noexcept
 {
-    for (int i = 0, m = m_uniformBlocks.size(); i < m; ++i) {
+    for (size_t i = 0, m = m_uniformBlocks.size(); i < m; ++i) {
         if (m_uniformBlocks[i].m_index == blockIndex) {
             return m_uniformBlocks[i];
         }
@@ -502,7 +502,7 @@ ShaderUniformBlock RHIShader::uniformBlockForBlockIndex(int blockIndex) const no
 
 ShaderUniformBlock RHIShader::uniformBlockForBlockNameId(int blockNameId) const noexcept
 {
-    for (int i = 0, m = m_uniformBlocks.size(); i < m; ++i) {
+    for (size_t i = 0, m = m_uniformBlocks.size(); i < m; ++i) {
         if (m_uniformBlocks[i].m_nameId == blockNameId) {
             return m_uniformBlocks[i];
         }
@@ -512,7 +512,7 @@ ShaderUniformBlock RHIShader::uniformBlockForBlockNameId(int blockNameId) const 
 
 ShaderUniformBlock RHIShader::uniformBlockForBlockName(const QString &blockName) const noexcept
 {
-    for (int i = 0, m = m_uniformBlocks.size(); i < m; ++i) {
+    for (size_t i = 0, m = m_uniformBlocks.size(); i < m; ++i) {
         if (m_uniformBlocks[i].m_name == blockName) {
             return m_uniformBlocks[i];
         }
@@ -539,7 +539,7 @@ ShaderUniformBlock RHIShader::uniformBlockForInstanceNameId(int instanceNameId) 
 
 ShaderStorageBlock RHIShader::storageBlockForBlockIndex(int blockIndex) const noexcept
 {
-    for (int i = 0, m = m_shaderStorageBlockNames.size(); i < m; ++i) {
+    for (size_t i = 0, m = m_shaderStorageBlockNames.size(); i < m; ++i) {
         if (m_shaderStorageBlocks[i].m_index == blockIndex)
             return m_shaderStorageBlocks[i];
     }
@@ -548,7 +548,7 @@ ShaderStorageBlock RHIShader::storageBlockForBlockIndex(int blockIndex) const no
 
 ShaderStorageBlock RHIShader::storageBlockForBlockNameId(int blockNameId) const noexcept
 {
-    for (int i = 0, m = m_shaderStorageBlockNames.size(); i < m; ++i) {
+    for (size_t i = 0, m = m_shaderStorageBlockNames.size(); i < m; ++i) {
         if (m_shaderStorageBlocks[i].m_nameId == blockNameId)
             return m_shaderStorageBlocks[i];
     }
@@ -557,7 +557,7 @@ ShaderStorageBlock RHIShader::storageBlockForBlockNameId(int blockNameId) const 
 
 ShaderStorageBlock RHIShader::storageBlockForBlockName(const QString &blockName) const noexcept
 {
-    for (int i = 0, m = m_shaderStorageBlockNames.size(); i < m; ++i) {
+    for (size_t i = 0, m = m_shaderStorageBlockNames.size(); i < m; ++i) {
         if (m_shaderStorageBlocks[i].m_name == blockName)
             return m_shaderStorageBlocks[i];
     }
@@ -612,7 +612,7 @@ void RHIShader::initializeAttributes(const std::vector<ShaderAttribute> &attribu
     m_attributes = attributesDescription;
     m_attributesNames.resize(attributesDescription.size());
     m_attributeNamesIds.resize(attributesDescription.size());
-    for (int i = 0, m = attributesDescription.size(); i < m; i++) {
+    for (size_t i = 0, m = attributesDescription.size(); i < m; i++) {
         m_attributesNames[i] = attributesDescription[i].m_name;
         m_attributes[i].m_nameId = StringToInt::lookupId(m_attributesNames[i]);
         m_attributeNamesIds[i] = m_attributes[i].m_nameId;
@@ -625,7 +625,7 @@ void RHIShader::initializeSamplers(const std::vector<ShaderAttribute> &samplersD
     m_samplers = samplersDescription;
     m_samplerNames.resize(samplersDescription.size());
     m_samplerIds.resize(samplersDescription.size());
-    for (int i = 0, m = samplersDescription.size(); i < m; i++) {
+    for (size_t i = 0, m = samplersDescription.size(); i < m; i++) {
         m_samplerNames[i] = samplersDescription[i].m_name;
         m_samplers[i].m_nameId = StringToInt::lookupId(m_samplerNames[i]);
         m_samplerIds[i] = m_samplers[i].m_nameId;
@@ -638,7 +638,7 @@ void RHIShader::initializeImages(const std::vector<ShaderAttribute> &imagesDescr
     m_images = imagesDescription;
     m_imageNames.resize(imagesDescription.size());
     m_imageIds.resize(imagesDescription.size());
-    for (int i = 0, m = imagesDescription.size(); i < m; i++) {
+    for (size_t i = 0, m = imagesDescription.size(); i < m; i++) {
         m_imageNames[i] = imagesDescription[i].m_name;
         m_images[i].m_nameId = StringToInt::lookupId(m_imageNames[i]);
         m_imageIds[i] = m_images[i].m_nameId;
@@ -651,7 +651,7 @@ void RHIShader::initializeUniformBlocks(const std::vector<ShaderUniformBlock> &u
     m_uniformBlocks = uniformBlockDescription;
     m_uniformBlockNames.resize(uniformBlockDescription.size());
     m_uniformBlockNamesIds.resize(uniformBlockDescription.size());
-    for (int i = 0, m = uniformBlockDescription.size(); i < m; ++i) {
+    for (size_t i = 0, m = uniformBlockDescription.size(); i < m; ++i) {
         m_uniformBlockNames[i] = m_uniformBlocks[i].m_name;
         m_uniformBlockNamesIds[i] = StringToInt::lookupId(m_uniformBlockNames[i]);
         m_uniformBlocks[i].m_nameId = m_uniformBlockNamesIds[i];
@@ -692,7 +692,7 @@ void RHIShader::initializeShaderStorageBlocks(
     m_shaderStorageBlockNames.resize(shaderStorageBlockDescription.size());
     m_shaderStorageBlockNamesIds.resize(shaderStorageBlockDescription.size());
 
-    for (int i = 0, m = shaderStorageBlockDescription.size(); i < m; ++i) {
+    for (size_t i = 0, m = shaderStorageBlockDescription.size(); i < m; ++i) {
         m_shaderStorageBlockNames[i] = m_shaderStorageBlocks[i].m_name;
         m_shaderStorageBlockNamesIds[i] = StringToInt::lookupId(m_shaderStorageBlockNames[i]);
         m_shaderStorageBlocks[i].m_nameId = m_shaderStorageBlockNamesIds[i];

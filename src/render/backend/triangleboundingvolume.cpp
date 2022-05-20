@@ -116,7 +116,7 @@ bool TriangleBoundingVolume::intersects(const RayCasting::QRay3D &ray, Vector3D 
 {
     float t = 0.0f;
     Vector3D uvwr;
-    const float intersected = intersectsSegmentTriangle(ray, m_c, m_b, m_a, uvwr, t);
+    const bool intersected = intersectsSegmentTriangle(ray, m_c, m_b, m_a, uvwr, t);
 
     if (intersected) {
         if (q != nullptr)
@@ -164,9 +164,9 @@ void TriangleBoundingVolume::setC(const Vector3D &c)
 
 TriangleBoundingVolume TriangleBoundingVolume::transformed(const Matrix4x4 &mat) const
 {
-    const Vector3D tA = mat * m_a;
-    const Vector3D tB = mat * m_b;
-    const Vector3D tC = mat * m_c;
+    const Vector3D tA = mat.map(m_a);
+    const Vector3D tB = mat.map(m_b);
+    const Vector3D tC = mat.map(m_c);
     return TriangleBoundingVolume(id(), tA, tB, tC);
 }
 

@@ -293,7 +293,7 @@ void RayCastingJob::dispatchHits(RayCaster *rayCaster, const PickingUtils::HitLi
         Entity *entity = m_manager->renderNodesManager()->lookupResource(sphereHit.m_entityId);
         Vector3D localIntersection = sphereHit.m_intersection;
         if (entity && entity->worldTransform())
-            localIntersection = entity->worldTransform()->inverted() * localIntersection;
+            localIntersection = entity->worldTransform()->inverted().map(localIntersection);
 
         QRayCasterHit::HitType hitType = QRayCasterHit::EntityHit;
         switch (sphereHit.m_type) {
