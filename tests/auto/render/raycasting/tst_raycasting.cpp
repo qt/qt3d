@@ -141,6 +141,8 @@ void tst_RayCasting::shouldReturnValidHandle()
 
 void tst_RayCasting::shouldReturnResultForEachHandle()
 {
+    QSKIP("Test hangs due to changes in underlying qt configuration - See QTBUG-103881");
+
     // GIVEN
     QRay3D ray;
     QList<QBoundingVolume *> volumes;
@@ -166,6 +168,8 @@ void tst_RayCasting::shouldReturnResultForEachHandle()
 
 void tst_RayCasting::shouldReturnAllResults()
 {
+    QSKIP("Test hangs due to changes in underlying qt configuration - See QTBUG-103881");
+
     // GIVEN
     QRay3D ray;
     QList<QBoundingVolume *> volumes;
