@@ -77,6 +77,7 @@ Q_SIGNALS:
     Q_REVISION(13) void maxExtentChanged(const QVector3D &maxExtent);
 protected:
     explicit QGeometry(QGeometryPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    // TODO Unused remove in Qt6
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) override;
 
 private:

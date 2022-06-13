@@ -53,6 +53,7 @@
 #include <Qt3DRender/private/buffervisitor_p.h>
 #include <Qt3DRender/private/entityvisitor_p.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
+#include <Qt3DRender/private/qgeometry_p.h>
 
 #include <QtCore/qmath.h>
 #if QT_CONFIG(concurrent)
@@ -399,8 +400,33 @@ public:
 
 } // anonymous
 
+class CalculateBoundingVolumeJobPrivate : public Qt3DCore::QAspectJobPrivate
+{
+public:
+    CalculateBoundingVolumeJobPrivate(CalculateBoundingVolumeJob *q) : q_ptr(q) {}
+    ~CalculateBoundingVolumeJobPrivate() override = default;
+
+    void postFrame(Qt3DCore::QAspectManager *aspectManager) override
+    {
+        for (Geometry *backend : m_updatedGeometries) {
+            Qt3DRender::QGeometry *node = qobject_cast<Qt3DRender::QGeometry *>(aspectManager->lookupNode(backend->peerId()));
+            if (!node)
+                continue;
+            Qt3DRender::QGeometryPrivate *dNode = static_cast<Qt3DRender::QGeometryPrivate *>(Qt3DCore::QNodePrivate::get(node));
+            dNode->setExtent(backend->min(), backend->max());
+        }
+
+        m_updatedGeometries.clear();
+    }
+
+    QVector<Geometry *> m_updatedGeometries;
+    CalculateBoundingVolumeJob *q_ptr;
+    Q_DECLARE_PUBLIC(CalculateBoundingVolumeJob)
+};
+
 CalculateBoundingVolumeJob::CalculateBoundingVolumeJob()
-    : m_manager(nullptr)
+    : Qt3DCore::QAspectJob(*new CalculateBoundingVolumeJobPrivate(this))
+    , m_manager(nullptr)
     , m_node(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::CalcBoundingVolume, 0)
@@ -429,9 +455,8 @@ void CalculateBoundingVolumeJob::run()
             updatedGeometries += calculateLocalBoundingVolume(m_manager, data);
     }
 
-    // Send extent updates to frontend
-    for (Geometry *geometry : updatedGeometries)
-        geometry->notifyExtentChanged();
+    Q_D(CalculateBoundingVolumeJob);
+    d->m_updatedGeometries = std::move(updatedGeometries);
 }
 
 void CalculateBoundingVolumeJob::setRoot(Entity *node)

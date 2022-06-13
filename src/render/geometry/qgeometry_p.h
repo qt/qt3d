@@ -66,6 +66,7 @@ public:
     QGeometryPrivate();
     ~QGeometryPrivate();
 
+    void setExtent(const QVector3D &minExtent, const QVector3D &maxExtent);
 
     QVector<QAttribute *> m_attributes;
     QAttribute *m_boundingVolumePositionAttribute;

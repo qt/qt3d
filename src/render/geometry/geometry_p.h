@@ -79,7 +79,6 @@ public:
     inline QVector3D max() const { return m_max; }
 
     void updateExtent(const QVector3D &min, const QVector3D &max);
-    void notifyExtentChanged();
 
 private:
     QVector<Qt3DCore::QNodeId> m_attributes;
@@ -87,8 +86,6 @@ private:
     Qt3DCore::QNodeId m_boundingPositionAttribute;
     QVector3D m_min;
     QVector3D m_max;
-    bool m_shouldNotifyMinExtentChanged;
-    bool m_shouldNotifyMaxExtentChanged;
 };
 
 } // namespace Render
