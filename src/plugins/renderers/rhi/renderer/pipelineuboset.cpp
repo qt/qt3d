@@ -620,29 +620,34 @@ void PipelineUBOSet::uploadUBOsForCommand(const RenderCommand &command,
 
         for (const RHIShader::UBO_Member &member : qAsConst(uboBlock.members)) {
             const QShaderDescription::BlockVariable &blockVariable = member.blockVariable;
+
+            // Array
             if (!blockVariable.arrayDims.empty()) {
-                if (!blockVariable.structMembers.empty()) {
-                    const int arr0 = blockVariable.arrayDims[0];
-                    for (int i = 0; i < arr0; i++) {
-                        for (const RHIShader::UBO_Member &structMember : member.structMembers) {
+                if (!blockVariable.structMembers.empty()) { // Array of structs
+                    // we treat structMembers as arrayMembers when we are dealing with an array of structs´
+                    const size_t arr0 = size_t(blockVariable.arrayDims[0]);
+                    const size_t m = std::max(arr0, member.structMembers.size());
+                    for (size_t i = 0; i < m; ++i) {
+                        const RHIShader::UBO_Member &arrayMember = member.structMembers[i];
+                        for (const RHIShader::UBO_Member &arrayStructMember : arrayMember.structMembers) {
                             uploadUniform(uniforms, ubo,
-                                          structMember,
+                                          arrayStructMember,
                                           distanceToCommand,
                                           i * blockVariable.size / arr0);
                         }
                     }
-                } else {
+                } else { // Array of scalars
                     uploadUniform(uniforms, ubo,
                                   member, distanceToCommand);
                 }
             } else {
-                if (!blockVariable.structMembers.empty()) {
+                if (!blockVariable.structMembers.empty()) { // Struct
                     for (const RHIShader::UBO_Member &structMember : member.structMembers) {
                         uploadUniform(uniforms, ubo,
                                       structMember,
                                       distanceToCommand);
                     }
-                } else {
+                } else { // Scalar
                     uploadUniform(uniforms, ubo,
                                   member, distanceToCommand);
                 }
