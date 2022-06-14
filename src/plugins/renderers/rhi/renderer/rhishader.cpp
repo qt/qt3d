@@ -332,7 +332,14 @@ void RHIShader::recordAllUniforms(UBO_Member &uboMember,
         // We iterate through all the [l][n][m] by building [0][0][0] and incrementing
         forEachArrayAccessor(member.arrayDims, [&](const QString &str) {
             // "foo.bar[1][2]"
-            m_unqualifiedUniformNames << (fullMemberName + str);
+            const QString unqualifiedMemberName = (fullMemberName + str);
+            m_unqualifiedUniformNames << unqualifiedMemberName;
+
+            // Record as an individual uniform
+            m_uniformsNames.push_back(unqualifiedMemberName);
+            const int nameId = StringToInt::lookupId(unqualifiedMemberName);
+            m_uniformsNamesIds.push_back(nameId);
+
             // Question : does it make sense to also record foo[0], foo[0][0], etc...
             // if there are e.g. 3 dimensions ?
         });
@@ -344,20 +351,29 @@ void RHIShader::recordAllUniforms(UBO_Member &uboMember,
             m_structNamesIds.push_back(StringToInt::lookupId(m_structNames.back()));
         });
 
-        // Record the struct members
-        for (const QShaderDescription::BlockVariable& bv : member.structMembers) {
-            forEachArrayAccessor(member.arrayDims, [&] (const QString& str) {
+        // Record the array times the struct members => entry[i].struct_member
+        forEachArrayAccessor(member.arrayDims, [&] (const QString& str) {
+            UBO_Member arrayMember {StringToInt::lookupId(fullMemberName + str), {}, {}};
+            // Record all struct member into the array member[i]
+            for (const QShaderDescription::BlockVariable& bv : member.structMembers) {
                 //recordAllUniforms("baz", "foo.bar[1][2].")
                 const QString structMemberNamePrefix = fullMemberName + str + QLatin1Char('.');
                 UBO_Member innerMember {StringToInt::lookupId(structMemberNamePrefix), bv, {}};
                 recordAllUniforms(innerMember, structMemberNamePrefix);
-                uboMember.structMembers.push_back(innerMember);
-            });
-        }
+                arrayMember.structMembers.push_back(innerMember);
+            }
+            // When dealing with an array of structs, we treat structMembers as arrayMembers
+            uboMember.structMembers.push_back(arrayMember);
+        });
     } else {
         // Final member (not array or struct)
         // Replace nameId with final nameId name
         uboMember.nameId = StringToInt::lookupId(fullMemberName);
+
+        // Record as an individual uniform
+        m_uniformsNames.push_back(fullMemberName);
+        const int nameId = StringToInt::lookupId(fullMemberName);
+        m_uniformsNamesIds.push_back(nameId);
     }
 }
 

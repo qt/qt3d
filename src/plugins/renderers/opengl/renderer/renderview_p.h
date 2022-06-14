@@ -392,7 +392,7 @@ private:
                                const ShaderStorageBlock &block,
                                const UniformValue &value) const;
     void setDefaultUniformBlockShaderDataValue(ShaderParameterPack &uniformPack,
-                                               const GLShader *shader,
+                                               const std::vector<int> &uniformsNamesIds,
                                                ShaderData *shaderData,
                                                const QString &structName) const;
     void applyParameter(const Parameter *param,

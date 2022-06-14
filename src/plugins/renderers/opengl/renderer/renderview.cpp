@@ -1210,11 +1210,11 @@ void RenderView::setShaderStorageValue(ShaderParameterPack &uniformPack,
 }
 
 void RenderView::setDefaultUniformBlockShaderDataValue(ShaderParameterPack &uniformPack,
-                                                       const GLShader *shader,
+                                                       const std::vector<int> &uniformsNamesIds,
                                                        ShaderData *shaderData,
                                                        const QString &structName) const
 {
-    UniformBlockValueBuilder builder(shader->uniformsNamesIds(),
+    UniformBlockValueBuilder builder(uniformsNamesIds,
                                      m_manager->shaderDataManager(),
                                      m_manager->textureManager(),
                                      m_viewMatrix);
@@ -1258,7 +1258,7 @@ void RenderView::applyParameter(const Parameter *param,
         if (uniformValue.valueType() == UniformValue::NodeId &&
                 (shaderData = m_manager->shaderDataManager()->lookupResource(*uniformValue.constData<Qt3DCore::QNodeId>())) != nullptr) {
             // Try to check if we have a struct or array matching a QShaderData parameter
-            setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, shaderData, StringToInt::lookupString(nameId));
+            setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader->uniformsNamesIds(), shaderData, StringToInt::lookupString(nameId));
         }
         break;
     }
@@ -1414,8 +1414,8 @@ void RenderView::updateLightUniforms(RenderCommand *command, const Entity *entit
                 if (worldTransform)
                     shaderData->updateWorldTransform(*worldTransform);
 
-                setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, shaderData, GLLights::LIGHT_STRUCT_NAMES[lightIdx]);
-                setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, shaderData, GLLights::LIGHT_STRUCT_UNROLL_NAMES[lightIdx]);
+                setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader->lightUniformsNamesIds(), shaderData, GLLights::LIGHT_STRUCT_NAMES[lightIdx]);
+                setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader->lightUniformsNamesIds(), shaderData, GLLights::LIGHT_STRUCT_UNROLL_NAMES[lightIdx]);
                 ++lightIdx;
             }
         }
@@ -1448,7 +1448,8 @@ void RenderView::updateLightUniforms(RenderCommand *command, const Entity *entit
     if (m_environmentLight && m_environmentLight->isEnabled()) {
         ShaderData *shaderData = m_manager->shaderDataManager()->lookupResource(m_environmentLight->shaderData());
         if (shaderData) {
-            setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, shaderData, QStringLiteral("envLight"));
+            // EnvLight isn't part of the light uniform name ids
+            setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader->uniformsNamesIds(), shaderData, QStringLiteral("envLight"));
             auto irr =
                     shaderData->properties()["irradiance"].value.value<Qt3DCore::QNodeId>();
             auto spec =
