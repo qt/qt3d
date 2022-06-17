@@ -62,7 +62,17 @@
 
 #include <QtQml/qqml.h>
 
+extern void qml_register_types_Qt3D_Core();
+Q_GHS_KEEP_REFERENCE(qml_register_types_Qt3D_Core);
+
 QT_BEGIN_NAMESPACE
+
+Qt3DQuick3DCorePlugin::Qt3DQuick3DCorePlugin(QObject *parent)
+    : QQmlExtensionPlugin(parent)
+{
+    volatile auto registration = &qml_register_types_Qt3D_Core;
+    Q_UNUSED(registration);
+}
 
 void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
 {
