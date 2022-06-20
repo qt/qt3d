@@ -43,7 +43,7 @@ qt_internal_add_module(3DAnimation
         frontend/qabstractclipblendnode.cpp frontend/qabstractclipblendnode.h frontend/qabstractclipblendnode_p.h
         frontend/qadditiveclipblend.cpp frontend/qadditiveclipblend.h frontend/qadditiveclipblend_p.h
         frontend/qanimationaspect.cpp frontend/qanimationaspect.h frontend/qanimationaspect_p.h
-        frontend/qanimationcallback.h
+        frontend/qanimationcallback.cpp frontend/qanimationcallback.h
         frontend/qanimationclip.cpp frontend/qanimationclip.h frontend/qanimationclip_p.h
         frontend/qanimationclipdata.cpp frontend/qanimationclipdata.h
         frontend/qanimationcliploader.cpp frontend/qanimationcliploader.h frontend/qanimationcliploader_p.h
