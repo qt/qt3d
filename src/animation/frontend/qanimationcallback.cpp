@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,34 +37,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_QANIMATIONCALLBACK_H
-#define QT3DANIMATION_QANIMATIONCALLBACK_H
-
-#include <Qt3DAnimation/qt3danimation_global.h>
-#include <Qt3DCore/qnode.h>
+#include <Qt3DAnimation/qanimationcallback.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
-class Q_3DANIMATIONSHARED_EXPORT QAnimationCallback
-{
-public:
-    enum Flag {
-        OnOwningThread = 0x0,
-        OnThreadPool = 0x01
-    };
-    Q_DECLARE_FLAGS(Flags, Flag)
-
-    virtual ~QAnimationCallback();
-
-    virtual void valueChanged(const QVariant &value) = 0;
-};
+QAnimationCallback::~QAnimationCallback()
+    = default;
 
 } // namespace Qt3DAnimation
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(Qt3DAnimation::QAnimationCallback::Flags)
-
 QT_END_NAMESPACE
-
-#endif // QT3DANIMATION_QANIMATIONCALLBACK_H
