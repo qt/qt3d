@@ -323,3 +323,5 @@ void QDiffuseMapMaterial::setTextureScale(float textureScale)
 } // namespace Qt3DExtras
 
 QT_END_NAMESPACE
+
+#include "moc_qdiffusemapmaterial.cpp"

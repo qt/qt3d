@@ -139,3 +139,5 @@ bool QPlaneMesh::mirrored() const
 } // namespace  Qt3DExtras
 
 QT_END_NAMESPACE
+
+#include "moc_qplanemesh.cpp"

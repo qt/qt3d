@@ -135,3 +135,5 @@ void QSpriteSheet::setSprites(QList<QSpriteSheetItem *> sprites)
 } // namespace Qt3DExtras
 
 QT_END_NAMESPACE
+
+#include "moc_qspritesheet.cpp"

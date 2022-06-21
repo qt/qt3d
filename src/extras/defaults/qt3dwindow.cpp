@@ -316,3 +316,5 @@ void setupWindowSurface(QWindow *window, Qt3DRender::API api) noexcept
 } // Qt3DExtras
 
 QT_END_NAMESPACE
+
+#include "moc_qt3dwindow.cpp"
