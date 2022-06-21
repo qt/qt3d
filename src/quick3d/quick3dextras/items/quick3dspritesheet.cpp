@@ -92,3 +92,5 @@ QQmlListProperty<Qt3DExtras::QSpriteSheetItem> Quick3DSpriteSheet::sprites()
 
 QT_END_NAMESPACE
 
+#include "moc_quick3dspritesheet_p.cpp"
+
