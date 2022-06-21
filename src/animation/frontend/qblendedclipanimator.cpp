@@ -309,3 +309,5 @@ void QBlendedClipAnimator::setBlendTree(QAbstractClipBlendNode *blendTree)
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
+
+#include "moc_qblendedclipanimator.cpp"

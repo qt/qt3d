@@ -144,3 +144,5 @@ void QCallbackMapping::setCallback(int type, QAnimationCallback *callback, QAnim
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
+
+#include "moc_qcallbackmapping.cpp"
