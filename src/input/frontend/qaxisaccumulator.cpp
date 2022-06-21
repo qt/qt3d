@@ -291,3 +291,5 @@ void QAxisAccumulator::setScale(float scale)
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_qaxisaccumulator.cpp"

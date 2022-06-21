@@ -134,3 +134,5 @@ void QInputSettings::eventSourceDestroyed()
 
 
 QT_END_NAMESPACE
+
+#include "moc_qinputsettings.cpp"

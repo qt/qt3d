@@ -200,3 +200,5 @@ void QActionInput::setButtons(const QList<int> &buttons)
 } // Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_qactioninput.cpp"

@@ -179,3 +179,5 @@ void QButtonAxisInput::setDeceleration(float deceleration)
 } // Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_qbuttonaxisinput.cpp"
