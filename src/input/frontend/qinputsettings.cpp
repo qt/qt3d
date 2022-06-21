@@ -147,3 +147,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QInputSettings::createNodeCreationChange() c
 
 
 QT_END_NAMESPACE
+
+#include "moc_qinputsettings.cpp"

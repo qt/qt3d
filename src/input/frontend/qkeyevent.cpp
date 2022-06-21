@@ -249,3 +249,5 @@ QKeyEvent::~QKeyEvent()
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_qkeyevent.cpp"

@@ -100,3 +100,5 @@ QStringList KeyboardMouseGenericDeviceIntegration::deviceNames() const
 } // Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_keyboardmousegenericdeviceintegration_p.cpp"

@@ -242,3 +242,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QAxisSetting::createNodeCreationChange() con
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_qaxissetting.cpp"

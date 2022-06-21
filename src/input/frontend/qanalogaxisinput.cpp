@@ -124,3 +124,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QAnalogAxisInput::createNodeCreationChange()
 } // Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_qanalogaxisinput.cpp"

@@ -221,3 +221,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QAbstractPhysicalDevice::createNodeCreationC
 }
 
 QT_END_NAMESPACE
+
+#include "moc_qabstractphysicaldevice.cpp"

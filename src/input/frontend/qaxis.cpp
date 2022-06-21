@@ -183,3 +183,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QAxis::createNodeCreationChange() const
 } // Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_qaxis.cpp"
