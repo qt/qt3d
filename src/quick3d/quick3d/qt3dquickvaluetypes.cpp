@@ -765,3 +765,5 @@ void QQuick3DQuaternionValueType::setZ(qreal z)
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_qt3dquickvaluetypes_p.cpp"

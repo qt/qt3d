@@ -85,3 +85,5 @@ QQmlListProperty<Qt3DCore::QAttribute> Quick3DGeometry::attributeList()
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_quick3dgeometry_p.cpp"

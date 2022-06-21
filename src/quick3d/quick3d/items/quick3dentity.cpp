@@ -118,3 +118,5 @@ QQmlListProperty<QComponent> Quick3DEntity::componentList()
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_quick3dentity_p.cpp"
