@@ -515,3 +515,5 @@ QWheelEvent::Modifiers QWheelEvent::modifiers() const
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_qmouseevent.cpp"

@@ -62,3 +62,5 @@ QInputDeviceIntegration *QInputDevicePlugin::create(const QString &key, const QS
 } // Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_qinputdeviceplugin_p.cpp"

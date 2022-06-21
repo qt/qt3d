@@ -227,3 +227,5 @@ void QAxisSetting::setSmoothEnabled(bool enabled)
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_qaxissetting.cpp"
