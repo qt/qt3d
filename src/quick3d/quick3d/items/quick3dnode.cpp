@@ -170,3 +170,5 @@ void Quick3DNode::childRemoved(int, QObject *obj)
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_quick3dnode_p.cpp"

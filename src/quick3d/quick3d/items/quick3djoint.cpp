@@ -93,3 +93,5 @@ void Quick3DJoint::clearJoints(QQmlListProperty<QJoint> *list)
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_quick3djoint_p.cpp"
