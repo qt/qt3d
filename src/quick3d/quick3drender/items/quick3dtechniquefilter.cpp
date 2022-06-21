@@ -134,3 +134,5 @@ void Quick3DTechniqueFilter::clearParameterList(QQmlListProperty<QParameter> *li
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_quick3dtechniquefilter_p.cpp"

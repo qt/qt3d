@@ -96,3 +96,5 @@ void Quick3DStateSet::clearRenderStates(QQmlListProperty<QRenderState> *list)
 
 QT_END_NAMESPACE
 
+#include "moc_quick3dstateset_p.cpp"
+

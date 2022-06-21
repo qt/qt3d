@@ -162,3 +162,5 @@ void Quick3DRenderPass::clearParameterList(QQmlListProperty<QParameter> *list)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_quick3drenderpass_p.cpp"

@@ -98,3 +98,5 @@ void Quick3DTextureExtension::clearTextureImageList(QQmlListProperty<QAbstractTe
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_quick3dtexture_p.cpp"

@@ -173,3 +173,5 @@ QQmlListProperty<Qt3DRender::QLayer> Qt3DRender::Render::Quick::Quick3DRayCaster
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_quick3draycaster_p.cpp"

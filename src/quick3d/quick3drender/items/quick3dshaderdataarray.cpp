@@ -114,3 +114,5 @@ void Quick3DShaderDataArray::clearValues(QQmlListProperty<QShaderData> *list)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_quick3dshaderdataarray_p.cpp"

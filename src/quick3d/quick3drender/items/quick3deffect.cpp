@@ -137,3 +137,5 @@ void Quick3DEffect::clearParameterList(QQmlListProperty<QParameter> *list)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_quick3deffect_p.cpp"

@@ -91,3 +91,5 @@ QQmlListProperty<Qt3DRender::QLayer> Qt3DRender::Render::Quick::Quick3DScreenRay
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_quick3dscreenraycaster_p.cpp"
