@@ -53,3 +53,5 @@ QQmlListProperty<QAnimationGroup> QQuick3DAnimationController::animationGroups()
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
+
+#include "moc_quick3danimationcontroller_p.cpp"

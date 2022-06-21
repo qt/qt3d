@@ -58,3 +58,5 @@ QQmlListProperty<Qt3DCore::QTransform> QQuick3DKeyframeAnimation::keyframes()
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
+
+#include "moc_quick3dkeyframeanimation_p.cpp"
