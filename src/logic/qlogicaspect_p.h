@@ -39,7 +39,6 @@ class QLogicAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
     void registerBackendTypes();
 
     qint64 m_time;
-    bool m_initialized;
     QScopedPointer<Logic::Manager> m_manager;
     QScopedPointer<Logic::Executor> m_executor;
     QSharedPointer<Logic::CallbackJob> m_callbackJob;
