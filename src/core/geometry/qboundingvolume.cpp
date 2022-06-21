@@ -390,3 +390,5 @@ bool QBoundingVolume::updateImplicitBounds()
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_qboundingvolume.cpp"

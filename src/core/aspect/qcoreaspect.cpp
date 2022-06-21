@@ -153,3 +153,5 @@ void QCoreAspect::frameDone()
 QT_END_NAMESPACE
 
 QT3D_REGISTER_NAMESPACED_ASPECT("core", QT_PREPEND_NAMESPACE(Qt3DCore), QCoreAspect)
+
+#include "moc_qcoreaspect.cpp"

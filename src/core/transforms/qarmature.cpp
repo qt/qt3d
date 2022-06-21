@@ -160,3 +160,5 @@ void QArmature::setSkeleton(Qt3DCore::QAbstractSkeleton *skeleton)
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_qarmature.cpp"

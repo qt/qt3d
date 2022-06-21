@@ -139,3 +139,5 @@ void QSkeleton::setRootJoint(Qt3DCore::QJoint *rootJoint)
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_qskeleton.cpp"

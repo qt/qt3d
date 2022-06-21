@@ -391,3 +391,5 @@ QString QJoint::name() const
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_qjoint.cpp"

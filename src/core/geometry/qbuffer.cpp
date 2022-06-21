@@ -266,3 +266,5 @@ QBuffer::AccessType QBuffer::accessType() const
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_qbuffer.cpp"
