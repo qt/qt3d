@@ -109,3 +109,4 @@ QT_END_NAMESPACE
 
 QT3D_REGISTER_NAMESPACED_ASPECT("logic", QT_PREPEND_NAMESPACE(Qt3DLogic), QLogicAspect)
 
+#include "moc_qlogicaspect.cpp"
