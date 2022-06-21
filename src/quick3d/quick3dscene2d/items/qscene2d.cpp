@@ -369,3 +369,5 @@ void QScene2D::setMouseEnabled(bool enabled)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qscene2d.cpp"
