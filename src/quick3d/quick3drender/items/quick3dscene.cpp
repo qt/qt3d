@@ -55,3 +55,5 @@ Quick3DScene::Quick3DScene(QObject *parent)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_quick3dscene_p.cpp"
