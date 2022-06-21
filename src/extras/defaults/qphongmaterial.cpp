@@ -310,3 +310,5 @@ void QPhongMaterial::setShininess(float shininess)
 } // namespace Qt3DExtras
 
 QT_END_NAMESPACE
+
+#include "moc_qphongmaterial.cpp"

@@ -408,3 +408,5 @@ void QNormalDiffuseMapMaterial::setTextureScale(float textureScale)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qnormaldiffusemapmaterial.cpp"

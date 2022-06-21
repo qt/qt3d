@@ -377,3 +377,5 @@ void QGoochMaterial::setShininess(float shininess)
 }
 
 QT_END_NAMESPACE
+
+#include "moc_qgoochmaterial.cpp"
