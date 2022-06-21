@@ -125,3 +125,5 @@ QAlphaCoverage::~QAlphaCoverage()
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qalphacoverage.cpp"

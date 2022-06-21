@@ -938,3 +938,5 @@ void QShaderImage::setFormat(QShaderImage::ImageFormat format)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qshaderimage.cpp"

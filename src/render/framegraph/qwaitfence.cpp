@@ -168,3 +168,5 @@ void QWaitFence::setHandle(QVariant handle)
 } // Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qwaitfence.cpp"

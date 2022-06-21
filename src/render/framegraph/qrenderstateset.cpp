@@ -185,3 +185,5 @@ QList<QRenderState *> QRenderStateSet::renderStates() const
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qrenderstateset.cpp"

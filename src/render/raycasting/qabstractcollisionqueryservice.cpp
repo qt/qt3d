@@ -36,3 +36,5 @@ void QAbstractCollisionQueryService::addEntityHit(QCollisionQueryResult &result,
 } // Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qabstractcollisionqueryservice_p.cpp"

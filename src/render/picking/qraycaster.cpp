@@ -180,3 +180,5 @@ QAbstractRayCaster::Hits QRayCaster::pick(const QVector3D &origin, const QVector
 } // Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qraycaster.cpp"

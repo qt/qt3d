@@ -115,3 +115,5 @@ QAbstractRayCaster::Hits QScreenRayCaster::pick(const QPoint &position)
 } // Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qscreenraycaster.cpp"

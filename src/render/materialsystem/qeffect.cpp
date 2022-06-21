@@ -234,3 +234,5 @@ QList<QTechnique *> QEffect::techniques() const
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qeffect.cpp"

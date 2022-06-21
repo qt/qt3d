@@ -840,3 +840,5 @@ int QRenderCapabilities::maxComputeSharedMemorySize() const
 } // namespace Qt3Drender
 
 QT_END_NAMESPACE
+
+#include "moc_qrendercapabilities.cpp"

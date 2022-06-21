@@ -1091,3 +1091,5 @@ QMatrix4x4 QCamera::viewMatrix() const
 } // Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qcamera.cpp"

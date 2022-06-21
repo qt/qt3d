@@ -130,3 +130,5 @@ void QClipPlane::setDistance(float distance)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qclipplane.cpp"

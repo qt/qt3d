@@ -61,3 +61,5 @@ bool PickEventFilter::eventFilter(QObject *obj, QEvent *e)
 } // Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_pickeventfilter_p.cpp"

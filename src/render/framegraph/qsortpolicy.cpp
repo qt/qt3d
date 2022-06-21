@@ -153,3 +153,5 @@ void QSortPolicy::setSortTypes(const QList<int> &sortTypesInt)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qsortpolicy.cpp"

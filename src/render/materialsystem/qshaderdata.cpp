@@ -98,3 +98,5 @@ bool QShaderData::event(QEvent *event)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qshaderdata.cpp"

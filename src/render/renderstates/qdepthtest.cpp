@@ -112,3 +112,5 @@ void QDepthTest::setDepthFunction(QDepthTest::DepthFunction depthFunction)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qdepthtest.cpp"

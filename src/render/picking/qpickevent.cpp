@@ -317,3 +317,5 @@ Qt3DCore::QEntity *QPickEvent::entity() const
 
 QT_END_NAMESPACE
 
+#include "moc_qpickevent.cpp"
+

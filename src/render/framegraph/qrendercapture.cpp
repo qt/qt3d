@@ -315,3 +315,5 @@ Qt3DRender::QRenderCaptureReply *QRenderCapture::requestCapture()
 } // Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qrendercapture.cpp"
