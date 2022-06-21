@@ -254,3 +254,4 @@ void tst_quick3dnodeinstantiator::createAndRemove()
 QTEST_MAIN(tst_quick3dnodeinstantiator)
 
 #include "tst_quick3dnodeinstantiator.moc"
+#include "moc_stringmodel.cpp"

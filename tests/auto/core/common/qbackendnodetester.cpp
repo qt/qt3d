@@ -84,3 +84,5 @@ QNodeCreatedChangeBasePtr QBackendNodeTester::creationChange(QNode *frontend) co
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_qbackendnodetester.cpp"
