@@ -160,3 +160,5 @@ float QAbstractAnimationClip::duration() const
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
+
+#include "moc_qabstractanimationclip.cpp"

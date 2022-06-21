@@ -155,3 +155,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QCallbackMapping::createNodeCreationChange()
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
+
+#include "moc_qcallbackmapping.cpp"

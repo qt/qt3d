@@ -104,3 +104,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QAnimationClip::createNodeCreationChange() c
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
+
+#include "moc_qanimationclip.cpp"

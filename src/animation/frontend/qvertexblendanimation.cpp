@@ -337,3 +337,5 @@ void QVertexBlendAnimation::updateAnimation(float position)
 } // Qt3DAnimation
 
 QT_END_NAMESPACE
+
+#include "moc_qvertexblendanimation.cpp"

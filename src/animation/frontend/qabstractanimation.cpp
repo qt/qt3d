@@ -187,3 +187,5 @@ void QAbstractAnimation::setDuration(float duration)
 } // Qt3DAnimation
 
 QT_END_NAMESPACE
+
+#include "moc_qabstractanimation.cpp"

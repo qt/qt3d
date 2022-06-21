@@ -106,3 +106,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QSkeletonMapping::createNodeCreationChange()
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
+
+#include "moc_qskeletonmapping.cpp"

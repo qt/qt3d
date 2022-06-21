@@ -264,3 +264,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QChannelMapping::createNodeCreationChange() 
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
+
+#include "moc_qchannelmapping.cpp"
