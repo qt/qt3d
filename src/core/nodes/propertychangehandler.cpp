@@ -48,3 +48,5 @@ void PropertyChangeHandlerBase::disconnectFromPropertyChange(const QObject *obje
 }
 
 QT_END_NAMESPACE
+
+#include "moc_propertychangehandler_p.cpp"

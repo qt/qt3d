@@ -168,3 +168,5 @@ void AspectCommandDebugger::executeCommand(const QString &command,
 } // Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_aspectcommanddebugger_p.cpp"

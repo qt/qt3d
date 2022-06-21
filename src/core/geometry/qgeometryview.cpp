@@ -579,3 +579,5 @@ void QGeometryView::setPrimitiveType(QGeometryView::PrimitiveType primitiveType)
 }
 
 QT_END_NAMESPACE
+
+#include "moc_qgeometryview.cpp"

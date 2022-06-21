@@ -154,3 +154,5 @@ QComponent::QComponent(QComponentPrivate &dd, QNode *parent)
 */
 
 QT_END_NAMESPACE
+
+#include "moc_qcomponent.cpp"
