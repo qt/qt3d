@@ -90,3 +90,5 @@ QQmlListProperty<Qt3DCore::QAttribute> QQuick3DMorphTarget::attributes()
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
+
+#include "moc_quick3dmorphtarget_p.cpp"

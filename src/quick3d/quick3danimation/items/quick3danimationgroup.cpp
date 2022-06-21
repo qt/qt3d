@@ -95,3 +95,5 @@ QQmlListProperty<Qt3DAnimation::QAbstractAnimation> QQuick3DAnimationGroup::anim
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
+
+#include "moc_quick3danimationgroup_p.cpp"
