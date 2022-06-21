@@ -7,6 +7,7 @@
 qt_internal_add_test(tst_abstractaxisinput
     SOURCES
         ../commons/testdevice.h
+        ../commons/testdevice.cpp
         ../commons/testdeviceproxy.h
         tst_abstractaxisinput.cpp
     INCLUDE_DIRECTORIES
@@ -30,5 +31,5 @@ qt_internal_add_test(tst_abstractaxisinput
 qt_internal_extend_target(tst_abstractaxisinput CONDITION QT_FEATURE_private_tests
     SOURCES
         ../../core/common/qbackendnodetester.cpp ../../core/common/qbackendnodetester.h
-        ../../core/common/testarbiter.h
+        ../../core/common/testarbiter.h ../commons/testdevice.cpp
 )

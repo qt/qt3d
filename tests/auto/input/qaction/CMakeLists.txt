@@ -9,6 +9,7 @@ qt_internal_add_test(tst_qt3d_qaction
 # special case end
     SOURCES
         ../commons/testdevice.h
+        ../commons/testdevice.cpp
         ../commons/testdeviceproxy.h
         tst_qaction.cpp
     INCLUDE_DIRECTORIES

@@ -98,3 +98,5 @@ QQmlTestMessageHandler::~QQmlTestMessageHandler()
     qInstallMessageHandler(m_oldHandler);
     QQmlTestMessageHandler::m_instance = 0;
 }
+
+#include "moc_util.cpp"
