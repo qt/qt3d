@@ -51,3 +51,5 @@ QQmlListProperty<QAbstractActionInput> Quick3DInputSequence::qmlActionInputs()
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_quick3dinputsequence_p.cpp"

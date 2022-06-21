@@ -82,3 +82,5 @@ QQmlListProperty<QAction> Quick3DLogicalDevice::qmlActions()
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_quick3dlogicaldevice_p.cpp"
