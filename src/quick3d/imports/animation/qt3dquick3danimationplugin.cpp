@@ -106,3 +106,5 @@ void Qt3DQuick3DAnimationPlugin::registerTypes(const char *uri)
 }
 
 QT_END_NAMESPACE
+
+#include "moc_qt3dquick3danimationplugin.cpp"
