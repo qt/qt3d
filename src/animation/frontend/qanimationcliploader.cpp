@@ -111,3 +111,5 @@ void QAnimationClipLoader::setSource(const QUrl &source)
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
+
+#include "moc_qanimationcliploader.cpp"
