@@ -46,3 +46,5 @@ void QmlSceneReader::loadComplete()
 }
 
 QT_END_NAMESPACE
+
+#include "moc_qmlscenereader.cpp"

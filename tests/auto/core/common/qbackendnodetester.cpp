@@ -22,3 +22,5 @@ void QBackendNodeTester::setPeerId(QBackendNode *backend, QNodeId id)
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_qbackendnodetester.cpp"
