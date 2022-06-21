@@ -99,3 +99,5 @@ void QQuick3DKeyframeAnimation::clearKeyframes(QQmlListProperty<Qt3DCore::QTrans
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
+
+#include "moc_quick3dkeyframeanimation_p.cpp"
