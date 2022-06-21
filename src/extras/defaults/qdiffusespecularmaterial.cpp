@@ -539,3 +539,5 @@ void QDiffuseSpecularMaterial::setAlphaBlendingEnabled(bool enabled)
 } // namespace Qt3DExtras
 
 QT_END_NAMESPACE
+
+#include "moc_qdiffusespecularmaterial.cpp"

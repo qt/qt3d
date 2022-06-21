@@ -175,3 +175,5 @@ float QTorusGeometryView::minorRadius() const
 } // namespace  Qt3DExtras
 
 QT_END_NAMESPACE
+
+#include "moc_qtorusgeometryview.cpp"
