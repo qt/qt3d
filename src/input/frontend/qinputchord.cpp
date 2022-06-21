@@ -157,3 +157,5 @@ QInputChordPrivate::QInputChordPrivate()
 } // Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_qinputchord.cpp"

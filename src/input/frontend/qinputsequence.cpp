@@ -204,3 +204,5 @@ QList<QAbstractActionInput *> QInputSequence::sequences() const
 } // Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_qinputsequence.cpp"

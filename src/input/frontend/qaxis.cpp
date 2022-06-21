@@ -133,3 +133,5 @@ float QAxis::value() const
 } // Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_qaxis.cpp"

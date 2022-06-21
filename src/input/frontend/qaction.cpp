@@ -114,3 +114,5 @@ QList<QAbstractActionInput *> QAction::inputs() const
 } // Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_qaction.cpp"
