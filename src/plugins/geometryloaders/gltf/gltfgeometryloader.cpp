@@ -626,3 +626,5 @@ uint GLTFGeometryLoader::accessorDataSizeFromJson(const QString &type)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_gltfgeometryloader.cpp"
