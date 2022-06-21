@@ -96,3 +96,5 @@ QQmlListProperty<Qt3DCore::QEntity> QQuick3DScene2D::entities()
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qt3dquick3dscene2d_p.cpp"
