@@ -78,3 +78,5 @@ void Executor::processLogicFrameUpdates(const QList<QNodeId> &nodeIds, float dt)
 } // namespace Qt3DLogic
 
 QT_END_NAMESPACE
+
+#include "moc_executor_p.cpp"
