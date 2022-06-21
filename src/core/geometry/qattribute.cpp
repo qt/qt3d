@@ -467,3 +467,5 @@ The signal is emitted with \a vertexBaseType when the dataType changed.
 } // Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_qattribute.cpp"

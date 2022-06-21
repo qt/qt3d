@@ -116,3 +116,5 @@ int QAspectJobManager::idealThreadCount()
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_qaspectjobmanager_p.cpp"

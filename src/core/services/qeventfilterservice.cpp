@@ -153,4 +153,6 @@ bool InternalEventListener::eventFilter(QObject *obj, QEvent *e)
 
 QT_END_NAMESPACE
 
+#include "moc_qeventfilterservice_p.cpp"
+
 #include "qeventfilterservice.moc"
