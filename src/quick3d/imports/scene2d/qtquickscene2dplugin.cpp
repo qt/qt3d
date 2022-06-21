@@ -59,3 +59,5 @@ void QtQuickScene2DPlugin::registerTypes(const char *uri)
 }
 
 QT_END_NAMESPACE
+
+#include "moc_qtquickscene2dplugin.cpp"
