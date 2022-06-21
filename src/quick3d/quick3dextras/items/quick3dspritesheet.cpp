@@ -98,3 +98,5 @@ void Quick3DSpriteSheet::clearSprites(QQmlListProperty<Qt3DExtras::QSpriteSheetI
 
 QT_END_NAMESPACE
 
+#include "moc_quick3dspritesheet_p.cpp"
+
