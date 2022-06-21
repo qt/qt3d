@@ -170,3 +170,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QArmature::createNodeCreationChange() const
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_qarmature.cpp"

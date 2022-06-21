@@ -554,3 +554,5 @@ void QAspectManager::processFrame()
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_qaspectmanager_p.cpp"

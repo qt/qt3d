@@ -131,3 +131,5 @@ void QAspectJobManager::waitForPerThreadFunction(JobFunction func, void *arg)
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_qaspectjobmanager_p.cpp"

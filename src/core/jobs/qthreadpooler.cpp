@@ -220,3 +220,5 @@ int QThreadPooler::maxThreadCount()
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_qthreadpooler_p.cpp"

@@ -591,3 +591,7 @@ void AsynchronousCommandReply::setData(const QByteArray &data)
 } // of namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_qabstractaspect_p.cpp"
+
+#include "moc_qabstractaspect.cpp"

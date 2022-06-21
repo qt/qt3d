@@ -267,3 +267,5 @@ QAbstractServiceProvider *QServiceLocator::_q_getServiceHelper(int type)
 }
 
 QT_END_NAMESPACE
+
+#include "moc_qservicelocator_p.cpp"

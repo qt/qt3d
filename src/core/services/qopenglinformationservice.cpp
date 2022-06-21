@@ -84,3 +84,5 @@ QOpenGLInformationService::QOpenGLInformationService(QOpenGLInformationServicePr
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_qopenglinformationservice_p.cpp"
