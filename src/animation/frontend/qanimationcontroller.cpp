@@ -391,3 +391,5 @@ QAnimationGroup *QAnimationController::getGroup(int index) const
 } // Qt3DAnimation
 
 QT_END_NAMESPACE
+
+#include "moc_qanimationcontroller.cpp"
