@@ -59,3 +59,5 @@ void QAnimationClip::setClipData(const Qt3DAnimation::QAnimationClipData &clipDa
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
+
+#include "moc_qanimationclip.cpp"

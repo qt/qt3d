@@ -32,3 +32,5 @@ QAbstractChannelMapping::~QAbstractChannelMapping()
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
+
+#include "moc_qabstractchannelmapping.cpp"

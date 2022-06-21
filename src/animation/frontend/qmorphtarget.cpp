@@ -154,3 +154,5 @@ QMorphTarget *QMorphTarget::fromGeometry(Qt3DCore::QGeometry *geometry, const QS
 } // Qt3DAnimation
 
 QT_END_NAMESPACE
+
+#include "moc_qmorphtarget.cpp"

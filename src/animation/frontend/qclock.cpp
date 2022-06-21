@@ -54,3 +54,5 @@ void QClock::setPlaybackRate(double playbackRate)
 }
 
 QT_END_NAMESPACE
+
+#include "moc_qclock.cpp"
