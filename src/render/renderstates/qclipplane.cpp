@@ -178,3 +178,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QClipPlane::createNodeCreationChange() const
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qclipplane.cpp"

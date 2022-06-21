@@ -316,3 +316,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QRenderTargetOutput::createNodeCreationChang
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qrendertargetoutput.cpp"

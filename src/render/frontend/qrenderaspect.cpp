@@ -1002,3 +1002,5 @@ void QRenderAspectPrivate::configurePlugin(const QString &plugin)
 QT_END_NAMESPACE
 
 QT3D_REGISTER_NAMESPACED_ASPECT("render", QT_PREPEND_NAMESPACE(Qt3DRender), QRenderAspect)
+
+#include "moc_qrenderaspect.cpp"

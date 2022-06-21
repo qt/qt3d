@@ -206,3 +206,5 @@ void QRayCaster::trigger(const QVector3D &origin, const QVector3D &direction, fl
 } // Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qraycaster.cpp"

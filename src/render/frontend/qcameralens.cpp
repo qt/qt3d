@@ -634,3 +634,5 @@ void QCameraLens::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 } // Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qcameralens.cpp"

@@ -747,3 +747,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QShaderProgram::createNodeCreationChange() c
 } // of namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qshaderprogram.cpp"

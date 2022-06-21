@@ -158,3 +158,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QStencilOperation::createNodeCreationChange(
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qstenciloperation.cpp"

@@ -141,3 +141,5 @@ void QLevelOfDetailSwitch::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qlevelofdetailswitch.cpp"

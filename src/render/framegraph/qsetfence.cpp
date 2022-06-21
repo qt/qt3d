@@ -173,3 +173,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QSetFence::createNodeCreationChange() const
 } // Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qsetfence.cpp"

@@ -203,3 +203,5 @@ QMultiSampleAntiAliasing::~QMultiSampleAntiAliasing()
 
 QT_END_NAMESPACE
 
+#include "moc_qmultisampleantialiasing.cpp"
+

@@ -193,3 +193,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QRasterMode::createNodeCreationChange() cons
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qrastermode.cpp"

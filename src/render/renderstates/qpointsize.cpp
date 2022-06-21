@@ -151,3 +151,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QPointSize::createNodeCreationChange() const
 
 QT_END_NAMESPACE
 
+#include "moc_qpointsize.cpp"
+

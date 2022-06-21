@@ -173,3 +173,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QAlphaTest::createNodeCreationChange() const
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qalphatest.cpp"

@@ -158,3 +158,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QDepthTest::createNodeCreationChange() const
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qdepthtest.cpp"

@@ -152,3 +152,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QPolygonOffset::createNodeCreationChange() c
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qpolygonoffset.cpp"

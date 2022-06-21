@@ -264,3 +264,5 @@ bool QPaintedTextureImageDataGenerator::operator ==(const QTextureImageDataGener
 
 QT_END_NAMESPACE
 
+#include "moc_qpaintedtextureimage.cpp"
+

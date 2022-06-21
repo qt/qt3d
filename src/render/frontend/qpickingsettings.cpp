@@ -308,3 +308,5 @@ void QPickingSettings::setWorldSpaceTolerance(float worldSpaceTolerance)
 } // namespace Qt3Drender
 
 QT_END_NAMESPACE
+
+#include "moc_qpickingsettings.cpp"

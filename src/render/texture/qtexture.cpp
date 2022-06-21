@@ -1775,3 +1775,5 @@ void QSharedGLTexture::setTextureId(int id)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qtexture.cpp"

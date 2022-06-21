@@ -183,3 +183,5 @@ void QAbstractLight::setIntensity(float value)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qabstractlight.cpp"

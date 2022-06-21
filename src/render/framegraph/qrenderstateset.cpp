@@ -231,3 +231,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QRenderStateSet::createNodeCreationChange() 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qrenderstateset.cpp"

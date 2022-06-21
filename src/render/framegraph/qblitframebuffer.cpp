@@ -456,3 +456,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QBlitFramebuffer::createNodeCreationChange()
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qblitframebuffer.cpp"

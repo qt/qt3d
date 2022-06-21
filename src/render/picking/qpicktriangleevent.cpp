@@ -273,3 +273,5 @@ QVector3D QPickTriangleEvent::uvw() const
 
 QT_END_NAMESPACE
 
+#include "moc_qpicktriangleevent.cpp"
+

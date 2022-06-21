@@ -123,3 +123,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QLineWidth::createNodeCreationChange() const
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qlinewidth.cpp"

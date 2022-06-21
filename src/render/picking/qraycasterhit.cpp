@@ -231,3 +231,5 @@ void QRayCasterHit::setEntity(Qt3DCore::QEntity *entity) const
 } // Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qraycasterhit.cpp"

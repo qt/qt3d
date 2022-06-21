@@ -199,3 +199,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QLayer::createNodeCreationChange() const
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qlayer.cpp"

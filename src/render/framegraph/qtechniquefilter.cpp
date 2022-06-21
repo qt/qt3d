@@ -224,3 +224,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QTechniqueFilter::createNodeCreationChange()
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qtechniquefilter.cpp"

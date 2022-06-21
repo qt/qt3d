@@ -168,3 +168,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QViewport::createNodeCreationChange() const
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qviewport.cpp"

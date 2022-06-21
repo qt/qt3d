@@ -66,3 +66,5 @@ AbstractRenderer *QRendererPlugin::create(const QString &key, QRenderAspect::Ren
 } // Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qrendererplugin_p.cpp"

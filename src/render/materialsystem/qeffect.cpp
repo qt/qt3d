@@ -280,3 +280,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QEffect::createNodeCreationChange() const
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qeffect.cpp"

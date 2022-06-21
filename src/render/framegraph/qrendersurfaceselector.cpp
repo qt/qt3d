@@ -329,3 +329,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QRenderSurfaceSelector::createNodeCreationCh
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qrendersurfaceselector.cpp"

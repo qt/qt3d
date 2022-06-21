@@ -80,3 +80,5 @@ void OffscreenSurfaceHelper::createOffscreenSurface()
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_offscreensurfacehelper_p.cpp"

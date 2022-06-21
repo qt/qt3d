@@ -519,3 +519,5 @@ The signal is emitted with \a vertexBaseType when the dataType changed.
 } // Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qattribute.cpp"

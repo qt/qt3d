@@ -227,3 +227,5 @@ QStencilOperationArguments::Operation QStencilOperationArguments::allTestsPassOp
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qstenciloperationarguments.cpp"

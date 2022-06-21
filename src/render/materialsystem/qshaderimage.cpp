@@ -989,3 +989,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr Qt3DRender::QShaderImage::createNodeCreation
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qshaderimage.cpp"
