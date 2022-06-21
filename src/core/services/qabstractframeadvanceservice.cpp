@@ -91,3 +91,5 @@ QAbstractFrameAdvanceService::QAbstractFrameAdvanceService(QAbstractFrameAdvance
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#include "moc_qabstractframeadvanceservice_p.cpp"

@@ -242,3 +242,5 @@ void QSkeletonLoader::setRootJoint(QJoint *rootJoint)
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_qskeletonloader.cpp"

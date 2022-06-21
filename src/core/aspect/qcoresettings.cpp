@@ -135,3 +135,5 @@ void QCoreSettings::setBoundingVolumesEnabled(bool boundingVolumesEnabled)
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_qcoresettings.cpp"

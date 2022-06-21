@@ -157,3 +157,5 @@ int QScheduler::scheduleAndWaitForFrameAspectJobs(qint64 time, bool dumpJobs)
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_qscheduler_p.cpp"

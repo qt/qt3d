@@ -146,3 +146,5 @@ void QDownloadNetworkWorker::onDownloadProgressed(qint64 bytesReceived, qint64 b
 
 QT_END_NAMESPACE
 
+#include "moc_qdownloadnetworkworker_p.cpp"
+
