@@ -243,3 +243,5 @@ float QConeMesh::length() const
 } // namespace Qt3DExtras
 
 QT_END_NAMESPACE
+
+#include "moc_qconemesh.cpp"

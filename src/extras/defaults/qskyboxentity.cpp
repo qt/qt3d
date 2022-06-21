@@ -383,3 +383,5 @@ bool QSkyboxEntity::isGammaCorrectEnabled() const
     \since 5.9
 */
 QT_END_NAMESPACE
+
+#include "moc_qskyboxentity.cpp"

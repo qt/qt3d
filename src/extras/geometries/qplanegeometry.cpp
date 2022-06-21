@@ -573,3 +573,5 @@ void QPlaneGeometryPrivate::init()
 } //  Qt3DExtras
 
 QT_END_NAMESPACE
+
+#include "moc_qplanegeometry.cpp"

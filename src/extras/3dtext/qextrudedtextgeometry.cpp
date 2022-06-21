@@ -514,3 +514,5 @@ Qt3DRender::QAttribute *QExtrudedTextGeometry::indexAttribute() const
 } // Qt3DExtras
 
 QT_END_NAMESPACE
+
+#include "moc_qextrudedtextgeometry.cpp"

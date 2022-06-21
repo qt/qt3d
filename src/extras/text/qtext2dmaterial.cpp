@@ -177,3 +177,5 @@ void QText2DMaterial::setDistanceFieldTexture(Qt3DRender::QAbstractTexture *tex)
 } // namespace Qt3DExtras
 
 QT_END_NAMESPACE
+
+#include "moc_qtext2dmaterial_p.cpp"

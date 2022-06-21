@@ -470,3 +470,5 @@ void QPhongAlphaMaterial::setBlendFunctionArg(QBlendEquation::BlendFunction blen
 } // namespace Qt3DExtras
 
 QT_END_NAMESPACE
+
+#include "moc_qphongalphamaterial.cpp"
