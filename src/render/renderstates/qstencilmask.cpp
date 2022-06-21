@@ -108,3 +108,5 @@ uint QStencilMask::backOutputMask() const
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qstencilmask.cpp"

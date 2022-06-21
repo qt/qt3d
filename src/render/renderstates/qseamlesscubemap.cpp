@@ -61,3 +61,5 @@ QSeamlessCubemap::~QSeamlessCubemap()
 
 QT_END_NAMESPACE
 
+#include "moc_qseamlesscubemap.cpp"
+

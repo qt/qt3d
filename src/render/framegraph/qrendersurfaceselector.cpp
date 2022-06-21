@@ -281,3 +281,5 @@ void QRenderSurfaceSelector::setExternalRenderTargetSize(const QSize &size)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qrendersurfaceselector.cpp"

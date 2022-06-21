@@ -1089,3 +1089,5 @@ void QAbstractTexture::updateData(const QTextureDataUpdate &update)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qabstracttexture.cpp"

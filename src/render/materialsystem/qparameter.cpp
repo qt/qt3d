@@ -290,3 +290,5 @@ QVariant QParameter::value() const
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qparameter.cpp"

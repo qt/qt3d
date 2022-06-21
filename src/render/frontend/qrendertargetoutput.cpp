@@ -267,3 +267,5 @@ QAbstractTexture::CubeMapFace QRenderTargetOutput::face() const
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qrendertargetoutput.cpp"

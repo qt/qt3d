@@ -20,3 +20,5 @@ QGeometryLoaderFactory::~QGeometryLoaderFactory()
 
 QT_END_NAMESPACE
 
+#include "moc_qgeometryloaderfactory_p.cpp"
+

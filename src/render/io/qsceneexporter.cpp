@@ -36,3 +36,5 @@ void QSceneExporter::logInfo(const QString &info)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qsceneexporter_p.cpp"

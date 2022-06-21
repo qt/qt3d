@@ -129,3 +129,5 @@ void QDispatchCompute::setWorkGroupZ(int workGroupZ)
 
 QT_END_NAMESPACE
 
+#include "moc_qdispatchcompute.cpp"
+

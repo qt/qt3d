@@ -120,3 +120,5 @@ void QViewport::setGamma(float gamma)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qviewport.cpp"

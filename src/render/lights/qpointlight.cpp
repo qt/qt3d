@@ -190,3 +190,5 @@ void QPointLight::setQuadraticAttenuation(float value)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qpointlight.cpp"

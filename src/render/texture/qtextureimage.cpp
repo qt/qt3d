@@ -283,3 +283,5 @@ bool QImageTextureDataFunctor::isMirrored() const
 
 QT_END_NAMESPACE
 
+#include "moc_qtextureimage.cpp"
+

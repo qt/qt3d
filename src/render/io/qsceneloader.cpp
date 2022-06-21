@@ -337,3 +337,5 @@ QComponent *QSceneLoader::component(const QString &entityName,
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qsceneloader.cpp"

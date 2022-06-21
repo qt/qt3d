@@ -154,3 +154,5 @@ void QScissorTest::setHeight(int height)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qscissortest.cpp"

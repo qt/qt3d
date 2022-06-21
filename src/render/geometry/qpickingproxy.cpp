@@ -118,3 +118,5 @@ QPickingProxy::QPickingProxy(QPickingProxyPrivate &dd, QNode *parent)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qpickingproxy.cpp"
