@@ -96,3 +96,5 @@ QQmlListProperty<QParameter> Quick3DRenderPassFilter::parameterList()
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_quick3drenderpassfilter_p.cpp"

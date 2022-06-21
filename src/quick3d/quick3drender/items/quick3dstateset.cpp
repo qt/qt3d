@@ -55,3 +55,5 @@ QQmlListProperty<QRenderState> Quick3DStateSet::renderStateList()
 
 QT_END_NAMESPACE
 
+#include "moc_quick3dstateset_p.cpp"
+

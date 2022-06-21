@@ -19,3 +19,5 @@ Quick3DViewport::Quick3DViewport(QObject *parent)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_quick3dviewport_p.cpp"

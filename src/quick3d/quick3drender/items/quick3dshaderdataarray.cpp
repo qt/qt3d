@@ -74,3 +74,5 @@ QList<QShaderData *> Quick3DShaderDataArray::values() const
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_quick3dshaderdataarray_p.cpp"

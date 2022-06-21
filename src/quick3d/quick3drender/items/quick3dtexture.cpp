@@ -58,3 +58,5 @@ QQmlListProperty<QAbstractTextureImage> Quick3DTextureExtension::textureImages()
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_quick3dtexture_p.cpp"
