@@ -280,3 +280,5 @@ void BaseGeometryLoader::center(std::vector<QVector3D> &points)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_basegeometryloader_p.cpp"
