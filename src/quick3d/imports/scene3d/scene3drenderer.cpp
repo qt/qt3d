@@ -627,3 +627,5 @@ Scene3DRenderer::QuickRenderer::~QuickRenderer() {}
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_scene3drenderer_p.cpp"
