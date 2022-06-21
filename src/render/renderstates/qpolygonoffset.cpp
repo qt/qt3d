@@ -141,3 +141,5 @@ void QPolygonOffset::setDepthSteps(float depthSteps)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qpolygonoffset.cpp"

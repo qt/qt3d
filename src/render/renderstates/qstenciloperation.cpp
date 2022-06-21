@@ -152,3 +152,5 @@ QStencilOperationArguments *QStencilOperation::back() const
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qstenciloperation.cpp"

@@ -121,3 +121,5 @@ void QFrontFace::setDirection(QFrontFace::WindingDirection direction)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qfrontface.cpp"

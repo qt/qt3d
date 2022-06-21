@@ -247,3 +247,5 @@ void QLayerFilter::setFilterMode(QLayerFilter::FilterMode filterMode)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qlayerfilter.cpp"

@@ -64,3 +64,5 @@ QSceneExporter *QSceneExportPlugin::create(const QString &key, const QStringList
 
 QT_END_NAMESPACE
 
+#include "moc_qsceneexportplugin_p.cpp"
+

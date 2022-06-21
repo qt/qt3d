@@ -190,3 +190,5 @@ QLayer::QLayer(QLayerPrivate &dd, QNode *parent)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qlayer.cpp"

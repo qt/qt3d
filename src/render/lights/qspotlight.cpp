@@ -292,3 +292,5 @@ void QSpotLight::setCutOffAngle(float value)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qspotlight.cpp"

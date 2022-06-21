@@ -153,3 +153,5 @@ QStencilTestArguments *QStencilTest::back() const
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qstenciltest.cpp"

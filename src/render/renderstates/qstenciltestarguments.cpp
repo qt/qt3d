@@ -217,3 +217,5 @@ QStencilTestArguments::StencilFaceMode QStencilTestArguments::faceMode() const
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qstenciltestarguments.cpp"
