@@ -386,3 +386,5 @@ QList<QLayer *> QAbstractRayCaster::layers() const
 } // Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qabstractraycaster.cpp"

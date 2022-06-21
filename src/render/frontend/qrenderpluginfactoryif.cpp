@@ -66,3 +66,5 @@ QRenderPlugin *QRenderPluginFactoryIf::create(const QString &key, const QStringL
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qrenderpluginfactoryif_p.cpp"

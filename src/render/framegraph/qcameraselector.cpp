@@ -141,3 +141,5 @@ Qt3DCore::QEntity *QCameraSelector::camera() const
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qcameraselector.cpp"

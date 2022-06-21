@@ -173,3 +173,5 @@ void QSubtreeEnabler::requestUpdate()
 } //Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qsubtreeenabler.cpp"

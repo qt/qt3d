@@ -234,3 +234,5 @@ void QClearBuffers::setColorBuffer(QRenderTargetOutput *buffer)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qclearbuffers.cpp"

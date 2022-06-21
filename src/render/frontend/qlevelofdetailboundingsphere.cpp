@@ -155,3 +155,5 @@ bool QLevelOfDetailBoundingSphere::operator !=(const QLevelOfDetailBoundingSpher
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qlevelofdetailboundingsphere.cpp"

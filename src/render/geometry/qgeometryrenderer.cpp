@@ -556,3 +556,5 @@ void QGeometryRenderer::setSortIndex(float sortIndex)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qgeometryrenderer.cpp"

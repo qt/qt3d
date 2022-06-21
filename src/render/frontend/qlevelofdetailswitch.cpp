@@ -136,3 +136,5 @@ QLevelOfDetailSwitch::QLevelOfDetailSwitch(QLevelOfDetailPrivate &dd, QNode *par
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qlevelofdetailswitch.cpp"
