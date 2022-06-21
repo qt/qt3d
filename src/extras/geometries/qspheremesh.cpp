@@ -136,3 +136,5 @@ float QSphereMesh::radius() const
 } // Qt3DExtras
 
 QT_END_NAMESPACE
+
+#include "moc_qspheremesh.cpp"
