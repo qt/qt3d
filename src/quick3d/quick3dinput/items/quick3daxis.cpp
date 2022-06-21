@@ -91,3 +91,5 @@ void Quick3DAxis::clearAxisInputs(QQmlListProperty<QAbstractAxisInput> *list)
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_quick3daxis_p.cpp"

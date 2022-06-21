@@ -90,3 +90,5 @@ void Quick3DPhysicalDevice::clearAxisSettings(QQmlListProperty<QAxisSetting> *li
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_quick3dphysicaldevice_p.cpp"
