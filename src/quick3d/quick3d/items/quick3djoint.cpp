@@ -89,3 +89,5 @@ QQmlListProperty<QJoint> Quick3DJoint::childJoints()
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_quick3djoint_p.cpp"
