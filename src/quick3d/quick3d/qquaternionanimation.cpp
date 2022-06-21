@@ -221,3 +221,5 @@ void QQuaternionAnimation::setToZRotation(float f)
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_qquaternionanimation_p.cpp"
