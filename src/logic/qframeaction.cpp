@@ -137,3 +137,5 @@ void QFrameAction::onTriggered(float dt)
 } // namespace Qt3DLogic
 
 QT_END_NAMESPACE
+
+#include "moc_qframeaction.cpp"
