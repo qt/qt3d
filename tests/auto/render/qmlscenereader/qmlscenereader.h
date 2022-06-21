@@ -37,6 +37,9 @@
 **
 ****************************************************************************/
 
+#ifndef QMLSCENEREADER_H
+#define QMLSCENEREADER_H
+
 #include <QObject>
 
 QT_BEGIN_NAMESPACE
@@ -61,3 +64,5 @@ private:
 };
 
 QT_END_NAMESPACE
+
+#endif
