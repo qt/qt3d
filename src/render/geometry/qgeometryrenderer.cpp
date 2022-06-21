@@ -218,6 +218,7 @@ void QGeometryRendererPrivate::setView(QGeometryView *view)
 QGeometryRenderer::QGeometryRenderer(QNode *parent)
     : Qt3DCore::QBoundingVolume(*new QGeometryRendererPrivate(), parent)
 {
+    Q_UNUSED(m_sortIndex)
 }
 
 /*!

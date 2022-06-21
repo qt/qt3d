@@ -100,7 +100,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QGeometryRenderer)
-    float m_sortIndex;
+    float m_sortIndex; // TODO Remove in Qt 7
 };
 
 } // namespace Qt3DRender
