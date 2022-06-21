@@ -289,3 +289,5 @@ void QInputAspect::jobsDone()
 QT_END_NAMESPACE
 
 QT3D_REGISTER_NAMESPACED_ASPECT("input", QT_PREPEND_NAMESPACE(Qt3DInput), QInputAspect)
+
+#include "moc_qinputaspect.cpp"

@@ -225,3 +225,5 @@ void QMouseDevice::setUpdateAxesContinuously(bool updateAxesContinuously)
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_qmousedevice.cpp"

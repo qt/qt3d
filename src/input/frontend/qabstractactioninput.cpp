@@ -45,3 +45,5 @@ QAbstractActionInput::~QAbstractActionInput()
 } // Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_qabstractactioninput.cpp"

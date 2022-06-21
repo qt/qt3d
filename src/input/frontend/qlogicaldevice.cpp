@@ -219,3 +219,5 @@ QList<QAxis *> QLogicalDevice::axes() const
 } // Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_qlogicaldevice.cpp"
