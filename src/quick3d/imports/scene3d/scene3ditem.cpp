@@ -908,4 +908,5 @@ void Scene3DItem::mousePressEvent(QMouseEvent *event)
 
 QT_END_NAMESPACE
 
+#include "moc_scene3ditem_p.cpp"
 #include "scene3ditem.moc"

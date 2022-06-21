@@ -56,3 +56,5 @@ void QtQuickScene3DPlugin::registerTypes(const char *uri)
 }
 
 QT_END_NAMESPACE
+
+#include "moc_qtquickscene3dplugin.cpp"
