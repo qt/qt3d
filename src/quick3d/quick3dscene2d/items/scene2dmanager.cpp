@@ -222,3 +222,5 @@ void Scene2DManager::cleanup()
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_scene2dmanager_p.cpp"
