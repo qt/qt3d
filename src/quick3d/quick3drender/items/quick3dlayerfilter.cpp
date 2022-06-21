@@ -100,3 +100,5 @@ QQmlListProperty<QLayer> Quick3DLayerFilter::qmlLayers()
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#include "moc_quick3dlayerfilter_p.cpp"
