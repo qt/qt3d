@@ -2746,14 +2746,15 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
                     readBackResult->completed = [this, readBackResult, renderCaptureId, request] () {
                         const QImage::Format fmt = QImage::Format_RGBA8888_Premultiplied; // fits QRhiTexture::RGBA8
                         const uchar *p = reinterpret_cast<const uchar *>(readBackResult->data.constData());
-                        const QImage image(p, readBackResult->pixelSize.width(), readBackResult->pixelSize.height(), fmt);
+                        const QImage image(p, readBackResult->pixelSize.width(), readBackResult->pixelSize.height(), fmt, [] (void *ptr) {
+                            delete static_cast<QRhiReadbackResult *>(ptr);
+                        }, readBackResult);
 
                         Render::RenderCapture *renderCapture = static_cast<Render::RenderCapture*>(m_nodesManager->frameGraphManager()->lookupNode(renderCaptureId));
                         renderCapture->addRenderCapture(request.captureId, image);
                         QMutexLocker lock(&m_pendingRenderCaptureSendRequestsMutex);
                         if (!Qt3DCore::contains(m_pendingRenderCaptureSendRequests, renderCaptureId))
                             m_pendingRenderCaptureSendRequests.push_back(renderCaptureId);
-                        delete readBackResult;
                     };
 
                     QRhiReadbackDescription readbackDesc;
