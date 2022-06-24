@@ -359,6 +359,7 @@ private:
     RenderableEntityFilterPtr m_renderableEntityFilterJob;
     ComputableEntityFilterPtr m_computableEntityFilterJob;
 
+    QMutex m_pendingRenderCaptureSendRequestsMutex;
     std::vector<Qt3DCore::QNodeId> m_pendingRenderCaptureSendRequests;
 
     void performDraw(const RenderCommand *command);
