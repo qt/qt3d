@@ -2774,7 +2774,6 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
                 QRect rect(QPoint(0, 0), size);
                 if (!request.rect.isEmpty())
                     rect = rect.intersected(request.rect);
-                QImage image;
                 if (!rect.isEmpty()) {
                     // Bind fbo as read framebuffer
                     QRhiReadbackResult *readBackResult = new QRhiReadbackResult;
