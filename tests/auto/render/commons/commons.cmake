@@ -1,3 +1,6 @@
+# Copyright (C) 2022 The Qt Company Ltd.
+# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+
 include(${PROJECT_SOURCE_DIR}/tests/auto/core/common/common.cmake)
 
 function(qt3d_setup_common_render_test target)
