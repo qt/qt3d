@@ -85,7 +85,7 @@ QEffectPrivate::QEffectPrivate()
     Effect {
         id: effect
 
-        technique: [
+        techniques: [
             Technique {
                 id: gl3Technique
                 graphicsApiFilter {
