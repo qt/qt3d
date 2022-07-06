@@ -170,7 +170,7 @@ void QBlendEquationArguments::setSourceAlpha(QBlendEquationArguments::Blending s
 }
 
 /*!
-    \qmlproperty enumeration BlendEquationArguments::DestinationAlpha
+    \qmlproperty enumeration BlendEquationArguments::destinationAlpha
 
  */
 
