@@ -1478,8 +1478,8 @@ QTextureLoader::QTextureLoader(QNode *parent)
 
     // Regenerate the texture functor when properties we support overriding
     // from QAbstractTexture get changed.
-    Q_D(QTextureLoader);
-    auto regenerate = [=] () {
+    auto regenerate = [this] () {
+        Q_D(QTextureLoader);
         if (!notificationsBlocked())    // check the change doesn't come from the backend
             d->updateGenerator();
     };
