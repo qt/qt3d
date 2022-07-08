@@ -83,7 +83,7 @@ void FilterKey::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
     }
 }
 
-bool FilterKey::operator ==(const FilterKey &other)
+bool FilterKey::equals(const FilterKey &other) const
 {
     if (&other == this)
         return true;
@@ -95,11 +95,6 @@ bool FilterKey::operator ==(const FilterKey &other)
     return (other.value().type() == value().type() &&
             other.name() == name() &&
             other.value() == value());
-}
-
-bool FilterKey::operator !=(const FilterKey &other)
-{
-    return !operator ==(other);
 }
 
 } // namespace Render
