@@ -696,7 +696,8 @@ void tst_RenderViewUtils::topLevelStructValue()
     blockBuilder.buildActiveUniformNameValueMapStructHelper(backendShaderData, blockName);
 
     // THEN
-    QCOMPARE(blockBuilder.activeUniformNamesToValue.count(), shaderData->buildUniformMapNameIds(blockName).size());
+    QCOMPARE(size_t(blockBuilder.activeUniformNamesToValue.count()),
+             shaderData->buildUniformMapNameIds(blockName).size());
 
     // WHEN
     Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator it = blockBuilder.activeUniformNamesToValue.begin();

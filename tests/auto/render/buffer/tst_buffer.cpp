@@ -37,7 +37,7 @@ private Q_SLOTS:
         QCOMPARE(renderBuffer.isDirty(), true);
         QCOMPARE(renderBuffer.usage(), buffer.usage());
         QCOMPARE(renderBuffer.data(), buffer.data());
-        QCOMPARE(renderBuffer.pendingBufferUpdates().size(), 1);
+        QCOMPARE(renderBuffer.pendingBufferUpdates().size(), 1U);
         QCOMPARE(renderBuffer.pendingBufferUpdates().front().offset, -1);
     }
 
@@ -120,7 +120,7 @@ private Q_SLOTS:
         simulateInitializationSync(&frontendBuffer, &backendBuffer);
 
         // THEN
-        QCOMPARE(backendBuffer.pendingBufferUpdates().size(), 1);
+        QCOMPARE(backendBuffer.pendingBufferUpdates().size(), 1U);
         Qt3DCore::QBufferUpdate fullUpdate = backendBuffer.pendingBufferUpdates().front();
         QCOMPARE(fullUpdate.offset, -1);
         QVERIFY(fullUpdate.data.isEmpty());
@@ -134,7 +134,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(frontendBuffer.data(), QByteArray("100456789\0"));
-        QCOMPARE(backendBuffer.pendingBufferUpdates().size(), 1);
+        QCOMPARE(backendBuffer.pendingBufferUpdates().size(), 1U);
         fullUpdate = backendBuffer.pendingBufferUpdates().front();
         QCOMPARE(fullUpdate.offset, 1);
         QCOMPARE(fullUpdate.data, QByteArray("00\0"));
@@ -189,7 +189,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(backendBuffer.data(), QByteArrayLiteral("LS9SL"));
         QVERIFY(backendBuffer.isDirty());
-        QCOMPARE(backendBuffer.pendingBufferUpdates().size(), 1);
+        QCOMPARE(backendBuffer.pendingBufferUpdates().size(), 1U);
         QCOMPARE(backendBuffer.pendingBufferUpdates().front().offset, -1);
 
         backendBuffer.pendingBufferUpdates().clear();
@@ -289,7 +289,7 @@ private Q_SLOTS:
         renderBuffer.syncFromFrontEnd(&buffer, false);
 
         // THEN
-        QCOMPARE(renderBuffer.pendingBufferUpdates().size(), 2);
+        QCOMPARE(renderBuffer.pendingBufferUpdates().size(), 2U);
         QCOMPARE(renderBuffer.pendingBufferUpdates().front().offset, 0);
         QCOMPARE(renderBuffer.pendingBufferUpdates().front().data, QByteArray("012"));
         QCOMPARE(renderBuffer.pendingBufferUpdates().back().offset, 3);

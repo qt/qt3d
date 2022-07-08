@@ -71,7 +71,7 @@ private Q_SLOTS:
         t->setImages({img});
 
         // THEN
-        QCOMPARE(t->images().size(), 1);
+        QCOMPARE(t->images().size(), 1U);
         QCOMPARE(t->dirtyFlags(),  Qt3DRender::Render::OpenGL::GLTexture::TextureImageData);
 
         // WHEN
