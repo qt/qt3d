@@ -72,10 +72,15 @@ public:
     const QVariant &value() const { return m_value; }
     const QString &name() const { return m_name; }
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
-    bool operator ==(const FilterKey &other);
-    bool operator !=(const FilterKey &other);
+
+    friend bool operator==(const FilterKey &lhs, const FilterKey &rhs)
+    { return lhs.equals(rhs); }
+    friend bool operator !=(const FilterKey &lhs, const FilterKey &rhs)
+    { return !lhs.equals(rhs); }
 
 private:
+    bool equals(const FilterKey &other) const;
+
     QVariant m_value;
     QString m_name;
 };
