@@ -62,7 +62,7 @@ private Q_SLOTS:
             filterJob.run();
 
             // THEN
-            QCOMPARE(filterJob.filteredEntities().size(), 2);
+            QCOMPARE(filterJob.filteredEntities().size(), 2U);
             QCOMPARE(filterJob.filteredEntities().front()->peerId(), childEntity1->id());
             QCOMPARE(filterJob.filteredEntities().back()->peerId(), childEntity2->id());
         }
@@ -74,7 +74,7 @@ private Q_SLOTS:
             filterJob.run();
 
             // THEN
-            QCOMPARE(filterJob.filteredEntities().size(), 1);
+            QCOMPARE(filterJob.filteredEntities().size(), 1U);
             QCOMPARE(filterJob.filteredEntities().front()->peerId(), childEntity1->id());
         }
 
@@ -85,7 +85,7 @@ private Q_SLOTS:
             filterJob.run();
 
             // THEN
-            QCOMPARE(filterJob.filteredEntities().size(), 0);
+            QCOMPARE(filterJob.filteredEntities().size(), 0U);
         }
 
         {
@@ -95,7 +95,7 @@ private Q_SLOTS:
             filterJob.run();
 
             // THEN
-            QCOMPARE(filterJob.filteredEntities().size(), 1);
+            QCOMPARE(filterJob.filteredEntities().size(), 1U);
             QCOMPARE(filterJob.filteredEntities().front()->peerId(), childEntity3->id());
         }
     }

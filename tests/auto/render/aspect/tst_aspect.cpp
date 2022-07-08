@@ -88,7 +88,7 @@ private Q_SLOTS:
                  1 + // UpdateLayerEntity
                  1 + // PickBoundingVolume
                  1 + // RayCasting
-                 0   // No skeleton, no scene loading, no geometry, no buffers
+                 0U  // No skeleton, no scene loading, no geometry, no buffers
                 );
 
         // WHEN
@@ -102,7 +102,7 @@ private Q_SLOTS:
                  1 + // UpdateLevelOfDetail
                  1 + // PickBoundingVolume
                  1 + // RayCasting
-                 0   // No skeleton, no scene loading, no geometry, no buffers
+                 0U  // No skeleton, no scene loading, no geometry, no buffers
                 );
 
         // WHEN
@@ -122,7 +122,7 @@ private Q_SLOTS:
                  1 + // UpdateLevelOfDetail
                  1 + // PickBoundingVolume
                  1 + // RayCasting
-                 0   // No skeleton, no scene loading, no geometry, no buffers
+                 0U  // No skeleton, no scene loading, no geometry, no buffers
                 );
 
         // WHEN
@@ -140,7 +140,7 @@ private Q_SLOTS:
                  1 + // UpdateLevelOfDetail
                  1 + // PickBoundingVolume
                  1 + // RayCasting
-                 0   // No skeleton, no scene loading, no geometry, no buffers
+                 0U  // No skeleton, no scene loading, no geometry, no buffers
                 );
 
         // WHEN
@@ -157,7 +157,7 @@ private Q_SLOTS:
                  1 + // UpdateLevelOfDetail
                  1 + // PickBoundingVolume
                  1 + // RayCasting
-                 0   // No skeleton, no scene loading, no geometry, no buffers
+                 0U  // No skeleton, no scene loading, no geometry, no buffers
                 );
     }
 };

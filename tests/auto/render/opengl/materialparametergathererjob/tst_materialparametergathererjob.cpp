@@ -212,7 +212,7 @@ private Q_SLOTS:
         testAspect.initializeRenderer();
 
         // THEN
-        QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 0);
+        QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 0U);
 
         // WHEN
         gatherer->run();
@@ -232,7 +232,7 @@ private Q_SLOTS:
         testAspect.initializeRenderer();
 
         // THEN
-        QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1);
+        QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1U);
 
         // WHEN
         gatherer->setHandles(testAspect.nodeManagers()->materialManager()->activeHandles());
@@ -254,7 +254,7 @@ private Q_SLOTS:
         testAspect.initializeRenderer();
 
         // THEN
-        QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1);
+        QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1U);
 
         // WHEN
         gatherer->setHandles(testAspect.nodeManagers()->materialManager()->activeHandles());
@@ -286,7 +286,7 @@ private Q_SLOTS:
         testAspect.initializeRenderer();
 
         // THEN
-        QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1);
+        QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1U);
         Qt3DRender::Render::TechniqueFilter *backendTechniqueFilter = static_cast<Qt3DRender::Render::TechniqueFilter *>(testAspect.nodeManagers()->frameGraphManager()->lookupNode(frameGraphFilter->id()));
         QVERIFY(backendTechniqueFilter != nullptr);
 
@@ -326,7 +326,7 @@ private Q_SLOTS:
         testAspect.initializeRenderer();
 
         // THEN
-        QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1);
+        QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1U);
         Qt3DRender::Render::TechniqueFilter *backendTechniqueFilter = static_cast<Qt3DRender::Render::TechniqueFilter *>(testAspect.nodeManagers()->frameGraphManager()->lookupNode(frameGraphFilter->id()));
         QVERIFY(backendTechniqueFilter != nullptr);
 
@@ -362,7 +362,7 @@ private Q_SLOTS:
         testAspect.initializeRenderer();
 
         // THEN
-        QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1);
+        QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1U);
         Qt3DRender::Render::TechniqueFilter *backendTechniqueFilter = static_cast<Qt3DRender::Render::TechniqueFilter *>(testAspect.nodeManagers()->frameGraphManager()->lookupNode(frameGraphFilter->id()));
         QVERIFY(backendTechniqueFilter != nullptr);
 
@@ -396,7 +396,7 @@ private Q_SLOTS:
         testAspect.initializeRenderer();
 
         // THEN
-        QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1);
+        QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1U);
         Qt3DRender::Render::RenderPassFilter *backendPassFilter = static_cast<Qt3DRender::Render::RenderPassFilter *>(testAspect.nodeManagers()->frameGraphManager()->lookupNode(frameGraphFilter->id()));
         QVERIFY(backendPassFilter != nullptr);
 
@@ -436,7 +436,7 @@ private Q_SLOTS:
         testAspect.initializeRenderer();
 
         // THEN
-        QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1);
+        QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1U);
         Qt3DRender::Render::RenderPassFilter *backendPassFilter = static_cast<Qt3DRender::Render::RenderPassFilter *>(testAspect.nodeManagers()->frameGraphManager()->lookupNode(frameGraphFilter->id()));
         QVERIFY(backendPassFilter != nullptr);
 
@@ -487,7 +487,7 @@ private Q_SLOTS:
             Qt3DRender::Render::MaterialParameterGathererJobPtr gatherer = testAspect.materialGathererJob();
             testAspect.initializeRenderer();
 
-            QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1);
+            QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1U);
             Qt3DRender::Render::TechniqueFilter *backendTechniqueFilter = static_cast<Qt3DRender::Render::TechniqueFilter *>(testAspect.nodeManagers()->frameGraphManager()->lookupNode(techniqueFilterFG->id()));
             Qt3DRender::Render::RenderPassFilter *backendRenderPassFilter = static_cast<Qt3DRender::Render::RenderPassFilter *>(testAspect.nodeManagers()->frameGraphManager()->lookupNode(renderPassFG->id()));
             QVERIFY(backendTechniqueFilter != nullptr);
@@ -502,7 +502,7 @@ private Q_SLOTS:
             QCOMPARE(gatherer->materialToPassAndParameter().size(), 1);
 
             const std::vector<Qt3DRender::Render::RenderPassParameterData> passParameterData = gatherer->materialToPassAndParameter().begin().value();
-            QCOMPARE(passParameterData.size(), 1);
+            QCOMPARE(passParameterData.size(), 1U);
 
             const Qt3DRender::Render::RenderPassParameterData data = passParameterData.front();
 
@@ -543,7 +543,7 @@ private Q_SLOTS:
             Qt3DRender::Render::MaterialParameterGathererJobPtr gatherer = testAspect.materialGathererJob();
             testAspect.initializeRenderer();
 
-            QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1);
+            QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1U);
             Qt3DRender::Render::TechniqueFilter *backendTechniqueFilter = static_cast<Qt3DRender::Render::TechniqueFilter *>(testAspect.nodeManagers()->frameGraphManager()->lookupNode(techniqueFilterFG->id()));
             Qt3DRender::Render::RenderPassFilter *backendRenderPassFilter = static_cast<Qt3DRender::Render::RenderPassFilter *>(testAspect.nodeManagers()->frameGraphManager()->lookupNode(renderPassFG->id()));
             QVERIFY(backendTechniqueFilter != nullptr);
@@ -558,7 +558,7 @@ private Q_SLOTS:
             QCOMPARE(gatherer->materialToPassAndParameter().size(), 1);
 
             const std::vector<Qt3DRender::Render::RenderPassParameterData> passParameterData = gatherer->materialToPassAndParameter().begin().value();
-            QCOMPARE(passParameterData.size(), 1);
+            QCOMPARE(passParameterData.size(), 1U);
 
             const Qt3DRender::Render::RenderPassParameterData data = passParameterData.front();
 
@@ -598,7 +598,7 @@ private Q_SLOTS:
             Qt3DRender::Render::MaterialParameterGathererJobPtr gatherer = testAspect.materialGathererJob();
             testAspect.initializeRenderer();
 
-            QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1);
+            QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1U);
             Qt3DRender::Render::TechniqueFilter *backendTechniqueFilter = static_cast<Qt3DRender::Render::TechniqueFilter *>(testAspect.nodeManagers()->frameGraphManager()->lookupNode(techniqueFilterFG->id()));
             Qt3DRender::Render::RenderPassFilter *backendRenderPassFilter = static_cast<Qt3DRender::Render::RenderPassFilter *>(testAspect.nodeManagers()->frameGraphManager()->lookupNode(renderPassFG->id()));
             QVERIFY(backendTechniqueFilter != nullptr);
@@ -613,7 +613,7 @@ private Q_SLOTS:
             QCOMPARE(gatherer->materialToPassAndParameter().size(), 1);
 
             const std::vector<Qt3DRender::Render::RenderPassParameterData> passParameterData = gatherer->materialToPassAndParameter().begin().value();
-            QCOMPARE(passParameterData.size(), 1);
+            QCOMPARE(passParameterData.size(), 1U);
 
             const Qt3DRender::Render::RenderPassParameterData data = passParameterData.front();
 
@@ -652,7 +652,7 @@ private Q_SLOTS:
             Qt3DRender::Render::MaterialParameterGathererJobPtr gatherer = testAspect.materialGathererJob();
             testAspect.initializeRenderer();
 
-            QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1);
+            QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1U);
             Qt3DRender::Render::TechniqueFilter *backendTechniqueFilter = static_cast<Qt3DRender::Render::TechniqueFilter *>(testAspect.nodeManagers()->frameGraphManager()->lookupNode(techniqueFilterFG->id()));
             Qt3DRender::Render::RenderPassFilter *backendRenderPassFilter = static_cast<Qt3DRender::Render::RenderPassFilter *>(testAspect.nodeManagers()->frameGraphManager()->lookupNode(renderPassFG->id()));
             QVERIFY(backendTechniqueFilter != nullptr);
@@ -667,7 +667,7 @@ private Q_SLOTS:
             QCOMPARE(gatherer->materialToPassAndParameter().size(), 1);
 
             const std::vector<Qt3DRender::Render::RenderPassParameterData> passParameterData = gatherer->materialToPassAndParameter().begin().value();
-            QCOMPARE(passParameterData.size(), 1);
+            QCOMPARE(passParameterData.size(), 1U);
 
             const Qt3DRender::Render::RenderPassParameterData data = passParameterData.front();
 
@@ -702,7 +702,7 @@ private Q_SLOTS:
             Qt3DRender::Render::MaterialParameterGathererJobPtr gatherer = testAspect.materialGathererJob();
             testAspect.initializeRenderer();
 
-            QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1);
+            QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1U);
             Qt3DRender::Render::TechniqueFilter *backendTechniqueFilter = static_cast<Qt3DRender::Render::TechniqueFilter *>(testAspect.nodeManagers()->frameGraphManager()->lookupNode(techniqueFilterFG->id()));
             Qt3DRender::Render::RenderPassFilter *backendRenderPassFilter = static_cast<Qt3DRender::Render::RenderPassFilter *>(testAspect.nodeManagers()->frameGraphManager()->lookupNode(renderPassFG->id()));
             QVERIFY(backendTechniqueFilter != nullptr);
@@ -717,7 +717,7 @@ private Q_SLOTS:
             QCOMPARE(gatherer->materialToPassAndParameter().size(), 1);
 
             const std::vector<Qt3DRender::Render::RenderPassParameterData> passParameterData = gatherer->materialToPassAndParameter().begin().value();
-            QCOMPARE(passParameterData.size(), 1);
+            QCOMPARE(passParameterData.size(), 1U);
 
             const Qt3DRender::Render::RenderPassParameterData data = passParameterData.front();
 
@@ -746,7 +746,7 @@ private Q_SLOTS:
             Qt3DRender::Render::MaterialParameterGathererJobPtr gatherer = testAspect.materialGathererJob();
             testAspect.initializeRenderer();
 
-            QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1);
+            QCOMPARE(testAspect.nodeManagers()->materialManager()->activeHandles().size(), 1U);
             Qt3DRender::Render::TechniqueFilter *backendTechniqueFilter = static_cast<Qt3DRender::Render::TechniqueFilter *>(testAspect.nodeManagers()->frameGraphManager()->lookupNode(techniqueFilterFG->id()));
             Qt3DRender::Render::RenderPassFilter *backendRenderPassFilter = static_cast<Qt3DRender::Render::RenderPassFilter *>(testAspect.nodeManagers()->frameGraphManager()->lookupNode(renderPassFG->id()));
             QVERIFY(backendTechniqueFilter != nullptr);
@@ -761,7 +761,7 @@ private Q_SLOTS:
             QCOMPARE(gatherer->materialToPassAndParameter().size(), 1);
 
             const std::vector<Qt3DRender::Render::RenderPassParameterData> passParameterData = gatherer->materialToPassAndParameter().begin().value();
-            QCOMPARE(passParameterData.size(), 1);
+            QCOMPARE(passParameterData.size(), 1U);
 
             const Qt3DRender::Render::RenderPassParameterData data = passParameterData.front();
 
