@@ -69,7 +69,7 @@ void tst_GLShaderManager::adopt()
     // THEN
     QVERIFY(glShader1 != nullptr);
     std::vector<Qt3DCore::QNodeId> shaderNodeIds = cache.shaderIdsForProgram(glShader1);
-    QCOMPARE(shaderNodeIds.size(), 1);
+    QCOMPARE(shaderNodeIds.size(), 1U);
     QCOMPARE(shaderNodeIds.front(), backendShaderNode1.peerId());
 
     // WHEN
@@ -79,7 +79,7 @@ void tst_GLShaderManager::adopt()
     QCOMPARE(glShader1, glShader2);
 
     shaderNodeIds = cache.shaderIdsForProgram(glShader2);
-    QCOMPARE(shaderNodeIds.size(), 2);
+    QCOMPARE(shaderNodeIds.size(), 2U);
     QCOMPARE(shaderNodeIds.front(), backendShaderNode1.peerId());
     QCOMPARE(shaderNodeIds.back(), backendShaderNode2.peerId());
 }
@@ -109,7 +109,7 @@ void tst_GLShaderManager::lookupResource()
     QVERIFY(glShader1 != nullptr);
     QCOMPARE(glShader1, glShader2);
     const std::vector<Qt3DCore::QNodeId> shaderNodeIds = cache.shaderIdsForProgram(glShader1);
-    QCOMPARE(shaderNodeIds.size(), 2);
+    QCOMPARE(shaderNodeIds.size(), 2U);
     QVERIFY(std::find(shaderNodeIds.begin(),
                       shaderNodeIds.end(),
                       frontendShader1.id()) != shaderNodeIds.end());
@@ -142,7 +142,7 @@ void tst_GLShaderManager::abandon()
     // THEN
     std::vector<Qt3DCore::QNodeId> shaderNodeIds = cache.shaderIdsForProgram(glShader);
     QVERIFY(cache.takeAbandonned().empty());
-    QCOMPARE(shaderNodeIds.size(), 1);
+    QCOMPARE(shaderNodeIds.size(), 1U);
     QCOMPARE(shaderNodeIds.front(), backendShaderNode2.peerId());
 
     // WHEN
@@ -150,9 +150,9 @@ void tst_GLShaderManager::abandon()
 
     // THEN
     shaderNodeIds = cache.shaderIdsForProgram(glShader);
-    QCOMPARE(shaderNodeIds.size(), 0);
+    QCOMPARE(shaderNodeIds.size(), 0U);
     const std::vector<Qt3DRender::Render::OpenGL::GLShader *> releasedShaders = cache.takeAbandonned();
-    QCOMPARE(releasedShaders.size(), 1);
+    QCOMPARE(releasedShaders.size(), 1U);
     QCOMPARE(releasedShaders.front(), glShader);
 }
 

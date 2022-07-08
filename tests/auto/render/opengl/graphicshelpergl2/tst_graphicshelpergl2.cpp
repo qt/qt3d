@@ -730,7 +730,7 @@ private Q_SLOTS:
         std::vector<ShaderAttribute> activeAttributes = m_glHelper.programAttributesAndLocations(shaderProgram.programId());
 
         // THEN
-        QCOMPARE(activeAttributes.size(), 2);
+        QCOMPARE(activeAttributes.size(), 2U);
         std::sort(activeAttributes.begin(), activeAttributes.end(), [] (const ShaderAttribute &a, const ShaderAttribute &b) { return a.m_name < b.m_name; });
 
         const ShaderAttribute attribute1 = activeAttributes.at(0);
@@ -761,7 +761,7 @@ private Q_SLOTS:
         std::vector<ShaderUniform> activeUniforms = m_glHelper.programUniformsAndLocations(shaderProgram.programId());
 
         // THEN
-        QCOMPARE(activeUniforms.size(), 4);
+        QCOMPARE(activeUniforms.size(), 4U);
         std::sort(activeUniforms.begin(), activeUniforms.end(), [] (const ShaderUniform &a, const ShaderUniform &b) { return a.m_name < b.m_name; });
 
         const ShaderUniform uniform1 = activeUniforms.at(0);

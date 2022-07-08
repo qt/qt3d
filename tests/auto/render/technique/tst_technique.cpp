@@ -140,7 +140,7 @@ private Q_SLOTS:
             QCOMPARE(backendTechnique.renderPasses().first(), pass.id());
             QCOMPARE(backendTechnique.isCompatibleWithRenderer(), false);
             const std::vector<Qt3DCore::QNodeId> dirtyTechniques = nodeManagers.techniqueManager()->takeDirtyTechniques();
-            QCOMPARE(dirtyTechniques.size(), 1);
+            QCOMPARE(dirtyTechniques.size(), 1U);
             QCOMPARE(dirtyTechniques.front(), backendTechnique.peerId());
             QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::TechniquesDirty);
         }
@@ -198,12 +198,12 @@ private Q_SLOTS:
             QCOMPARE(backendTechnique.isEnabled(), newValue);
             QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::TechniquesDirty);
             renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
-            QCOMPARE(nodeManagers.techniqueManager()->takeDirtyTechniques().size(), 1);
+            QCOMPARE(nodeManagers.techniqueManager()->takeDirtyTechniques().size(), 1U);
         }
         {
             // WHEN
             backendTechnique.setCompatibleWithRenderer(true);
-            QCOMPARE(nodeManagers.techniqueManager()->takeDirtyTechniques().size(), 0);
+            QCOMPARE(nodeManagers.techniqueManager()->takeDirtyTechniques().size(), 0U);
 
             technique.graphicsApiFilter()->setMajorVersion(4);
             technique.graphicsApiFilter()->setMinorVersion(5);
@@ -218,7 +218,7 @@ private Q_SLOTS:
             QCOMPARE(backendTechnique.isCompatibleWithRenderer(), false);
 
             const std::vector<Qt3DCore::QNodeId> dirtyTechniques = nodeManagers.techniqueManager()->takeDirtyTechniques();
-            QCOMPARE(dirtyTechniques.size(), 1);
+            QCOMPARE(dirtyTechniques.size(), 1U);
             QCOMPARE(dirtyTechniques.front(), backendTechnique.peerId());
 
             QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::TechniquesDirty);

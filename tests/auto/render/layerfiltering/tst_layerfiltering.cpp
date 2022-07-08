@@ -53,8 +53,8 @@ private Q_SLOTS:
         // THEN
         QVERIFY(updateEntityLayerJob.manager() == nullptr);
         QCOMPARE(filterJob.hasLayerFilter(), false);
-        QCOMPARE(filterJob.filteredEntities().size(), 0);
-        QCOMPARE(filterJob.layerFilters().size(), 0);
+        QCOMPARE(filterJob.filteredEntities().size(), 0U);
+        QCOMPARE(filterJob.layerFilters().size(), 0U);
         QCOMPARE(frontendLayer.recursive(), false);
     }
 

@@ -199,7 +199,8 @@ void tst_RenderQueue::concurrentQueueAccess()
         // WHEN unlocked
         // THEN
         QVERIFY (renderQueue->isFrameQueueComplete());
-        QCOMPARE(renderQueue->nextFrameQueue().size(), renderQueue->targetRenderViewCount());
+        QCOMPARE(renderQueue->nextFrameQueue().size(),
+                 size_t(renderQueue->targetRenderViewCount()));
 
         // reset queue for next frame
         renderQueue->reset();

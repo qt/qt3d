@@ -329,7 +329,7 @@ private Q_SLOTS:
         const std::vector<Qt3DRender::Render::PickingUtils::ViewportCameraAreaDetails> &results = gatherer.gather(test->frameGraphRoot());
 
         // THEN
-        QCOMPARE(results.size(), 1);
+        QCOMPARE(results.size(), 1U);
         auto vca = results.front();
         QCOMPARE(vca.area, QSize(600, 600));
         QCOMPARE(vca.cameraId, camera->id());

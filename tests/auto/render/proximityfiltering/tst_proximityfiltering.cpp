@@ -108,8 +108,8 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(filterJob.hasProximityFilter(), false);
-        QCOMPARE(filterJob.filteredEntities().size(), 0);
-        QCOMPARE(filterJob.proximityFilterIds().size(), 0);
+        QCOMPARE(filterJob.filteredEntities().size(), 0U);
+        QCOMPARE(filterJob.proximityFilterIds().size(), 0U);
         QVERIFY(filterJob.manager() == nullptr);
     }
 
@@ -329,7 +329,7 @@ private Q_SLOTS:
 
         // THEN
         const std::vector<Qt3DRender::Render::Entity *> &filterEntities = filterJob.filteredEntities();
-        QCOMPARE(filterEntities.size(), expectedSelectedEntities.size());
+        QCOMPARE(filterEntities.size(), size_t(expectedSelectedEntities.size()));
 
         for (int i = 0, m = expectedSelectedEntities.size(); i < m; ++i)
             QCOMPARE(filterEntities.at(i)->peerId(), expectedSelectedEntities.at(i));

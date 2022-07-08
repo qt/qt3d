@@ -148,7 +148,7 @@ private Q_SLOTS:
         const std::vector<Qt3DRender::Render::FrameGraphNode *> fgNodes = visitor.traverse(backendFGRoot);
 
         // THEN
-        QCOMPARE(fgNodeIdsPerBranch.size(), fgNodes.size());
+        QCOMPARE(size_t(fgNodeIdsPerBranch.size()), fgNodes.size());
 
         for (int i = 0; i < fgNodeIdsPerBranch.size(); ++i) {
             const BranchIdsAndTypes brandIdsAndTypes = fgNodeIdsPerBranch.at(i);
