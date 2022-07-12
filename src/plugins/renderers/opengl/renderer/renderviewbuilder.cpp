@@ -41,6 +41,7 @@
 #include <Qt3DRender/private/qrenderaspect_p.h>
 
 #include <QThread>
+#include <Qt3DCore/private/qaspectjobmanager_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -567,7 +568,7 @@ RenderViewBuilder::RenderViewBuilder(Render::FrameGraphNode *leafNode, int rende
     // In some cases having less jobs is better (especially on fast cpus where
     // splitting just adds more overhead). Ideally, we should try to set the value
     // depending on the platform/CPU/nbr of cores
-    m_optimalParallelJobCount = QThread::idealThreadCount();
+    m_optimalParallelJobCount = Qt3DCore::QAspectJobManager::idealThreadCount();
 }
 
 RenderViewInitializerJobPtr RenderViewBuilder::renderViewJob() const
@@ -917,22 +918,7 @@ bool RenderViewBuilder::lightCacheNeedsToBeRebuilt() const
 
 int RenderViewBuilder::defaultJobCount()
 {
-    static int jobCount = 0;
-    if (jobCount)
-        return jobCount;
-
-    const QByteArray maxThreadCount = qgetenv("QT3D_MAX_THREAD_COUNT");
-    if (!maxThreadCount.isEmpty()) {
-        bool conversionOK = false;
-        const int maxThreadCountValue = maxThreadCount.toInt(&conversionOK);
-        if (conversionOK) {
-            jobCount = maxThreadCountValue;
-            return jobCount;
-        }
-    }
-
-    jobCount = QThread::idealThreadCount();
-    return jobCount;
+    return Qt3DCore::QAspectJobManager::idealThreadCount();
 }
 
 int RenderViewBuilder::optimalJobCount() const

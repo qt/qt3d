@@ -194,7 +194,7 @@ void tst_ThreadPooler::defaultPerThread()
 {
     // GIVEN
     QAtomicInt callCounter;
-    int maxThreadCount = QThread::idealThreadCount();
+    int maxThreadCount = Qt3DCore::QAspectJobManager::idealThreadCount();
     callCounter.storeRelaxed(0);
 
     // WHEN

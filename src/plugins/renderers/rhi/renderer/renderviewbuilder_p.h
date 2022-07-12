@@ -139,7 +139,7 @@ private:
     SynchronizerJobPtr m_syncMaterialGathererJob;
     FilterProximityDistanceJobPtr m_filterProximityJob;
 
-    static const int m_optimalParallelJobCount;
+    int m_optimalParallelJobCount;
 };
 
 } // Rhi
