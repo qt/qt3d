@@ -1737,7 +1737,7 @@ bool Renderer::prepareGeometryInputBindings(const Geometry *geometry, const RHIS
         //*/
 
         inputBindings[i] = QRhiVertexInputBinding{ binding.stride, binding.classification,
-                                                   int(binding.attributeDivisor) };
+                                                   binding.attributeDivisor };
     }
 
     return true;
