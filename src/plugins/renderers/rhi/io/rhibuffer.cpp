@@ -50,7 +50,7 @@ bool RHIBuffer::bind(SubmissionContext *ctx, Type t)
         return bool(m_rhiBuffer);
 
     const auto uploadMethod = m_dynamic ? &QRhiResourceUpdateBatch::updateDynamicBuffer
-                                        : qOverload<QRhiBuffer *, int, int, const void *>(
+                                        : qOverload<QRhiBuffer *, quint32, quint32, const void *>(
                                                 &QRhiResourceUpdateBatch::uploadStaticBuffer);
     if (!m_rhiBuffer) {
         if (m_allocSize <= 0)
