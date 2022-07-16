@@ -11,6 +11,8 @@ class tst_Matrix4x4_AVX2: public QObject
 {
     Q_OBJECT
 public:
+    void *operator new(size_t, void *ptr) { return ptr; }
+    void operator delete(void *, void *) {}
     QT3D_ALIGNED_MALLOC_AND_FREE()
 
 private Q_SLOTS:
