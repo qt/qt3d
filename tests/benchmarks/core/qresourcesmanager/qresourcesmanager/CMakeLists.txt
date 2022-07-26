@@ -10,7 +10,7 @@
 qt_internal_add_benchmark(tst_bench_qresourcesmanager
     SOURCES
         tst_bench_qresourcesmanager.cpp
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate
         Qt::Gui

@@ -12,7 +12,7 @@ qt_internal_add_test(tst_qt3d_qanimationgroup
 # special case end
     SOURCES
         tst_qanimationgroup.cpp
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DAnimation
         Qt::3DCore
         Qt::3DCorePrivate

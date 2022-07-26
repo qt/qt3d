@@ -13,7 +13,7 @@ qt_internal_add_manual_test(dynamicscene-cpp
         boxentity.cpp boxentity.h
         examplescene.cpp examplescene.h
         main.cpp
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         Qt::3DExtras
         Qt::3DInput

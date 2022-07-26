@@ -12,7 +12,7 @@ qt_internal_add_manual_test(paintedtexture-cpp
     SOURCES
         main.cpp
         scene.cpp scene.h
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         Qt::3DExtras
         Qt::3DInput

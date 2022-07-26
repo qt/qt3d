@@ -12,7 +12,7 @@ qt_internal_add_test(tst_qscene
         tst_qscene.cpp
     INCLUDE_DIRECTORIES
         ../common
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate
         Qt::CorePrivate

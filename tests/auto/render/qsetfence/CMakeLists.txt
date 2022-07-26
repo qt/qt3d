@@ -10,7 +10,7 @@
 qt_internal_add_test(tst_qsetfence
     SOURCES
         tst_qsetfence.cpp
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate
         Qt::3DRender

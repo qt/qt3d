@@ -10,7 +10,7 @@
 qt_internal_add_test(tst_aspects_startup_shutdown
     SOURCES
         tst_aspects_startup_shutdown.cpp
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         Qt::3DExtras
         Qt::3DInput

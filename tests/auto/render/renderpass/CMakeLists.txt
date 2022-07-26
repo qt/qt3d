@@ -10,7 +10,7 @@
 qt_internal_add_test(tst_renderpass
     SOURCES
         tst_renderpass.cpp
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate
         Qt::3DRender

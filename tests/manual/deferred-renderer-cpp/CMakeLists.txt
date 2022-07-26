@@ -18,7 +18,7 @@ qt_internal_add_manual_test(deferred-renderer-cpp
         sceneeffect.cpp sceneeffect.h
         sceneentity.cpp sceneentity.h
         screenquadentity.cpp screenquadentity.h
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         Qt::3DExtras
         Qt::3DInput

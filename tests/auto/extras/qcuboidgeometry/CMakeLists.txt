@@ -13,7 +13,7 @@ qt_internal_add_test(tst_qcuboidgeometry
         tst_qcuboidgeometry.cpp
     INCLUDE_DIRECTORIES
         ../common
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DExtras
         Qt::3DRender
         Qt::CorePrivate

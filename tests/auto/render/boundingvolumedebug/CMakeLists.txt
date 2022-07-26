@@ -13,7 +13,7 @@ qt_internal_add_test(boundingvolumedebug
         tst_boundingvolumedebug.cpp
     INCLUDE_DIRECTORIES
         ../commons
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate
         Qt::3DRender

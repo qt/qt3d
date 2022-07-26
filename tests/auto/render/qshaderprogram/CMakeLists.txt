@@ -10,7 +10,7 @@
 qt_internal_add_test(tst_qshaderprogram
     SOURCES
         tst_qshaderprogram.cpp
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate
         Qt::3DRender

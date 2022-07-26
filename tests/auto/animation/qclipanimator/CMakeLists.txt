@@ -12,7 +12,7 @@ qt_internal_add_test(tst_qclipanimator
         tst_qclipanimator.cpp
     INCLUDE_DIRECTORIES
         ../../core/common
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DAnimation
         Qt::3DAnimationPrivate
         Qt::3DCore

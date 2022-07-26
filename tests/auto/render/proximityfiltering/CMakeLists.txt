@@ -10,7 +10,7 @@
 qt_internal_add_test(tst_proximityfiltering
     SOURCES
         tst_proximityfiltering.cpp
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate
         Qt::3DRender

@@ -11,7 +11,7 @@ qt_internal_add_manual_test(qtbug-76766
     GUI
     SOURCES
         main.cpp
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::Gui
         Qt::Qml
         Qt::Quick

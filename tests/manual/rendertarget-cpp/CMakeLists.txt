@@ -12,7 +12,7 @@ qt_internal_add_manual_test(rendertarget-cpp
     SOURCES
         main.cpp
         orbittransformcontroller.cpp orbittransformcontroller.h
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         Qt::3DExtras
         Qt::3DInput

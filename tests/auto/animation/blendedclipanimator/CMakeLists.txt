@@ -10,7 +10,7 @@
 qt_internal_add_test(tst_blendedclipanimator
     SOURCES
         tst_blendedclipanimator.cpp
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DAnimation
         Qt::3DAnimationPrivate
         Qt::3DCore

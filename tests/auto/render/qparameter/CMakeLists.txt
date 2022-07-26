@@ -10,7 +10,7 @@
 qt_internal_add_test(tst_qparameter
     SOURCES
         tst_qparameter.cpp
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate
         Qt::3DRender

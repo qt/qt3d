@@ -13,7 +13,7 @@ qt_internal_add_test(tst_boundingsphere
         tst_boundingsphere.cpp
     INCLUDE_DIRECTORIES
         ../qmlscenereader
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate
         Qt::3DExtras

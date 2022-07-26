@@ -11,7 +11,7 @@ qt_internal_add_manual_test(boundingvolumes
     GUI
     SOURCES
         main.cpp
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DInput
         Qt::Gui
         Qt::Qml

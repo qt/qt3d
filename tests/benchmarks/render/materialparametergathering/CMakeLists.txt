@@ -10,7 +10,7 @@
 qt_internal_add_test(tst_bench_materialparametergathering
     SOURCES
         tst_bench_materialparametergathering.cpp
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DExtras
 )
 

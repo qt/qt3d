@@ -10,7 +10,7 @@
 qt_internal_add_test(tst_meshfunctors
     SOURCES
         tst_meshfunctors.cpp
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate
         Qt::3DRender

@@ -11,7 +11,7 @@ qt_internal_add_manual_test(animation-keyframe-simple
     GUI
     SOURCES
         main.cpp
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DQuickAnimation
         Qt::3DQuickExtras
         Qt::Gui

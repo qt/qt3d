@@ -16,7 +16,7 @@ list(APPEND test_data ${test_data_glob})
 qt_internal_add_test(tst_ddstextures
     SOURCES
         tst_ddstextures.cpp
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate
         Qt::3DRender

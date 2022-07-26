@@ -13,7 +13,7 @@ qt_internal_add_test(tst_updateshaderdatatransformjob
         tst_updateshaderdatatransformjob.cpp
     INCLUDE_DIRECTORIES
         ../qmlscenereader
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate
         Qt::3DExtras

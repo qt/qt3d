@@ -10,7 +10,7 @@
 qt_internal_add_test(tst_qanimationcontroller
     SOURCES
         tst_qanimationcontroller.cpp
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DAnimation
         Qt::3DCore
         Qt::3DCorePrivate

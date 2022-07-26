@@ -16,7 +16,7 @@ qt_internal_add_test(tst_utils
     INCLUDE_DIRECTORIES
         ../../core/common
         ../commons
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate
         Qt::3DInput

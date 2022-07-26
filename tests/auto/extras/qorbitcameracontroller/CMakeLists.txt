@@ -10,7 +10,7 @@
 qt_internal_add_test(tst_qorbitcameracontroller
     SOURCES
         tst_qorbitcameracontroller.cpp
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate
         Qt::3DExtras

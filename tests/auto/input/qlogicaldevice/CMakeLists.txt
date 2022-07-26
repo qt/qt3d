@@ -12,7 +12,7 @@ qt_internal_add_test(tst_qlogicaldevice
         tst_qlogicaldevice.cpp
     INCLUDE_DIRECTORIES
         ../../core/common
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate
         Qt::3DInput

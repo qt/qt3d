@@ -13,7 +13,7 @@ qt_internal_add_manual_test(compressed_textures
         main.cpp
     DEFINES
         DATA_DIR=\\\"${CMAKE_CURRENT_SOURCE_DIR}/data\\\"
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         Qt::3DInput
         Qt::3DLogic

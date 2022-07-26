@@ -12,7 +12,7 @@ qt_internal_add_manual_test(tessellation-modes
     SOURCES
         main.cpp
         tessellatedquadmesh.cpp tessellatedquadmesh.h
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         Qt::3DInput
         Qt::3DQuick

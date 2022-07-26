@@ -22,7 +22,7 @@ qt_internal_add_test(tst_qnodeinstantiator
         QT_QMLTEST_DATADIR=\\\"${CMAKE_CURRENT_SOURCE_DIR}/data\\\"
     INCLUDE_DIRECTORIES
         ../../shared
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         Qt::3DQuick
         Qt::3DQuickPrivate

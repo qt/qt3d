@@ -10,7 +10,7 @@
 qt_internal_add_test(tst_qaspectjob
     SOURCES
         tst_qaspectjob.cpp
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DCore
         Qt::Gui
 )

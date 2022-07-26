@@ -11,7 +11,7 @@ qt_internal_add_manual_test(mesh-morphing
     GUI
     SOURCES
         main.cpp
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DAnimation
         Qt::3DCore
         Qt::3DExtras

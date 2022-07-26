@@ -12,7 +12,7 @@ qt_internal_add_test(tst_qt3d_qshadernodesloader
 #special case end
     SOURCES
         tst_qshadernodesloader.cpp
-    PUBLIC_LIBRARIES
+    LIBRARIES
         Qt::3DRenderPrivate
         Qt::Gui
 )
