@@ -1148,11 +1148,11 @@ void Renderer::createRenderTarget(RenderTarget *target)
     for (const Attachment &attachment : pack.attachments()) {
         RHITexture *tex = texman->lookupResource(attachment.m_textureUuid);
         if (tex && tex->getRhiTexture()) {
-
             auto rhiTex = tex->getRhiTexture();
             if (!rhiTex->flags().testFlag(QRhiTexture::RenderTarget) ||
                 !rhiTex->flags().testFlag(QRhiTexture::UsedAsTransferSource)) {
                 // UsedAsTransferSource is required if we ever want to read back from the texture
+                rhiTex->destroy();
                 rhiTex->setFlags(rhiTex->flags() | QRhiTexture::RenderTarget|QRhiTexture::UsedAsTransferSource);
                 rhiTex->create();
             }
@@ -1583,7 +1583,6 @@ void Renderer::sendTextureChangesToFrontend(Qt3DCore::QAspectManager *manager)
 
             QAbstractTexturePrivate *dTexture =
                     static_cast<QAbstractTexturePrivate *>(QNodePrivate::get(texture));
-
             dTexture->setStatus(properties.status);
             dTexture->setHandleType(pair.first.handleType);
             dTexture->setHandle(pair.first.handle);
@@ -1798,6 +1797,12 @@ void Renderer::updateResources()
         }
     }
 
+    std::vector<RHITexture *> updatedRHITextures;
+
+    // Create/Update textures. We record the update info to later fill
+    // m_updatedTextureProperties once we are use the RHITextures have been
+    // fully created (as creating the RenderTargets below could change existing
+    // RHITextures)
     {
         const std::vector<HTexture> activeTextureHandles = Qt3DCore::moveAndClear(m_dirtyTextures);
         for (const HTexture &handle : activeTextureHandles) {
@@ -1816,31 +1821,29 @@ void Renderer::updateResources()
         // RHITexture
         if (m_submissionContext != nullptr) {
             RHITextureManager *rhiTextureManager = m_RHIResourceManagers->rhiTextureManager();
-            const std::vector<HRHITexture> &glTextureHandles = rhiTextureManager->activeHandles();
+            const std::vector<HRHITexture> &rhiTextureHandles = rhiTextureManager->activeHandles();
             // Upload texture data
-            for (const HRHITexture &glTextureHandle : glTextureHandles) {
+            for (const HRHITexture &rhiTextureHandle : rhiTextureHandles) {
                 RHI_UNIMPLEMENTED;
-                RHITexture *glTexture = rhiTextureManager->data(glTextureHandle);
+                RHITexture *rhiTexture = rhiTextureManager->data(rhiTextureHandle);
 
-                // We create/update the actual GL texture using the GL context at this point
+                // We create/update the actual RHI texture using the RHI context at this point
                 const RHITexture::TextureUpdateInfo info =
-                        glTexture->createOrUpdateRhiTexture(m_submissionContext.data());
+                        rhiTexture->createOrUpdateRhiTexture(m_submissionContext.data());
 
-                // RHITexture creation provides us width/height/format ... information
-                // for textures which had not initially specified these information
-                // (TargetAutomatic...) Gather these information and store them to be distributed by
-                // a change next frame
-                const QNodeIdVector referenceTextureIds = {
-                    rhiTextureManager->texNodeIdForRHITexture.value(glTexture)
-                };
-                // Store properties and referenceTextureIds
                 if (info.wasUpdated) {
+                    // RHITexture creation provides us width/height/format ... information
+                    // for textures which had not initially specified these information
+                    // (TargetAutomatic...) Gather these information and store them to be distributed by
+                    // a change next frame
+                    const QNodeIdVector referenceTextureIds = { rhiTextureManager->texNodeIdForRHITexture.value(rhiTexture) };
+                    // Store properties and referenceTextureIds
                     Texture::TextureUpdateInfo updateInfo;
                     updateInfo.properties = info.properties;
-                    updateInfo.handleType = QAbstractTexture::OpenGLTextureId;
-                    //                    updateInfo.handle = info.texture ?
-                    //                    QVariant(info.texture->textureId()) : QVariant();
+                    // Record texture updates to notify frontend (we are sure at this stage
+                    // that the internal QRHITexture won't be updated further for this frame
                     m_updatedTextureProperties.push_back({ updateInfo, referenceTextureIds });
+                    updatedRHITextures.push_back(rhiTexture);
                 }
             }
         }
@@ -1854,6 +1857,10 @@ void Renderer::updateResources()
     // -> attachments added/removed
     // -> attachments textures updated (new dimensions, format ...)
     // -> destroy pipelines associated with dirty renderTargets
+
+    // Note: we might end up recreating some of the internal textures when
+    // creating the RenderTarget as those might have been created above without
+    // the proper RenderTarget/TransformSource flags
     {
         RHIRenderTargetManager *rhiRenderTargetManager = m_RHIResourceManagers->rhiRenderTargetManager();
         RenderTargetManager *renderTargetManager = m_nodesManager->renderTargetManager();
@@ -1891,6 +1898,22 @@ void Renderer::updateResources()
                 // Create RenderTarget
                 createRenderTarget(hTarget.data());
             }
+        }
+    }
+
+
+    // Note: we can only retrieve the internal QRhiResource handle to set on
+    // the frontend nodes after we are sure we are no going to modify the
+    // QRhiTextures (which happens when we create the Textures or the
+    // RenderTargets)
+    {
+        for (size_t i = 0, m = m_updatedTextureProperties.size(); i < m; ++i) {
+            auto &updateInfoPair = m_updatedTextureProperties[i];
+            RHITexture *rhiTexture = updatedRHITextures[i];
+            QRhiTexture *qRhiTexture = rhiTexture->getRhiTexture();
+            Texture::TextureUpdateInfo &updateInfo = updateInfoPair.first;
+            updateInfo.handleType = QAbstractTexture::RHITextureId;
+            updateInfo.handle = qRhiTexture ? QVariant(qRhiTexture->nativeTexture().object) : QVariant();
         }
     }
 
