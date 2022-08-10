@@ -237,7 +237,8 @@ public:
 
     enum HandleType {
         NoHandle,
-        OpenGLTextureId
+        OpenGLTextureId,
+        RHITextureId
     };
     Q_ENUM(HandleType) // LCOV_EXCL_LINE
 
