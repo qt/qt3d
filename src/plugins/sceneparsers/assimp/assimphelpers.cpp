@@ -45,6 +45,8 @@
 #include <QtCore/QDir>
 #include <QtCore/QDebug>
 
+#include <memory>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
@@ -208,9 +210,9 @@ Assimp::IOStream *AssimpIOSystem::Open(const char *pFile, const char *pMode)
     const QLatin1String cleanedMode = QLatin1String{pMode}.trimmed();
 
     if (const QIODevice::OpenMode openMode = openModeFromText(cleanedMode.data())) {
-        QScopedPointer<QFile> file(new QFile(fileName));
+        auto file = std::make_unique<QFile>(fileName);
         if (file->open(openMode))
-            return new AssimpIOStream(file.take());
+            return new AssimpIOStream(file.release());
     }
     return nullptr;
 }
