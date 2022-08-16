@@ -83,8 +83,9 @@ struct Q_AUTOTEST_EXPORT ViewportCameraAreaDetails
     QRectF viewport;
     QSize area;
     QSurface *surface = nullptr;
+    Qt3DCore::QNodeIdVector layersFilters;
 };
-QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, PickingUtils, ViewportCameraAreaDetails, Q_PRIMITIVE_TYPE)
+QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, PickingUtils, ViewportCameraAreaDetails, Q_COMPLEX_TYPE)
 
 class Q_AUTOTEST_EXPORT ViewportCameraAreaGatherer
 {
@@ -108,7 +109,8 @@ class Q_AUTOTEST_EXPORT HierarchicalEntityPicker
 public:
     explicit HierarchicalEntityPicker(const RayCasting::QRay3D &ray, bool requireObjectPicker = true);
 
-    void setFilterLayers(const Qt3DCore::QNodeIdVector &layerIds, QAbstractRayCaster::FilterMode mode);
+    void setLayerFilterIds(const Qt3DCore::QNodeIdVector &layerFilterIds);
+    void setLayerIds(const Qt3DCore::QNodeIdVector &layerIds, QAbstractRayCaster::FilterMode mode);
 
     bool collectHits(NodeManagers *manager, Entity *root);
     inline HitList hits() const { return m_hits; }
@@ -120,8 +122,9 @@ private:
     HitList m_hits;
     QVector<Entity *> m_entities;
     bool m_objectPickersRequired;
+    Qt3DCore::QNodeIdVector m_layerFilterIds;
     Qt3DCore::QNodeIdVector m_layerIds;
-    QAbstractRayCaster::FilterMode m_filterMode;
+    QAbstractRayCaster::FilterMode m_layerFilterMode = QAbstractRayCaster::AcceptAnyMatchingLayers;
     QHash<Qt3DCore::QNodeId, int> m_entityToPriorityTable;
 };
 

@@ -219,6 +219,7 @@ Scene3DItem::Scene3DItem(QQuickItem *parent)
     , m_cameraAspectRatioMode(AutomaticAspectRatio)
     , m_compositingMode(FBO)
     , m_dummySurface(nullptr)
+    , m_framesToRender(ms_framesNeededToFlushPipeline)
 {
     setFlag(QQuickItem::ItemHasContents, true);
     setAcceptedMouseButtons(Qt::MouseButtonMask);
@@ -542,8 +543,13 @@ bool Scene3DItem::needsRender(QRenderAspect *renderAspect)
             || (renderAspectPriv
                 && renderAspectPriv->m_renderer
                 && renderAspectPriv->m_renderer->shouldRender());
-    m_dirty = false;
-    return dirty;
+
+    if (m_dirty) {
+        --m_framesToRender;
+        if (m_framesToRender <= 0)
+            m_dirty = false;
+    }
+    return dirty || m_framesToRender > 0;
 }
 
 // This function is triggered in the context of the Main Thread
@@ -911,15 +917,16 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
         updateWindowSurface();
         managerNode->init();
         // Note: ChangeArbiter is only set after aspect was registered
-
-        // This allows Scene3DItem to know when it needs to re-render as a result of frontend nodes receiving a change.
-        QObject::connect(renderAspectPriv->m_aspectManager->changeArbiter(), &Qt3DCore::QChangeArbiter::receivedChange,
-                         this, [this] { m_dirty = true; }, Qt::DirectConnection);
-
-        // This allows Scene3DItem to know when it needs to re-render as a result of backend nodes receiving a change.
-        // For e.g. nodes being created/destroyed.
-        QObject::connect(renderAspectPriv->m_aspectManager->changeArbiter(), &Qt3DCore::QChangeArbiter::syncedChanges,
-                         this, [this] { m_dirty = true; }, Qt::QueuedConnection);
+        QObject::connect(
+                renderAspectPriv->m_aspectManager->changeArbiter(),
+                &Qt3DCore::QChangeArbiter::receivedChange, this,
+                [this] {
+                    m_dirty = true;
+                    m_framesToRender = ms_framesNeededToFlushPipeline;
+                },
+                Qt::DirectConnection);
+        // Give the window a nudge to trigger an update.
+        QMetaObject::invokeMethod(window(), "requestUpdate", Qt::QueuedConnection);
     }
 
     const bool usesFBO = m_compositingMode == FBO;

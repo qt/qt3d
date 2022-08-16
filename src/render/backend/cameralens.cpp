@@ -133,12 +133,12 @@ void CameraLens::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTim
     const Matrix4x4 projectionMatrix(node->projectionMatrix());
     if (projectionMatrix != m_projection) {
         m_projection = projectionMatrix;
-        markDirty(AbstractRenderer::AllDirty);
+        markDirty(AbstractRenderer::ParameterDirty);
     }
 
     if (!qFuzzyCompare(node->exposure(), m_exposure)) {
         m_exposure = node->exposure();
-        markDirty(AbstractRenderer::AllDirty);
+        markDirty(AbstractRenderer::ParameterDirty);
     }
 
     const QCameraLensPrivate *d = static_cast<const QCameraLensPrivate *>(QNodePrivate::get(node));

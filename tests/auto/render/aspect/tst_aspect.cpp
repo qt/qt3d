@@ -139,6 +139,10 @@ private Q_SLOTS:
         // THEN -> enabled dirty
         QCOMPARE(jobs.size(),
                  1 + // UpdateTreeEnabled
+                 1 + // UpdateTransform
+                 1 + // UpdateWorldBoundingVolume
+                 1 + // CalcBoundingVolume
+                 1 + // ExpandBoundingVolume
                  1 + // SyncLoadingJobs
                  1 + // UpdateSkinningPalette
                  1 + // UpdateLevelOfDetail

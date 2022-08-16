@@ -58,6 +58,7 @@
 #include <Qt3DRender/private/calcboundingvolumejob_p.h>
 #include <Qt3DRender/private/calcgeometrytrianglevolumes_p.h>
 #include <Qt3DRender/private/loadbufferjob_p.h>
+#include <Qt3DRender/private/updateentitylayersjob_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 
@@ -212,6 +213,10 @@ void runRequiredJobs(Qt3DRender::TestAspect *test)
         Qt3DRender::Render::CalcGeometryTriangleVolumes calcGeometryTriangles(geometryRendererId, test->nodeManagers());
         calcGeometryTriangles.run();
     }
+
+    Qt3DRender::Render::UpdateEntityLayersJob updateEntityLayer;
+    updateEntityLayer.setManager(test->nodeManagers());
+    updateEntityLayer.run();
 }
 
 void initializeJob(Qt3DRender::Render::RayCastingJob *job, Qt3DRender::TestAspect *test)

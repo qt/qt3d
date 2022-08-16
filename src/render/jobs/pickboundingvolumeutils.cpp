@@ -52,6 +52,9 @@
 #include <Qt3DRender/private/segmentsvisitor_p.h>
 #include <Qt3DRender/private/pointsvisitor_p.h>
 #include <Qt3DRender/private/layer_p.h>
+#include <Qt3DRender/private/layerfilternode_p.h>
+#include <Qt3DRender/private/rendersettings_p.h>
+#include <Qt3DRender/private/filterlayerentityjob_p.h>
 
 #include <vector>
 #include <algorithm>
@@ -105,6 +108,11 @@ ViewportCameraAreaDetails ViewportCameraAreaGatherer::gatherUpViewportCameraArea
                 // prevent picking in the presence of a NoPicking node
                 return {};
             }
+            case FrameGraphNode::LayerFilter: {
+                auto fnode = static_cast<const LayerFilterNode *>(node);
+                vca.layersFilters.push_back(fnode->peerId());
+                break;
+            }
             default:
                 break;
             }
@@ -139,7 +147,8 @@ bool ViewportCameraAreaGatherer::isUnique(const QVector<ViewportCameraAreaDetail
         if (vca.cameraId == listItem.cameraId &&
                 vca.viewport == listItem.viewport &&
                 vca.surface == listItem.surface &&
-                vca.area == listItem.area)
+                vca.area == listItem.area &&
+                vca.layersFilters == listItem.layersFilters)
             return false;
     }
     return true;
@@ -700,16 +709,19 @@ HitList PointCollisionGathererFunctor::pick(const Entity *entity) const
 HierarchicalEntityPicker::HierarchicalEntityPicker(const QRay3D &ray, bool requireObjectPicker)
     : m_ray(ray)
     , m_objectPickersRequired(requireObjectPicker)
-    , m_filterMode(QAbstractRayCaster::AcceptAnyMatchingLayers)
 {
-
 }
 
-void HierarchicalEntityPicker::setFilterLayers(const Qt3DCore::QNodeIdVector &layerIds, QAbstractRayCaster::FilterMode mode)
+void HierarchicalEntityPicker::setLayerFilterIds(const Qt3DCore::QNodeIdVector &layerFilterIds)
 {
-    m_filterMode = mode;
+    m_layerFilterIds = layerFilterIds;
+}
+
+void HierarchicalEntityPicker::setLayerIds(const Qt3DCore::QNodeIdVector &layerIds,
+                                           QAbstractRayCaster::FilterMode mode)
+{
     m_layerIds = layerIds;
-    std::sort(m_layerIds.begin(), m_layerIds.end());
+    m_layerFilterMode = mode;
 }
 
 bool HierarchicalEntityPicker::collectHits(NodeManagers *manager, Entity *root)
@@ -722,59 +734,36 @@ bool HierarchicalEntityPicker::collectHits(NodeManagers *manager, Entity *root)
     struct EntityData {
         Entity* entity;
         bool hasObjectPicker;
-        Qt3DCore::QNodeIdVector recursiveLayers;
         int priority;
     };
     std::vector<EntityData> worklist;
-    worklist.push_back({root, !root->componentHandle<ObjectPicker>().isNull(), {}, 0});
+    worklist.push_back({root, !root->componentHandle<ObjectPicker>().isNull(), 0});
 
-    LayerManager *layerManager = manager->layerManager();
+    // Record all entities that satisfy layerFiltering. We can then check against
+    // that to see if a picked Entity also satisfies the layer filtering
+
+    // Note: PickBoundingVolumeJob filters against LayerFilter nodes (FG) whereas
+    // the RayCastingJob filters only against a set of Layers and a filter Mode
+    const bool hasLayerFilters = m_layerFilterIds.size() > 0;
+    const bool hasLayers = m_layerIds.size() > 0;
+    const bool hasLayerFiltering = hasLayerFilters || hasLayers;
+    QVector<Entity *> layerFilterEntities;
+    FilterLayerEntityJob layerFilterJob;
+    layerFilterJob.setManager(manager);
+
+    if (hasLayerFilters) {
+        // Note: we expect UpdateEntityLayersJob was called beforehand to handle layer recursivness
+        // Filtering against LayerFilters (PickBoundingVolumeJob)
+        if (m_layerFilterIds.size()) {
+            layerFilterJob.setLayerFilters(m_layerFilterIds);
+            layerFilterJob.run();
+            layerFilterEntities = layerFilterJob.filteredEntities();
+        }
+    }
 
     while (!worklist.empty()) {
         EntityData current = worklist.back();
         worklist.pop_back();
-
-        bool accepted = true;
-        if (m_layerIds.size()) {
-            // TODO investigate reusing logic from LayerFilter job
-            Qt3DCore::QNodeIdVector filterLayers = current.recursiveLayers + current.entity->componentsUuid<Layer>();
-
-            // remove disabled layers
-            filterLayers.erase(std::remove_if(filterLayers.begin(), filterLayers.end(),
-                                              [layerManager](const Qt3DCore::QNodeId layerId) {
-                Layer *layer = layerManager->lookupResource(layerId);
-                return !layer || !layer->isEnabled();
-            }), filterLayers.end());
-
-            std::sort(filterLayers.begin(), filterLayers.end());
-
-            Qt3DCore::QNodeIdVector commonIds;
-            std::set_intersection(m_layerIds.cbegin(), m_layerIds.cend(),
-                                  filterLayers.cbegin(), filterLayers.cend(),
-                                  std::back_inserter(commonIds));
-
-            switch (m_filterMode) {
-            case QAbstractRayCaster::AcceptAnyMatchingLayers: {
-                accepted = !commonIds.empty();
-                break;
-            }
-            case QAbstractRayCaster::AcceptAllMatchingLayers: {
-                accepted = commonIds == m_layerIds;
-                break;
-            }
-            case QAbstractRayCaster::DiscardAnyMatchingLayers: {
-                accepted = commonIds.empty();
-                break;
-            }
-            case QAbstractRayCaster::DiscardAllMatchingLayers: {
-                accepted = !(commonIds == m_layerIds);
-                break;
-            }
-            default:
-                Q_UNREACHABLE();
-                break;
-            }
-        }
 
         // first pick entry sub-scene-graph
         QCollisionQueryResult::Hit queryResult =
@@ -784,19 +773,25 @@ bool HierarchicalEntityPicker::collectHits(NodeManagers *manager, Entity *root)
 
         // if we get a hit, we check again for this specific entity
         queryResult = rayCasting.query(m_ray, current.entity->worldBoundingVolume());
-        if (accepted && queryResult.m_distance >= 0.f && (current.hasObjectPicker || !m_objectPickersRequired)) {
+
+        // Check Entity is in selected Layers if we have LayerIds or LayerFilterIds
+        // Note: it's not because a parent doesn't satisfy the layerFiltering that a child might not.
+        // Therefore we need to keep traversing children in all cases
+
+        // Are we filtering against layerIds (RayCastingJob)
+        if (hasLayers) {
+            // QLayerFilter::FilterMode and QAbstractRayCaster::FilterMode are the same
+            layerFilterJob.filterEntityAgainstLayers(current.entity, m_layerIds, static_cast<QLayerFilter::FilterMode>(m_layerFilterMode));
+            layerFilterEntities = layerFilterJob.filteredEntities();
+        }
+
+        const bool isInLayers = !hasLayerFiltering || layerFilterEntities.contains(current.entity);
+
+        if (isInLayers && queryResult.m_distance >= 0.f && (current.hasObjectPicker || !m_objectPickersRequired)) {
             m_entities.push_back(current.entity);
             m_hits.push_back(queryResult);
             // Record entry for entity/priority
             m_entityToPriorityTable.insert(current.entity->peerId(), current.priority);
-        }
-
-        Qt3DCore::QNodeIdVector recursiveLayers;
-        const Qt3DCore::QNodeIdVector entityLayers = current.entity->componentsUuid<Layer>();
-        for (const Qt3DCore::QNodeId layerId : entityLayers) {
-            Layer *layer = layerManager->lookupResource(layerId);
-            if (layer->recursive())
-                recursiveLayers << layerId;
         }
 
         // and pick children
@@ -806,7 +801,6 @@ bool HierarchicalEntityPicker::collectHits(NodeManagers *manager, Entity *root)
             if (child) {
                 ObjectPicker *childPicker = child->renderComponent<ObjectPicker>();
                 worklist.push_back({child, current.hasObjectPicker || childPicker,
-                                    current.recursiveLayers + recursiveLayers,
                                     (childPicker ? childPicker->priority() : current.priority)});
             }
         }
