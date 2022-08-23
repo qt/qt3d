@@ -50,7 +50,7 @@ QThreadPooler::QThreadPooler(QObject *parent)
     , m_futureInterface(nullptr)
     , m_mutex()
     , m_taskCount(0)
-    , m_threadPool(QThreadPool::globalInstance())
+    , m_threadPool(new QThreadPool(this))
     , m_totalRunJobs(0)
 {
     m_threadPool->setMaxThreadCount(QAspectJobManager::idealThreadCount());
