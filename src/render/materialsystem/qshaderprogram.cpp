@@ -842,7 +842,7 @@ QByteArray QShaderProgramPrivate::resolveAutoBindingIndices(const QByteArray &co
             matchStart = shaderCode.indexOf(regexp, matchStart);
             if (matchStart != -1) {
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-                const auto match = regexp.match(QStringView{shaderCode}.mid(matchStart));
+                const auto match = regexp.matchView(QStringView{shaderCode}.mid(matchStart));
 #else
                 const auto match = regexp.match(shaderCode.mid(matchStart));
 #endif
