@@ -17,6 +17,7 @@
 #include <QtCore/qtemporarydir.h>
 #include <QtCore/qregularexpression.h>
 #include <QtCore/qmetaobject.h>
+#include <QtCore/qlibraryinfo.h>
 #include <QtGui/qvector2d.h>
 #include <QtGui/qvector4d.h>
 #include <QtGui/qmatrix4x4.h>
