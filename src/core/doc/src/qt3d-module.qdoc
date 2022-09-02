@@ -76,19 +76,15 @@
 
    \section2 Qt 3D Render Module
    \generatelist {qmltypesbymodule Qt3D.Render}
-   \noautolist
 
    \section2 Qt 3D Extras Module
    \generatelist {qmltypesbymodule Qt3D.Extras}
-   \noautolist
 
    \section2 Qt 3D Animation Module
    \generatelist {qmltypesbymodule Qt3D.Animation}
-   \noautolist
 
    \section2 Qt 3D Scene2D Module
    \generatelist {qmltypesbymodule QtQuick.Scene2D}
-   \noautolist
 
    \section2 Qt 3D Scene3D Module
    \generatelist {qmltypesbymodule QtQuick.Scene3D}
