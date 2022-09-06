@@ -33,7 +33,7 @@ private Q_SLOTS:
         job1->addDependency(job3);
 
         // THEN
-        QCOMPARE(job1->dependencies().size(), 2);
+        QCOMPARE(job1->dependencies().size(), 2U);
         QCOMPARE(job1->dependencies().at(0).lock(), job2);
         QCOMPARE(job1->dependencies().at(1).lock(), job3);
         QVERIFY(job2->dependencies().empty());
