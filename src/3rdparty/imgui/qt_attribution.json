@@ -37,6 +37,7 @@
 
         "Homepage": "https://github.com/nothings/stb/",
         "License": "MIT License or Public Domain",
+        "LicenseId": "MIT OR CC0-1.0",
         "LicenseFile": "LICENSE_imstb.txt",
         "Copyright": "Copyright (c) 2017 Sean Barrett"
     }
