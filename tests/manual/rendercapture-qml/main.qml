@@ -40,7 +40,6 @@ Item {
 
             Button {
                 id: button
-                anchors.top: parent.top
                 text: "Render Capture"
 
                 property var reply
