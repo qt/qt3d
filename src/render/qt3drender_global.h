@@ -5,6 +5,7 @@
 #define QT3DRENDER_GLOBAL_H
 
 #include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DRender/qt3drender-config.h>
 
 QT_BEGIN_NAMESPACE
 

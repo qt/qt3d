@@ -26,7 +26,9 @@
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/attachmentpack_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
-#include <Qt3DRender/private/vulkaninstance_p.h>
+#if QT_CONFIG(qt3d_vulkan) && QT_CONFIG(vulkan)
+#  include <Qt3DRender/private/vulkaninstance_p.h>
+#endif
 #include <QGuiApplication>
 #include <texture_p.h>
 #include <rendercommand_p.h>
@@ -53,7 +55,7 @@
 #include <QtGui/private/qrhigles2_p.h>
 #endif
 
-#if QT_CONFIG(qt3d_vulkan)
+#if QT_CONFIG(vulkan)
 #include <QtGui/private/qrhivulkan_p.h>
 #endif
 #include <bitset>
@@ -542,7 +544,7 @@ void SubmissionContext::initialize()
 
     QRhi::Flags rhiFlags = QRhi::EnableDebugMarkers;
 
-#if QT_CONFIG(qt3d_vulkan)
+#if QT_CONFIG(qt3d_vulkan) && QT_CONFIG(vulkan)
     if (requestedApi == Qt3DRender::API::Vulkan) {
         QRhiVulkanInitParams params;
         params.inst = &Qt3DRender::staticVulkanInstance();

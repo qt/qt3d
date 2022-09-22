@@ -4,6 +4,7 @@
 #include "qt3dwindow.h"
 #include "qt3dwindow_p.h"
 
+#include <QtGui/qtguiglobal.h>
 #include <Qt3DCore/qaspectengine.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qcoreaspect.h>
@@ -14,7 +15,9 @@
 #include <Qt3DInput/qinputsettings.h>
 #include <Qt3DLogic/qlogicaspect.h>
 #include <Qt3DRender/qcamera.h>
-#include <Qt3DRender/private/vulkaninstance_p.h>
+#if QT_CONFIG(vulkan)
+#  include <Qt3DRender/private/vulkaninstance_p.h>
+#endif
 #include <Qt3DRender/qt3drender-config.h>
 #include <qopenglcontext.h>
 #include <private/qrendersettings_p.h>
