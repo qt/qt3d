@@ -77,6 +77,7 @@ class Q_AUTOTEST_EXPORT RenderCommand
 {
 public:
     RenderCommand();
+    ~RenderCommand();
 
     bool isValid() const noexcept;
 
