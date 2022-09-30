@@ -59,6 +59,12 @@ RenderCommand::RenderCommand()
     m_workGroups[2] = 0;
 }
 
+RenderCommand::~RenderCommand()
+{
+    if (shaderResourceBindings)
+        shaderResourceBindings->deleteLater();
+}
+
 bool RenderCommand::isValid() const noexcept
 {
     return m_isValid && m_rhiShader && pipeline.isValid();
