@@ -148,6 +148,7 @@ Scene3DRenderer::Scene3DRenderer()
     , m_shouldRender(false)
     , m_dirtyViews(false)
     , m_skipFrame(false)
+    , m_skippedLastFrame(false)
     , m_allowRendering(0)
     , m_compositingMode(Scene3DItem::FBO)
 {
@@ -235,9 +236,16 @@ void Scene3DRenderer::beforeSynchronize()
             m_skipFrame = false;
             ContextSaver saver;
             static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect))->renderSynchronous(false);
+
+            // Ensure the QtQuick GL state is reset to prevent previous Qt3D calls from leaving some objects bound in the state
+            if (!m_skippedLastFrame)
+                m_window->resetOpenGLState();
+
+            m_skippedLastFrame = true;
             return;
         }
 
+        m_skippedLastFrame = false;
         m_shouldRender = true;
 
         // Check size / multisampling
