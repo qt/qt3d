@@ -29,7 +29,7 @@ QQmlListProperty<QAbstractAxisInput> Quick3DAxis::qmlAxisInputs()
     };
     auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
         Quick3DAxis *axis = qobject_cast<Quick3DAxis *>(list->object);
-        return axis->parentAxis()->inputs().count();
+        return axis->parentAxis()->inputs().size();
     };
     auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
         Quick3DAxis *axis = qobject_cast<Quick3DAxis *>(list->object);

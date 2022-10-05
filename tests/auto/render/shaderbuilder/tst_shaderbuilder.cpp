@@ -622,10 +622,10 @@ private slots:
             b.generateCode(Qt3DRender::QShaderProgram::Vertex);
 
             // THEN
-            QCOMPARE(QDir(cacheDir.path()).entryList(QDir::Files).count(), 1);
+            QCOMPARE(QDir(cacheDir.path()).entryList(QDir::Files).size(), 1);
 
             hashKey = b.hashKeyForShaderGraph(Qt3DRender::QShaderProgram::Vertex);
-            QCOMPARE(hashKey.length(), 40);
+            QCOMPARE(hashKey.size(), 40);
 
             QCOMPARE(QDir(cacheDir.path()).entryList(QDir::Files).first(),
                      QString::fromUtf8(hashKey) + QLatin1String(".qt3d"));
@@ -639,7 +639,7 @@ private slots:
             b.generateCode(Qt3DRender::QShaderProgram::Vertex);
 
             // THEN
-            QCOMPARE(QDir(cacheDir.path()).entryList(QDir::Files).count(), 1);
+            QCOMPARE(QDir(cacheDir.path()).entryList(QDir::Files).size(), 1);
             QCOMPARE(QDir(cacheDir.path()).entryList(QDir::Files).first(),
                      QString::fromUtf8(hashKey) + QLatin1String(".qt3d"));
         }
@@ -653,7 +653,7 @@ private slots:
             QByteArray gl2HashKey = b.hashKeyForShaderGraph(Qt3DRender::QShaderProgram::Vertex);
 
             // THEN
-            QCOMPARE(QDir(cacheDir.path()).entryList(QDir::Files).count(), 2);
+            QCOMPARE(QDir(cacheDir.path()).entryList(QDir::Files).size(), 2);
             QVERIFY(gl2HashKey != hashKey);
         }
     }
@@ -691,10 +691,10 @@ private slots:
         b.generateCode(Qt3DRender::QShaderProgram::Vertex);
 
         // THEN
-        QCOMPARE(QDir(cacheDir.path()).entryList(QDir::Files).count(), 1);
+        QCOMPARE(QDir(cacheDir.path()).entryList(QDir::Files).size(), 1);
 
         const QByteArray hashKey = b.hashKeyForShaderGraph(Qt3DRender::QShaderProgram::Vertex);
-        QCOMPARE(hashKey.length(), 40);
+        QCOMPARE(hashKey.size(), 40);
 
         QCOMPARE(QDir(cacheDir.path()).entryList(QDir::Files).first(),
                  QString::fromUtf8(hashKey) + QLatin1String(".qt3d"));
@@ -740,7 +740,7 @@ private slots:
         b.generateCode(Qt3DRender::QShaderProgram::Vertex);
 
         // THEN
-        QCOMPARE(QDir(cacheDir.path()).entryList(QDir::Files).count(), 0);
+        QCOMPARE(QDir(cacheDir.path()).entryList(QDir::Files).size(), 0);
     }
 
     void checkForceRebuildCache()
@@ -776,7 +776,7 @@ private slots:
         b.generateCode(Qt3DRender::QShaderProgram::Vertex);
 
         // THEN -> We have rebuilt the shader file (even if we don't use it)
-        QCOMPARE(QDir(cacheDir.path()).entryList(QDir::Files).count(), 1);
+        QCOMPARE(QDir(cacheDir.path()).entryList(QDir::Files).size(), 1);
     }
 };
 

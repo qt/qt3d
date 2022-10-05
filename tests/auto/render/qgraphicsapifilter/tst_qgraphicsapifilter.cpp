@@ -59,7 +59,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(apiFilter.profile(), Qt3DRender::QGraphicsApiFilter::CoreProfile);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
         }
 
         {
@@ -69,7 +69,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(apiFilter.majorVersion(), 4);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
         }
 
         {
@@ -79,7 +79,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(apiFilter.minorVersion(), 5);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
         }
 
         {
@@ -90,7 +90,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(apiFilter.extensions(), extensions);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
         }
 
         {
@@ -101,7 +101,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(apiFilter.vendor(), vendor);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
         }
     }
 

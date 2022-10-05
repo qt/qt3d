@@ -82,10 +82,10 @@ void Quick3DNodeInstantiatorPrivate::clear()
     Q_Q(Quick3DNodeInstantiator);
     if (!m_instanceModel)
         return;
-    if (!m_objects.count())
+    if (!m_objects.size())
         return;
 
-    for (int i = 0; i < m_objects.count(); i++) {
+    for (int i = 0; i < m_objects.size(); i++) {
         emit q->objectRemoved(i, m_objects[i]);
         m_instanceModel->release(m_objects[i]);
     }
@@ -127,7 +127,7 @@ void Quick3DNodeInstantiatorPrivate::_q_createdItem(int idx, QObject *item)
         return;
     static_cast<QNode *>(item)->setParent(q->parentNode());
     m_objects.insert(idx, item);
-    if (m_objects.count() == 1)
+    if (m_objects.size() == 1)
         emit q->objectChanged();
     emit q->objectAdded(idx, item);
 }
@@ -150,8 +150,8 @@ void Quick3DNodeInstantiatorPrivate::_q_modelUpdated(const QQmlChangeSet &change
     QHash<int, QList<QPointer<QObject>>> moved;
     const auto removes = changeSet.removes();
     for (const QQmlChangeSet::Change &remove : removes) {
-        int index = qMin(remove.index, m_objects.count());
-        int count = qMin(remove.index + remove.count, m_objects.count()) - index;
+        int index = qMin(remove.index, m_objects.size());
+        int count = qMin(remove.index + remove.count, m_objects.size()) - index;
         if (remove.isMove()) {
             moved.insert(remove.moveId, m_objects.mid(index, count));
             m_objects.erase(
@@ -172,7 +172,7 @@ void Quick3DNodeInstantiatorPrivate::_q_modelUpdated(const QQmlChangeSet &change
 
     const auto inserts = changeSet.inserts();
     for (const QQmlChangeSet::Change &insert : inserts) {
-        int index = qMin(insert.index, m_objects.count());
+        int index = qMin(insert.index, m_objects.size());
         if (insert.isMove()) {
             QList<QPointer<QObject>> movedObjects = moved.value(insert.moveId);
             m_objects = m_objects.mid(0, index) + movedObjects + m_objects.mid(index);
@@ -311,7 +311,7 @@ void Quick3DNodeInstantiator::setAsync(bool newVal)
 int Quick3DNodeInstantiator::count() const
 {
     Q_D(const Quick3DNodeInstantiator);
-    return d->m_objects.count();
+    return d->m_objects.size();
 }
 
 /*!
@@ -443,7 +443,7 @@ void Quick3DNodeInstantiator::setModel(const QVariant &v)
 QObject *Quick3DNodeInstantiator::object() const
 {
     Q_D(const Quick3DNodeInstantiator);
-    if (d->m_objects.count())
+    if (d->m_objects.size())
         return d->m_objects[0];
     return 0;
 }
@@ -456,7 +456,7 @@ QObject *Quick3DNodeInstantiator::object() const
 QObject *Quick3DNodeInstantiator::objectAt(int index) const
 {
     Q_D(const Quick3DNodeInstantiator);
-    if (index >= 0 && index < d->m_objects.count())
+    if (index >= 0 && index < d->m_objects.size())
         return d->m_objects[index];
     return 0;
 }

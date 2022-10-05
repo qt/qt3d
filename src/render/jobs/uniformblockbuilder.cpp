@@ -88,7 +88,7 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapStructHelper(Shader
                                                                           const QString &qmlPropertyName)
 {
     QString fullBlockName;
-    fullBlockName.reserve(blockName.length() + 1 + qmlPropertyName.length());
+    fullBlockName.reserve(blockName.size() + 1 + qmlPropertyName.size());
     fullBlockName.append(blockName);
     if (!qmlPropertyName.isEmpty()) {
         fullBlockName.append(QLatin1String("."));

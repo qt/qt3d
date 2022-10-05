@@ -56,14 +56,14 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(setFence.handleType(), Qt3DRender::QSetFence::OpenGLFenceId);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
             dNode->setHandleType(Qt3DRender::QSetFence::OpenGLFenceId);
 
             // THEN
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
 
         {
@@ -79,14 +79,14 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(setFence.handle(),QVariant(984));
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
             dNode->setHandle(QVariant(984));
 
             // THEN
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
     }
 };

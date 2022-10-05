@@ -29,7 +29,7 @@ QQmlListProperty<QAbstractActionInput> Quick3DInputSequence::qmlActionInputs()
     };
     auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
         Quick3DInputSequence *action = qobject_cast<Quick3DInputSequence *>(list->object);
-        return action->parentSequence()->sequences().count();
+        return action->parentSequence()->sequences().size();
     };
     auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
         Quick3DInputSequence *action = qobject_cast<Quick3DInputSequence *>(list->object);

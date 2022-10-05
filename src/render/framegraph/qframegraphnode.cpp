@@ -47,7 +47,7 @@ QStringList dumpFG(const Qt3DCore::QNode *n, int level = 0)
     const Qt3DRender::QFrameGraphNode *fgNode = qobject_cast<const Qt3DRender::QFrameGraphNode *>(n);
     if (fgNode) {
         QString res = dumpNode(fgNode);
-        reply += res.rightJustified(res.length() + level * 2, QLatin1Char(' '));
+        reply += res.rightJustified(res.size() + level * 2, QLatin1Char(' '));
     }
 
     const auto children = n->childNodes();

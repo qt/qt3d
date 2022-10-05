@@ -29,7 +29,7 @@ QQmlListProperty<Qt3DCore::QAttribute> Quick3DGeometry::attributeList()
     };
     auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
         Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
-        return geometry->parentGeometry()->attributes().count();
+        return geometry->parentGeometry()->attributes().size();
     };
     auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
         Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);

@@ -50,7 +50,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(renderTargetOutput.attachmentPoint(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -58,7 +58,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(renderTargetOutput.attachmentPoint(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
 
         }
         {
@@ -70,7 +70,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(renderTargetOutput.texture(), &newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -78,7 +78,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(renderTargetOutput.texture(), &newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
 
         }
         {
@@ -90,7 +90,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(renderTargetOutput.mipLevel(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -98,7 +98,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(renderTargetOutput.mipLevel(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
 
         }
         {
@@ -110,7 +110,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(renderTargetOutput.layer(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -118,7 +118,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(renderTargetOutput.layer(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
 
         }
         {
@@ -130,7 +130,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(renderTargetOutput.face(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -138,7 +138,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(renderTargetOutput.face(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
 
         }
     }

@@ -33,7 +33,7 @@ QQmlListProperty<QRenderState> Quick3DStateSet::renderStateList()
     };
     auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
         Quick3DStateSet *stateSet = qobject_cast<Quick3DStateSet *>(list->object);
-        return stateSet->parentStateSet()->renderStates().count();
+        return stateSet->parentStateSet()->renderStates().size();
     };
     auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
         Quick3DStateSet *stateSet = qobject_cast<Quick3DStateSet *>(list->object);

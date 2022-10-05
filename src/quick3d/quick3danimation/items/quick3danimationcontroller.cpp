@@ -30,7 +30,7 @@ QQmlListProperty<QAnimationGroup> QQuick3DAnimationController::animationGroups()
     auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
         QQuick3DAnimationController *controller = qobject_cast<QQuick3DAnimationController *>(list->object);
         if (controller)
-            return controller->parentAnimationController()->animationGroupList().count();
+            return controller->parentAnimationController()->animationGroupList().size();
         return 0;
     };
     auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {

@@ -66,7 +66,7 @@ void tst_geometryloaders::testOBJLoader()
     if (!geometry)
         return;
 
-    QCOMPARE(geometry->attributes().count(), 3);
+    QCOMPARE(geometry->attributes().size(), 3);
     for (QAttribute *attr : geometry->attributes()) {
         switch (attr->attributeType()) {
         case QAttribute::IndexAttribute:
@@ -108,7 +108,7 @@ void tst_geometryloaders::testPLYLoader()
     if (!geometry)
         return;
 
-    QCOMPARE(geometry->attributes().count(), 3);
+    QCOMPARE(geometry->attributes().size(), 3);
     for (QAttribute *attr : geometry->attributes()) {
         switch (attr->attributeType()) {
         case QAttribute::IndexAttribute:
@@ -150,7 +150,7 @@ void tst_geometryloaders::testSTLLoader()
     if (!geometry)
         return;
 
-    QCOMPARE(geometry->attributes().count(), 3);
+    QCOMPARE(geometry->attributes().size(), 3);
     for (QAttribute *attr : geometry->attributes()) {
         QCOMPARE(attr->count(), 36u);
     }
@@ -182,7 +182,7 @@ void tst_geometryloaders::testGLTFLoader()
     if (!geometry)
         return;
 
-    QCOMPARE(geometry->attributes().count(), 3);
+    QCOMPARE(geometry->attributes().size(), 3);
     for (QAttribute *attr : geometry->attributes()) {
         switch (attr->attributeType()) {
         case QAttribute::IndexAttribute:

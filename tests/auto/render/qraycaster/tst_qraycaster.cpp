@@ -168,7 +168,7 @@ private Q_SLOTS:
 
         // THEN
         // Check that the QRayCaster triggers the expected signal
-        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.size(), 1);
     }
 };
 

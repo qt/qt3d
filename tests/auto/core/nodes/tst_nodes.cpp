@@ -591,7 +591,7 @@ void tst_Nodes::appendSingleChildNodeToNodeNoSceneExplicitParenting()
     // THEN
     QVERIFY(child->parent() == node.data());
     QVERIFY(child->parentNode() == node.data());
-    QCOMPARE(node->children().count(), 1);
+    QCOMPARE(node->children().size(), 1);
 
     // Events are only sent when a scene is set on the root node
     QCOMPARE(arbiter.dirtyNodes().size(), 0);
@@ -614,7 +614,7 @@ void tst_Nodes::appendSingleChildNodeToNodeNoSceneImplicitParenting()
     // THEN
     QVERIFY(child->parent() == node.data());
     QVERIFY(child->parentNode() == node.data());
-    QCOMPARE(node->children().count(), 1);
+    QCOMPARE(node->children().size(), 1);
 
     // Events are only sent when a scene is set on the root node
     QCOMPARE(arbiter.dirtyNodes().size(), 0);
@@ -646,7 +646,7 @@ void tst_Nodes::appendMultipleChildNodesToNodeNoScene()
     }
 
     // THEN
-    QCOMPARE(node->children().count(), 10);
+    QCOMPARE(node->children().size(), 10);
 
     // Events are only sent when a scene is set on the root node
     QCOMPARE(arbiter.dirtyNodes().size(), 0);
@@ -680,7 +680,7 @@ void tst_Nodes::appendSingleChildNodeToNodeSceneExplicitParenting()
     QVERIFY(child->parent() == node.data());
     QVERIFY(child->parentNode() == node.data());
     QCOMPARE(arbiter.dirtyNodes().size(), 1); // Child Added
-    QCOMPARE(node->children().count(), 1);
+    QCOMPARE(node->children().size(), 1);
     QVERIFY(Qt3DCore::QNodePrivate::get(child.data())->scene() != nullptr);
 }
 
@@ -707,7 +707,7 @@ void tst_Nodes::appendSingleChildNodeToNodeSceneImplicitParenting()
     QVERIFY(Qt3DCore::QNodePrivate::get(child.data())->scene() != nullptr);
 
     QCOMPARE(arbiter.dirtyNodes().size(), 1);
-    QCOMPARE(node->children().count(), 1);
+    QCOMPARE(node->children().size(), 1);
 }
 
 void tst_Nodes::appendMultipleChildNodesToNodeScene()
@@ -742,7 +742,7 @@ void tst_Nodes::appendMultipleChildNodesToNodeScene()
         QVERIFY(Qt3DCore::QNodePrivate::get(child)->scene() == Qt3DCore::QNodePrivate::get(node.data())->m_scene);
     }
     // THEN
-    QCOMPARE(node->children().count(), 10);
+    QCOMPARE(node->children().size(), 10);
 
     // WHEN
     QCoreApplication::processEvents();
@@ -839,7 +839,7 @@ void tst_Nodes::checkParentChangeFromExistingBackendParentToNewlyCreatedParent()
 
     // Due to the way we create root, it has a backend
     QVERIFY(Qt3DCore::QNodePrivate::get(root.data())->m_hasBackendNode == true);
-    QCOMPARE(aspect->events.count(), 2);
+    QCOMPARE(aspect->events.size(), 2);
     QCOMPARE(aspect->events[0].type, TestAspect::Creation);
     QCOMPARE(aspect->events[0].nodeId, child->id());
     QCOMPARE(aspect->events[1].type, TestAspect::Creation);
@@ -932,7 +932,7 @@ void tst_Nodes::checkBackendNodesCreatedFromTopDown()
     child1->setNodeProperty(child2);
 
     // THEN - we should have no events because the new nodes have no backend yet
-    QCOMPARE(arbiter.dirtyNodes().count(), 0);
+    QCOMPARE(arbiter.dirtyNodes().size(), 0);
 
     // WHEN - create the backend nodes
     QCoreApplication::processEvents();
@@ -1018,7 +1018,7 @@ void tst_Nodes::removingSingleChildNodeFromNode()
     arbiter.clear();
 
     // THEN
-    QVERIFY(root->children().count() == 1);
+    QVERIFY(root->children().size() == 1);
     QVERIFY(child->parentNode() == root.data());
 
     // WHEN
@@ -1026,7 +1026,7 @@ void tst_Nodes::removingSingleChildNodeFromNode()
 
     // THEN
     QVERIFY(child->parent() == nullptr);
-    QVERIFY(root->children().count() == 0);
+    QVERIFY(root->children().size() == 0);
 
     QCOMPARE(arbiter.dirtyNodes().size(), 1);
 }
@@ -1048,7 +1048,7 @@ void tst_Nodes::checkAllBackendCreationDoneInSingleFrame()
     // THEN
     // Due to the way we create root, it has a backend
     QVERIFY(Qt3DCore::QNodePrivate::get(root.data())->m_hasBackendNode == true);
-    QCOMPARE(aspect->events.count(), 1);
+    QCOMPARE(aspect->events.size(), 1);
     QCOMPARE(aspect->events[0].type, TestAspect::Creation);
     QCOMPARE(aspect->events[0].nodeId, root->id());
 
@@ -1072,7 +1072,7 @@ void tst_Nodes::checkAllBackendCreationDoneInSingleFrame()
     engine.processFrame();
 
     // THEN - both children have their backend nodes actually created.
-    QCOMPARE(aspect->events.count(), 2);
+    QCOMPARE(aspect->events.size(), 2);
     QCOMPARE(aspect->events[0].type, TestAspect::Creation);
     QCOMPARE(aspect->events[0].nodeId, child2->id());
     QCOMPARE(aspect->events[1].type, TestAspect::Creation);
@@ -1102,7 +1102,7 @@ void tst_Nodes::removingMultipleChildNodesFromNode()
     QCoreApplication::processEvents();
 
     // THEN
-    QCOMPARE(root->children().count(), 10);
+    QCOMPARE(root->children().size(), 10);
     QCOMPARE(arbiter.dirtyNodes().size(), 1);
 
     // WHEN
@@ -1111,7 +1111,7 @@ void tst_Nodes::removingMultipleChildNodesFromNode()
     qDeleteAll(cl);
 
     // THEN
-    QVERIFY(root->children().count() == 0);
+    QVERIFY(root->children().size() == 0);
     QCOMPARE(arbiter.dirtyNodes().size(), 0);   // since all nodes are deleted, there's no backend to notify
 }
 
@@ -1179,8 +1179,8 @@ void tst_Nodes::checkConstructionSetParentMix()
 
     // THEN
     QCoreApplication::processEvents();
-    QCOMPARE(root->children().count(), 1);
-    QCOMPARE(subTreeRoot->children().count(), 100);
+    QCOMPARE(root->children().size(), 1);
+    QCOMPARE(subTreeRoot->children().size(), 100);
     QCOMPARE(arbiter.dirtyNodes().size(), 1); // 1 child added (subTree to root)
 
     // Ensure first event is subTreeRoot
@@ -1244,7 +1244,7 @@ void tst_Nodes::checkConstructionWithParent()
 
     // THEN we should get one child added change
     QCoreApplication::processEvents();
-    QCOMPARE(root->children().count(), 1);
+    QCOMPARE(root->children().size(), 1);
     QCOMPARE(arbiter.dirtyNodes().size(), 1); // 1 child added change
     QCOMPARE(arbiter.dirtyNodes().front(), root.data());
 }
@@ -1276,8 +1276,8 @@ void tst_Nodes::checkConstructionWithNonRootParent()
     // - and one property change event,
     // in that order.
     QCoreApplication::processEvents();
-    QCOMPARE(root->children().count(), 1);
-    QCOMPARE(parent->children().count(), 1);
+    QCOMPARE(root->children().size(), 1);
+    QCOMPARE(parent->children().size(), 1);
 
     QCOMPARE(arbiter.dirtyNodes().size(), 1); // 1 child added changes
     QCOMPARE(arbiter.dirtyNodes().front(), root.data());
@@ -1305,7 +1305,7 @@ void tst_Nodes::checkConstructionAsListElement()
     // and one property change event, in that order.
     QCoreApplication::processEvents();
 
-    QCOMPARE(root->children().count(), 1);
+    QCOMPARE(root->children().size(), 1);
     QCOMPARE(arbiter.dirtyNodes().size(), 1); // 1 property change
 }
 
@@ -1338,8 +1338,8 @@ void tst_Nodes::checkSceneIsSetOnConstructionWithParent()
         // When cmp is full created, it will also send the creation change for its child entity
     }
     QCoreApplication::processEvents();
-    QCOMPARE(root->children().count(), 1);
-    QCOMPARE(subTreeRoot->children().count(), 5);
+    QCOMPARE(root->children().size(), 1);
+    QCOMPARE(subTreeRoot->children().size(), 5);
     QCOMPARE(arbiter.dirtyNodes().size(), 1); // 1 child added (subTree to root)
 
     arbiter.clear();
@@ -1401,7 +1401,7 @@ void tst_Nodes::appendingParentlessComponentToEntityWithoutScene()
 
         // THEN
         QVERIFY(entity->parentNode() == nullptr);
-        QVERIFY(entity->children().count() == 0);
+        QVERIFY(entity->children().size() == 0);
         QVERIFY(entity->components().empty());
         QVERIFY(comp->parentNode() == nullptr);
 
@@ -1409,7 +1409,7 @@ void tst_Nodes::appendingParentlessComponentToEntityWithoutScene()
         entity->addComponent(comp);
 
         // THEN
-        QVERIFY(entity->components().count() == 1);
+        QVERIFY(entity->components().size() == 1);
         QVERIFY(entity->components().first() == comp);
         QVERIFY(comp->parentNode() == entity.data());
         QCOMPARE(arbiter.dirtyNodes().size(), 1);
@@ -1440,10 +1440,10 @@ void tst_Nodes::appendingParentlessComponentToNonRootEntity()
 
         // THEN
         QVERIFY(root->parentNode() == nullptr);
-        QVERIFY(root->children().count() == 1);
+        QVERIFY(root->children().size() == 1);
         QVERIFY(root->components().empty());
         QVERIFY(entity->parentNode() == root.data());
-        QVERIFY(entity->children().count() == 0);
+        QVERIFY(entity->children().size() == 0);
         QVERIFY(entity->components().empty());
         QVERIFY(comp->parentNode() == nullptr);
 
@@ -1452,7 +1452,7 @@ void tst_Nodes::appendingParentlessComponentToNonRootEntity()
         QCoreApplication::processEvents();
 
         // THEN
-        QVERIFY(entity->components().count() == 1);
+        QVERIFY(entity->components().size() == 1);
         QVERIFY(entity->components().first() == comp);
         QVERIFY(comp->parentNode() == entity.data());
 
@@ -1482,7 +1482,7 @@ void tst_Nodes::appendingParentlessComponentToEntityWithScene()
 
         // THEN
         QVERIFY(entity->parentNode() == nullptr);
-        QVERIFY(entity->children().count() == 0);
+        QVERIFY(entity->children().size() == 0);
         QVERIFY(entity->components().empty());
         QVERIFY(comp->parentNode() == nullptr);
 
@@ -1491,7 +1491,7 @@ void tst_Nodes::appendingParentlessComponentToEntityWithScene()
         QCoreApplication::processEvents();
 
         // THEN
-        QVERIFY(entity->components().count() == 1);
+        QVERIFY(entity->components().size() == 1);
         QVERIFY(entity->components().first() == comp);
         QVERIFY(comp->parentNode() == entity.data());
 
@@ -1513,7 +1513,7 @@ void tst_Nodes::appendingComponentToEntity()
 
         // THEN
         QVERIFY(entity->parentNode() == nullptr);
-        QVERIFY(entity->children().count() == 1);
+        QVERIFY(entity->children().size() == 1);
         QVERIFY(entity->components().empty());
         QVERIFY(comp->parentNode() == entity.data());
 
@@ -1521,7 +1521,7 @@ void tst_Nodes::appendingComponentToEntity()
         entity->addComponent(comp);
 
         // THEN
-        QVERIFY(entity->components().count() == 1);
+        QVERIFY(entity->components().size() == 1);
         QVERIFY(entity->components().first() == comp);
         QVERIFY(comp->parentNode() == entity.data());
         QCOMPARE(arbiter.dirtyNodes().size(), 1);
@@ -1543,8 +1543,8 @@ void tst_Nodes::removingComponentFromEntity()
         entity->addComponent(comp);
 
         // THEN
-        QVERIFY(entity->components().count() == 1);
-        QCOMPARE(entity->children().count(), 1);
+        QVERIFY(entity->components().size() == 1);
+        QCOMPARE(entity->children().size(), 1);
         QVERIFY(comp->parent() == entity.data());
 
         // WHEN
@@ -1552,9 +1552,9 @@ void tst_Nodes::removingComponentFromEntity()
         entity->removeComponent(comp);
 
         // THEN
-        QVERIFY(entity->components().count() == 0);
+        QVERIFY(entity->components().size() == 0);
         QVERIFY(comp->parent() == entity.data());
-        QVERIFY(entity->children().count() == 1);
+        QVERIFY(entity->children().size() == 1);
         QCOMPARE(arbiter.dirtyNodes().size(), 1);
     }
 }
@@ -1623,7 +1623,7 @@ void tst_Nodes::checkPropertyChanges()
         // THEN
         QVERIFY(spy.isValid());
         QCOMPARE(node.parentNode(), newValue);
-        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.size(), 1);
 
         // WHEN
         spy.clear();
@@ -1631,7 +1631,7 @@ void tst_Nodes::checkPropertyChanges()
 
         // THEN
         QCOMPARE(node.parentNode(), newValue);
-        QCOMPARE(spy.count(), 0);
+        QCOMPARE(spy.size(), 0);
     }
     {
         // WHEN
@@ -1642,7 +1642,7 @@ void tst_Nodes::checkPropertyChanges()
         // THEN
         QVERIFY(spy.isValid());
         QCOMPARE(node.isEnabled(), newValue);
-        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.size(), 1);
 
         // WHEN
         spy.clear();
@@ -1650,7 +1650,7 @@ void tst_Nodes::checkPropertyChanges()
 
         // THEN
         QCOMPARE(node.isEnabled(), newValue);
-        QCOMPARE(spy.count(), 0);
+        QCOMPARE(spy.size(), 0);
     }
 }
 

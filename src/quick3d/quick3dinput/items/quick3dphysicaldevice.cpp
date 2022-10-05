@@ -29,7 +29,7 @@ QQmlListProperty<QAxisSetting> Quick3DPhysicalDevice::axisSettings()
     };
     auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
         Quick3DPhysicalDevice *device = qobject_cast<Quick3DPhysicalDevice *>(list->object);
-        return device->parentPhysicalDevice()->axisSettings().count();
+        return device->parentPhysicalDevice()->axisSettings().size();
     };
     auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
         Quick3DPhysicalDevice *device = qobject_cast<Quick3DPhysicalDevice *>(list->object);

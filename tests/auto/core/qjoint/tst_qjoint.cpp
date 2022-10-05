@@ -45,7 +45,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(joint.scale(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -53,7 +53,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(joint.scale(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
 
         {
@@ -66,7 +66,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(joint.rotation(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -74,7 +74,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(joint.rotation(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
 
         {
@@ -87,7 +87,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(joint.translation(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -95,7 +95,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(joint.translation(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
 
         {
@@ -109,7 +109,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(joint.inverseBindMatrix(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -117,7 +117,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(joint.inverseBindMatrix(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
 
         {
@@ -134,8 +134,8 @@ private Q_SLOTS:
             QVERIFY(spyEuler.isValid());
             QCOMPARE(joint.rotationX(), newValue);
             QCOMPARE(joint.rotation(), newValueAsQuaternion);
-            QCOMPARE(spy.count(), 1);
-            QCOMPARE(spyEuler.count(), 1);
+            QCOMPARE(spy.size(), 1);
+            QCOMPARE(spyEuler.size(), 1);
 
             // WHEN
             spy.clear();
@@ -145,8 +145,8 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(joint.rotationX(), newValue);
             QCOMPARE(joint.rotation(), newValueAsQuaternion);
-            QCOMPARE(spy.count(), 0);
-            QCOMPARE(spyEuler.count(), 0);
+            QCOMPARE(spy.size(), 0);
+            QCOMPARE(spyEuler.size(), 0);
 
             joint.setRotationX(0.0f);
         }
@@ -165,8 +165,8 @@ private Q_SLOTS:
             QVERIFY(spyEuler.isValid());
             QCOMPARE(joint.rotationY(), newValue);
             QCOMPARE(joint.rotation(), newValueAsQuaternion);
-            QCOMPARE(spy.count(), 1);
-            QCOMPARE(spyEuler.count(), 1);
+            QCOMPARE(spy.size(), 1);
+            QCOMPARE(spyEuler.size(), 1);
 
             // WHEN
             spy.clear();
@@ -176,8 +176,8 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(joint.rotationY(), newValue);
             QCOMPARE(joint.rotation(), newValueAsQuaternion);
-            QCOMPARE(spy.count(), 0);
-            QCOMPARE(spyEuler.count(), 0);
+            QCOMPARE(spy.size(), 0);
+            QCOMPARE(spyEuler.size(), 0);
 
             joint.setRotationY(0.0f);
         }
@@ -196,8 +196,8 @@ private Q_SLOTS:
             QVERIFY(spyEuler.isValid());
             QCOMPARE(joint.rotationZ(), newValue);
             QCOMPARE(joint.rotation(), newValueAsQuaternion);
-            QCOMPARE(spy.count(), 1);
-            QCOMPARE(spyEuler.count(), 1);
+            QCOMPARE(spy.size(), 1);
+            QCOMPARE(spyEuler.size(), 1);
 
             // WHEN
             spy.clear();
@@ -207,8 +207,8 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(joint.rotationZ(), newValue);
             QCOMPARE(joint.rotation(), newValueAsQuaternion);
-            QCOMPARE(spy.count(), 0);
-            QCOMPARE(spyEuler.count(), 0);
+            QCOMPARE(spy.size(), 0);
+            QCOMPARE(spyEuler.size(), 0);
 
             joint.setRotationZ(0.0f);
         }

@@ -33,7 +33,7 @@ QQmlListProperty<QAbstractTextureImage> Quick3DTextureExtension::textureImages()
     auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
         Quick3DTextureExtension *self = qobject_cast<Quick3DTextureExtension *>(list->object);
         if (self)
-            return self->parentTexture()->textureImages().count();
+            return self->parentTexture()->textureImages().size();
         return 0;
     };
     auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {

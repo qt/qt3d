@@ -41,7 +41,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(animationController.activeAnimationGroup(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -49,7 +49,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(animationController.activeAnimationGroup(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
 
         }
         {
@@ -60,7 +60,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(animationController.position(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -68,7 +68,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(animationController.position(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
 
         }
         {
@@ -79,7 +79,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(animationController.positionScale(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -87,7 +87,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(animationController.positionScale(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
 
         }
         {
@@ -98,7 +98,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(animationController.positionOffset(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -106,7 +106,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(animationController.positionOffset(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
 
         }
         {
@@ -118,7 +118,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(animationController.entity(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -126,7 +126,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(animationController.entity(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
 
         }
         {
@@ -137,7 +137,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(animationController.recursive(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -145,7 +145,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(animationController.recursive(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
 
         }
     }

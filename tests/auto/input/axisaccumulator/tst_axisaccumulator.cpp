@@ -129,7 +129,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendAxisAccumulator.value(), 0.0f);
-        QCOMPARE(arbiter.dirtyNodes().count(), 0);
+        QCOMPARE(arbiter.dirtyNodes().size(), 0);
     }
 
     void checkIntegration_data()

@@ -54,7 +54,7 @@ void Manager::removeHandler(Qt3DCore::QNodeId id)
 
 bool Manager::hasFrameActions() const
 {
-    return m_logicHandlers.count() > 0;
+    return m_logicHandlers.size() > 0;
 }
 
 // Called from Job postFrame (main thread)

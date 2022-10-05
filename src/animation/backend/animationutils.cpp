@@ -172,7 +172,7 @@ ComponentIndices channelComponentsToIndicesHelper(const Channel &channel,
             continue;
         }
 
-        char channelSuffix = componentName.at(componentName.length() - 1).toLatin1();
+        char channelSuffix = componentName.at(componentName.size() - 1).toLatin1();
         channelSuffixes.push_back(channelSuffix);
     }
 

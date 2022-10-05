@@ -437,7 +437,7 @@ void tst_RenderViewUtils::topLevelScalarValue()
     blockBuilder.buildActiveUniformNameValueMapStructHelper(backendShaderData, QStringLiteral("MyBlock"));
 
     // THEN
-    QCOMPARE(blockBuilder.activeUniformNamesToValue.count(), 1);
+    QCOMPARE(blockBuilder.activeUniformNamesToValue.size(), 1);
 
     // WHEN
     Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator it = blockBuilder.activeUniformNamesToValue.begin();
@@ -511,7 +511,7 @@ void tst_RenderViewUtils::topLevelTextureValue()
     blockBuilder.buildActiveUniformNameValueMapStructHelper(backendShaderData, QStringLiteral("MyBlock"));
 
     // THEN
-    QCOMPARE(blockBuilder.activeUniformNamesToValue.count(), 1);
+    QCOMPARE(blockBuilder.activeUniformNamesToValue.size(), 1);
 
     // WHEN
     Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator it = blockBuilder.activeUniformNamesToValue.begin();
@@ -552,7 +552,7 @@ void tst_RenderViewUtils::topLevelArrayValue()
     blockBuilder.buildActiveUniformNameValueMapStructHelper(backendShaderData, QStringLiteral("MyBlock"));
 
     // THEN
-    QCOMPARE(blockBuilder.activeUniformNamesToValue.count(), 1);
+    QCOMPARE(blockBuilder.activeUniformNamesToValue.size(), 1);
 
     // WHEN
     Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator it = blockBuilder.activeUniformNamesToValue.begin();
@@ -622,7 +622,7 @@ void tst_RenderViewUtils::nestedShaderDataValue()
     blockBuilder.buildActiveUniformNameValueMapStructHelper(backendArrayShaderData, QStringLiteral("MyBlock"));
 
     // THEN
-    QCOMPARE(blockBuilder.activeUniformNamesToValue.count(), 3);
+    QCOMPARE(blockBuilder.activeUniformNamesToValue.size(), 3);
 
     // WHEN
     auto it = blockBuilder.activeUniformNamesToValue.cbegin();
@@ -696,7 +696,7 @@ void tst_RenderViewUtils::topLevelStructValue()
     blockBuilder.buildActiveUniformNameValueMapStructHelper(backendShaderData, blockName);
 
     // THEN
-    QCOMPARE(size_t(blockBuilder.activeUniformNamesToValue.count()),
+    QCOMPARE(size_t(blockBuilder.activeUniformNamesToValue.size()),
              shaderData->buildUniformMapNameIds(blockName).size());
 
     // WHEN
@@ -746,7 +746,7 @@ void tst_RenderViewUtils::topLevelDynamicProperties()
     // build name-value map
     blockBuilder.buildActiveUniformNameValueMapStructHelper(backendShaderData, QStringLiteral("MyBlock"));
     // THEN
-    QCOMPARE(blockBuilder.activeUniformNamesToValue.count(), 3);
+    QCOMPARE(blockBuilder.activeUniformNamesToValue.size(), 3);
 
     QCOMPARE(blockBuilder.activeUniformNamesToValue.value(Qt3DRender::Render::StringToInt::lookupId("MyBlock.scalar")),
              shaderData->property("scalar"));

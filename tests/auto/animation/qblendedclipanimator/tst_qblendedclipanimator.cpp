@@ -49,7 +49,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(blendedClipAnimator.blendTree(), &newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -57,7 +57,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(blendedClipAnimator.blendTree(), &newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
         {
             // WHEN
@@ -68,7 +68,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(blendedClipAnimator.channelMapper(), &newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -76,7 +76,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(blendedClipAnimator.channelMapper(), &newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
         {
             // WHEN
@@ -87,7 +87,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(blendedClipAnimator.isRunning(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -95,7 +95,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(blendedClipAnimator.isRunning(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
 
         {
@@ -107,7 +107,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(blendedClipAnimator.loopCount(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -115,7 +115,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(blendedClipAnimator.loopCount(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
 
         {
@@ -127,7 +127,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(blendedClipAnimator.normalizedTime(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -135,7 +135,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(blendedClipAnimator.normalizedTime(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
 
         {
@@ -148,7 +148,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(blendedClipAnimator.normalizedTime(), oldValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
 
             // WHEN
             spy.clear();
@@ -156,7 +156,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(blendedClipAnimator.normalizedTime(), oldValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
     }
 

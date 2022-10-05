@@ -28,7 +28,7 @@ QQmlListProperty<QAbstractActionInput> Quick3DAction::qmlActionInputs()
     };
     auto countFunction = [](QQmlListProperty<QAbstractActionInput> *list) -> qt_size_type {
         Quick3DAction *action = qobject_cast<Quick3DAction *>(list->object);
-        return action->parentAction()->inputs().count();
+        return action->parentAction()->inputs().size();
     };
     auto atFunction = [](QQmlListProperty<QAbstractActionInput> *list, qt_size_type index) -> QAbstractActionInput * {
         Quick3DAction *action = qobject_cast<Quick3DAction *>(list->object);

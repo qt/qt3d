@@ -248,7 +248,7 @@ void tst_QScene::addEntityForComponent()
     // THEN
     for (int i = 0; i < 10; i++) {
         const QList<Qt3DCore::QNodeId> ids = scene->entitiesForComponent(components.at(i)->id());
-        QCOMPARE(ids.count(), 10);
+        QCOMPARE(ids.size(), 10);
     }
 }
 
@@ -283,7 +283,7 @@ void tst_QScene::removeEntityForComponent()
         Qt3DCore::QEntity *e = entities.at(i);
         for (int j = 0; j < 10; j++) {
             e->removeComponent(components.at(j));
-            QCOMPARE(scene->entitiesForComponent(components.at(j)->id()).count(), 10 - (i + 1));
+            QCOMPARE(scene->entitiesForComponent(components.at(j)->id()).size(), 10 - (i + 1));
         }
     }
 }

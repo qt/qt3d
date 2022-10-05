@@ -29,7 +29,7 @@ QQmlListProperty<QAxis> Quick3DLogicalDevice::qmlAxes()
     };
     auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
         Quick3DLogicalDevice *device = qobject_cast<Quick3DLogicalDevice *>(list->object);
-        return device->parentLogicalDevice()->axes().count();
+        return device->parentLogicalDevice()->axes().size();
     };
     auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
         Quick3DLogicalDevice *device = qobject_cast<Quick3DLogicalDevice *>(list->object);
@@ -60,7 +60,7 @@ QQmlListProperty<QAction> Quick3DLogicalDevice::qmlActions()
     };
     auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
         Quick3DLogicalDevice *device = qobject_cast<Quick3DLogicalDevice *>(list->object);
-        return device->parentLogicalDevice()->actions().count();
+        return device->parentLogicalDevice()->actions().size();
     };
     auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
         Quick3DLogicalDevice *device = qobject_cast<Quick3DLogicalDevice *>(list->object);

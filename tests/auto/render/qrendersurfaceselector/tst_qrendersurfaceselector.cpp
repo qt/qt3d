@@ -103,7 +103,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(renderSurfaceSelector.surface(), &newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -111,7 +111,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(renderSurfaceSelector.surface(), &newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
 
             // Prevents crashes with temporary window being destroyed
             renderSurfaceSelector.setSurface(nullptr);
@@ -126,7 +126,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(renderSurfaceSelector.externalRenderTargetSize(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -134,7 +134,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(renderSurfaceSelector.externalRenderTargetSize(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
         {
             // WHEN
@@ -145,7 +145,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(renderSurfaceSelector.surfacePixelRatio(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -153,7 +153,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(renderSurfaceSelector.surfacePixelRatio(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
     }
 

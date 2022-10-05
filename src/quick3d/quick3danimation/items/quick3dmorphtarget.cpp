@@ -30,7 +30,7 @@ QQmlListProperty<Qt3DCore::QAttribute> QQuick3DMorphTarget::attributes()
     auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
         QQuick3DMorphTarget *target = qobject_cast<QQuick3DMorphTarget *>(list->object);
         if (target)
-            return target->parentMorphTarget()->attributeList().count();
+            return target->parentMorphTarget()->attributeList().size();
         return 0;
     };
     auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {

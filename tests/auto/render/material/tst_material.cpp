@@ -95,7 +95,7 @@ void tst_RenderMaterial::shouldHavePropertiesMirroringFromItsPeer()
     // THEN
     QVERIFY(backend.isEnabled() == frontendMaterial->isEnabled());
     QCOMPARE(backend.effect(), frontendMaterial->effect() ? frontendMaterial->effect()->id() : QNodeId());
-    QCOMPARE(backend.parameters().count(), frontendMaterial->parameters().count());
+    QCOMPARE(backend.parameters().size(), frontendMaterial->parameters().size());
     QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::MaterialDirty);
 
     int c = 0;
@@ -122,7 +122,7 @@ void tst_RenderMaterial::shouldHandleParametersPropertyChange()
     backend.syncFromFrontEnd(&material, false);
 
     // THEN
-    QCOMPARE(backend.parameters().count(), 1);
+    QCOMPARE(backend.parameters().size(), 1);
     QCOMPARE(backend.parameters().first(), parameter->id());
     QVERIFY(renderer.dirtyBits() != 0);
 

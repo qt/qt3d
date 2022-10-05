@@ -632,7 +632,7 @@ QByteArray QShaderGenerator::createShaderCode(const QStringList &enabledLayers) 
 
             if (replacementIt != variableReplacements.cend()) {
                 line.replace(begin, placeholderLength, replacementIt->variable);
-                begin += replacementIt->variable.length();
+                begin += replacementIt->variable.size();
             } else {
                 begin = end;
             }

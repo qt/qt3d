@@ -39,7 +39,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(parameter.name(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -47,7 +47,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(parameter.name(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
         {
             // WHEN
@@ -58,7 +58,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(parameter.value(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -66,7 +66,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(parameter.value(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
     }
 
@@ -169,13 +169,13 @@ private Q_SLOTS:
             parameter.setValue(QVariant::fromValue(node.data()));
 
             // THEN
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
             QCOMPARE(parameter.value(), QVariant::fromValue(node.data()));
             spy.clear();
         }
 
         // THEN
-        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.size(), 1);
         QCOMPARE(parameter.value(), QVariant());
     }
 

@@ -31,7 +31,7 @@ QQmlListProperty<QRenderTargetOutput> Quick3DRenderTargetOutput::qmlAttachments(
     auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
         Quick3DRenderTargetOutput *rT = qobject_cast<Quick3DRenderTargetOutput *>(list->object);
         if (rT)
-            return rT->parentRenderTarget()->outputs().count();
+            return rT->parentRenderTarget()->outputs().size();
         return 0;
     };
     auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {

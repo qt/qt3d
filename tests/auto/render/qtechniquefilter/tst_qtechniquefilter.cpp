@@ -23,8 +23,8 @@ private Q_SLOTS:
     {
         QScopedPointer<Qt3DRender::QTechniqueFilter> defaulttechniqueFilter(new Qt3DRender::QTechniqueFilter);
 
-        QCOMPARE(defaulttechniqueFilter->matchAll().count(), 0);
-        QCOMPARE(defaulttechniqueFilter->parameters().count(), 0);
+        QCOMPARE(defaulttechniqueFilter->matchAll().size(), 0);
+        QCOMPARE(defaulttechniqueFilter->parameters().size(), 0);
     }
 
     void checkPropertyUpdates()

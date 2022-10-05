@@ -33,7 +33,7 @@ QQmlListProperty<QJoint> Quick3DJoint::childJoints()
     };
     auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
         Quick3DJoint *jointExtension = qobject_cast<Quick3DJoint *>(list->object);
-        return jointExtension->parentJoint()->childJoints().count();
+        return jointExtension->parentJoint()->childJoints().size();
     };
     auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
         Quick3DJoint *jointExtension = qobject_cast<Quick3DJoint *>(list->object);

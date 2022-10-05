@@ -45,7 +45,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(keyframeAnimation.target(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -53,7 +53,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(keyframeAnimation.target(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
 
         }
         {
@@ -64,7 +64,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(keyframeAnimation.easing(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -72,7 +72,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(keyframeAnimation.easing(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
 
         }
         {
@@ -83,7 +83,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(keyframeAnimation.targetName(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -91,7 +91,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(keyframeAnimation.targetName(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
 
         }
         {
@@ -104,7 +104,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(keyframeAnimation.startMode(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -112,7 +112,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(keyframeAnimation.startMode(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
 
         }
         {
@@ -125,7 +125,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(keyframeAnimation.endMode(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -133,7 +133,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(keyframeAnimation.endMode(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
 
         }
     }

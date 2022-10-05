@@ -40,7 +40,7 @@ QQmlListProperty<QShaderData> Quick3DShaderDataArray::valuesList()
     };
     auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
         Quick3DShaderDataArray *self = static_cast<Quick3DShaderDataArray *>(list->object);
-        return static_cast<Quick3DShaderDataArrayPrivate *>(Quick3DShaderDataArrayPrivate::get(self))->m_values.count();
+        return static_cast<Quick3DShaderDataArrayPrivate *>(Quick3DShaderDataArrayPrivate::get(self))->m_values.size();
     };
     auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
         Quick3DShaderDataArray *self = static_cast<Quick3DShaderDataArray *>(list->object);

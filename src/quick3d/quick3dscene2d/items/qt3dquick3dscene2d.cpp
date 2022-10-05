@@ -32,7 +32,7 @@ QQmlListProperty<Qt3DCore::QEntity> QQuick3DScene2D::entities()
     auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
         QQuick3DScene2D *scene2d = qobject_cast<QQuick3DScene2D *>(list->object);
         if (scene2d)
-            return scene2d->parentScene2D()->entities().count();
+            return scene2d->parentScene2D()->entities().size();
         return 0;
     };
     auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {

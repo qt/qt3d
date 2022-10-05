@@ -57,7 +57,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(builder.shaderProgram(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -65,7 +65,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(builder.shaderProgram(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
         {
             // WHEN
@@ -76,7 +76,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(builder.enabledLayers(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -84,7 +84,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(builder.enabledLayers(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
         {
             // WHEN
@@ -95,7 +95,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(builder.vertexShaderGraph(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -103,7 +103,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(builder.vertexShaderGraph(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
         {
             // WHEN
@@ -114,7 +114,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(builder.tessellationControlShaderGraph(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -122,7 +122,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(builder.tessellationControlShaderGraph(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
         {
             // WHEN
@@ -133,7 +133,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(builder.tessellationEvaluationShaderGraph(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -141,7 +141,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(builder.tessellationEvaluationShaderGraph(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
         {
             // WHEN
@@ -152,7 +152,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(builder.geometryShaderGraph(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -160,7 +160,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(builder.geometryShaderGraph(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
         {
             // WHEN
@@ -171,7 +171,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(builder.fragmentShaderGraph(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -179,7 +179,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(builder.fragmentShaderGraph(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
         {
             // WHEN
@@ -190,7 +190,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(builder.computeShaderGraph(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -198,7 +198,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(builder.computeShaderGraph(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
     }
 
@@ -485,7 +485,7 @@ private Q_SLOTS:
 
             // THEN
             QVERIFY(spy.isValid());
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
             QCOMPARE(vertexShaderCode(), QByteArrayLiteral("vertex"));
         }
         {
@@ -495,7 +495,7 @@ private Q_SLOTS:
 
             // THEN
             QVERIFY(spy.isValid());
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
             QCOMPARE(fragmentShaderCode(), QByteArrayLiteral("fragment"));
         }
         {
@@ -505,7 +505,7 @@ private Q_SLOTS:
 
             // THEN
             QVERIFY(spy.isValid());
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
             QCOMPARE(geometryShaderCode(), QByteArrayLiteral("geometry"));
         }
         {
@@ -516,7 +516,7 @@ private Q_SLOTS:
 
             // THEN
             QVERIFY(spy.isValid());
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
             QCOMPARE(computeShaderCode(), QByteArrayLiteral("compute"));
         }
         {
@@ -526,7 +526,7 @@ private Q_SLOTS:
 
             // THEN
             QVERIFY(spy.isValid());
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
             QCOMPARE(tessellationControlShaderCode(), QByteArrayLiteral("control"));
         }
         {
@@ -536,7 +536,7 @@ private Q_SLOTS:
 
             // THEN
             QVERIFY(spy.isValid());
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
             QCOMPARE(tessellationEvaluationShaderCode(), QByteArrayLiteral("eval"));
         }
     }

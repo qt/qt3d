@@ -53,7 +53,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(shaderProgram.vertexShaderCode(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -61,7 +61,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(shaderProgram.vertexShaderCode(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
         {
             // WHEN
@@ -72,7 +72,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(shaderProgram.tessellationControlShaderCode(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -80,7 +80,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(shaderProgram.tessellationControlShaderCode(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
         {
             // WHEN
@@ -91,7 +91,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(shaderProgram.tessellationEvaluationShaderCode(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -99,7 +99,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(shaderProgram.tessellationEvaluationShaderCode(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
         {
             // WHEN
@@ -110,7 +110,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(shaderProgram.geometryShaderCode(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -118,7 +118,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(shaderProgram.geometryShaderCode(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
         {
             // WHEN
@@ -129,7 +129,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(shaderProgram.fragmentShaderCode(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -137,7 +137,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(shaderProgram.fragmentShaderCode(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
         {
             // WHEN
@@ -148,7 +148,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(shaderProgram.computeShaderCode(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -156,7 +156,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(shaderProgram.computeShaderCode(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
         {
             // WHEN
@@ -167,7 +167,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(shaderProgram.format(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -175,7 +175,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(shaderProgram.format(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
     }
 
@@ -375,7 +375,7 @@ private Q_SLOTS:
         dNode->setLog(logValue);
 
         // THEN
-        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.size(), 1);
         QCOMPARE(arbiter.dirtyNodes().size(), 0);
         QCOMPARE(log(), logValue);
 
@@ -384,7 +384,7 @@ private Q_SLOTS:
         dNode->setLog(logValue);
 
         // THEN
-        QCOMPARE(spy.count(), 0);
+        QCOMPARE(spy.size(), 0);
         QCOMPARE(arbiter.dirtyNodes().size(), 0);
         QCOMPARE(log(), logValue);
 
@@ -409,7 +409,7 @@ private Q_SLOTS:
         dNode->setStatus(newStatus);
 
         // THEN
-        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.size(), 1);
         QCOMPARE(arbiter.dirtyNodes().size(), 0);
         QCOMPARE(status(), newStatus);
 
@@ -418,7 +418,7 @@ private Q_SLOTS:
         dNode->setStatus(newStatus);
 
         // THEN
-        QCOMPARE(spy.count(), 0);
+        QCOMPARE(spy.size(), 0);
         QCOMPARE(arbiter.dirtyNodes().size(), 0);
         QCOMPARE(status(), newStatus);
 
@@ -463,7 +463,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
             QCOMPARE(arbiter.dirtyNodes().size(), 1);
 
             spy.clear();
@@ -475,7 +475,7 @@ private Q_SLOTS:
             QCoreApplication::processEvents();
 
             // THEN
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
             QCOMPARE(arbiter.dirtyNodes().size(), 1);
         }
     }

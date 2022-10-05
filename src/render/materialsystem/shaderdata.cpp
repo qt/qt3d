@@ -85,7 +85,7 @@ void ShaderData::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
             if (propertyValue.userType() == QMetaType::QVariantList) {
                 isArray = true;
                 QVariantList list = propertyValue.value<QVariantList>();
-                if (list.count() > 0 && list.at(0).userType() == qNodeIdTypeId)
+                if (list.size() > 0 && list.at(0).userType() == qNodeIdTypeId)
                     isNode = true;
             }
 
@@ -150,7 +150,7 @@ void ShaderData::generatePropertyValuesForBlock(const QString &fullBlockName)
             propertyName += QLatin1String("[0]");
 
         QString fullPropertyName;
-        fullPropertyName.reserve(fullBlockName.length() + 1 + it.key().length());
+        fullPropertyName.reserve(fullBlockName.size() + 1 + it.key().size());
         fullPropertyName.append(fullBlockName);
         fullPropertyName.append(QLatin1String("."));
         fullPropertyName.append(propertyName);
