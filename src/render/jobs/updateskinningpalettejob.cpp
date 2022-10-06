@@ -35,7 +35,7 @@ void UpdateSkinningPaletteJob::run()
 
     // Update the local pose transforms of JointInfo's in Skeletons from
     // the set of dirty joints.
-    for (const auto &jointHandle : qAsConst(m_dirtyJoints)) {
+    for (const auto &jointHandle : std::as_const(m_dirtyJoints)) {
         Joint *joint = m_nodeManagers->jointManager()->data(jointHandle);
         Q_ASSERT(joint);
         Skeleton *skeleton = m_nodeManagers->skeletonManager()->data(joint->owningSkeleton());
@@ -54,7 +54,7 @@ void UpdateSkinningPaletteJob::run()
 
     // Update the skeleton for each dirty armature
     auto skeletonManager = m_nodeManagers->skeletonManager();
-    for (const auto &armatureHandle : qAsConst(dirtyArmatures)) {
+    for (const auto &armatureHandle : std::as_const(dirtyArmatures)) {
         auto armature = armatureManager->data(armatureHandle);
         Q_ASSERT(armature);
 

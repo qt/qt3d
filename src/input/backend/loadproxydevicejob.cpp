@@ -62,7 +62,7 @@ void LoadProxyDeviceJob::run()
     d->updates.reserve(m_proxies.size());
 
     Q_ASSERT(m_inputHandler);
-    for (const Qt3DCore::QNodeId &id : qAsConst(m_proxies)) {
+    for (const Qt3DCore::QNodeId &id : std::as_const(m_proxies)) {
         PhysicalDeviceProxy *proxy = m_inputHandler->physicalDeviceProxyManager()->lookupResource(id);
         QAbstractPhysicalDevice *device = m_inputHandler->createPhysicalDevice(proxy->deviceName());
         if (device != nullptr)
@@ -72,7 +72,7 @@ void LoadProxyDeviceJob::run()
 
 void LoadProxyDeviceJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
 {
-    for (const auto &res : qAsConst(updates)) {
+    for (const auto &res : std::as_const(updates)) {
         QAbstractPhysicalDeviceProxy *node = qobject_cast<QAbstractPhysicalDeviceProxy *>(manager->lookupNode(res.first));
         if (!node)
             continue;

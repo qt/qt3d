@@ -53,7 +53,7 @@ void FilterProximityDistanceJob::run()
         FrameGraphManager *frameGraphManager = m_manager->frameGraphManager();
         EntityManager *entityManager = m_manager->renderNodesManager();
 
-        for (const Qt3DCore::QNodeId &proximityFilterId : qAsConst(m_proximityFilterIds)) {
+        for (const Qt3DCore::QNodeId &proximityFilterId : std::as_const(m_proximityFilterIds)) {
             ProximityFilter *proximityFilter = static_cast<ProximityFilter *>(frameGraphManager->lookupNode(proximityFilterId));
             m_targetEntity = entityManager->lookupResource(proximityFilter->entityId());
             m_distanceThresholdSquared = proximityFilter->distanceThreshold();

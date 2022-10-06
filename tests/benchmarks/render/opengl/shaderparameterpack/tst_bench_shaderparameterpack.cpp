@@ -29,7 +29,7 @@ private Q_SLOTS:
             randKeys[i] = gen.generate();
 
         QBENCHMARK {
-            for (const int key : qAsConst(randKeys))
+            for (const int key : std::as_const(randKeys))
                 pack.insert(key, UniformValue(key));
         }
     }

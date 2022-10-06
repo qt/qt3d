@@ -173,7 +173,7 @@ QBackendNodeMapperPtr QAbstractAspectPrivate::mapperForNode(const QMetaObject *m
 
 void QAbstractAspectPrivate::syncDirtyFrontEndNodes(const QList<QNode *> &nodes)
 {
-    for (auto node: qAsConst(nodes)) {
+    for (auto node: std::as_const(nodes)) {
         const QMetaObject *metaObj = QNodePrivate::get(node)->m_typeInfo;
         const QBackendNodeMapperPtr backendNodeMapper = mapperForNode(metaObj);
 
@@ -205,7 +205,7 @@ void QAbstractAspectPrivate::syncDirtyEntityComponentNodes(const QList<Component
         return backendNodeMapper->get(node->id());
     };
 
-    for (const auto &change: qAsConst(changes)) {
+    for (const auto &change: std::as_const(changes)) {
         auto entityBackend = getBackend(change.node);
         if (!entityBackend)
             continue;

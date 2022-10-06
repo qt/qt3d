@@ -319,7 +319,7 @@ bool PlyGeometryLoader::parseMesh(QIODevice *ioDev)
         break;
     }
 
-    for (auto &element : qAsConst(m_elements)) {
+    for (auto &element : std::as_const(m_elements)) {
         if (element.type == ElementVertex) {
             m_points.reserve(element.count);
 

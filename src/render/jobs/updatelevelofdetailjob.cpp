@@ -238,7 +238,7 @@ bool UpdateLevelOfDetailJobPrivate::isRequired() const
 
 void UpdateLevelOfDetailJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
 {
-    for (const auto &updatedNode: qAsConst(m_updatedIndices)) {
+    for (const auto &updatedNode: std::as_const(m_updatedIndices)) {
         QLevelOfDetail *node = qobject_cast<QLevelOfDetail *>(manager->lookupNode(updatedNode.first));
         if (!node)
             continue;

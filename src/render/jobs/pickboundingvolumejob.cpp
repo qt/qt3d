@@ -71,7 +71,7 @@ void PickBoundingVolumeJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
     QNodeId previousId;
     QObjectPicker *node = nullptr;
 
-    for (auto res: qAsConst(dispatches)) {
+    for (auto res: std::as_const(dispatches)) {
         if (previousId != res.pickerId) {
             node = qobject_cast<QObjectPicker *>(manager->lookupNode(res.pickerId));
             previousId = res.pickerId;
@@ -355,7 +355,7 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent *event,
         // How do we differentiate betwnee an Entity with no GeometryRenderer and one with one, both having
         // an ObjectPicker component when it comes
 
-        for (const QCollisionQueryResult::Hit &hit : qAsConst(sphereHits)) {
+        for (const QCollisionQueryResult::Hit &hit : std::as_const(sphereHits)) {
             Entity *entity = m_manager->renderNodesManager()->lookupResource(hit.m_entityId);
             HObjectPicker objectPickerHandle = entity->componentHandle<ObjectPicker>();
 
@@ -516,7 +516,7 @@ void PickBoundingVolumeJob::clearPreviouslyHoveredPickers()
 {
     Q_D(PickBoundingVolumeJob);
 
-    for (const HObjectPicker &pickHandle : qAsConst(m_hoveredPickersToClear)) {
+    for (const HObjectPicker &pickHandle : std::as_const(m_hoveredPickersToClear)) {
         ObjectPicker *pick = m_manager->objectPickerManager()->data(pickHandle);
         if (pick)
             d->dispatches.push_back({pick->peerId(), QEvent::Leave, {}, {}});

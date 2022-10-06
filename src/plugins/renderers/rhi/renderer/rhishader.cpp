@@ -434,7 +434,7 @@ void RHIShader::introspect()
         std::vector<UBO_Member> uboMembers;
         uboMembers.reserve(ubo.members.size());
 
-        for (const QShaderDescription::BlockVariable &member : qAsConst(ubo.members)) {
+        for (const QShaderDescription::BlockVariable &member : std::as_const(ubo.members)) {
             m_uniformsNames.push_back(member.name);
             const int nameId = StringToInt::lookupId(member.name);
             m_uniformsNamesIds.push_back(nameId);

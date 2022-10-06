@@ -62,7 +62,7 @@ void AssignKeyboardFocusJob::run()
 
 void AssignKeyboardFocusJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
 {
-    for (const auto &data: qAsConst(updates)) {
+    for (const auto &data: std::as_const(updates)) {
         QKeyboardHandler *node = qobject_cast<QKeyboardHandler *>(manager->lookupNode(data.first));
         if (!node)
             continue;

@@ -145,7 +145,7 @@ bool Technique::isCompatibleWithFilters(const QNodeIdVector &filterKeyIds)
 
         bool foundMatch = false;
 
-        for (const QNodeId &techniqueFilterKeyId : qAsConst(m_filterKeyList)) {
+        for (const QNodeId &techniqueFilterKeyId : std::as_const(m_filterKeyList)) {
             FilterKey *techniqueFilterKey = m_nodeManager->filterKeyManager()->lookupResource(techniqueFilterKeyId);
             if ((foundMatch = (*techniqueFilterKey == *filterKey)))
                 break;

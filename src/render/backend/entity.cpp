@@ -85,7 +85,7 @@ void Entity::cleanup()
 
         removeFromParentChildHandles();
 
-        for (auto &childHandle : qAsConst(m_childrenHandles)) {
+        for (auto &childHandle : std::as_const(m_childrenHandles)) {
             auto child = m_nodeManagers->renderNodesManager()->data(childHandle);
             // children should always exist and have this as parent
             // if they were destroyed, they would have removed themselves from our m_childrenHandles
@@ -248,7 +248,7 @@ QList<Entity *> Entity::children() const
 void Entity::traverse(const std::function<void(Entity *)> &operation)
 {
     operation(this);
-    for (const HEntity &handle : qAsConst(m_childrenHandles)) {
+    for (const HEntity &handle : std::as_const(m_childrenHandles)) {
         Entity *child = m_nodeManagers->renderNodesManager()->data(handle);
         if (child != nullptr)
             child->traverse(operation);

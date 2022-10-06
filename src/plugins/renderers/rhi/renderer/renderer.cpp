@@ -1386,11 +1386,11 @@ Renderer::prepareCommandsSubmission(const std::vector<RenderView *> &renderViews
     // Note: we cannot do it in the loop above as we want to be sure that all
     // the VAO which reference the geometry/attributes are properly updated
     RHI_UNIMPLEMENTED;
-    for (Attribute *attribute : qAsConst(m_dirtyAttributes))
+    for (Attribute *attribute : std::as_const(m_dirtyAttributes))
         attribute->unsetDirty();
     m_dirtyAttributes.clear();
 
-    for (Geometry *geometry : qAsConst(m_dirtyGeometry))
+    for (Geometry *geometry : std::as_const(m_dirtyGeometry))
         geometry->unsetDirty();
     m_dirtyGeometry.clear();
 
@@ -2190,7 +2190,7 @@ void Renderer::jobsDone(Qt3DCore::QAspectManager *manager)
     const std::vector<Qt3DCore::QNodeId> pendingCaptureIds =
             Qt3DCore::moveAndClear(m_pendingRenderCaptureSendRequests);
     lock.unlock();
-    for (const Qt3DCore::QNodeId &id : qAsConst(pendingCaptureIds)) {
+    for (const Qt3DCore::QNodeId &id : std::as_const(pendingCaptureIds)) {
         auto *backend = static_cast<Qt3DRender::Render::RenderCapture *>(
                 m_nodesManager->frameGraphManager()->lookupNode(id));
         backend->syncRenderCapturesToFrontend(manager);

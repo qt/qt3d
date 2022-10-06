@@ -74,7 +74,7 @@ bool InputChord::process(InputHandler *inputHandler, qint64 currentTime)
     const qint64 startTime = m_startTime;
     bool triggered = false;
     int activeInputs = 0;
-    for (const Qt3DCore::QNodeId &actionInputId : qAsConst(m_chords)) {
+    for (const Qt3DCore::QNodeId &actionInputId : std::as_const(m_chords)) {
         AbstractActionInput *actionInput = inputHandler->lookupActionInput(actionInputId);
         if (actionInput && actionInput->process(inputHandler, currentTime)) {
             triggered |= actionTriggered(actionInputId);

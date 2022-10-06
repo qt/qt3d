@@ -66,7 +66,7 @@ QMorphTargetPrivate::QMorphTargetPrivate()
 void QMorphTargetPrivate::updateAttributeNames()
 {
     m_attributeNames.clear();
-    for (const Qt3DCore::QAttribute *attr : qAsConst(m_targetAttributes))
+    for (const Qt3DCore::QAttribute *attr : std::as_const(m_targetAttributes))
         m_attributeNames.push_back(attr->name());
 }
 
@@ -115,7 +115,7 @@ void QMorphTarget::setAttributes(const QList<Qt3DCore::QAttribute *> &attributes
 void QMorphTarget::addAttribute(Qt3DCore::QAttribute *attribute)
 {
     Q_D(QMorphTarget);
-    for (const Qt3DCore::QAttribute *attr : qAsConst(d->m_targetAttributes)) {
+    for (const Qt3DCore::QAttribute *attr : std::as_const(d->m_targetAttributes)) {
         if (attr->name() == attribute->name())
             return;
     }

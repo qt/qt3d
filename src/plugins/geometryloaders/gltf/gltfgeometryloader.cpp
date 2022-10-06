@@ -257,7 +257,7 @@ void GLTFGeometryLoader::processJSONBufferV2(const QJsonObject &json)
 void GLTFGeometryLoader::processJSONBufferView(const QString &id, const QJsonObject &json)
 {
     QString bufName = json.value(KEY_BUFFER).toString();
-    const auto it = qAsConst(m_gltf1.m_bufferDatas).find(bufName);
+    const auto it = std::as_const(m_gltf1.m_bufferDatas).find(bufName);
     if (Q_UNLIKELY(it == m_gltf1.m_bufferDatas.cend())) {
         qCWarning(GLTFGeometryLoaderLog, "unknown buffer: %ls processing view: %ls",
                   qUtf16PrintableImpl(bufName), qUtf16PrintableImpl(id));
@@ -353,7 +353,7 @@ void GLTFGeometryLoader::processJSONMesh(const QString &id, const QJsonObject &j
         const QJsonObject attrs = primitiveObject.value(KEY_ATTRIBUTES).toObject();
         for (auto it = attrs.begin(), end = attrs.end(); it != end; ++it) {
             QString k = it.value().toString();
-            const auto accessorIt = qAsConst(m_gltf1.m_accessorDict).find(k);
+            const auto accessorIt = std::as_const(m_gltf1.m_accessorDict).find(k);
             if (Q_UNLIKELY(accessorIt == m_gltf1.m_accessorDict.cend())) {
                 qCWarning(GLTFGeometryLoaderLog, "unknown attribute accessor: %ls on mesh %ls",
                           qUtf16PrintableImpl(k), qUtf16PrintableImpl(id));
@@ -387,7 +387,7 @@ void GLTFGeometryLoader::processJSONMesh(const QString &id, const QJsonObject &j
         const auto indices = primitiveObject.value(KEY_INDICES);
         if (!indices.isUndefined()) {
             QString k = indices.toString();
-            const auto accessorIt = qAsConst(m_gltf1.m_accessorDict).find(k);
+            const auto accessorIt = std::as_const(m_gltf1.m_accessorDict).find(k);
             if (Q_UNLIKELY(accessorIt == m_gltf1.m_accessorDict.cend())) {
                 qCWarning(GLTFGeometryLoaderLog, "unknown index accessor: %ls on mesh %ls",
                           qUtf16PrintableImpl(k), qUtf16PrintableImpl(id));
@@ -504,7 +504,7 @@ void GLTFGeometryLoader::loadBufferData()
 
 void GLTFGeometryLoader::unloadBufferData()
 {
-    for (const auto &bufferData : qAsConst(m_gltf1.m_bufferDatas)) {
+    for (const auto &bufferData : std::as_const(m_gltf1.m_bufferDatas)) {
         QByteArray *data = bufferData.data;
         delete data;
     }
@@ -520,7 +520,7 @@ void GLTFGeometryLoader::loadBufferDataV2()
 
 void GLTFGeometryLoader::unloadBufferDataV2()
 {
-    for (const auto &bufferData : qAsConst(m_gltf2.m_bufferDatas)) {
+    for (const auto &bufferData : std::as_const(m_gltf2.m_bufferDatas)) {
         QByteArray *data = bufferData.data;
         delete data;
     }

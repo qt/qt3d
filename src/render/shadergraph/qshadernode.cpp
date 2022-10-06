@@ -11,7 +11,7 @@ QShaderNode::Type QShaderNode::type() const noexcept
 {
     int inputCount = 0;
     int outputCount = 0;
-    for (const auto &port : qAsConst(m_ports)) {
+    for (const auto &port : std::as_const(m_ports)) {
         switch (port.direction) {
         case QShaderNodePort::Input:
             inputCount++;

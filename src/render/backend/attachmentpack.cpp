@@ -39,7 +39,7 @@ AttachmentPack::AttachmentPack(const RenderTarget *target,
     // If nothing is specified, use all the attachments as draw buffers
     if (drawBuffers.empty()) {
         m_drawBuffers.reserve(m_attachments.size());
-        for (const Attachment &attachment : qAsConst(m_attachments))
+        for (const Attachment &attachment : std::as_const(m_attachments))
             // only consider Color Attachments
             if (attachment.m_point <= QRenderTargetOutput::Color15)
                 m_drawBuffers.push_back((int) attachment.m_point);

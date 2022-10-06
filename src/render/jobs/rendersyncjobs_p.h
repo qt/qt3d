@@ -282,10 +282,10 @@ public:
                 // Reduction
                 {
                     int totalCommandCount = 0;
-                    for (const RenderViewCommandBuilderJobPtrAlias &renderViewCommandBuilder : qAsConst(m_renderViewCommandBuilderJobs))
+                    for (const RenderViewCommandBuilderJobPtrAlias &renderViewCommandBuilder : std::as_const(m_renderViewCommandBuilderJobs))
                         totalCommandCount += int(renderViewCommandBuilder->commandData().size());
                     commandData.reserve(totalCommandCount);
-                    for (const RenderViewCommandBuilderJobPtrAlias &renderViewCommandBuilder : qAsConst(m_renderViewCommandBuilderJobs))
+                    for (const RenderViewCommandBuilderJobPtrAlias &renderViewCommandBuilder : std::as_const(m_renderViewCommandBuilderJobs))
                         commandData += std::move(renderViewCommandBuilder->commandData());
                 }
 

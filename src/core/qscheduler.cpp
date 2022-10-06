@@ -108,7 +108,7 @@ int QScheduler::scheduleAndWaitForFrameAspectJobs(qint64 time, bool dumpJobs)
     {
         QTaskLogger logger(m_aspectManager->serviceLocator()->systemInformation(), 4097, 0, QTaskLogger::AspectJob);
 
-        for (auto &job : qAsConst(jobQueue))
+        for (auto &job : std::as_const(jobQueue))
             job->postFrame(m_aspectManager->engine());
 
         for (QAbstractAspect *aspect : aspects)

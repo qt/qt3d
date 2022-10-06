@@ -161,7 +161,7 @@ bool GLTexture::loadTextureDataFromGenerator()
 void GLTexture::loadTextureDataFromImages()
 {
     int maxMipLevel = 0;
-    for (const Image &img : qAsConst(m_images)) {
+    for (const Image &img : std::as_const(m_images)) {
         const QTextureImageDataPtr imgData = img.generator->operator()();
         // imgData may be null in the following cases:
         // - Texture is created with TextureImages which have yet to be

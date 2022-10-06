@@ -121,7 +121,7 @@ Qt3DCore::QEntity *LoadSceneJob::tryLoadScene(QSceneLoader::Status &finalStatus,
     Qt3DCore::QEntity *sceneSubTree = nullptr;
     bool foundSuitableLoggerPlugin = false;
 
-    for (QSceneImporter *sceneImporter : qAsConst(m_sceneImporters)) {
+    for (QSceneImporter *sceneImporter : std::as_const(m_sceneImporters)) {
         if (!sceneImporter->areFileTypesSupported(extensions))
             continue;
 

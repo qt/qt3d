@@ -582,7 +582,7 @@ void PipelineUBOSet::uploadUBOsForCommand(const RenderCommand &command,
         if (ubo == nullptr)
             continue;
 
-        for (const RHIShader::UBO_Member &member : qAsConst(uboBlock.members)) {
+        for (const RHIShader::UBO_Member &member : std::as_const(uboBlock.members)) {
             const QShaderDescription::BlockVariable &blockVariable = member.blockVariable;
 
             // Array
@@ -661,7 +661,7 @@ void PipelineUBOSet::uploadUBOsForCommand(const RenderCommand &command,
             continue;
 
         // Upload ShaderData property that match members of each UBO block instance
-        for (const RHIShader::UBO_Member &uboInstance : qAsConst(block->members)) {
+        for (const RHIShader::UBO_Member &uboInstance : std::as_const(block->members)) {
             uploadShaderDataProperty(shaderData, materialsUBO,
                                      uboInstance, distanceToCommand);
         }

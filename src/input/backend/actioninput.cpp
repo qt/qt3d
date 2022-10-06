@@ -49,7 +49,7 @@ bool ActionInput::process(InputHandler *inputHandler, qint64 currentTime)
     if (!physicalDeviceBackend)
         return false;
 
-    for (int button : qAsConst(m_buttons)) {
+    for (int button : std::as_const(m_buttons)) {
         if (physicalDeviceBackend->isButtonPressed(button))
             return true;
     }

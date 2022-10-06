@@ -134,12 +134,12 @@ void AnimationClip::loadAnimation()
     // that the clip has changed and that they are now dirty
     {
         QMutexLocker lock(&m_mutex);
-        for (const Qt3DCore::QNodeId &id : qAsConst(m_dependingAnimators)) {
+        for (const Qt3DCore::QNodeId &id : std::as_const(m_dependingAnimators)) {
             ClipAnimator *animator = m_handler->clipAnimatorManager()->lookupResource(id);
             if (animator)
                 animator->animationClipMarkedDirty();
         }
-        for (const Qt3DCore::QNodeId &id : qAsConst(m_dependingBlendedAnimators)) {
+        for (const Qt3DCore::QNodeId &id : std::as_const(m_dependingBlendedAnimators)) {
             BlendedClipAnimator *animator = m_handler->blendedClipAnimatorManager()->lookupResource(id);
             if (animator)
                 animator->animationClipMarkedDirty();
@@ -258,7 +258,7 @@ void AnimationClip::loadAnimationFromData()
     // Reformat data from QAnimationClipData to backend format
     m_channels.resize(m_clipData.channelCount());
     int i = 0;
-    for (const auto &frontendChannel : qAsConst(m_clipData))
+    for (const auto &frontendChannel : std::as_const(m_clipData))
         m_channels[i++].setFromQChannel(frontendChannel);
 }
 
@@ -322,8 +322,8 @@ float AnimationClip::findDuration()
 {
     // Iterate over the contained fcurves and find the longest one
     float tMax = 0.f;
-    for (const Channel &channel : qAsConst(m_channels)) {
-        for (const ChannelComponent &channelComponent : qAsConst(channel.channelComponents)) {
+    for (const Channel &channel : std::as_const(m_channels)) {
+        for (const ChannelComponent &channelComponent : std::as_const(channel.channelComponents)) {
             const float t = channelComponent.fcurve.endTime();
             if (t > tMax)
                 tMax = t;
@@ -335,7 +335,7 @@ float AnimationClip::findDuration()
 int AnimationClip::findChannelComponentCount()
 {
     int channelCount = 0;
-    for (const Channel &channel : qAsConst(m_channels))
+    for (const Channel &channel : std::as_const(m_channels))
         channelCount += channel.channelComponents.size();
     return channelCount;
 }

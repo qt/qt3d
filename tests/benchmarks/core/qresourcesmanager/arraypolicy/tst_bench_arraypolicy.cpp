@@ -50,7 +50,7 @@ void benchmarkReleaseResources()
     }
 
     QBENCHMARK_ONCE {
-        for (auto ptr : qAsConst(resources)) {
+        for (auto ptr : std::as_const(resources)) {
             allocator.releaseResource(ptr);
         }
     }

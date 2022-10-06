@@ -30,7 +30,7 @@ void FindRunningClipAnimatorsJob::run()
     Q_ASSERT(m_handler);
 
     ClipAnimatorManager *clipAnimatorManager = m_handler->clipAnimatorManager();
-    for (const auto &clipAnimatorHandle : qAsConst(m_clipAnimatorHandles)) {
+    for (const auto &clipAnimatorHandle : std::as_const(m_clipAnimatorHandles)) {
         ClipAnimator *clipAnimator = clipAnimatorManager->data(clipAnimatorHandle);
         Q_ASSERT(clipAnimator);
         if (!clipAnimator->isEnabled())

@@ -201,7 +201,7 @@ void Qt3DInput::Input::InputHandler::removeGenericDevice(HGenericDeviceBackendNo
 // called every frame to reset the
 void Qt3DInput::Input::InputHandler::resetMouseAxisState()
 {
-    for (const HMouseDevice &cHandle : qAsConst(m_activeMouseDevices)) {
+    for (const HMouseDevice &cHandle : std::as_const(m_activeMouseDevices)) {
         MouseDevice *controller = m_mouseDeviceManager->data(cHandle);
         controller->resetMouseAxisState();
     }
@@ -220,7 +220,7 @@ void InputHandler::addInputDeviceIntegration(QInputDeviceIntegration *inputInteg
 QAbstractPhysicalDevice *Qt3DInput::Input::InputHandler::createPhysicalDevice(const QString &name)
 {
     QAbstractPhysicalDevice *device = nullptr;
-    for (Qt3DInput::QInputDeviceIntegration *integration : qAsConst(m_inputDeviceIntegrations)) {
+    for (Qt3DInput::QInputDeviceIntegration *integration : std::as_const(m_inputDeviceIntegrations)) {
         if ((device = integration->createPhysicalDevice(name)) != nullptr)
             break;
     }
@@ -251,7 +251,7 @@ bool InternalEventFilter::processMouseEvent(QObject *obj, QT_PREPEND_NAMESPACE(Q
     if (!m_inputHandler->m_scene)
         return false;
 
-    for (const HMouseDevice &cHandle : qAsConst(m_inputHandler->m_activeMouseDevices)) {
+    for (const HMouseDevice &cHandle : std::as_const(m_inputHandler->m_activeMouseDevices)) {
         MouseDevice *controller = m_inputHandler->m_mouseDeviceManager->data(cHandle);
 
         controller->updateMouseEvent(event);
@@ -281,7 +281,7 @@ bool InternalEventFilter::processWheelEvent(QObject *obj, QT_PREPEND_NAMESPACE(Q
     if (!m_inputHandler->m_scene)
         return false;
 
-    for (const HMouseDevice &cHandle : qAsConst(m_inputHandler->m_activeMouseDevices)) {
+    for (const HMouseDevice &cHandle : std::as_const(m_inputHandler->m_activeMouseDevices)) {
         MouseDevice *controller = m_inputHandler->m_mouseDeviceManager->data(cHandle);
 
         controller->updateWheelEvent(event);
@@ -311,7 +311,7 @@ bool InternalEventFilter::processKeyEvent(QObject *obj, QT_PREPEND_NAMESPACE(QKe
     if (!m_inputHandler->m_scene)
         return false;
 
-    for (const HKeyboardDevice &cHandle : qAsConst(m_inputHandler->m_activeKeyboardDevices)) {
+    for (const HKeyboardDevice &cHandle : std::as_const(m_inputHandler->m_activeKeyboardDevices)) {
         KeyboardDevice *keyboardDevice = m_inputHandler->m_keyboardDeviceManager->data(cHandle);
         if (keyboardDevice) {
             keyboardDevice->updateKeyEvent(event);

@@ -76,7 +76,7 @@ QAnimationGroupPrivate::QAnimationGroupPrivate()
 void QAnimationGroupPrivate::updatePosition(float position)
 {
     m_position = position;
-    for (QAbstractAnimation *aa : qAsConst(m_animations))
+    for (QAbstractAnimation *aa : std::as_const(m_animations))
         aa->setPosition(position);
 }
 
@@ -159,7 +159,7 @@ void QAnimationGroup::removeAnimation(Qt3DAnimation::QAbstractAnimation *animati
         d->m_animations.removeAll(animation);
         if (qFuzzyCompare(d->m_duration, animation->duration())) {
             d->m_duration = 0.0f;
-            for (const Qt3DAnimation::QAbstractAnimation *a : qAsConst(d->m_animations))
+            for (const Qt3DAnimation::QAbstractAnimation *a : std::as_const(d->m_animations))
                 d->m_duration = qMax(d->m_duration, a->duration());
         }
     }

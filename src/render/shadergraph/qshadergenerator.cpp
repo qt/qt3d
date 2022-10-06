@@ -498,7 +498,7 @@ QByteArray QShaderGenerator::createShaderCode(const QStringList &enabledLayers) 
 
             qCDebug(ShaderGenerator)
                     << "Begin Substituting " << v->name << " = " << v->assignment.expression;
-            for (Variable *ref : qAsConst(v->assignment.referencedVariables)) {
+            for (Variable *ref : std::as_const(v->assignment.referencedVariables)) {
                 // Recursively substitute
                 Variable::substitute(ref);
 
@@ -751,7 +751,7 @@ QByteArray QShaderGenerator::createShaderCode(const QStringList &enabledLayers) 
     }
 
     // Go throug all lines and insert content
-    for (const LineContent &lineContent : qAsConst(lines)) {
+    for (const LineContent &lineContent : std::as_const(lines)) {
         if (!lineContent.rawContent.isEmpty()) {
             code << lineContent.rawContent;
         }
