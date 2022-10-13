@@ -33,8 +33,7 @@ ClipResults ClipBlendValue::doBlend(const QList<ClipResults> &blendData) const
 {
     // Should never be called for the value node
     Q_UNUSED(blendData);
-    Q_UNREACHABLE();
-    return ClipResults();
+    Q_UNREACHABLE_RETURN(ClipResults());
 }
 
 double ClipBlendValue::duration() const

@@ -113,8 +113,7 @@ float UpdateAxisActionJob::processAxisInput(const Qt3DCore::QNodeId axisInputId)
     if (buttonInput)
         return buttonInput->process(m_handler, m_currentTime);
 
-    Q_UNREACHABLE();
-    return 0.0f;
+    Q_UNREACHABLE_RETURN(0.0f);
 }
 
 void UpdateAxisActionJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)

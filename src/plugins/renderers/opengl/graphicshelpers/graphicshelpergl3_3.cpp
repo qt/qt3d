@@ -1169,8 +1169,7 @@ UniformType GraphicsHelperGL3_3::uniformTypeFromGLType(GLenum type)
     case GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY:
         return UniformType::Sampler;
     default:
-        Q_UNREACHABLE();
-        return UniformType::Float;
+        Q_UNREACHABLE_RETURN(UniformType::Float);
     }
 }
 

@@ -202,8 +202,7 @@ UniformValue RenderView::standardUniformValue(RenderView::StandardUniform standa
     case YUpInFBO:
         return UniformValue(0.0f);
     default:
-        Q_UNREACHABLE();
-        return UniformValue();
+        Q_UNREACHABLE_RETURN(UniformValue());
     }
 }
 
@@ -453,8 +452,7 @@ struct AdjacentSubRangeFinder
 {
     static bool adjacentSubRange(const RenderCommand &, const RenderCommand &)
     {
-        Q_UNREACHABLE();
-        return false;
+        Q_UNREACHABLE_RETURN(false);
     }
 };
 
@@ -663,8 +661,7 @@ int findSubRange(const EntityRenderCommandDataView *view,
     case QSortPolicy::Uniform:
         return end;
     default:
-        Q_UNREACHABLE();
-        return end;
+        Q_UNREACHABLE_RETURN(end);
     }
 }
 

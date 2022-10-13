@@ -846,8 +846,7 @@ UniformType GraphicsHelperGL2::uniformTypeFromGLType(GLenum type)
         return UniformType::Sampler;
 
     default:
-        Q_UNREACHABLE();
-        return UniformType::Float;
+        Q_UNREACHABLE_RETURN(UniformType::Float);
     }
 }
 

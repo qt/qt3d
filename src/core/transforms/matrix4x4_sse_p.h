@@ -275,8 +275,7 @@ public:
         case 3:
             return Vector4D(m41(), m42(), m43(), m44());
         default:
-            Q_UNREACHABLE();
-            return Vector4D();
+            Q_UNREACHABLE_RETURN(Vector4D());
         }
     }
 
@@ -297,8 +296,7 @@ public:
             c.m_xyzw = m_col4;
             break;
         default:
-            Q_UNREACHABLE();
-            return Vector4D();
+            Q_UNREACHABLE_RETURN(Vector4D());
         }
         return c;
     }

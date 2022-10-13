@@ -114,8 +114,7 @@ public:
     {
         // We should never reach this, we expect specialization to have been
         // specified
-        Q_UNREACHABLE();
-        return {};
+        Q_UNREACHABLE_RETURN({});
     }
 
     template<class Backend>

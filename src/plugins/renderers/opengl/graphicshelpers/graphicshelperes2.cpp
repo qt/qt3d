@@ -982,8 +982,7 @@ UniformType GraphicsHelperES2::uniformTypeFromGLType(GLenum type)
     case GL_SAMPLER_CUBE:
         return UniformType::Sampler;
     default:
-        Q_UNREACHABLE();
-        return UniformType::Float;
+        Q_UNREACHABLE_RETURN(UniformType::Float);
     }
 }
 

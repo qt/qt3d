@@ -70,8 +70,7 @@ int byteSizeForMetaType(int type)
         return 16 * sizeof(float);
 
     default:
-        Q_UNREACHABLE();
-        return -1;
+        Q_UNREACHABLE_RETURN(-1);
     }
 }
 

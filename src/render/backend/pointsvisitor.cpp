@@ -113,8 +113,7 @@ struct VertexExecutor
             traverseCoordinates(vertices, vertexInfo, m_visitor);
             return;
         default:
-            Q_UNREACHABLE();
-            return;
+            Q_UNREACHABLE_RETURN();
         }
     }
 

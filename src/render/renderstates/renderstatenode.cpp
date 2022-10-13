@@ -186,8 +186,7 @@ StateVariant createStateImplementation(const QRenderState *node)
     }
 
     default:
-        Q_UNREACHABLE();
-        return StateVariant();
+        Q_UNREACHABLE_RETURN(StateVariant());
     }
 }
 

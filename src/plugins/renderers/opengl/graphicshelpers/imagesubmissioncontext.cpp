@@ -154,8 +154,7 @@ GLenum glImageFormatForShaderImageFormat(QShaderImage::ImageFormat format,
 
     default:
         qWarning() << "Cannot map Texture format" << textureFormat << "to a valid Image Format";
-        Q_UNREACHABLE();
-        return GL_NONE;
+        Q_UNREACHABLE_RETURN(GL_NONE);
     }
 }
 

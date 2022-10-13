@@ -245,8 +245,7 @@ public:
             case 3:
                 return m_vec->w();
             default:
-                Q_UNREACHABLE();
-                return 0.0f;
+                Q_UNREACHABLE_RETURN(0.0f);
             }
         }
         void operator =(float value)

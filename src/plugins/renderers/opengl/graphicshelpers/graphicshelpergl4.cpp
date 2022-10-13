@@ -673,8 +673,7 @@ UniformType GraphicsHelperGL4::uniformTypeFromGLType(GLenum type)
 
     default:
         // TO DO: Add support for Doubles and Images
-        Q_UNREACHABLE();
-        return UniformType::Float;
+        Q_UNREACHABLE_RETURN(UniformType::Float);
     }
 }
 

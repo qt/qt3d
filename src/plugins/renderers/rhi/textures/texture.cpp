@@ -86,8 +86,7 @@ QRhiTexture::Format rhiFormatFromTextureFormat(QAbstractTexture::TextureFormat f
         return QRhiTexture::D24;
     default:
         qDebug() << "Unhandled texture format:" << format;
-        Q_UNREACHABLE();
-        return QRhiTexture::UnknownFormat;
+        Q_UNREACHABLE_RETURN(QRhiTexture::UnknownFormat);
     }
 }
 
@@ -103,8 +102,7 @@ QRhiSampler::Filter rhiFilterFromTextureFilter(QAbstractTexture::Filter filter) 
     case QAbstractTexture::LinearMipMapLinear:
         return QRhiSampler::Linear;
     default:
-        Q_UNREACHABLE();
-        return QRhiSampler::Nearest;
+        Q_UNREACHABLE_RETURN(QRhiSampler::Nearest);
     }
 }
 
@@ -123,8 +121,7 @@ QRhiSampler::Filter rhiMipMapFilterFromTextureFilter(QAbstractTexture::Filter fi
     case QAbstractTexture::LinearMipMapLinear:
         return QRhiSampler::Linear;
     default:
-        Q_UNREACHABLE();
-        return QRhiSampler::None;
+        Q_UNREACHABLE_RETURN(QRhiSampler::None);
     }
 }
 

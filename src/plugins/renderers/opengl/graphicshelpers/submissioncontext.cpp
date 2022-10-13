@@ -340,8 +340,7 @@ GLint glAttachmentPoint(const QRenderTargetOutput::AttachmentPoint &attachmentPo
     case QRenderTargetOutput::Stencil:
         return GL_STENCIL_ATTACHMENT;
     default:
-        Q_UNREACHABLE();
-        return GL_NONE;
+        Q_UNREACHABLE_RETURN(GL_NONE);
     }
 }
 
