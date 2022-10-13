@@ -340,15 +340,6 @@ void GLTFGeometryLoader::processJSONBufferViewV2(const QJsonObject &json)
     }
     const auto bufferData = m_gltf2.m_bufferDatas[bufferIndex];
 
-    int target = json.value(KEY_TARGET).toInt();
-    switch (target) {
-    case GL_ARRAY_BUFFER:
-    case GL_ELEMENT_ARRAY_BUFFER:
-        break;
-    default:
-        return;
-    }
-
     quint64 offset = 0;
     const auto byteOffset = json.value(KEY_BYTE_OFFSET);
     if (!byteOffset.isUndefined()) {
