@@ -48,10 +48,10 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.0
-import QtQuick.Scene3D 2.0
-import QtQuick.Layouts 1.2
-import QtMultimedia 5.0
+import QtQuick
+import QtQuick.Scene3D
+import QtQuick.Layouts
+import QtMultimedia
 
 Item {
     id: mainview
@@ -117,30 +117,25 @@ Item {
     //![0]
     MediaPlayer {
         id: mediaPlayer
-        autoPlay: true
-        volume: 0.5
         source: "qrc:/music/tiltshifted_lost_neon_sun.mp3"
+        audioOutput: AudioOutput {}
         //![0]
 
-        onStatusChanged: {
-            if (status == MediaPlayer.EndOfMedia) //{
-                state = "stopped"
-        }
-
-        onError: console.error("error with audio " + mediaPlayer.error)
-
-        onDurationChanged: {
-            // Load the pre-calculated magnitude data for the visualizer
-            var request = new XMLHttpRequest()
-            request.responseType = 'arraybuffer'
-            request.onreadystatechange = function() {
+        onMediaStatusChanged: {
+            if (mediaStatus == MediaPlayer.EndOfMedia) {
+                mainview.state = "stopped"
+            } else if (mediaStatus == MediaPlayer.LoadedMedia && !visualizer.started) {
+                // Load the pre-calculated magnitude data for the visualizer
+                var request = new XMLHttpRequest()
+                request.responseType = 'arraybuffer'
+                request.onreadystatechange = function() {
                     if (request.readyState === XMLHttpRequest.DONE) {
                         if (request.status == 200 || request.status == 0) {
                             var arrayBuffer = request.response
                             if (arrayBuffer) {
                                 magnitudeArray = new Uint16Array(arrayBuffer)
                                 visualizer.startVisualization()
-                              }
+                            }
                         } else {
                             console.warn("Couldn't load magnitude data for bars.")
                         }
@@ -148,9 +143,12 @@ Item {
                     }
                 };
 
-            request.open('GET', magnitudeDataSourceFile, true)
-            request.send(null)
+                request.open('GET', magnitudeDataSourceFile, true)
+                request.send(null)
+            }
         }
+
+        onErrorStringChanged: console.error("error with audio " + errorString)
 
         function getNextAudioLevel(offsetMs) {
             if (magnitudeArray === null)
