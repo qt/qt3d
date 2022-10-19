@@ -10,9 +10,10 @@ Entity {
     id: sceneRoot
     property int barRotationTimeMs: 1
     property int numberOfBars: 1
-    property string animationState: "stopped"
+    property string animationState
     property real titleStartAngle: 95
     property real titleStopAngle: 5
+    property bool started: false
 
     onAnimationStateChanged: {
         if (animationState == "playing") {
@@ -73,6 +74,7 @@ Entity {
         progressTransformAnimation.duration = mediaPlayer.duration
         mainview.state = "playing"
         progressTransformAnimation.start()
+        started = true
     }
 
     //![0]
