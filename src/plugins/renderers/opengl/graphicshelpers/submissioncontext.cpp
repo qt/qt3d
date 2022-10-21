@@ -1226,6 +1226,10 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack, GLShad
         }
     }
 
+    // Set the pinned images of the previous material
+    // to pinable so that we should easily find an available image unit
+    m_imageContext.deactivateImages();
+
     // Fill Image Uniform Value with proper image units
     // so that they can be applied as regular uniforms in a second step
     for (size_t i = 0; i < parameterPack.images().size(); ++i) {
