@@ -2748,7 +2748,7 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
             const Qt3DCore::QNodeId renderCaptureId = rv->renderCaptureNodeId();
             if (!renderCaptureId.isNull()) {
                 const QRenderCaptureRequest request = rv->renderCaptureRequest();
-                QRhiRenderTarget *rhiTarget = nullptr;
+                QRhiRenderTarget *rhiTarget = m_submissionContext->defaultRenderTarget();
                 RHIRenderTarget *target = nullptr;
 
                 if (rv->renderTargetId()) {
