@@ -569,6 +569,10 @@ struct SubRangeSorter<QSortPolicy::Texture>
 
             return identicalTextureCount < smallestVector.size();
         });
+#else
+        Q_UNUSED(view);
+        Q_UNUSED(begin);
+        Q_UNUSED(end);
 #endif
     }
 };
