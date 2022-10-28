@@ -269,6 +269,68 @@ private Q_SLOTS:
                 << QList<ShaderParameterPack> { pack1, minifiedPack1, minifiedPack1, pack1, minifiedPack1, minifiedPack1 };
     }
 
+    void checkShaderParameterPackStoresSingleUBOPerBlockIndex()
+    {
+        // GIVEN
+        ShaderParameterPack pack;
+        auto nodeId1 = Qt3DCore::QNodeId::createId();
+        auto nodeId2 = Qt3DCore::QNodeId::createId();
+
+        BlockToUBO ubo1 { 1, nodeId1, false, {}};
+        BlockToUBO ubo2 { 1, nodeId2, false, {}};
+
+        // WHEN
+        pack.setUniformBuffer(ubo1);
+        pack.setUniformBuffer(ubo2);
+
+        // THEN
+        QCOMPARE(pack.uniformBuffers().size(), 1);
+        QCOMPARE(pack.uniformBuffers().front().m_blockIndex, 1);
+        QCOMPARE(pack.uniformBuffers().front().m_bufferID, nodeId2);
+
+        // WHEN
+        BlockToUBO ubo3 { 2, nodeId2, false, {}};
+        pack.setUniformBuffer(ubo3);
+
+        // THEN
+        QCOMPARE(pack.uniformBuffers().size(), 2);
+        QCOMPARE(pack.uniformBuffers().front().m_blockIndex, 1);
+        QCOMPARE(pack.uniformBuffers().front().m_bufferID, nodeId2);
+        QCOMPARE(pack.uniformBuffers().back().m_blockIndex, 2);
+        QCOMPARE(pack.uniformBuffers().back().m_bufferID, nodeId2);
+    }
+
+    void checkShaderParameterPackStoresSingleSSBOPerBlockIndex()
+    {
+        // GIVEN
+        ShaderParameterPack pack;
+        auto nodeId1 = Qt3DCore::QNodeId::createId();
+        auto nodeId2 = Qt3DCore::QNodeId::createId();
+
+        BlockToSSBO ssbo1 { 1, 0, nodeId1};
+        BlockToSSBO ssbo2 { 1, 0, nodeId2};
+
+        // WHEN
+        pack.setShaderStorageBuffer(ssbo1);
+        pack.setShaderStorageBuffer(ssbo2);
+
+        // THEN
+        QCOMPARE(pack.shaderStorageBuffers().size(), 1);
+        QCOMPARE(pack.shaderStorageBuffers().front().m_blockIndex, 1);
+        QCOMPARE(pack.shaderStorageBuffers().front().m_bufferID, nodeId2);
+
+        // WHEN
+        BlockToSSBO ssbo3 { 2, 1, nodeId2};
+        pack.setShaderStorageBuffer(ssbo3);
+
+        // THEN
+        QCOMPARE(pack.shaderStorageBuffers().size(), 2);
+        QCOMPARE(pack.shaderStorageBuffers().front().m_blockIndex, 1);
+        QCOMPARE(pack.shaderStorageBuffers().front().m_bufferID, nodeId2);
+        QCOMPARE(pack.shaderStorageBuffers().back().m_blockIndex, 2);
+        QCOMPARE(pack.shaderStorageBuffers().back().m_bufferID, nodeId2);
+    }
+
     void checkRenderViewUniformMinification()
     {
         QFETCH(QList<QShaderProgram*>, shaders);

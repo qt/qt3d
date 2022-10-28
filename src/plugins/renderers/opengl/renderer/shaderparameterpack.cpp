@@ -62,12 +62,28 @@ void ShaderParameterPack::setImage(const int glslNameId, int uniformArrayIndex, 
 // Contains Uniform Block Index and QNodeId of the ShaderData (UBO)
 void ShaderParameterPack::setUniformBuffer(BlockToUBO blockToUBO)
 {
-    m_uniformBuffers.push_back(std::move(blockToUBO));
+    const auto uEnd = m_uniformBuffers.end();
+    auto it = std::find_if(m_uniformBuffers.begin(), uEnd, [&] (const BlockToUBO &block) {
+        return blockToUBO.m_blockIndex == block.m_blockIndex;
+    });
+
+    if (it == uEnd)
+        m_uniformBuffers.push_back(std::move(blockToUBO));
+    else
+        *it = std::move(blockToUBO);
 }
 
 void ShaderParameterPack::setShaderStorageBuffer(BlockToSSBO blockToSSBO)
 {
-    m_shaderStorageBuffers.push_back(std::move(blockToSSBO));
+    const auto uEnd = m_shaderStorageBuffers.end();
+    auto it = std::find_if(m_shaderStorageBuffers.begin(), uEnd, [&] (const BlockToSSBO &block) {
+        return blockToSSBO.m_blockIndex == block.m_blockIndex;
+    });
+
+    if (it == uEnd)
+        m_shaderStorageBuffers.push_back(std::move(blockToSSBO));
+    else
+        *it = std::move(blockToSSBO);
 }
 
 void ShaderParameterPack::setSubmissionUniformIndex(const int uniformIdx)
