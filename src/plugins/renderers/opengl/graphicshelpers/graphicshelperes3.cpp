@@ -227,6 +227,17 @@ void GraphicsHelperES3::drawArraysInstanced(GLenum primitiveType, GLint first, G
                                         instances);
 }
 
+void GraphicsHelperES3::drawArraysInstancedBaseInstance(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances, GLsizei baseInstance)
+{
+    if (baseInstance != 0)
+        qWarning() << "glDrawElementsInstancedBaseVertexBaseInstance is not supported with OpenGL ES 3";
+
+    m_extraFuncs->glDrawArraysInstanced(primitiveType,
+                                        first,
+                                        count,
+                                        instances);
+}
+
 void GraphicsHelperES3::readBuffer(GLenum mode)
 {
     m_extraFuncs->glReadBuffer(mode);

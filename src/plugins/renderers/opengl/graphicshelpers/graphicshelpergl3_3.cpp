@@ -62,7 +62,7 @@ void GraphicsHelperGL3_3::drawElementsInstancedBaseVertexBaseInstance(GLenum pri
                                                                       GLint baseInstance)
 {
     if (baseInstance != 0)
-        qWarning() << "glDrawElementsInstancedBaseVertexBaseInstance is not supported with OpenGL 3";
+        qWarning() << "glDrawElementsInstancedBaseVertexBaseInstance is not supported with OpenGL 3.3";
 
     // glDrawElements OpenGL 3.1 or greater
     m_funcs->glDrawElementsInstancedBaseVertex(primitiveType,

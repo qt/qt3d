@@ -40,6 +40,7 @@ public:
     void buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer) override;
     void drawBuffers(GLsizei n, const int *bufs) override;
     void drawArraysInstanced(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances) override;
+    void drawArraysInstancedBaseInstance(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances, GLsizei baseInstance) override;
     void drawElementsInstancedBaseVertexBaseInstance(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void *indices, GLsizei instances, GLint baseVertex = 0,  GLint baseInstance = 0) override;
     void readBuffer(GLenum mode) override;
     void drawBuffer(GLenum mode) override;

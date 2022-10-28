@@ -151,16 +151,13 @@ void GraphicsHelperGL4::drawElementsInstancedBaseVertexBaseInstance(GLenum primi
                                                                     GLint baseVertex,
                                                                     GLint baseInstance)
 {
-    if (baseInstance != 0)
-        qWarning() << "glDrawElementsInstancedBaseVertexBaseInstance is not supported with OpenGL ES 2";
-
-    // glDrawElements OpenGL 3.1 or greater
-    m_funcs->glDrawElementsInstancedBaseVertex(primitiveType,
+    m_funcs->glDrawElementsInstancedBaseVertexBaseInstance(primitiveType,
                                                primitiveCount,
                                                indexType,
                                                indices,
                                                instances,
-                                               baseVertex);
+                                               baseVertex,
+                                               baseInstance);
 }
 
 void GraphicsHelperGL4::drawArraysInstanced(GLenum primitiveType,

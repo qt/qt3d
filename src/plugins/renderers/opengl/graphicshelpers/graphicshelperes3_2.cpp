@@ -104,7 +104,7 @@ void GraphicsHelperES3_2::setVerticesPerPatch(GLint verticesPerPatch)
 void GraphicsHelperES3_2::drawElementsInstancedBaseVertexBaseInstance(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void *indices, GLsizei instances, GLint baseVertex, GLint baseInstance)
 {
     if (baseInstance != 0)
-        qWarning() << "glDrawElementsInstancedBaseVertexBaseInstance is not supported with OpenGL ES 2";
+        qWarning() << "glDrawElementsInstancedBaseVertexBaseInstance is not supported with OpenGL ES 3.2";
 
     m_extraFuncs->glDrawElementsInstancedBaseVertex(primitiveType,
                                                     primitiveCount,
