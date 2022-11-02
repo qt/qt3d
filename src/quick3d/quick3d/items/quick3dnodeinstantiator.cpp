@@ -148,7 +148,7 @@ void Quick3DNodeInstantiatorPrivate::_q_createdItem(int idx, QObject *item)
         m_instanceModel->release(o);
     m_objects.replace(idx, item);
 
-    if (m_objects.count() == 1)
+    if (m_objects.size() == 1)
         emit q->objectChanged();
     emit q->objectAdded(idx, item);
 }
@@ -198,7 +198,7 @@ void Quick3DNodeInstantiatorPrivate::_q_modelUpdated(const QQmlChangeSet &change
             QList<QPointer<QObject>> movedObjects = moved.value(insert.moveId);
             m_objects = m_objects.mid(0, index) + movedObjects + m_objects.mid(index);
         } else for (int i = 0; i < insert.count; ++i) {
-            if (insert.index <= m_objects.count())
+            if (insert.index <= m_objects.size())
                 m_objects.insert(insert.index, insert.count, nullptr);
             for (int i = 0; i < insert.count; ++i) {
                 int modelIndex = index + i;
