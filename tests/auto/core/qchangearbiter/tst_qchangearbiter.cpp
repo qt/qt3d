@@ -831,7 +831,7 @@ void tst_QChangeArbiter::distributeBackendChanges()
     // backend observer receives event from frontend node "root"
     QCOMPARE(root->lastChanges().count(), 0);
     QCOMPARE(postman->lastChanges().count(), 0);
-    QCOMPARE(backenObserverObservable->lastChanges().count(), 1);
+    QTRY_COMPARE(backenObserverObservable->lastChanges().count(), 1);
 
     backenObserverObservable->clear();
 
@@ -854,7 +854,7 @@ void tst_QChangeArbiter::distributeBackendChanges()
 
         // THEN
         // the repliers should receive it's reply
-        QCOMPARE(backenObserverObservable->lastChanges().count(), 1);
+        QTRY_COMPARE(backenObserverObservable->lastChanges().count(), 1);
         // verify that postMan has received the change
         QCOMPARE(postman->lastChanges().count(), 0);
         answer->exit();
@@ -880,7 +880,7 @@ void tst_QChangeArbiter::distributeBackendChanges()
 
         // THEN
         // the repliers should receive it's reply
-        QCOMPARE(backenObserverObservable->lastChanges().count(), 1);
+        QTRY_COMPARE(backenObserverObservable->lastChanges().count(), 1);
         // verify that postMan has received the change
         QCOMPARE(postman->lastChanges().count(), 1);
 

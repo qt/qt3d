@@ -594,38 +594,50 @@ void Renderer::releaseGraphicsResources()
     QOpenGLContext *context = m_submissionContext->openGLContext();
     Q_ASSERT(context);
 
-    if (context->thread() == QThread::currentThread() && context->makeCurrent(offscreenSurface)) {
+    if (context->thread() == QThread::currentThread()) {
+        QSurface *lastContextSurface = context->surface();
 
-        // Clean up the graphics context and any resources
-        const std::vector<HGLTexture> &activeTexturesHandles = m_glResourceManagers->glTextureManager()->activeHandles();
-        for (const HGLTexture &textureHandle : activeTexturesHandles) {
-            GLTexture *tex = m_glResourceManagers->glTextureManager()->data(textureHandle);
-            tex->destroy();
+        if (context->makeCurrent(offscreenSurface)) {
+            // Clean up the graphics context and any resources
+            const std::vector<HGLTexture> &activeTexturesHandles = m_glResourceManagers->glTextureManager()->activeHandles();
+            for (const HGLTexture &textureHandle : activeTexturesHandles) {
+                GLTexture *tex = m_glResourceManagers->glTextureManager()->data(textureHandle);
+                tex->destroy();
+            }
+
+            // Do the same thing with buffers
+            const std::vector<HGLBuffer> &activeBuffers = m_glResourceManagers->glBufferManager()->activeHandles();
+            for (const HGLBuffer &bufferHandle : activeBuffers) {
+                GLBuffer *buffer = m_glResourceManagers->glBufferManager()->data(bufferHandle);
+                buffer->destroy(m_submissionContext.data());
+            }
+
+            // Do the same thing with shaders
+            const QVector<GLShader *> shaders = m_glResourceManagers->glShaderManager()->takeActiveResources();
+            qDeleteAll(shaders);
+
+            // Do the same thing with VAOs
+            const std::vector<HVao> &activeVaos = m_glResourceManagers->vaoManager()->activeHandles();
+            for (const HVao &vaoHandle : activeVaos) {
+                OpenGLVertexArrayObject *vao = m_glResourceManagers->vaoManager()->data(vaoHandle);
+                vao->destroy();
+            }
+
+            m_submissionContext->releaseRenderTargets();
+
+            m_frameProfiler.reset();
+            if (m_ownedContext) {
+                context->doneCurrent();
+            } else {
+                // Leave the context in the state we found it in by restoring
+                // its last used surface. This satisfies expectations when used
+                // with QQuickWidgets that surface on current context after
+                // QQuickRenderControl cleanup is the same as prior to the
+                // cleanup. Arguably this could also be checked for in
+                // QQuickWidgetPrivate::invalidateRenderControl.
+                context->makeCurrent(lastContextSurface);
+            }
         }
-
-        // Do the same thing with buffers
-        const std::vector<HGLBuffer> &activeBuffers = m_glResourceManagers->glBufferManager()->activeHandles();
-        for (const HGLBuffer &bufferHandle : activeBuffers) {
-            GLBuffer *buffer = m_glResourceManagers->glBufferManager()->data(bufferHandle);
-            buffer->destroy(m_submissionContext.data());
-        }
-
-        // Do the same thing with shaders
-        const QVector<GLShader *> shaders = m_glResourceManagers->glShaderManager()->takeActiveResources();
-        qDeleteAll(shaders);
-
-        // Do the same thing with VAOs
-        const std::vector<HVao> &activeVaos = m_glResourceManagers->vaoManager()->activeHandles();
-        for (const HVao &vaoHandle : activeVaos) {
-            OpenGLVertexArrayObject *vao = m_glResourceManagers->vaoManager()->data(vaoHandle);
-            vao->destroy();
-        }
-
-        m_submissionContext->releaseRenderTargets();
-
-        m_frameProfiler.reset();
-        if (m_ownedContext)
-            context->doneCurrent();
     } else {
         qWarning() << "Failed to make context current: OpenGL resources will not be destroyed";
     }
@@ -1872,6 +1884,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     // Remove previous dependencies
     m_cleanupJob->removeDependency(QWeakPointer<QAspectJob>());
 
+    const bool dirtyParametersForCurrentFrame = m_dirtyBits.marked & AbstractRenderer::ParameterDirty;
     const BackendNodeDirtySet dirtyBitsForFrame = m_dirtyBits.marked | m_dirtyBits.remaining;
     m_dirtyBits.marked = {};
     m_dirtyBits.remaining = {};
@@ -1994,6 +2007,10 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     }
 
     m_dirtyBits.remaining = dirtyBitsForFrame & notCleared;
+
+    // Dirty Parameters might need 2 frames to react if the parameter references a texture
+    if (dirtyParametersForCurrentFrame)
+        m_dirtyBits.remaining |= AbstractRenderer::ParameterDirty;
 
     return renderBinJobs;
 }
