@@ -241,7 +241,7 @@ std::vector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
     auto accumulateJob = Input::AxisAccumulatorJobPtr::create(d->m_inputHandler->axisAccumulatorManager(),
                                                               d->m_inputHandler->axisManager());
     accumulateJob->setDeltaTime(dt);
-    for (const QAspectJobPtr &job : qAsConst(axisActionJobs))
+    for (const QAspectJobPtr &job : std::as_const(axisActionJobs))
         accumulateJob->addDependency(job);
     jobs.push_back(accumulateJob);
 

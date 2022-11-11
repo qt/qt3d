@@ -38,13 +38,13 @@ void DeferredRenderer::setSceneCamera(Qt3DCore::QEntity *camera)
 
 void DeferredRenderer::setGeometryPassCriteria(QList<Qt3DRender::QFilterKey *> criteria)
 {
-    for (Qt3DRender::QFilterKey *c : qAsConst(criteria))
+    for (Qt3DRender::QFilterKey *c : std::as_const(criteria))
         m_geometryPassFilter->addMatch(c);
 }
 
 void DeferredRenderer::setFinalPassCriteria(QList<Qt3DRender::QFilterKey *> criteria)
 {
-    for (Qt3DRender::QFilterKey *c : qAsConst(criteria))
+    for (Qt3DRender::QFilterKey *c : std::as_const(criteria))
         c->setParent(m_finalPassFilter);
 }
 

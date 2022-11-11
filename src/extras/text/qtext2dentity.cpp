@@ -380,7 +380,7 @@ void QText2DEntity::setColor(const QColor &color)
 
         emit colorChanged(color);
 
-        for (DistanceFieldTextRenderer *renderer : qAsConst(d->m_renderers))
+        for (DistanceFieldTextRenderer *renderer : std::as_const(d->m_renderers))
             renderer->setColor(color);
     }
 }

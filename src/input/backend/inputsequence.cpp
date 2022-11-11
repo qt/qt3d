@@ -105,7 +105,7 @@ bool InputSequence::process(InputHandler *inputHandler, qint64 currentTime)
     }
 
     bool triggered = false;
-    for (const Qt3DCore::QNodeId &actionInputId : qAsConst(m_sequences)) {
+    for (const Qt3DCore::QNodeId &actionInputId : std::as_const(m_sequences)) {
         AbstractActionInput *actionInput = inputHandler->lookupActionInput(actionInputId);
         if (actionInput && actionInput->process(inputHandler, currentTime)) {
             triggered |= actionTriggered(actionInputId, currentTime);

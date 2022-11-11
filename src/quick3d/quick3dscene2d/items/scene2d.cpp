@@ -98,7 +98,7 @@ Scene2D::Scene2D()
 
 Scene2D::~Scene2D()
 {
-    for (auto connection: qAsConst(m_connections))
+    for (auto connection: std::as_const(m_connections))
         QObject::disconnect(connection);
     m_connections.clear();
 }

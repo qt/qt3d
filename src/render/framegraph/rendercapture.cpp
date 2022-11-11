@@ -76,7 +76,7 @@ void RenderCapture::syncRenderCapturesToFrontend(Qt3DCore::QAspectManager *manag
     QRenderCapturePrivate *dfrontend = static_cast<QRenderCapturePrivate *>(Qt3DCore::QNodePrivate::get(frontend));
 
     QMutexLocker lock(&m_mutex);
-    for (const RenderCaptureDataPtr &data : qAsConst(m_renderCaptureData)) {
+    for (const RenderCaptureDataPtr &data : std::as_const(m_renderCaptureData)) {
         QPointer<QRenderCaptureReply> reply = dfrontend->takeReply(data.data()->captureId);
         // Note: QPointer has no operator bool, we must use isNull() to check it
         if (!reply.isNull()) {

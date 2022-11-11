@@ -119,7 +119,7 @@ float UpdateAxisActionJob::processAxisInput(const Qt3DCore::QNodeId axisInputId)
 
 void UpdateAxisActionJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
 {
-    for (const auto &data: qAsConst(m_triggeredActions)) {
+    for (const auto &data: std::as_const(m_triggeredActions)) {
         Qt3DInput::QAction *action = qobject_cast<Qt3DInput::QAction *>(manager->lookupNode(data.first));
         if (!action)
             continue;
@@ -128,7 +128,7 @@ void UpdateAxisActionJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
         daction->setActive(data.second);
     }
 
-    for (const auto &data: qAsConst(m_triggeredAxis)) {
+    for (const auto &data: std::as_const(m_triggeredAxis)) {
         Qt3DInput::QAxis *axis = qobject_cast<Qt3DInput::QAxis *>(manager->lookupNode(data.first));
         if (!axis)
             continue;

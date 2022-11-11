@@ -131,7 +131,7 @@ void QAspectManager::enterSimulationLoop()
     // We are about to enter the simulation loop. Give aspects a chance to do any last
     // pieces of initialization
     qCDebug(Aspects) << "Calling onEngineStartup() for each aspect";
-    for (QAbstractAspect *aspect : qAsConst(m_aspects)) {
+    for (QAbstractAspect *aspect : std::as_const(m_aspects)) {
         qCDebug(Aspects) << "\t" << aspect->objectName();
         aspect->onEngineStartup();
     }
@@ -183,13 +183,13 @@ void QAspectManager::exitSimulationLoop()
     // This is because we call this function from the main thread and the
     // logic aspect is waiting for the main thread to execute the
     // QLogicComponent::onFrameUpdate() callback.
-    for (QAbstractAspect *aspect : qAsConst(m_aspects))
+    for (QAbstractAspect *aspect : std::as_const(m_aspects))
         aspect->d_func()->onEngineAboutToShutdown();
 
     // Give aspects a chance to perform any shutdown actions. This may include unqueuing
     // any blocking work on the main thread that could potentially deadlock during shutdown.
     qCDebug(Aspects) << "Calling onEngineShutdown() for each aspect";
-    for (QAbstractAspect *aspect : qAsConst(m_aspects)) {
+    for (QAbstractAspect *aspect : std::as_const(m_aspects)) {
         qCDebug(Aspects) << "\t" << aspect->objectName();
         aspect->onEngineShutdown();
     }
@@ -259,7 +259,7 @@ void QAspectManager::setRootEntity(Qt3DCore::QEntity *root, const QList<QNode *>
                                       });
         }
 
-        for (QAbstractAspect *aspect : qAsConst(m_aspects))
+        for (QAbstractAspect *aspect : std::as_const(m_aspects))
             aspect->d_func()->setRootAndCreateNodes(m_root, nodeTreeChanges);
     }
 }
@@ -498,7 +498,7 @@ void QAspectManager::processFrame()
             // Buckets ensure that even if we have intermingled node added / removed
             // buckets, we preserve the order of the sequences
 
-            for (QAbstractAspect *aspect : qAsConst(m_aspects)) {
+            for (QAbstractAspect *aspect : std::as_const(m_aspects)) {
                 switch (change.type) {
                 case NodeTreeChange::Added:
                     aspect->d_func()->createBackendNode(change);
@@ -513,13 +513,13 @@ void QAspectManager::processFrame()
         // Sync node / subnode relationship changes
         const auto dirtySubNodes = m_changeArbiter->takeDirtyEntityComponentNodes();
         if (dirtySubNodes.size())
-            for (QAbstractAspect *aspect : qAsConst(m_aspects))
+            for (QAbstractAspect *aspect : std::as_const(m_aspects))
                 QAbstractAspectPrivate::get(aspect)->syncDirtyEntityComponentNodes(dirtySubNodes);
 
         // Sync property updates
         const auto dirtyFrontEndNodes = m_changeArbiter->takeDirtyFrontEndNodes();
         if (dirtyFrontEndNodes.size())
-            for (QAbstractAspect *aspect : qAsConst(m_aspects))
+            for (QAbstractAspect *aspect : std::as_const(m_aspects))
                 QAbstractAspectPrivate::get(aspect)->syncDirtyFrontEndNodes(dirtyFrontEndNodes);
     }
 
@@ -530,7 +530,7 @@ void QAspectManager::processFrame()
     m_dumpJobs = false;
 
     // Tell the aspect the frame is complete (except rendering)
-    for (QAbstractAspect *aspect : qAsConst(m_aspects))
+    for (QAbstractAspect *aspect : std::as_const(m_aspects))
         aspect->frameDone();
 }
 

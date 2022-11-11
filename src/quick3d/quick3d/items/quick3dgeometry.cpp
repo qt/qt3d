@@ -37,7 +37,7 @@ QQmlListProperty<Qt3DCore::QAttribute> Quick3DGeometry::attributeList()
     };
     auto clearFunction = [](QQmlListProperty<ListContentType> *list) {
         Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
-        for (Qt3DCore::QAttribute *attribute : qAsConst(geometry->m_managedAttributes))
+        for (Qt3DCore::QAttribute *attribute : std::as_const(geometry->m_managedAttributes))
             geometry->parentGeometry()->removeAttribute(attribute);
         geometry->m_managedAttributes.clear();
     };

@@ -221,7 +221,7 @@ void Scene3DItem::applyAspects()
         return;
 
     // Aspects are owned by the aspect engine
-    for (const QString &aspect : qAsConst(m_aspects)) {
+    for (const QString &aspect : std::as_const(m_aspects)) {
         if (aspect == QLatin1String("render")) // This one is hardwired anyway
             continue;
         if (aspect == QLatin1String("input"))  {

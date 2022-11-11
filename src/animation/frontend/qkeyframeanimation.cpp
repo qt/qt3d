@@ -157,7 +157,7 @@ void QKeyframeAnimation::setFramePositions(const QList<float> &positions)
     d->m_minposition = d->m_framePositions.first();
     d->m_maxposition = d->m_framePositions.last();
     float lastPos = d->m_minposition;
-    for (float p : qAsConst(d->m_framePositions)) {
+    for (float p : std::as_const(d->m_framePositions)) {
         if (p < lastPos || p > d->m_maxposition)
             qWarning() << "positions not ordered correctly";
         lastPos = p;

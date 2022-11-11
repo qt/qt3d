@@ -75,7 +75,7 @@ bool RayCastingJobPrivate::isRequired() const
 
 void RayCastingJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
 {
-    for (auto res: qAsConst(dispatches)) {
+    for (auto res: std::as_const(dispatches)) {
         QAbstractRayCaster *node = qobject_cast<QAbstractRayCaster *>(manager->lookupNode(res.first->peerId()));
         if (!node)
             continue;
@@ -162,7 +162,7 @@ bool RayCastingJob::pick(const QList<QPair<Entity *, RayCaster *>> &entities)
             Q_UNREACHABLE();
         }
 
-        for (const QRay3D &ray: qAsConst(rays)) {
+        for (const QRay3D &ray: std::as_const(rays)) {
             PickingUtils::HitList sphereHits;
             PickingUtils::HierarchicalEntityPicker entityPicker(ray, false);
             entityPicker.setLayerIds(pair.second->layerIds(), pair.second->filterMode());

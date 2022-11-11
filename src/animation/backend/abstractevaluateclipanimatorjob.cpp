@@ -52,13 +52,13 @@ void AbstractEvaluateClipAnimatorJobPrivate::postFrame(Qt3DCore::QAspectManager 
     if (m_record.animatorId.isNull())
         return;
 
-    for (auto targetData : qAsConst(m_record.targetChanges)) {
+    for (auto targetData : std::as_const(m_record.targetChanges)) {
         Qt3DCore::QNode *node = manager->lookupNode(targetData.targetId);
         if (node)
             node->setProperty(targetData.propertyName, targetData.value);
     }
 
-    for (auto skeletonData : qAsConst(m_record.skeletonChanges)) {
+    for (auto skeletonData : std::as_const(m_record.skeletonChanges)) {
         Qt3DCore::QAbstractSkeleton *node = qobject_cast<Qt3DCore::QAbstractSkeleton *>(manager->lookupNode(skeletonData.first));
         if (node) {
             auto d = Qt3DCore::QAbstractSkeletonPrivate::get(node);
@@ -75,7 +75,7 @@ void AbstractEvaluateClipAnimatorJobPrivate::postFrame(Qt3DCore::QAspectManager 
             animator->setRunning(false);
     }
 
-    for (const AnimationCallbackAndValue &callback: qAsConst(m_callbacks)) {
+    for (const AnimationCallbackAndValue &callback: std::as_const(m_callbacks)) {
         if (callback.callback)
             callback.callback->valueChanged(callback.value);
     }

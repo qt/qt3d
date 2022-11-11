@@ -45,7 +45,7 @@ int RenderStateSet::changeCost(RenderStateSet *previousState)
     cost += int(bs.count());
 
     // now, find out how many states we're changing
-    for (const StateVariant &ds : qAsConst(m_states)) {
+    for (const StateVariant &ds : std::as_const(m_states)) {
         // if the other state contains matching, then doesn't
         // contribute to cost at all
         if (previousState->contains(ds))

@@ -114,7 +114,7 @@ QCollisionQueryResult QRayCastingServicePrivate::collides(const QRay3D &ray, QBo
             hits = reduceToAllHits(hits, gathererFunctor(volume));
 #endif
         std::sort(hits.begin(), hits.end(), compareHitsDistance);
-        for (const Hit &hit : qAsConst(hits))
+        for (const Hit &hit : std::as_const(hits))
             q->addEntityHit(result, hit.id, hit.intersection, hit.distance, hit.uvw);
     }
 

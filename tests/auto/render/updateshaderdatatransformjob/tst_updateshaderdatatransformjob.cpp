@@ -116,7 +116,7 @@ struct NodeCollection
         // THEN
         QCOMPARE(aspect->nodeManagers()->shaderDataManager()->activeHandles().size(), size_t(shaderData.size()));
 
-        for (const Qt3DRender::QShaderData *s : qAsConst(shaderData)) {
+        for (const Qt3DRender::QShaderData *s : std::as_const(shaderData)) {
             Qt3DRender::Render::ShaderData *backend = aspect->nodeManagers()->shaderDataManager()->lookupResource(s->id());
             QVERIFY(backend != nullptr);
             backendShaderData.push_back(backend);

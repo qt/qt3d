@@ -126,13 +126,13 @@ void QAbstractPhysicalDeviceBackendNode::syncFromFrontEnd(const Qt3DCore::QNode 
                         std::inserter(removedSettings, removedSettings.end()));
     d->m_currentAxisSettingIds = settings;
 
-    for (const auto &axisSettingId: qAsConst(addedSettings)) {
+    for (const auto &axisSettingId: std::as_const(addedSettings)) {
         Input::AxisSetting *axisSetting = d->getAxisSetting(axisSettingId);
         const auto axisIds = axisSetting->axes();
         for (int axisId : axisIds)
             d->addAxisSetting(axisId, axisSettingId);
     }
-    for (const auto &axisSettingId: qAsConst(removedSettings))
+    for (const auto &axisSettingId: std::as_const(removedSettings))
         d->removeAxisSetting(axisSettingId);
 }
 

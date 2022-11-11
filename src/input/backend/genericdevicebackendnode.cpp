@@ -36,9 +36,9 @@ void GenericDeviceBackendNode::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd,
 
     {
         const QMutexLocker lock(&m_mutex);
-        for (const auto &val: qAsConst(d->m_pendingAxisEvents))
+        for (const auto &val: std::as_const(d->m_pendingAxisEvents))
             m_axesValues[val.first] = val.second;
-        for (const auto &val: qAsConst(d->m_pendingButtonsEvents))
+        for (const auto &val: std::as_const(d->m_pendingButtonsEvents))
             m_buttonsValues[val.first] = val.second;
 
         d->m_pendingAxisEvents.clear();

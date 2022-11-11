@@ -138,12 +138,12 @@ void QSystemInformationServicePrivate::writeFrameJobLogStats()
         header.frameId = m_frameId;
         header.jobCount = 0;
 
-        for (const QList<JobRunStats> *storage : qAsConst(m_localStorages))
+        for (const QList<JobRunStats> *storage : std::as_const(m_localStorages))
             header.jobCount += storage->size();
 
         m_traceFile->write(reinterpret_cast<char *>(&header), sizeof(FrameHeader));
 
-        for (QList<JobRunStats> *storage : qAsConst(m_localStorages)) {
+        for (QList<JobRunStats> *storage : std::as_const(m_localStorages)) {
             for (const JobRunStats &stat : *storage)
                 m_traceFile->write(reinterpret_cast<const char *>(&stat), sizeof(JobRunStats));
             storage->clear();

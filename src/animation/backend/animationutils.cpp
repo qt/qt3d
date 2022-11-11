@@ -217,14 +217,14 @@ ClipResults evaluateClipAtLocalTime(AnimationClip *clip, float localTime)
 
             if (!canSlerp) {
                 // Interpolate per component
-                for (const auto &channelComponent : qAsConst(channel.channelComponents)) {
+                for (const auto &channelComponent : std::as_const(channel.channelComponents)) {
                     const int lowerKeyframeBound = channelComponent.fcurve.lowerKeyframeBound(localTime);
                     channelResults[i++] = channelComponent.fcurve.evaluateAtTime(localTime, lowerKeyframeBound);
                 }
             } else {
                 // There's only one keyframe. We cant compute omega. Interpolate per component
                 if (channel.channelComponents[0].fcurve.keyframeCount() == 1) {
-                    for (const auto &channelComponent : qAsConst(channel.channelComponents))
+                    for (const auto &channelComponent : std::as_const(channel.channelComponents))
                         channelResults[i++] = channelComponent.fcurve.keyframe(0).value;
                 } else {
                     auto quaternionFromChannel = [channel](const int keyframe) {
@@ -251,7 +251,7 @@ ClipResults evaluateClipAtLocalTime(AnimationClip *clip, float localTime)
                         const auto sinHalfTheta = std::sqrt(1.0f - std::pow(cosHalfTheta,2.0f));
                         if (std::abs(sinHalfTheta) < ::slerpThreshold) {
                             auto initial_i = i;
-                            for (const auto &channelComponent : qAsConst(channel.channelComponents))
+                            for (const auto &channelComponent : std::as_const(channel.channelComponents))
                                 channelResults[i++] = channelComponent.fcurve.evaluateAtTime(localTime, lowerKeyframeBound);
 
                             // Normalize the resulting quaternion
@@ -265,7 +265,7 @@ ClipResults evaluateClipAtLocalTime(AnimationClip *clip, float localTime)
                             const auto reverseQ1 = cosHalfTheta < 0 ? -1.0f : 1.0f;
                             cosHalfTheta *= reverseQ1;
                             const auto halfTheta = std::acos(cosHalfTheta);
-                            for (const auto &channelComponent : qAsConst(channel.channelComponents))
+                            for (const auto &channelComponent : std::as_const(channel.channelComponents))
                                 channelResults[i++] = channelComponent.fcurve.evaluateAtTimeAsSlerp(localTime,
                                                                                                     lowerKeyframeBound,
                                                                                                     halfTheta,
@@ -279,7 +279,7 @@ ClipResults evaluateClipAtLocalTime(AnimationClip *clip, float localTime)
             // If the channel is not a Rotation, apply linear interpolation per channel component
             // TODO How do we handle other interpolations. For exammple, color interpolation
             // in a linear perceptual way or other non linear spaces?
-            for (const auto &channelComponent : qAsConst(channel.channelComponents)) {
+            for (const auto &channelComponent : std::as_const(channel.channelComponents)) {
                 const int lowerKeyframeBound = channelComponent.fcurve.lowerKeyframeBound(localTime);
                 channelResults[i++] = channelComponent.fcurve.evaluateAtTime(localTime, lowerKeyframeBound);
             }
@@ -730,7 +730,7 @@ ClipFormat generateClipFormatIndices(const QVector<ChannelNameAndType> &targetCh
     f.formattedComponentIndices.resize(channelCount);
     f.sourceClipMask.resize(channelCount);
     int indexCount = 0;
-    for (const auto &targetIndexVec : qAsConst(targetIndices))
+    for (const auto &targetIndexVec : std::as_const(targetIndices))
         indexCount += targetIndexVec.size();
     ComponentIndices &sourceIndices = f.sourceClipIndices;
     sourceIndices.resize(indexCount);

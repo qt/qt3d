@@ -62,7 +62,7 @@ void SendBufferCaptureJob::run()
     Q_ASSERT(m_nodeManagers);
     Q_D(SendBufferCaptureJob);
     QMutexLocker locker(&d->m_mutex);
-    for (const QPair<Qt3DCore::QNodeId, QByteArray> &pendingCapture : qAsConst(d->m_buffersToCapture)) {
+    for (const QPair<Qt3DCore::QNodeId, QByteArray> &pendingCapture : std::as_const(d->m_buffersToCapture)) {
         Buffer *buffer = m_nodeManagers->bufferManager()->lookupResource(pendingCapture.first);
         // Buffer might have been destroyed between the time addRequest is made and this job gets run
         // If it exists however, it cannot be destroyed before this job is done running

@@ -27,7 +27,7 @@ void BuildBlendTreesJob::setBlendedClipAnimators(const QVector<HBlendedClipAnima
     m_blendedClipAnimatorHandles = blendedClipAnimatorHandles;
     BlendedClipAnimatorManager *blendedClipAnimatorManager = m_handler->blendedClipAnimatorManager();
     BlendedClipAnimator *blendedClipAnimator = nullptr;
-    for (const auto &blendedClipAnimatorHandle : qAsConst(m_blendedClipAnimatorHandles)) {
+    for (const auto &blendedClipAnimatorHandle : std::as_const(m_blendedClipAnimatorHandles)) {
         blendedClipAnimator = blendedClipAnimatorManager->data(blendedClipAnimatorHandle);
         Q_ASSERT(blendedClipAnimator);
     }
@@ -37,7 +37,7 @@ void BuildBlendTreesJob::setBlendedClipAnimators(const QVector<HBlendedClipAnima
 // We assume that the structure of blend node tree does not change once a BlendClipAnimator has been set to running
 void BuildBlendTreesJob::run()
 {
-    for (const HBlendedClipAnimator &blendedClipAnimatorHandle : qAsConst(m_blendedClipAnimatorHandles)) {
+    for (const HBlendedClipAnimator &blendedClipAnimatorHandle : std::as_const(m_blendedClipAnimatorHandles)) {
         // Retrieve BlendTree node
         BlendedClipAnimator *blendClipAnimator = m_handler->blendedClipAnimatorManager()->data(blendedClipAnimatorHandle);
         Q_ASSERT(blendClipAnimator);
@@ -112,7 +112,7 @@ void BuildBlendTreesJob::run()
                 // data for that channel. Clips without data for a channel will
                 // have default values substituted when evaluating the blend tree.
                 int channelIndex = 0;
-                for (const auto &channelMask : qAsConst(format.sourceClipMask))
+                for (const auto &channelMask : std::as_const(format.sourceClipMask))
                     blendTreeChannelMask[channelIndex++] |= channelMask;
             }
         }

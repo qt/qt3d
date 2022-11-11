@@ -1050,7 +1050,7 @@ QTextureDataPtr QTextureFromSourceGenerator::operator ()()
                 ext << mtype.suffixes();
             }
 
-            for (const QString &s: qAsConst(ext)) {
+            for (const QString &s: std::as_const(ext)) {
                 textureData = TextureLoadingHelper::loadTextureData(&buffer, s, true, m_mirrored);
                 if (textureData && textureData->data().size() > 0)
                     break;

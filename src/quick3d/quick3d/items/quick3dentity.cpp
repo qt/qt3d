@@ -69,7 +69,7 @@ QQmlListProperty<QComponent> Quick3DEntity::componentList()
     };
     auto clearFunction = [](QQmlListProperty<ListContentType> *list) {
         Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
-        for (QComponent *comp : qAsConst(self->m_managedComponents))
+        for (QComponent *comp : std::as_const(self->m_managedComponents))
             self->parentEntity()->removeComponent(comp);
         self->m_managedComponents.clear();
     };

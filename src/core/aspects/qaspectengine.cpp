@@ -392,7 +392,7 @@ QVariant QAspectEngine::executeCommand(const QString &command)
     QStringList args = command.split(QLatin1Char(' '));
     QString aspectName = args.takeFirst();
 
-    for (QAbstractAspect *aspect : qAsConst(d->m_aspects)) {
+    for (QAbstractAspect *aspect : std::as_const(d->m_aspects)) {
         if (aspectName == d->m_factory.aspectName(aspect))
             return aspect->executeCommand(args);
     }

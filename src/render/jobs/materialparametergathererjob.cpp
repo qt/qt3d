@@ -66,7 +66,7 @@ MaterialParameterGathererJob::MaterialParameterGathererJob()
 // improvement
 void MaterialParameterGathererJob::run()
 {
-    for (const HMaterial &materialHandle : qAsConst(m_handles)) {
+    for (const HMaterial &materialHandle : std::as_const(m_handles)) {
         Material *material = m_manager->materialManager()->data(materialHandle);
 
         if (Q_UNLIKELY(!material->isEnabled()))

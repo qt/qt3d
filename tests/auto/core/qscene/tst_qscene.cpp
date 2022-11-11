@@ -59,7 +59,7 @@ void tst_QScene::addNodeObservable()
         scene->addObservable(nodes.at(i));
 
     // THEN
-    for (Qt3DCore::QNode *n : qAsConst(nodes)) {
+    for (Qt3DCore::QNode *n : std::as_const(nodes)) {
         QVERIFY(n == scene->lookupNode(n->id()));
     }
 }
@@ -112,7 +112,7 @@ void tst_QScene::addChildNode()
     QCoreApplication::processEvents();
 
     // THEN
-    for (Qt3DCore::QNode *n : qAsConst(nodes)) {
+    for (Qt3DCore::QNode *n : std::as_const(nodes)) {
         QVERIFY(scene->lookupNode(n->id()) == n);
     }
 }
@@ -153,16 +153,16 @@ void tst_QScene::deleteChildNode()
     QCoreApplication::processEvents();
 
     // THEN
-    for (Qt3DCore::QNode *n : qAsConst(nodes1)) {
+    for (Qt3DCore::QNode *n : std::as_const(nodes1)) {
         QVERIFY(scene->lookupNode(n->id()) == n);
     }
-    for (Qt3DCore::QNode *n : qAsConst(nodes2)) {
+    for (Qt3DCore::QNode *n : std::as_const(nodes2)) {
         QVERIFY(scene->lookupNode(n->id()) == n);
     }
 
     // gather node IDs
     Qt3DCore::QNodeIdVector root1ChildIds;
-    for (Qt3DCore::QNode *n : qAsConst(nodes1))
+    for (Qt3DCore::QNode *n : std::as_const(nodes1))
         root1ChildIds << n->id();
 
     // WHEN
@@ -170,7 +170,7 @@ void tst_QScene::deleteChildNode()
     QCoreApplication::processEvents();
 
     // THEN
-    for (Qt3DCore::QNodeId id : qAsConst(root1ChildIds)) {
+    for (Qt3DCore::QNodeId id : std::as_const(root1ChildIds)) {
         QVERIFY(scene->lookupNode(id) == nullptr);
     }
 
@@ -179,7 +179,7 @@ void tst_QScene::deleteChildNode()
     QCoreApplication::processEvents();
 
     // THEN
-    for (Qt3DCore::QNode *n : qAsConst(nodes2)) {
+    for (Qt3DCore::QNode *n : std::as_const(nodes2)) {
         QVERIFY(scene->lookupNode(n->id()) == nullptr);
     }
 }

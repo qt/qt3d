@@ -56,7 +56,7 @@ void LoadAnimationClipJob::run()
 
     d->m_updatedNodes.reserve(m_animationClipHandles.size());
     AnimationClipLoaderManager *animationClipManager = m_handler->animationClipLoaderManager();
-    for (const auto &animationClipHandle : qAsConst(m_animationClipHandles)) {
+    for (const auto &animationClipHandle : std::as_const(m_animationClipHandles)) {
         AnimationClip *animationClip = animationClipManager->data(animationClipHandle);
         Q_ASSERT(animationClip);
         animationClip->loadAnimation();
@@ -68,7 +68,7 @@ void LoadAnimationClipJob::run()
 
 void LoadAnimationClipJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
 {
-    for (AnimationClip *clip: qAsConst(m_updatedNodes)) {
+    for (AnimationClip *clip: std::as_const(m_updatedNodes)) {
         QAbstractAnimationClip *node = qobject_cast<QAbstractAnimationClip *>(manager->lookupNode(clip->peerId()));
         if (!node)
             continue;

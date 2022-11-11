@@ -161,7 +161,7 @@ void tst_RayCasting::shouldReturnAllResults()
 
     // THEN
     bool expectedHandlesFound = true;
-    for (QQueryHandle expected : qAsConst(handles)) {
+    for (QQueryHandle expected : std::as_const(handles)) {
         bool found = false;
         for (QCollisionQueryResult result : results) {
             if (result.handle() == expected)

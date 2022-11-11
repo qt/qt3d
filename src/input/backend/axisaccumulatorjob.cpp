@@ -53,7 +53,7 @@ void AxisAccumulatorJob::run()
 
 void AxisAccumulatorJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
 {
-    for (auto backend: qAsConst(updates)) {
+    for (auto backend: std::as_const(updates)) {
         QAxisAccumulator *node = qobject_cast<QAxisAccumulator *>(manager->lookupNode(backend->peerId()));
         if (!node)
             continue;
