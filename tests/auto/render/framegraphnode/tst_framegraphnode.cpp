@@ -114,9 +114,9 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(child->parentId(), parentId);
         QCOMPARE(child->parent(), parent1);
-        QCOMPARE(parent1->childrenIds().count(), 1);
+        QCOMPARE(parent1->childrenIds().size(), 1);
         QCOMPARE(parent1->childrenIds().first(), childId);
-        QCOMPARE(parent1->children().count(), parent1->childrenIds().count());
+        QCOMPARE(parent1->children().size(), parent1->childrenIds().size());
         QCOMPARE(parent1->children().first(), child);
 
         // WHEN
@@ -125,8 +125,8 @@ private Q_SLOTS:
         // THEN
         QVERIFY(child->parentId().isNull());
         QVERIFY(child->parent() == nullptr);
-        QCOMPARE(parent1->childrenIds().count(), 0);
-        QCOMPARE(parent1->children().count(), parent1->childrenIds().count());
+        QCOMPARE(parent1->childrenIds().size(), 0);
+        QCOMPARE(parent1->children().size(), parent1->childrenIds().size());
     }
 
     void checkSetParent()

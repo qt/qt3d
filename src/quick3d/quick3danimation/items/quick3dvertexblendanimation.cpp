@@ -32,7 +32,7 @@ QQmlListProperty<Qt3DAnimation::QMorphTarget> QQuick3DVertexBlendAnimation::morp
         QQuick3DVertexBlendAnimation *animation
             = qobject_cast<QQuick3DVertexBlendAnimation *>(list->object);
         if (animation)
-            return animation->parentVertexBlendAnimation()->morphTargetList().count();
+            return animation->parentVertexBlendAnimation()->morphTargetList().size();
         return 0;
     };
     auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {

@@ -23,8 +23,8 @@ private Q_SLOTS:
     {
         QScopedPointer<Qt3DRender::QRenderPassFilter> defaultRenderPassFilter(new Qt3DRender::QRenderPassFilter);
 
-        QCOMPARE(defaultRenderPassFilter->matchAny().count(), 0);
-        QCOMPARE(defaultRenderPassFilter->parameters().count(), 0);
+        QCOMPARE(defaultRenderPassFilter->matchAny().size(), 0);
+        QCOMPARE(defaultRenderPassFilter->parameters().size(), 0);
     }
 
     void checkPropertyUpdates()

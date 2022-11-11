@@ -1434,7 +1434,7 @@ void GLTFImporter::processJSONAsset(const QJsonObject &json)
     const QString version = json.value(KEY_VERSION).toString();
     if (!version.isEmpty()) {
         const QStringList verTokens = version.split('.');
-        if (verTokens.length() >= 2) {
+        if (verTokens.size() >= 2) {
             m_majorVersion = verTokens[0].toInt();
             m_minorVersion = verTokens[1].toInt();
         }

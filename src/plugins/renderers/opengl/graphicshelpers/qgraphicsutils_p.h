@@ -326,7 +326,7 @@ public:
         QVariantList vList = v.toList();
         // Handles list of QVariant: usually arrays of float
         if (!vList.isEmpty()) {
-            for (int i = 0; i < vList.length() && uint(i) * offset < uint(uniformValuesArray.size()); i++) {
+            for (int i = 0; i < vList.size() && uint(i) * offset < uint(uniformValuesArray.size()); i++) {
                 const char *subBuffer = QGraphicsUtils::bytesFromVariant<T>(vList.at(i));
                 memcpy(data + i * offset, subBuffer, offset);
             }

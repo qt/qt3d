@@ -1040,7 +1040,7 @@ QTextureDataPtr QTextureFromSourceGenerator::operator ()()
         QT_PREPEND_NAMESPACE(QBuffer) buffer(&m_sourceData);
         if (buffer.open(QIODevice::ReadOnly)) {
             QString suffix = m_url.toString();
-            suffix = suffix.right(suffix.length() - suffix.lastIndexOf(QLatin1Char('.')));
+            suffix = suffix.right(suffix.size() - suffix.lastIndexOf(QLatin1Char('.')));
 
             QStringList ext(suffix);
 
@@ -1052,7 +1052,7 @@ QTextureDataPtr QTextureFromSourceGenerator::operator ()()
 
             for (const QString &s: qAsConst(ext)) {
                 textureData = TextureLoadingHelper::loadTextureData(&buffer, s, true, m_mirrored);
-                if (textureData && textureData->data().length() > 0)
+                if (textureData && textureData->data().size() > 0)
                     break;
             }
         }
@@ -1064,7 +1064,7 @@ QTextureDataPtr QTextureFromSourceGenerator::operator ()()
     if (textureData && m_format != QAbstractTexture::NoFormat && m_format != QAbstractTexture::Automatic)
         textureData->setFormat(static_cast<QOpenGLTexture::TextureFormat>(m_format));
 
-    if (textureData && textureData->data().length() > 0) {
+    if (textureData && textureData->data().size() > 0) {
         generatedData->setTarget(static_cast<QAbstractTexture::Target>(textureData->target()));
         generatedData->setFormat(static_cast<QAbstractTexture::TextureFormat>(textureData->format()));
         generatedData->setWidth(textureData->width());

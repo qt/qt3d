@@ -88,7 +88,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(mapping.channelName(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -96,7 +96,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(mapping.channelName(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
 
         {
@@ -109,7 +109,7 @@ private Q_SLOTS:
             QVERIFY(spy.isValid());
             QCOMPARE(mapping.target(), newValue);
             QCOMPARE(newValue->parent(), &mapping);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -117,7 +117,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(mapping.target(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
 
         {
@@ -129,7 +129,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(mapping.property(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -137,7 +137,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(mapping.property(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
     }
 

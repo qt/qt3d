@@ -272,7 +272,7 @@ private Q_SLOTS:
 
 
         // THEN
-        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.size(), 1);
         QCOMPARE(arbiter.dirtyNodes().size(), 0);
         QCOMPARE(t.worldMatrix(), newValue);
 
@@ -281,7 +281,7 @@ private Q_SLOTS:
         dT->setWorldMatrix(newValue);
 
         // THEN
-        QCOMPARE(spy.count(), 0);
+        QCOMPARE(spy.size(), 0);
         QCOMPARE(arbiter.dirtyNodes().size(), 0);
         QCOMPARE(t.worldMatrix(), newValue);
     }

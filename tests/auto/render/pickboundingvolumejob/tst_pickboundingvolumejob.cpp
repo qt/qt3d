@@ -831,10 +831,10 @@ private Q_SLOTS:
             QVERIFY(!earlyReturn);
             QVERIFY(backendPicker1->isPressed());
             QVERIFY(picker1->isPressed());
-            QCOMPARE(mouseButtonPressedSpy.count(), backAndFrontPicking ? 2 : 1);
-            QCOMPARE(mouseMovedSpy.count(), 0);
-            QCOMPARE(mouseButtonReleasedSpy.count(), 0);
-            QCOMPARE(mouseClickedSpy.count(), 0);
+            QCOMPARE(mouseButtonPressedSpy.size(), backAndFrontPicking ? 2 : 1);
+            QCOMPARE(mouseMovedSpy.size(), 0);
+            QCOMPARE(mouseButtonReleasedSpy.size(), 0);
+            QCOMPARE(mouseClickedSpy.size(), 0);
         }
 
         {
@@ -849,10 +849,10 @@ private Q_SLOTS:
             QVERIFY(!earlyReturn);
             QVERIFY(backendPicker1->isPressed());
             QVERIFY(picker1->isPressed());
-            QCOMPARE(mouseButtonPressedSpy.count(), backAndFrontPicking ? 2 : 1);
-            QCOMPARE(mouseMovedSpy.count(), backAndFrontPicking ? 2 : 1);
-            QCOMPARE(mouseButtonReleasedSpy.count(), 0);
-            QCOMPARE(mouseClickedSpy.count(), 0);
+            QCOMPARE(mouseButtonPressedSpy.size(), backAndFrontPicking ? 2 : 1);
+            QCOMPARE(mouseMovedSpy.size(), backAndFrontPicking ? 2 : 1);
+            QCOMPARE(mouseButtonReleasedSpy.size(), 0);
+            QCOMPARE(mouseClickedSpy.size(), 0);
         }
 
         {
@@ -867,10 +867,10 @@ private Q_SLOTS:
             QVERIFY(!earlyReturn);
             QVERIFY(!backendPicker1->isPressed());
             QVERIFY(!picker1->isPressed());
-            QCOMPARE(mouseButtonPressedSpy.count(), backAndFrontPicking ? 2 : 1);
-            QCOMPARE(mouseMovedSpy.count(), backAndFrontPicking ? 2 : 1);
-            QCOMPARE(mouseButtonReleasedSpy.count(), /*backAndFrontPicking ? 2 :*/ 1);
-            QCOMPARE(mouseClickedSpy.count(), 1);
+            QCOMPARE(mouseButtonPressedSpy.size(), backAndFrontPicking ? 2 : 1);
+            QCOMPARE(mouseMovedSpy.size(), backAndFrontPicking ? 2 : 1);
+            QCOMPARE(mouseButtonReleasedSpy.size(), /*backAndFrontPicking ? 2 :*/ 1);
+            QCOMPARE(mouseClickedSpy.size(), 1);
         }
 
         mouseButtonPressedSpy.clear();
@@ -893,9 +893,9 @@ private Q_SLOTS:
             QVERIFY(!earlyReturn);
             QVERIFY(!backendPicker1->isPressed());
             QVERIFY(!picker1->isPressed());
-            QCOMPARE(mouseButtonPressedSpy.count(), backAndFrontPicking ? 2 : 1);
-            QCOMPARE(mouseMovedSpy.count(), 0);
-            QCOMPARE(mouseButtonReleasedSpy.count(), 1);
+            QCOMPARE(mouseButtonPressedSpy.size(), backAndFrontPicking ? 2 : 1);
+            QCOMPARE(mouseMovedSpy.size(), 0);
+            QCOMPARE(mouseButtonReleasedSpy.size(), 1);
         }
     }
 
@@ -959,9 +959,9 @@ private Q_SLOTS:
             QVERIFY(!earlyReturn);
             QVERIFY(backendPicker1->isPressed());
             QVERIFY(picker1->isPressed());
-            QCOMPARE(mouseButtonPressedSpy.count(), 1);
-            QCOMPARE(mouseMovedSpy.count(), 0);
-            QCOMPARE(mouseButtonReleasedSpy.count(), 0);
+            QCOMPARE(mouseButtonPressedSpy.size(), 1);
+            QCOMPARE(mouseMovedSpy.size(), 0);
+            QCOMPARE(mouseButtonReleasedSpy.size(), 0);
         }
 
         {
@@ -976,9 +976,9 @@ private Q_SLOTS:
             QVERIFY(!earlyReturn);
             QVERIFY(!backendPicker1->isPressed());
             QVERIFY(!picker1->isPressed());
-            QCOMPARE(mouseButtonPressedSpy.count(), 1);
-            QCOMPARE(mouseMovedSpy.count(), 0);
-            QCOMPARE(mouseButtonReleasedSpy.count(), 1);
+            QCOMPARE(mouseButtonPressedSpy.size(), 1);
+            QCOMPARE(mouseMovedSpy.size(), 0);
+            QCOMPARE(mouseButtonReleasedSpy.size(), 1);
         }
 
         mouseButtonPressedSpy.clear();
@@ -997,9 +997,9 @@ private Q_SLOTS:
             // THEN -> Should have received nothing
             QVERIFY(!backendPicker1->isPressed());
             QVERIFY(!picker1->isPressed());
-            QCOMPARE(mouseButtonPressedSpy.count(), 0);
-            QCOMPARE(mouseMovedSpy.count(), 0);
-            QCOMPARE(mouseButtonReleasedSpy.count(), 0);
+            QCOMPARE(mouseButtonPressedSpy.size(), 0);
+            QCOMPARE(mouseMovedSpy.size(), 0);
+            QCOMPARE(mouseButtonReleasedSpy.size(), 0);
         }
     }
 
@@ -1070,8 +1070,8 @@ private Q_SLOTS:
             QVERIFY(!earlyReturn);
             QVERIFY(!backendPicker1->isPressed());
             QVERIFY(!picker1->isPressed());
-            QCOMPARE(mouseEntered.count(), 1);
-            QCOMPARE(mouseExited.count(), 0);
+            QCOMPARE(mouseEntered.size(), 1);
+            QCOMPARE(mouseExited.size(), 0);
         }
 
         {
@@ -1086,8 +1086,8 @@ private Q_SLOTS:
             QVERIFY(!earlyReturn);
             QVERIFY(!backendPicker1->isPressed());
             QVERIFY(!picker1->isPressed());
-            QCOMPARE(mouseEntered.count(), 1);
-            QCOMPARE(mouseExited.count(), 1);
+            QCOMPARE(mouseEntered.size(), 1);
+            QCOMPARE(mouseExited.size(), 1);
         }
 
         mouseEntered.clear();
@@ -1108,8 +1108,8 @@ private Q_SLOTS:
             QVERIFY(!earlyReturn);
             QVERIFY(!backendPicker1->isPressed());
             QVERIFY(!picker1->isPressed());
-            QCOMPARE(mouseEntered.count(), 1);
-            QCOMPARE(mouseExited.count(), 1);
+            QCOMPARE(mouseEntered.size(), 1);
+            QCOMPARE(mouseExited.size(), 1);
         }
     }
 
@@ -1186,10 +1186,10 @@ private Q_SLOTS:
             QVERIFY(!earlyReturn);
             QVERIFY(backendPicker->isPressed());
             QVERIFY(picker->isPressed());
-            QCOMPARE(mouseButtonPressedSpy.count(), backAndFrontPicking ? 2 : 1);
-            QCOMPARE(mouseMovedSpy.count(), 0);
-            QCOMPARE(mouseButtonReleasedSpy.count(), 0);
-            QCOMPARE(mouseClickedSpy.count(), 0);
+            QCOMPARE(mouseButtonPressedSpy.size(), backAndFrontPicking ? 2 : 1);
+            QCOMPARE(mouseMovedSpy.size(), 0);
+            QCOMPARE(mouseButtonReleasedSpy.size(), 0);
+            QCOMPARE(mouseClickedSpy.size(), 0);
         }
 
         mouseButtonPressedSpy.clear();
@@ -1206,10 +1206,10 @@ private Q_SLOTS:
             QVERIFY(!earlyReturn);
             QVERIFY(backendPicker->isPressed());
             QVERIFY(picker->isPressed());
-            QCOMPARE(mouseButtonPressedSpy.count(), 0);
-            QCOMPARE(mouseMovedSpy.count(), backAndFrontPicking ? 2 : 1);
-            QCOMPARE(mouseButtonReleasedSpy.count(), 0);
-            QCOMPARE(mouseClickedSpy.count(), 0);
+            QCOMPARE(mouseButtonPressedSpy.size(), 0);
+            QCOMPARE(mouseMovedSpy.size(), backAndFrontPicking ? 2 : 1);
+            QCOMPARE(mouseButtonReleasedSpy.size(), 0);
+            QCOMPARE(mouseClickedSpy.size(), 0);
         }
 
         mouseMovedSpy.clear();
@@ -1226,10 +1226,10 @@ private Q_SLOTS:
             QVERIFY(!earlyReturn);
             QVERIFY(!backendPicker->isPressed());
             QVERIFY(!picker->isPressed());
-            QCOMPARE(mouseButtonPressedSpy.count(), 0);
-            QCOMPARE(mouseMovedSpy.count(), 0);
-            QCOMPARE(mouseButtonReleasedSpy.count(), 1);
-            QCOMPARE(mouseClickedSpy.count(), 1);
+            QCOMPARE(mouseButtonPressedSpy.size(), 0);
+            QCOMPARE(mouseMovedSpy.size(), 0);
+            QCOMPARE(mouseButtonReleasedSpy.size(), 1);
+            QCOMPARE(mouseClickedSpy.size(), 1);
         }
 
         // WHEN -> Release outside of object
@@ -1251,10 +1251,10 @@ private Q_SLOTS:
             QVERIFY(!earlyReturn);
             QVERIFY(!backendPicker->isPressed());
             QVERIFY(!picker->isPressed());
-            QCOMPARE(mouseButtonPressedSpy.count(), backAndFrontPicking ? 2 : 1);
-            QCOMPARE(mouseMovedSpy.count(), 0);
-            QCOMPARE(mouseButtonReleasedSpy.count(), 1);
-            QCOMPARE(mouseClickedSpy.count(), 1);
+            QCOMPARE(mouseButtonPressedSpy.size(), backAndFrontPicking ? 2 : 1);
+            QCOMPARE(mouseMovedSpy.size(), 0);
+            QCOMPARE(mouseButtonReleasedSpy.size(), 1);
+            QCOMPARE(mouseClickedSpy.size(), 1);
         }
     }
 
@@ -1361,12 +1361,12 @@ private Q_SLOTS:
             QVERIFY(backendPicker1->isPressed());
             QVERIFY(picker1->isPressed());
 
-            QCOMPARE(mouseButtonPressedSpy1.count(), backAndFrontPicking ? 2 : 1);
-            QCOMPARE(mouseMovedSpy1.count(), 0);
-            QCOMPARE(mouseButtonReleasedSpy1.count(), 0);
-            QCOMPARE(mouseClickedSpy1.count(), 0);
-            QCOMPARE(mouseEntered1.count(), 0);
-            QCOMPARE(mouseExited1.count(), 0);
+            QCOMPARE(mouseButtonPressedSpy1.size(), backAndFrontPicking ? 2 : 1);
+            QCOMPARE(mouseMovedSpy1.size(), 0);
+            QCOMPARE(mouseButtonReleasedSpy1.size(), 0);
+            QCOMPARE(mouseClickedSpy1.size(), 0);
+            QCOMPARE(mouseEntered1.size(), 0);
+            QCOMPARE(mouseExited1.size(), 0);
         }
 
         {
@@ -1382,20 +1382,20 @@ private Q_SLOTS:
             if (pickResultMode != Qt3DRender::QPickingSettings::AllPicks) {
                 QVERIFY(backendPicker1->isPressed());
                 QVERIFY(picker1->isPressed());
-                QCOMPARE(mouseButtonPressedSpy1.count(), 1);
-                QCOMPARE(mouseMovedSpy1.count(), 1);
-                QCOMPARE(mouseButtonReleasedSpy1.count(), 0);
-                QCOMPARE(mouseClickedSpy1.count(), 0);
-                QCOMPARE(mouseEntered1.count(), 0);
-                QCOMPARE(mouseExited1.count(), 0);
+                QCOMPARE(mouseButtonPressedSpy1.size(), 1);
+                QCOMPARE(mouseMovedSpy1.size(), 1);
+                QCOMPARE(mouseButtonReleasedSpy1.size(), 0);
+                QCOMPARE(mouseClickedSpy1.size(), 0);
+                QCOMPARE(mouseEntered1.size(), 0);
+                QCOMPARE(mouseExited1.size(), 0);
             } else {
                 QVERIFY(!picker2->isPressed());
-                QCOMPARE(mouseButtonPressedSpy2.count(), 0);
-                QCOMPARE(mouseMovedSpy2.count(), backAndFrontPicking ? 2 : 1);
-                QCOMPARE(mouseButtonReleasedSpy2.count(), 0);
-                QCOMPARE(mouseClickedSpy2.count(), 0);
-                QCOMPARE(mouseEntered2.count(), 1);
-                QCOMPARE(mouseExited2.count(), 0);
+                QCOMPARE(mouseButtonPressedSpy2.size(), 0);
+                QCOMPARE(mouseMovedSpy2.size(), backAndFrontPicking ? 2 : 1);
+                QCOMPARE(mouseButtonReleasedSpy2.size(), 0);
+                QCOMPARE(mouseClickedSpy2.size(), 0);
+                QCOMPARE(mouseEntered2.size(), 1);
+                QCOMPARE(mouseExited2.size(), 0);
             }
         }
     }
@@ -1460,12 +1460,12 @@ private Q_SLOTS:
         QVERIFY(!earlyReturn);
         QVERIFY(backendPicker->isPressed());
         QVERIFY(picker->isPressed());
-        QCOMPARE(mouseButtonPressedSpy.count(), 1);
-        QCOMPARE(mouseMovedSpy.count(), 0);
-        QCOMPARE(mouseButtonReleasedSpy.count(), 0);
-        QCOMPARE(mouseClickedSpy.count(), 0);
-        QCOMPARE(mouseEntered.count(), 0);
-        QCOMPARE(mouseExited.count(), 0);
+        QCOMPARE(mouseButtonPressedSpy.size(), 1);
+        QCOMPARE(mouseMovedSpy.size(), 0);
+        QCOMPARE(mouseButtonReleasedSpy.size(), 0);
+        QCOMPARE(mouseClickedSpy.size(), 0);
+        QCOMPARE(mouseEntered.size(), 0);
+        QCOMPARE(mouseExited.size(), 0);
     }
 
     void checkPickerAndViewports()
@@ -1529,12 +1529,12 @@ private Q_SLOTS:
             QVERIFY(!earlyReturn);
             QVERIFY(backendPicker->isPressed());
             QVERIFY(picker->isPressed());
-            QCOMPARE(mouseButtonPressedSpy.count(), 1);
-            QCOMPARE(mouseMovedSpy.count(), 0);
-            QCOMPARE(mouseButtonReleasedSpy.count(), 0);
-            QCOMPARE(mouseClickedSpy.count(), 0);
-            QCOMPARE(mouseEntered.count(), 0);
-            QCOMPARE(mouseExited.count(), 0);
+            QCOMPARE(mouseButtonPressedSpy.size(), 1);
+            QCOMPARE(mouseMovedSpy.size(), 0);
+            QCOMPARE(mouseButtonReleasedSpy.size(), 0);
+            QCOMPARE(mouseClickedSpy.size(), 0);
+            QCOMPARE(mouseEntered.size(), 0);
+            QCOMPARE(mouseExited.size(), 0);
         }
 
         // WHEN reset -> Presset on object in vp2
@@ -1552,12 +1552,12 @@ private Q_SLOTS:
             QVERIFY(!earlyReturn);
             QVERIFY(!backendPicker->isPressed());
             QVERIFY(picker->isPressed());
-            QCOMPARE(mouseButtonPressedSpy.count(), 1);
-            QCOMPARE(mouseMovedSpy.count(), 0);
-            QCOMPARE(mouseButtonReleasedSpy.count(), 0);
-            QCOMPARE(mouseClickedSpy.count(), 0);
-            QCOMPARE(mouseEntered.count(), 0);
-            QCOMPARE(mouseExited.count(), 0);
+            QCOMPARE(mouseButtonPressedSpy.size(), 1);
+            QCOMPARE(mouseMovedSpy.size(), 0);
+            QCOMPARE(mouseButtonReleasedSpy.size(), 0);
+            QCOMPARE(mouseClickedSpy.size(), 0);
+            QCOMPARE(mouseEntered.size(), 0);
+            QCOMPARE(mouseExited.size(), 0);
         }
     }
 
@@ -1616,8 +1616,8 @@ private Q_SLOTS:
             QVERIFY(picker1->isPressed());
             QVERIFY(!backendPicker2->isPressed());
             QVERIFY(!picker2->isPressed());
-            QCOMPARE(mouseButtonPressedSpy1.count(), 1);
-            QCOMPARE(mouseButtonPressedSpy2.count(), 0);
+            QCOMPARE(mouseButtonPressedSpy1.size(), 1);
+            QCOMPARE(mouseButtonPressedSpy2.size(), 0);
 
             auto event2 = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(150., 300.), QPointF(150., 300.),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
@@ -1636,8 +1636,8 @@ private Q_SLOTS:
             QVERIFY(!earlyReturn);
             QVERIFY(backendPicker2->isPressed());
             QVERIFY(picker2->isPressed());
-            QCOMPARE(mouseButtonPressedSpy1.count(), 1);
-            QCOMPARE(mouseButtonPressedSpy2.count(), 1);
+            QCOMPARE(mouseButtonPressedSpy1.size(), 1);
+            QCOMPARE(mouseButtonPressedSpy2.size(), 1);
         }
     }
 
@@ -1729,11 +1729,11 @@ private Q_SLOTS:
             QVERIFY(!picker4->isPressed());
             QVERIFY(!backendPicker5->isPressed());
             QVERIFY(!picker5->isPressed());
-            QCOMPARE(mouseButtonPressedSpy1.count(), 1);
-            QCOMPARE(mouseButtonPressedSpy2.count(), 0);
-            QCOMPARE(mouseButtonPressedSpy3.count(), 0);
-            QCOMPARE(mouseButtonPressedSpy4.count(), 0);
-            QCOMPARE(mouseButtonPressedSpy5.count(), 0);
+            QCOMPARE(mouseButtonPressedSpy1.size(), 1);
+            QCOMPARE(mouseButtonPressedSpy2.size(), 0);
+            QCOMPARE(mouseButtonPressedSpy3.size(), 0);
+            QCOMPARE(mouseButtonPressedSpy4.size(), 0);
+            QCOMPARE(mouseButtonPressedSpy5.size(), 0);
 
             auto event2 = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(200.0, 300.0), QPointF(200.0, 300.0),
                                       Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
@@ -1761,11 +1761,11 @@ private Q_SLOTS:
             QVERIFY(!picker4->isPressed());
             QVERIFY(!backendPicker5->isPressed());
             QVERIFY(!picker5->isPressed());
-            QCOMPARE(mouseButtonPressedSpy1.count(), 1);
-            QCOMPARE(mouseButtonPressedSpy2.count(), 1);
-            QCOMPARE(mouseButtonPressedSpy3.count(), 0);
-            QCOMPARE(mouseButtonPressedSpy4.count(), 0);
-            QCOMPARE(mouseButtonPressedSpy5.count(), 0);
+            QCOMPARE(mouseButtonPressedSpy1.size(), 1);
+            QCOMPARE(mouseButtonPressedSpy2.size(), 1);
+            QCOMPARE(mouseButtonPressedSpy3.size(), 0);
+            QCOMPARE(mouseButtonPressedSpy4.size(), 0);
+            QCOMPARE(mouseButtonPressedSpy5.size(), 0);
 
             auto event2 = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(541.0, 183.0), QPointF(541.0, 183.0),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
@@ -1793,11 +1793,11 @@ private Q_SLOTS:
             QVERIFY(!picker4->isPressed());
             QVERIFY(!backendPicker5->isPressed());
             QVERIFY(!picker5->isPressed());
-            QCOMPARE(mouseButtonPressedSpy1.count(), 1);
-            QCOMPARE(mouseButtonPressedSpy2.count(), 1);
-            QCOMPARE(mouseButtonPressedSpy3.count(), 0);
-            QCOMPARE(mouseButtonPressedSpy4.count(), 0);
-            QCOMPARE(mouseButtonPressedSpy5.count(), 0);
+            QCOMPARE(mouseButtonPressedSpy1.size(), 1);
+            QCOMPARE(mouseButtonPressedSpy2.size(), 1);
+            QCOMPARE(mouseButtonPressedSpy3.size(), 0);
+            QCOMPARE(mouseButtonPressedSpy4.size(), 0);
+            QCOMPARE(mouseButtonPressedSpy5.size(), 0);
         }
 
         // WHEN -> Pressed on object3 in VP2
@@ -1820,11 +1820,11 @@ private Q_SLOTS:
             QVERIFY(!picker4->isPressed());
             QVERIFY(!backendPicker5->isPressed());
             QVERIFY(!picker5->isPressed());
-            QCOMPARE(mouseButtonPressedSpy1.count(), 1);
-            QCOMPARE(mouseButtonPressedSpy2.count(), 1);
-            QCOMPARE(mouseButtonPressedSpy3.count(), 0);
-            QCOMPARE(mouseButtonPressedSpy4.count(), 0);
-            QCOMPARE(mouseButtonPressedSpy5.count(), 0);
+            QCOMPARE(mouseButtonPressedSpy1.size(), 1);
+            QCOMPARE(mouseButtonPressedSpy2.size(), 1);
+            QCOMPARE(mouseButtonPressedSpy3.size(), 0);
+            QCOMPARE(mouseButtonPressedSpy4.size(), 0);
+            QCOMPARE(mouseButtonPressedSpy5.size(), 0);
         }
 
         // WHEN -> Pressed on object4 in VP1
@@ -1847,11 +1847,11 @@ private Q_SLOTS:
             QVERIFY(picker4->isPressed());
             QVERIFY(!backendPicker5->isPressed());
             QVERIFY(!picker5->isPressed());
-            QCOMPARE(mouseButtonPressedSpy1.count(), 1);
-            QCOMPARE(mouseButtonPressedSpy2.count(), 1);
-            QCOMPARE(mouseButtonPressedSpy3.count(), 0);
-            QCOMPARE(mouseButtonPressedSpy4.count(), 1);
-            QCOMPARE(mouseButtonPressedSpy5.count(), 0);
+            QCOMPARE(mouseButtonPressedSpy1.size(), 1);
+            QCOMPARE(mouseButtonPressedSpy2.size(), 1);
+            QCOMPARE(mouseButtonPressedSpy3.size(), 0);
+            QCOMPARE(mouseButtonPressedSpy4.size(), 1);
+            QCOMPARE(mouseButtonPressedSpy5.size(), 0);
 
             auto event2 = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(160.0, 431.0), QPointF(160.0, 431.0),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
@@ -1879,11 +1879,11 @@ private Q_SLOTS:
             QVERIFY(picker4->isPressed());
             QVERIFY(!backendPicker5->isPressed());
             QVERIFY(!picker5->isPressed());
-            QCOMPARE(mouseButtonPressedSpy1.count(), 1);
-            QCOMPARE(mouseButtonPressedSpy2.count(), 1);
-            QCOMPARE(mouseButtonPressedSpy3.count(), 0);
-            QCOMPARE(mouseButtonPressedSpy4.count(), 2);
-            QCOMPARE(mouseButtonPressedSpy5.count(), 0);
+            QCOMPARE(mouseButtonPressedSpy1.size(), 1);
+            QCOMPARE(mouseButtonPressedSpy2.size(), 1);
+            QCOMPARE(mouseButtonPressedSpy3.size(), 0);
+            QCOMPARE(mouseButtonPressedSpy4.size(), 2);
+            QCOMPARE(mouseButtonPressedSpy5.size(), 0);
 
             auto event2 = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(447.0, 472.0), QPointF(447.0, 472.0),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
@@ -1911,11 +1911,11 @@ private Q_SLOTS:
             QVERIFY(!picker4->isPressed());
             QVERIFY(backendPicker5->isPressed());
             QVERIFY(picker5->isPressed());
-            QCOMPARE(mouseButtonPressedSpy1.count(), 1);
-            QCOMPARE(mouseButtonPressedSpy2.count(), 1);
-            QCOMPARE(mouseButtonPressedSpy3.count(), 0);
-            QCOMPARE(mouseButtonPressedSpy4.count(), 2);
-            QCOMPARE(mouseButtonPressedSpy5.count(), 1);
+            QCOMPARE(mouseButtonPressedSpy1.size(), 1);
+            QCOMPARE(mouseButtonPressedSpy2.size(), 1);
+            QCOMPARE(mouseButtonPressedSpy3.size(), 0);
+            QCOMPARE(mouseButtonPressedSpy4.size(), 2);
+            QCOMPARE(mouseButtonPressedSpy5.size(), 1);
 
             auto event2 = QMouseEvent(QMouseEvent::MouseButtonRelease, QPointF(153.0, 195.0), QPointF(153.0, 195.0),
                                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
@@ -2011,12 +2011,12 @@ private Q_SLOTS:
         QVERIFY(!earlyReturn);
         QVERIFY(backendPicker->isPressed());
         QVERIFY(picker->isPressed());
-        QCOMPARE(mouseButtonPressedSpy.count(), 1);
-        QCOMPARE(mouseMovedSpy.count(), 0);
-        QCOMPARE(mouseButtonReleasedSpy.count(), 0);
-        QCOMPARE(mouseClickedSpy.count(), 0);
-        QCOMPARE(mouseEntered.count(), 0);
-        QCOMPARE(mouseExited.count(), 0);
+        QCOMPARE(mouseButtonPressedSpy.size(), 1);
+        QCOMPARE(mouseMovedSpy.size(), 0);
+        QCOMPARE(mouseButtonReleasedSpy.size(), 0);
+        QCOMPARE(mouseClickedSpy.size(), 0);
+        QCOMPARE(mouseEntered.size(), 0);
+        QCOMPARE(mouseExited.size(), 0);
     }
 
     void checkPriorityPicking()
@@ -2098,21 +2098,21 @@ private Q_SLOTS:
                 QVERIFY(!earlyReturn);
                 QVERIFY(backendPicker1->isPressed());
                 QVERIFY(picker1->isPressed());
-                QCOMPARE(mouseButtonPressedSpy1.count(), 1);
-                QCOMPARE(mouseMovedSpy1.count(), 0);
-                QCOMPARE(mouseButtonReleasedSpy1.count(), 0);
-                QCOMPARE(mouseClickedSpy1.count(), 0);
-                QCOMPARE(mouseEntered1.count(), 0);
-                QCOMPARE(mouseExited1.count(), 0);
+                QCOMPARE(mouseButtonPressedSpy1.size(), 1);
+                QCOMPARE(mouseMovedSpy1.size(), 0);
+                QCOMPARE(mouseButtonReleasedSpy1.size(), 0);
+                QCOMPARE(mouseClickedSpy1.size(), 0);
+                QCOMPARE(mouseEntered1.size(), 0);
+                QCOMPARE(mouseExited1.size(), 0);
 
                 QVERIFY(!backendPicker2->isPressed());
                 QVERIFY(!picker2->isPressed());
-                QCOMPARE(mouseButtonPressedSpy2.count(), 0);
-                QCOMPARE(mouseMovedSpy2.count(), 0);
-                QCOMPARE(mouseButtonReleasedSpy2.count(), 0);
-                QCOMPARE(mouseClickedSpy2.count(), 0);
-                QCOMPARE(mouseEntered2.count(), 0);
-                QCOMPARE(mouseExited2.count(), 0);
+                QCOMPARE(mouseButtonPressedSpy2.size(), 0);
+                QCOMPARE(mouseMovedSpy2.size(), 0);
+                QCOMPARE(mouseButtonReleasedSpy2.size(), 0);
+                QCOMPARE(mouseClickedSpy2.size(), 0);
+                QCOMPARE(mouseEntered2.size(), 0);
+                QCOMPARE(mouseExited2.size(), 0);
             }
 
             {
@@ -2124,21 +2124,21 @@ private Q_SLOTS:
 
                 QVERIFY(!backendPicker1->isPressed());
                 QVERIFY(!picker1->isPressed());
-                QCOMPARE(mouseButtonPressedSpy1.count(), 1);
-                QCOMPARE(mouseMovedSpy1.count(), 0);
-                QCOMPARE(mouseButtonReleasedSpy1.count(), 1);
-                QCOMPARE(mouseClickedSpy1.count(), 1);
-                QCOMPARE(mouseEntered1.count(), 0);
-                QCOMPARE(mouseExited1.count(), 0);
+                QCOMPARE(mouseButtonPressedSpy1.size(), 1);
+                QCOMPARE(mouseMovedSpy1.size(), 0);
+                QCOMPARE(mouseButtonReleasedSpy1.size(), 1);
+                QCOMPARE(mouseClickedSpy1.size(), 1);
+                QCOMPARE(mouseEntered1.size(), 0);
+                QCOMPARE(mouseExited1.size(), 0);
 
                 QVERIFY(!backendPicker2->isPressed());
                 QVERIFY(!picker2->isPressed());
-                QCOMPARE(mouseButtonPressedSpy2.count(), 0);
-                QCOMPARE(mouseMovedSpy2.count(), 0);
-                QCOMPARE(mouseButtonReleasedSpy2.count(), 0);
-                QCOMPARE(mouseClickedSpy2.count(), 0);
-                QCOMPARE(mouseEntered2.count(), 0);
-                QCOMPARE(mouseExited2.count(), 0);
+                QCOMPARE(mouseButtonPressedSpy2.size(), 0);
+                QCOMPARE(mouseMovedSpy2.size(), 0);
+                QCOMPARE(mouseButtonReleasedSpy2.size(), 0);
+                QCOMPARE(mouseClickedSpy2.size(), 0);
+                QCOMPARE(mouseEntered2.size(), 0);
+                QCOMPARE(mouseExited2.size(), 0);
             }
         }
 
@@ -2166,21 +2166,21 @@ private Q_SLOTS:
                 QVERIFY(!earlyReturn);
                 QVERIFY(!backendPicker1->isPressed());
                 QVERIFY(!picker1->isPressed());
-                QCOMPARE(mouseButtonPressedSpy1.count(), 0);
-                QCOMPARE(mouseMovedSpy1.count(), 0);
-                QCOMPARE(mouseButtonReleasedSpy1.count(), 0);
-                QCOMPARE(mouseClickedSpy1.count(), 0);
-                QCOMPARE(mouseEntered1.count(), 0);
-                QCOMPARE(mouseExited1.count(), 0);
+                QCOMPARE(mouseButtonPressedSpy1.size(), 0);
+                QCOMPARE(mouseMovedSpy1.size(), 0);
+                QCOMPARE(mouseButtonReleasedSpy1.size(), 0);
+                QCOMPARE(mouseClickedSpy1.size(), 0);
+                QCOMPARE(mouseEntered1.size(), 0);
+                QCOMPARE(mouseExited1.size(), 0);
 
                 QVERIFY(backendPicker2->isPressed());
                 QVERIFY(picker2->isPressed());
-                QCOMPARE(mouseButtonPressedSpy2.count(), 1);
-                QCOMPARE(mouseMovedSpy2.count(), 0);
-                QCOMPARE(mouseButtonReleasedSpy2.count(), 0);
-                QCOMPARE(mouseClickedSpy2.count(), 0);
-                QCOMPARE(mouseEntered2.count(), 0);
-                QCOMPARE(mouseExited2.count(), 0);
+                QCOMPARE(mouseButtonPressedSpy2.size(), 1);
+                QCOMPARE(mouseMovedSpy2.size(), 0);
+                QCOMPARE(mouseButtonReleasedSpy2.size(), 0);
+                QCOMPARE(mouseClickedSpy2.size(), 0);
+                QCOMPARE(mouseEntered2.size(), 0);
+                QCOMPARE(mouseExited2.size(), 0);
             }
 
             {
@@ -2192,21 +2192,21 @@ private Q_SLOTS:
 
                 QVERIFY(!backendPicker1->isPressed());
                 QVERIFY(!picker1->isPressed());
-                QCOMPARE(mouseButtonPressedSpy1.count(), 0);
-                QCOMPARE(mouseMovedSpy1.count(), 0);
-                QCOMPARE(mouseButtonReleasedSpy1.count(), 0);
-                QCOMPARE(mouseClickedSpy1.count(), 0);
-                QCOMPARE(mouseEntered1.count(), 0);
-                QCOMPARE(mouseExited1.count(), 0);
+                QCOMPARE(mouseButtonPressedSpy1.size(), 0);
+                QCOMPARE(mouseMovedSpy1.size(), 0);
+                QCOMPARE(mouseButtonReleasedSpy1.size(), 0);
+                QCOMPARE(mouseClickedSpy1.size(), 0);
+                QCOMPARE(mouseEntered1.size(), 0);
+                QCOMPARE(mouseExited1.size(), 0);
 
                 QVERIFY(!backendPicker2->isPressed());
                 QVERIFY(!picker2->isPressed());
-                QCOMPARE(mouseButtonPressedSpy2.count(), 1);
-                QCOMPARE(mouseMovedSpy2.count(), 0);
-                QCOMPARE(mouseButtonReleasedSpy2.count(), 1);
-                QCOMPARE(mouseClickedSpy2.count(), 1);
-                QCOMPARE(mouseEntered2.count(), 0);
-                QCOMPARE(mouseExited2.count(), 0);
+                QCOMPARE(mouseButtonPressedSpy2.size(), 1);
+                QCOMPARE(mouseMovedSpy2.size(), 0);
+                QCOMPARE(mouseButtonReleasedSpy2.size(), 1);
+                QCOMPARE(mouseClickedSpy2.size(), 1);
+                QCOMPARE(mouseEntered2.size(), 0);
+                QCOMPARE(mouseExited2.size(), 0);
             }
         }
     }

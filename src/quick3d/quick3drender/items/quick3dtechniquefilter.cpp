@@ -69,7 +69,7 @@ QQmlListProperty<QParameter> Quick3DTechniqueFilter::parameterList()
     };
     auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
         Quick3DTechniqueFilter *techniqueFilter = qobject_cast<Quick3DTechniqueFilter *>(list->object);
-        return techniqueFilter->parentTechniqueFilter()->parameters().count();
+        return techniqueFilter->parentTechniqueFilter()->parameters().size();
     };
     auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
         Quick3DTechniqueFilter *techniqueFilter = qobject_cast<Quick3DTechniqueFilter *>(list->object);

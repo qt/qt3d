@@ -37,7 +37,7 @@ QQmlListProperty<QParameter> Quick3DMaterial::qmlParameters()
     auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
         Quick3DMaterial *mat = qobject_cast<Quick3DMaterial *>(list->object);
         if (mat)
-            return mat->parentMaterial()->parameters().count();
+            return mat->parentMaterial()->parameters().size();
         return 0;
     };
     auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {

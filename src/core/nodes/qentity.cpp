@@ -48,7 +48,7 @@ QStringList dumpSG(const Qt3DCore::QNode *n, int level = 0)
     const auto *entity = qobject_cast<const Qt3DCore::QEntity *>(n);
     if (entity != nullptr) {
         QString res = dumpNode(entity);
-        reply += res.rightJustified(res.length() + level * 2, QLatin1Char(' '));
+        reply += res.rightJustified(res.size() + level * 2, QLatin1Char(' '));
         level++;
     }
 

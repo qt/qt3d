@@ -20,7 +20,7 @@ QSpriteSheetPrivate::QSpriteSheetPrivate()
 
 int QSpriteSheetPrivate::maxIndex() const
 {
-    return m_sprites.count() - 1;
+    return m_sprites.size() - 1;
 }
 
 void QSpriteSheetPrivate::updateSizes()

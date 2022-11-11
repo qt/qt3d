@@ -33,7 +33,7 @@ QQmlListProperty<QTechnique> Quick3DEffect::techniqueList()
     auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
         Quick3DEffect *eff = qobject_cast<Quick3DEffect*>(list->object);
         if (eff)
-            return eff->parentEffect()->techniques().count();
+            return eff->parentEffect()->techniques().size();
         return 0;
     };
     auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
@@ -72,7 +72,7 @@ QQmlListProperty<QParameter> Quick3DEffect::parameterList()
     };
     auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
         Quick3DEffect *effect = qobject_cast<Quick3DEffect *>(list->object);
-        return qobject_cast<QEffect *>(effect->parentEffect())->parameters().count();
+        return qobject_cast<QEffect *>(effect->parentEffect())->parameters().size();
     };
     auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
         Quick3DEffect *effect = qobject_cast<Quick3DEffect *>(list->object);

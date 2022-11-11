@@ -30,7 +30,7 @@ QQmlListProperty<Qt3DAnimation::QMorphTarget> QQuick3DMorphingAnimation::morphTa
     auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
         QQuick3DMorphingAnimation *animation = qobject_cast<QQuick3DMorphingAnimation *>(list->object);
         if (animation)
-            return animation->parentMorphingAnimation()->morphTargetList().count();
+            return animation->parentMorphingAnimation()->morphTargetList().size();
         return 0;
     };
     auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {

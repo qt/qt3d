@@ -219,7 +219,7 @@ QStringList dumpSGFilterState(Qt3DRender::Render::TechniqueManager *manager,
                     res += QLatin1String(" [ %1 ]").arg(filters.join(QLatin1String(" ")));
             }
         }
-        reply += res.rightJustified(res.length() + level * 2, QLatin1Char(' '));
+        reply += res.rightJustified(res.size() + level * 2, QLatin1Char(' '));
         level++;
     }
 

@@ -36,7 +36,7 @@ QQmlListProperty<QLayer> Quick3DLayerFilter::qmlLayers()
     auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
         Quick3DLayerFilter *filter = qobject_cast<Quick3DLayerFilter *>(list->object);
         if (filter)
-            return filter->parentFilter()->layers().count();
+            return filter->parentFilter()->layers().size();
         return 0;
     };
     auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {

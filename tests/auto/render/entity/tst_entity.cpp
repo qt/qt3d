@@ -212,8 +212,8 @@ private slots:
         QVERIFY(backendB->parent() == backendA);
         QVERIFY(backendC->parent() == backendB);
 
-        QCOMPARE(backendA->childrenHandles().count(), 1);
-        QCOMPARE(backendB->childrenHandles().count(), 1);
+        QCOMPARE(backendA->childrenHandles().size(), 1);
+        QCOMPARE(backendB->childrenHandles().size(), 1);
         QVERIFY(backendC->childrenHandles().isEmpty());
 
         QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::AllDirty);
@@ -244,7 +244,7 @@ private slots:
         QVERIFY(backendB->parent() == nullptr);
         QVERIFY(backendC->parent() == backendA);
 
-        QCOMPARE(backendA->childrenHandles().count(), 1);
+        QCOMPARE(backendA->childrenHandles().size(), 1);
         QVERIFY(!backendA->childrenHandles().contains(backendB->handle()));
         QVERIFY(backendB->childrenHandles().isEmpty());
         QVERIFY(backendC->childrenHandles().isEmpty());
@@ -281,7 +281,7 @@ private slots:
         QVERIFY(backendB->parent() == backendA);
         QVERIFY(backendC->parent() == backendA);
 
-        QCOMPARE(backendA->childrenHandles().count(), 2);
+        QCOMPARE(backendA->childrenHandles().size(), 2);
         QVERIFY(backendB->childrenHandles().isEmpty());
         QVERIFY(backendC->childrenHandles().isEmpty());
 
@@ -297,7 +297,7 @@ private slots:
         QVERIFY(backendB->parent() == backendA);
         QVERIFY(backendC->parent() == nullptr);
 
-        QCOMPARE(backendA->childrenHandles().count(), 1);
+        QCOMPARE(backendA->childrenHandles().size(), 1);
         QVERIFY(!backendA->childrenHandles().contains(backendC->handle()));
         QVERIFY(backendB->childrenHandles().isEmpty());
         QVERIFY(backendC->childrenHandles().isEmpty());
@@ -558,8 +558,8 @@ private slots:
         const auto r2 = v2.apply(backendA);
 
         // THEN
-        QCOMPARE(r1.count(), 3);
-        QCOMPARE(r2.count(), 0);
+        QCOMPARE(r1.size(), 3);
+        QCOMPARE(r2.size(), 0);
     }
 
 private:

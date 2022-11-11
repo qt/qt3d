@@ -53,7 +53,7 @@ private Q_SLOTS:
             QVERIFY(spy.isValid());
             QCOMPARE(animator.clip(), newValue);
             QCOMPARE(newValue->parent(), &animator);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -61,7 +61,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(animator.clip(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
 
         {
@@ -74,7 +74,7 @@ private Q_SLOTS:
             QVERIFY(spy.isValid());
             QCOMPARE(animator.channelMapper(), newValue);
             QCOMPARE(newValue->parent(), &animator);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -82,7 +82,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(animator.channelMapper(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
 
         {
@@ -95,7 +95,7 @@ private Q_SLOTS:
             QVERIFY(spy.isValid());
             QCOMPARE(animator.clock(), clock);
             QCOMPARE(clock->parent(), &animator);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -103,7 +103,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(animator.clock(), clock);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
 
         {
@@ -115,7 +115,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(animator.loopCount(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -123,7 +123,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(animator.loopCount(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
     }
 

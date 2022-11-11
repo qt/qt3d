@@ -897,7 +897,7 @@ QByteArray QShaderProgramPrivate::deincludify(const QByteArray &contents, const 
 {
     QByteArrayList lines = contents.split('\n');
     const QByteArray includeDirective = QByteArrayLiteral("#pragma include");
-    for (int i = 0; i < lines.count(); ++i) {
+    for (int i = 0; i < lines.size(); ++i) {
         const auto line = lines[i].simplified();
         if (line.startsWith(includeDirective)) {
             const QString includePartialPath = QString::fromUtf8(line.mid(includeDirective.size() + 1));

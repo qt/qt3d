@@ -54,7 +54,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderGeometry.peerId(), geometry.id());
         QCOMPARE(renderGeometry.isDirty(), true);
-        QCOMPARE(renderGeometry.attributes().count(), 4);
+        QCOMPARE(renderGeometry.attributes().size(), 4);
         QCOMPARE(renderGeometry.boundingPositionAttribute(), attr1.id());
 
         Qt3DCore::QNodeIdVector attribs = Qt3DCore::qIdsForNodes(geometry.attributes());
@@ -134,7 +134,7 @@ private Q_SLOTS:
         renderGeometry.syncFromFrontEnd(&geometry, false);
 
         // THEN
-        QCOMPARE(renderGeometry.attributes().count(), 1);
+        QCOMPARE(renderGeometry.attributes().size(), 1);
         QVERIFY(renderGeometry.isDirty());
         QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::GeometryDirty);
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
@@ -147,7 +147,7 @@ private Q_SLOTS:
         renderGeometry.syncFromFrontEnd(&geometry, false);
 
         // THEN
-        QCOMPARE(renderGeometry.attributes().count(), 0);
+        QCOMPARE(renderGeometry.attributes().size(), 0);
         QVERIFY(renderGeometry.isDirty());
         QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::GeometryDirty);
         renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
@@ -179,7 +179,7 @@ private Q_SLOTS:
         renderGeometry.updateExtent(QVector3D(-1.0f, -1.0f, -1.0f), QVector3D(1.0f, 1.0f, 1.0f));
 
         // THEN
-        QCOMPARE(arbiter.dirtyNodes().count(), 0);
+        QCOMPARE(arbiter.dirtyNodes().size(), 0);
 
         QCOMPARE(renderGeometry.min(), QVector3D(-1.0f, -1.0f, -1.0f));
         QCOMPARE(renderGeometry.max(), QVector3D(1.0f, 1.0f, 1.0f));

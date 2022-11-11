@@ -42,7 +42,7 @@ void tst_qtext2dentity::checkChangeArbiter()
     auto rootEntity = view.engine()->aspectEngine()->rootEntity();
     QVERIFY(rootEntity != nullptr);
     auto atlases = lookupNodeByClassName(rootEntity.data(), "Qt3DExtras::QTextureAtlas");
-    QVERIFY(atlases.length() == 1);
+    QVERIFY(atlases.size() == 1);
     auto atlas = atlases[0];
     QTRY_VERIFY(Qt3DCore::QNodePrivate::get(atlas)->m_changeArbiter);
 }

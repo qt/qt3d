@@ -32,7 +32,7 @@ QQmlListProperty<Qt3DCore::QTransform> QQuick3DKeyframeAnimation::keyframes()
         QQuick3DKeyframeAnimation *keyframeAnimation
             = qobject_cast<QQuick3DKeyframeAnimation *>(list->object);
         if (keyframeAnimation)
-            return keyframeAnimation->parentKeyframeAnimation()->keyframeList().count();
+            return keyframeAnimation->parentKeyframeAnimation()->keyframeList().size();
         return 0;
     };
     auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {

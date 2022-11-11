@@ -270,7 +270,7 @@ void CommandExecuter::performAsynchronousCommandExecution(const std::vector<Rend
 QVariant CommandExecuter::executeCommand(const QStringList &args)
 {
     // Note: The replies will be deleted by the AspectCommandDebugger
-    if (args.length() > 0 &&
+    if (args.size() > 0 &&
             (args.first() == QLatin1String("glinfo") ||
              args.first() == QLatin1String("rendercommands"))) {
         auto reply = new Qt3DCore::Debug::AsynchronousCommandReply(args.first());

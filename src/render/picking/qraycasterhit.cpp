@@ -194,7 +194,7 @@ QString QRayCasterHit::toString()
     QString res;
     if (!d->m_entity)
         return QLatin1String("{}");
-    if (d->m_entity->objectName().length())
+    if (d->m_entity->objectName().size())
         res = d->m_entity->objectName();
     else
         res = QLatin1String("Entity");

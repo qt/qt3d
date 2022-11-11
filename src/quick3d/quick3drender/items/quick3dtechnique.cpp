@@ -67,7 +67,7 @@ QQmlListProperty<QParameter> Quick3DTechnique::parameterList()
     };
     auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
         Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
-        return technique->parentTechnique()->parameters().count();
+        return technique->parentTechnique()->parameters().size();
     };
     auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
         Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);

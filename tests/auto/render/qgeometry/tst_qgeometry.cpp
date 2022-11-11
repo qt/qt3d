@@ -115,8 +115,8 @@ private Q_SLOTS:
         dNode->setExtent(minExt, maxExt);
 
         // THEN
-        QCOMPARE(spyMinExtent.count(), 1);
-        QCOMPARE(spyMaxExtent.count(), 1);
+        QCOMPARE(spyMinExtent.size(), 1);
+        QCOMPARE(spyMaxExtent.size(), 1);
         QCOMPARE(geometry->minExtent(), minExt);
         QCOMPARE(geometry->maxExtent(), maxExt);
 
@@ -127,8 +127,8 @@ private Q_SLOTS:
         dNode->setExtent(minExt, maxExt);
 
         // THEN
-        QCOMPARE(spyMinExtent.count(), 0);
-        QCOMPARE(spyMaxExtent.count(), 0);
+        QCOMPARE(spyMinExtent.size(), 0);
+        QCOMPARE(spyMaxExtent.size(), 0);
     }
 };
 

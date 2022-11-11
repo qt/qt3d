@@ -77,7 +77,7 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(light.irradiance(), texture);
             QCOMPARE(shaderData->property("irradiance").value<Qt3DRender::QAbstractTexture*>(), texture);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
             QCOMPARE(spy.takeFirst().first().value<Qt3DRender::QAbstractTexture*>(), texture);
 
             // WHEN
@@ -86,7 +86,7 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(light.irradiance(), texture);
             QCOMPARE(shaderData->property("irradiance").value<Qt3DRender::QAbstractTexture*>(), texture);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
 
             // WHEN
             light.setIrradiance(nullptr);
@@ -94,7 +94,7 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(light.irradiance(), nullptr);
             QCOMPARE(shaderData->property("irradiance").value<Qt3DRender::QAbstractTexture*>(), nullptr);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
             QCOMPARE(spy.takeFirst().first().value<Qt3DRender::QAbstractTexture*>(), nullptr);
         }
         {
@@ -107,7 +107,7 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(light.irradiance(), texture);
             QCOMPARE(shaderData->property("irradiance").value<Qt3DRender::QAbstractTexture*>(), texture);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
             QCOMPARE(spy.takeFirst().first().value<Qt3DRender::QAbstractTexture*>(), texture);
 
             // WHEN
@@ -116,7 +116,7 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(light.irradiance(), nullptr);
             QCOMPARE(shaderData->property("irradiance").value<Qt3DRender::QAbstractTexture*>(), nullptr);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
             QCOMPARE(spy.takeFirst().first().value<Qt3DRender::QAbstractTexture*>(), nullptr);
         }
         {
@@ -129,7 +129,7 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(light.irradiance(), texture);
             QCOMPARE(shaderData->property("irradiance").value<Qt3DRender::QAbstractTexture*>(), texture);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
             QCOMPARE(spy.takeFirst().first().value<Qt3DRender::QAbstractTexture*>(), texture);
 
             // WHEN
@@ -138,7 +138,7 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(light.irradiance(), nullptr);
             QCOMPARE(shaderData->property("irradiance").value<Qt3DRender::QAbstractTexture*>(), nullptr);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
             QCOMPARE(spy.takeFirst().first().value<Qt3DRender::QAbstractTexture*>(), nullptr);
         }
         {
@@ -153,7 +153,7 @@ private Q_SLOTS:
             QCOMPARE(shaderData->property("irradiance").value<Qt3DRender::QAbstractTexture*>(), texture);
             QCOMPARE(shaderData->property("irradianceSize").value<QVector3D>(),
                      QVector3D(texture->width(), texture->height(), texture->depth()));
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
             QCOMPARE(spy.takeFirst().first().value<Qt3DRender::QAbstractTexture*>(), texture);
 
             // WHEN
@@ -183,7 +183,7 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(light.irradiance(), nullptr);
             QCOMPARE(shaderData->property("irradiance").value<Qt3DRender::QAbstractTexture*>(), nullptr);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
             QCOMPARE(spy.takeFirst().first().value<Qt3DRender::QAbstractTexture*>(), nullptr);
 
             // THEN
@@ -200,7 +200,7 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(light.specular(), texture);
             QCOMPARE(shaderData->property("specular").value<Qt3DRender::QAbstractTexture*>(), texture);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
             QCOMPARE(spy.takeFirst().first().value<Qt3DRender::QAbstractTexture*>(), texture);
 
             // WHEN
@@ -209,7 +209,7 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(light.specular(), texture);
             QCOMPARE(shaderData->property("specular").value<Qt3DRender::QAbstractTexture*>(), texture);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
 
             // WHEN
             light.setSpecular(nullptr);
@@ -217,7 +217,7 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(light.specular(), nullptr);
             QCOMPARE(shaderData->property("specular").value<Qt3DRender::QAbstractTexture*>(), nullptr);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
             QCOMPARE(spy.takeFirst().first().value<Qt3DRender::QAbstractTexture*>(), nullptr);
         }
         {
@@ -230,7 +230,7 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(light.specular(), texture);
             QCOMPARE(shaderData->property("specular").value<Qt3DRender::QAbstractTexture*>(), texture);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
             QCOMPARE(spy.takeFirst().first().value<Qt3DRender::QAbstractTexture*>(), texture);
 
             // WHEN
@@ -239,7 +239,7 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(light.specular(), nullptr);
             QCOMPARE(shaderData->property("specular").value<Qt3DRender::QAbstractTexture*>(), nullptr);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
             QCOMPARE(spy.takeFirst().first().value<Qt3DRender::QAbstractTexture*>(), nullptr);
         }
         {
@@ -252,7 +252,7 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(light.specular(), texture);
             QCOMPARE(shaderData->property("specular").value<Qt3DRender::QAbstractTexture*>(), texture);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
             QCOMPARE(spy.takeFirst().first().value<Qt3DRender::QAbstractTexture*>(), texture);
 
             // WHEN
@@ -261,7 +261,7 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(light.specular(), nullptr);
             QCOMPARE(shaderData->property("specular").value<Qt3DRender::QAbstractTexture*>(), nullptr);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
             QCOMPARE(spy.takeFirst().first().value<Qt3DRender::QAbstractTexture*>(), nullptr);
         }
         {
@@ -276,7 +276,7 @@ private Q_SLOTS:
             QCOMPARE(shaderData->property("specular").value<Qt3DRender::QAbstractTexture*>(), texture);
             QCOMPARE(shaderData->property("specularSize").value<QVector3D>(),
                      QVector3D(texture->width(), texture->height(), texture->depth()));
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
             QCOMPARE(spy.takeFirst().first().value<Qt3DRender::QAbstractTexture*>(), texture);
 
             // WHEN
@@ -306,7 +306,7 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(light.specular(), nullptr);
             QCOMPARE(shaderData->property("specular").value<Qt3DRender::QAbstractTexture*>(), nullptr);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
             QCOMPARE(spy.takeFirst().first().value<Qt3DRender::QAbstractTexture*>(), nullptr);
 
             // THEN

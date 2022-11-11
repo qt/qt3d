@@ -47,7 +47,7 @@ QQmlListProperty<QObject> Quick3DNode::data()
     };
     auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
         Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
-        return self->parentNode()->children().count();
+        return self->parentNode()->children().size();
     };
     auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
         Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
@@ -87,7 +87,7 @@ QQmlListProperty<QNode> Quick3DNode::childNodes()
     };
     auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
         Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
-        return self->parentNode()->children().count();
+        return self->parentNode()->children().size();
     };
     auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
         Quick3DNode *self = static_cast<Quick3DNode *>(list->object);

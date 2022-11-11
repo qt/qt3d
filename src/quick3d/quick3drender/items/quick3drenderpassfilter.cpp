@@ -32,7 +32,7 @@ QQmlListProperty<QFilterKey> Quick3DRenderPassFilter::includeList()
     auto countFunction = [](QQmlListProperty<QFilterKey> *list) -> qt_size_type {
         auto self = qobject_cast<Quick3DRenderPassFilter *>(list->object);
         if (self)
-            return self->parentRenderPassFilter()->matchAny().count();
+            return self->parentRenderPassFilter()->matchAny().size();
         return 0;
     };
     auto atFunction = [](QQmlListProperty<QFilterKey> *list, qt_size_type index) -> QFilterKey * {
@@ -70,7 +70,7 @@ QQmlListProperty<QParameter> Quick3DRenderPassFilter::parameterList()
     auto countFunction = [](QQmlListProperty<QParameter> *list) -> qt_size_type {
         auto self = qobject_cast<Quick3DRenderPassFilter *>(list->object);
         if (self)
-            return self->parentRenderPassFilter()->parameters().count();
+            return self->parentRenderPassFilter()->parameters().size();
         return 0;
     };
     auto atFunction = [](QQmlListProperty<QParameter> *list, qt_size_type index) -> QParameter * {

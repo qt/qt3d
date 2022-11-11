@@ -96,7 +96,7 @@ void tst_quick3dnodeinstantiator::createNested()
     QVERIFY(root != 0);
 
     auto instantiators = root->findChildren<Quick3DNodeInstantiator*>();
-    QCOMPARE(instantiators.count(), 4);
+    QCOMPARE(instantiators.size(), 4);
 
     const auto outerInstantiator = instantiators.takeFirst();
     QCOMPARE(outerInstantiator->isActive(), true);
@@ -151,19 +151,19 @@ void tst_quick3dnodeinstantiator::activeProperty()
     QCOMPARE(instantiator->count(), 0);
     QVERIFY(instantiator->delegate()->isReady());
 
-    QCOMPARE(activeSpy.count(), 0);
-    QCOMPARE(countSpy.count(), 0);
-    QCOMPARE(objectSpy.count(), 0);
-    QCOMPARE(modelSpy.count(), 0);
+    QCOMPARE(activeSpy.size(), 0);
+    QCOMPARE(countSpy.size(), 0);
+    QCOMPARE(objectSpy.size(), 0);
+    QCOMPARE(modelSpy.size(), 0);
 
     instantiator->setActive(true);
     QCOMPARE(instantiator->isActive(), true);
     QCOMPARE(instantiator->count(), 1);
 
-    QCOMPARE(activeSpy.count(), 1);
-    QCOMPARE(countSpy.count(), 1);
-    QCOMPARE(objectSpy.count(), 1);
-    QCOMPARE(modelSpy.count(), 0);
+    QCOMPARE(activeSpy.size(), 1);
+    QCOMPARE(countSpy.size(), 1);
+    QCOMPARE(objectSpy.size(), 1);
+    QCOMPARE(modelSpy.size(), 0);
 
     QObject *object = instantiator->object();
     QVERIFY(object);
@@ -186,18 +186,18 @@ void tst_quick3dnodeinstantiator::intModelChange()
     QSignalSpy modelSpy(instantiator, SIGNAL(modelChanged()));
     QCOMPARE(instantiator->count(), 10);
 
-    QCOMPARE(activeSpy.count(), 0);
-    QCOMPARE(countSpy.count(), 0);
-    QCOMPARE(objectSpy.count(), 0);
-    QCOMPARE(modelSpy.count(), 0);
+    QCOMPARE(activeSpy.size(), 0);
+    QCOMPARE(countSpy.size(), 0);
+    QCOMPARE(objectSpy.size(), 0);
+    QCOMPARE(modelSpy.size(), 0);
 
     instantiator->setModel(QVariant(2));
     QCOMPARE(instantiator->count(), 2);
 
-    QCOMPARE(activeSpy.count(), 0);
-    QCOMPARE(countSpy.count(), 1);
-    QCOMPARE(objectSpy.count(), 2);
-    QCOMPARE(modelSpy.count(), 1);
+    QCOMPARE(activeSpy.size(), 0);
+    QCOMPARE(countSpy.size(), 1);
+    QCOMPARE(objectSpy.size(), 2);
+    QCOMPARE(modelSpy.size(), 1);
 
     for (int i = 0; i < 2; i++) {
         QObject *object = instantiator->objectAt(i);

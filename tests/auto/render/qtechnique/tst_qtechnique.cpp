@@ -110,7 +110,7 @@ private Q_SLOTS:
             // THEN
             QVERIFY(spy.isValid());
             QCOMPARE(technique.graphicsApiFilter()->majorVersion(), 3);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -118,14 +118,14 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(technique.graphicsApiFilter()->majorVersion(), 3);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
 
             // WHEN
             technique.graphicsApiFilter()->setMinorVersion(2);
 
             // THEN
             QCOMPARE(technique.graphicsApiFilter()->minorVersion(), 2);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -133,14 +133,14 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(technique.graphicsApiFilter()->minorVersion(), 2);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
 
             // WHEN
             technique.graphicsApiFilter()->setProfile(Qt3DRender::QGraphicsApiFilter::CoreProfile);
 
             // THEN
             QCOMPARE(technique.graphicsApiFilter()->profile(), Qt3DRender::QGraphicsApiFilter::CoreProfile);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -148,7 +148,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(technique.graphicsApiFilter()->profile(), Qt3DRender::QGraphicsApiFilter::CoreProfile);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
         }
     }
 

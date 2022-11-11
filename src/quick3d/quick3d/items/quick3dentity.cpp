@@ -61,7 +61,7 @@ QQmlListProperty<QComponent> Quick3DEntity::componentList()
     };
     auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
         Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
-        return self->parentEntity()->components().count();
+        return self->parentEntity()->components().size();
     };
     auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
         Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);

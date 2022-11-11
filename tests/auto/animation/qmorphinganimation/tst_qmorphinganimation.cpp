@@ -59,7 +59,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(morphingAnimation.target(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -67,7 +67,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(morphingAnimation.target(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
 
         }
         {
@@ -78,7 +78,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(morphingAnimation.targetName(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -86,7 +86,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(morphingAnimation.targetName(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
 
         }
         {
@@ -98,7 +98,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(morphingAnimation.method(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -106,7 +106,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(morphingAnimation.method(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
 
         }
         {
@@ -117,7 +117,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(morphingAnimation.easing(), newValue);
-            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.size(), 1);
 
             // WHEN
             spy.clear();
@@ -125,7 +125,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(morphingAnimation.easing(), newValue);
-            QCOMPARE(spy.count(), 0);
+            QCOMPARE(spy.size(), 0);
 
         }
     }

@@ -29,7 +29,7 @@ QQmlListProperty<QAbstractActionInput> Quick3DInputChord::qmlActionInputs()
     };
     auto countFunction = [](QQmlListProperty<ListContentType> *list) -> qt_size_type {
         Quick3DInputChord *action = qobject_cast<Quick3DInputChord *>(list->object);
-        return action->parentChord()->chords().count();
+        return action->parentChord()->chords().size();
     };
     auto atFunction = [](QQmlListProperty<ListContentType> *list, qt_size_type index) -> ListContentType * {
         Quick3DInputChord *action = qobject_cast<Quick3DInputChord *>(list->object);

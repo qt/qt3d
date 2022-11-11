@@ -144,7 +144,7 @@ private Q_SLOTS:
             job.run();
 
             // THEN -> PhysicalDeviceWrapper::setDevice should not have been called
-            QCOMPARE(arbiter.dirtyNodes().count(), 0);
+            QCOMPARE(arbiter.dirtyNodes().size(), 0);
         }
     }
 
