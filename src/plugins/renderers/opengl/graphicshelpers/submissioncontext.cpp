@@ -487,6 +487,10 @@ bool SubmissionContext::beginDrawing(QSurface *surface)
     }
 
     m_boundArrayBuffer = nullptr;
+
+    // Record the default FBO value as there's no guarantee it remains constant over time
+    m_defaultFBO = m_gl->defaultFramebufferObject();
+
     return true;
 }
 
