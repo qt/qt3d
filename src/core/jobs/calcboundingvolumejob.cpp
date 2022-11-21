@@ -140,9 +140,11 @@ struct ReduceUpdateBoundFunctor
 {
     void operator ()(std::vector<BoundingVolumeComputeResult> &result, const std::vector<BoundingVolumeComputeResult> &values)
     {
-        result.insert(result.end(),
-                      std::make_move_iterator(values.begin()),
-                      std::make_move_iterator(values.end()));
+        for (const auto &value : values) {
+            if (value.valid()) {
+                result.push_back(value);
+            }
+        }
     }
 };
 
