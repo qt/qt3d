@@ -3,7 +3,7 @@
 
 #include "matrix4x4_sse_p.h"
 
-#ifdef QT_COMPILER_SUPPORTS_SSE2
+#ifdef __SSE2__
 
 QT_BEGIN_NAMESPACE
 
@@ -25,4 +25,4 @@ QDebug operator<<(QDebug dbg, const Matrix4x4_SSE &m)
 
 QT_END_NAMESPACE
 
-#endif // QT_COMPILER_SUPPORTS_SSE2
+#endif // __SSE2__

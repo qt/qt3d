@@ -68,26 +68,9 @@ qt_feature("qt3d-animation" PUBLIC
     PURPOSE "Use the 3D Animation Aspect library"
     CONDITION QT_FEATURE_qt3d_render
 )
-qt_feature("qt3d-simd-sse2" PRIVATE
-    LABEL "Use SSE2 instructions"
-    PURPOSE "Use SSE2 SIMD instructions to accelerate matrix operations"
-    AUTODETECT QT_FEATURE_sse2
-    ENABLE INPUT_qt3d_simd STREQUAL 'sse2' OR INPUT_qt3d_simd STREQUAL 'avx2'
-    DISABLE INPUT_qt3d_simd STREQUAL 'no' OR ( TEST_architecture_arch STREQUAL i386 )
-)
-qt_feature("qt3d-simd-avx2" PRIVATE
-    LABEL "Use AVX2 instructions"
-    PURPOSE "Use AVX2 SIMD instructions to accelerate matrix operations"
-    AUTODETECT TEST_arch_${TEST_architecture_arch}_subarch_avx2
-    CONDITION QT_FEATURE_avx2
-    ENABLE INPUT_qt3d_simd STREQUAL 'avx2'
-    DISABLE INPUT_qt3d_simd STREQUAL 'sse2' OR INPUT_qt3d_simd STREQUAL 'no' OR ( TEST_architecture_arch STREQUAL i386 )
-)
 qt_configure_add_summary_section(NAME "Qt 3D")
 qt_configure_add_summary_entry(ARGS "qt3d-assimp")
 qt_configure_add_summary_entry(ARGS "qt3d-system-assimp")
-qt_configure_add_summary_entry(ARGS "qt3d-simd-sse2")
-qt_configure_add_summary_entry(ARGS "qt3d-simd-avx2")
 qt_configure_add_summary_section(NAME "Aspects")
 qt_configure_add_summary_entry(ARGS "qt3d-render")
 qt_configure_add_summary_entry(ARGS "qt3d-input")

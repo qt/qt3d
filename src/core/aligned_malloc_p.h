@@ -18,15 +18,15 @@
 #include <QtCore/private/qsimd_p.h>
 #include <Qt3DCore/private/qt3dcore-config_p.h>
 
-#if QT_CONFIG(qt3d_simd_avx2) && defined(__AVX2__) && defined(QT_COMPILER_SUPPORTS_AVX2)
+#if defined(__AVX2__)
 # define QT3D_ALIGNED_MALLOC(s) _mm_malloc(s, 32)
-#elif QT_CONFIG(qt3d_simd_sse2) && defined(__SSE2__) && defined(QT_COMPILER_SUPPORTS_SSE2)
+#elif defined(__SSE2__)
 # define QT3D_ALIGNED_MALLOC(s) _mm_malloc(s, 16)
 #else
     #define QT3D_ALIGNED_MALLOC(s) malloc(s)
 #endif
 
-#if (QT_CONFIG(qt3d_simd_avx2) && defined(__AVX2__) && defined(QT_COMPILER_SUPPORTS_AVX2)) || (QT_CONFIG(qt3d_simd_sse2) && defined(__SSE2__) && defined(QT_COMPILER_SUPPORTS_SSE2))
+#if defined(__SSE2__)
 # define QT3D_ALIGNED_FREE(ptr) _mm_free(ptr)
 #else
 # define QT3D_ALIGNED_FREE(ptr) free(ptr)

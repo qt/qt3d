@@ -9,6 +9,7 @@ using namespace Qt3DCore;
 class tst_Vector3D_SSE: public QObject
 {
     Q_OBJECT
+#ifdef __SSE2__
 private Q_SLOTS:
     void defaultConstruction()
     {
@@ -787,6 +788,7 @@ private Q_SLOTS:
             QVERIFY(!v0.isNull());
         }
     }
+#endif // __SSE2__
 };
 
 QTEST_APPLESS_MAIN(tst_Vector3D_SSE)

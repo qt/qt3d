@@ -16,11 +16,9 @@
 //
 
 #include <private/qsimd_p.h>
-#include <Qt3DCore/private/qt3dcore-config_p.h>
 
-// We check if sse config option was enabled as it could
-// be disabled even though a given platform supports SSE2 instructions
-#if QT_CONFIG(qt3d_simd_sse2) && (defined(__AVX2__) || defined(__SSE2__)) && defined(QT_COMPILER_SUPPORTS_SSE2)
+// Check if we can use the optimized version of QVector3D
+#if defined(__SSE2__)
 
 #include <Qt3DCore/private/vector4d_sse_p.h>
 
