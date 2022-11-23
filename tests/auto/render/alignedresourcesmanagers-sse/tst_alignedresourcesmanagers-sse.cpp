@@ -35,6 +35,7 @@ class tst_AlignedResourcesManagersSSE: public QObject
 {
     Q_OBJECT
 
+#ifdef __SSE2__
 private Q_SLOTS:
 
     void checkAllocationAndAlignmentMatrix4x4()
@@ -88,9 +89,14 @@ private Q_SLOTS:
             // WHEN
             Qt3DRender::Render::CameraLens *lens = manager.data(handle);
             // THEN
+#  ifdef __AVX2__
+            QCOMPARE(int((uintptr_t)lens % 32), 0);
+#  else
             QCOMPARE(int((uintptr_t)lens % 16), 0);
+#  endif
         }
     }
+#endif // __SSE2__
 };
 
 QTEST_MAIN(tst_AlignedResourcesManagersSSE)

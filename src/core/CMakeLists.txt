@@ -6,6 +6,7 @@
 
 qt_internal_add_module(3DCore
     SOURCES
+        aligned_malloc_p.h
         aspect/qcoreaspect.cpp aspect/qcoreaspect.h aspect/qcoreaspect_p.h
         aspect/qcoresettings.cpp aspect/qcoresettings.h aspect/qcoresettings_p.h
         aspect/coresettings.cpp aspect/coresettings_p.h
@@ -50,6 +51,7 @@ qt_internal_add_module(3DCore
         qurlhelper.cpp qurlhelper_p.h
         resources/qhandle_p.h
         resources/qloadgltf_p.h
+        resources/qresourcemanager.cpp resources/qresourcemanager_p.h
         services/nullservices_p.h
         services/qabstractframeadvanceservice.cpp services/qabstractframeadvanceservice_p.h
         services/qabstractframeadvanceservice_p_p.h
@@ -106,78 +108,17 @@ qt_internal_extend_target(3DCore CONDITION gcov
         "-ftest-coverage"
 )
 
-function(qt3d_add_simd_part target)
-    qt_parse_all_arguments(arg "qt3d_add_simd_part" "" ""
-       "NAME;SIMD;${__default_private_args};COMPILE_FLAGS" ${ARGN})
-    if ("x${arg_SIMD}" STREQUAL x)
-        message(FATAL_ERROR "qt3d_add_simd_part needs a SIMD type to be set.")
-    endif()
-
-    set(condition "QT_FEATURE_${arg_SIMD}")
-    if("${arg_SIMD}" STREQUAL arch_haswell)
-        set(condition "TEST_subarch_avx2 AND TEST_subarch_bmi AND TEST_subarch_bmi2 AND TEST_subarch_f16c AND TEST_subarch_fma AND TEST_subarch_lzcnt AND TEST_subarch_popcnt")
-    endif()
-
-    qt_evaluate_config_expression(result ${condition})
-    if(${result})
-        if(QT_CMAKE_DEBUG_EXTEND_TARGET)
-            message("qt3d_add_simd_part(${target} SIMD ${arg_SIMD} ...): Evaluated")
-        endif()
-        string(TOUPPER "QT_CFLAGS_${arg_SIMD}" simd_flags)
-
-        foreach(source IN LISTS arg_SOURCES)
-            set_property(SOURCE "${source}" APPEND
-                PROPERTY COMPILE_OPTIONS
-                ${${simd_flags}}
-                ${arg_COMPILE_FLAGS}
-            )
-        endforeach()
-        set_source_files_properties(${arg_SOURCES} PROPERTIES SKIP_PRECOMPILE_HEADERS TRUE)
-        target_sources(${target} PRIVATE ${arg_SOURCES})
-        target_compile_options("${target}Private" INTERFACE ${${simd_flags}} ${arg_COMPILE_FLAGS})
-        target_compile_definitions("${target}Private" INTERFACE ${simd_flags})
-    else()
-        if(QT_CMAKE_DEBUG_EXTEND_TARGET)
-            message("qt3d_add_simd_part(${target} SIMD ${arg_SIMD} ...): Skipped")
-        endif()
-    endif()
-endfunction()
-
-if(QT_FEATURE_qt3d_simd_sse2)
-    qt3d_add_simd_part(3DCore SIMD sse2
-        SOURCES
-            transforms/matrix4x4_sse.cpp transforms/matrix4x4_sse_p.h
-    )
-endif()
-
-if(QT_FEATURE_qt3d_simd_sse2 AND NOT QT_FEATURE_qt3d_simd_avx2)
-    qt3d_add_simd_part(3DCore SIMD sse2
-        SOURCES
-            transforms/vector3d_sse.cpp transforms/vector3d_sse_p.h
-            transforms/vector4d_sse.cpp transforms/vector4d_sse_p.h
-            aligned_malloc_p.h
-            vector_helper_p.h
-            resources/qresourcemanager.cpp resources/qresourcemanager_p.h
-    )
-endif()
-
-if(QT_FEATURE_qt3d_simd_avx2)
-    qt3d_add_simd_part(3DCore SIMD arch_haswell
-        SOURCES
-            transforms/matrix4x4_avx2.cpp transforms/matrix4x4_avx2_p.h
-            transforms/vector3d_sse.cpp transforms/vector3d_sse_p.h
-            transforms/vector4d_sse.cpp transforms/vector4d_sse_p.h
-            aligned_malloc_p.h
-            resources/qresourcemanager.cpp resources/qresourcemanager_p.h
-    )
-endif()
-
-qt_internal_extend_target(3DCore
-    CONDITION
-        NOT QT_FEATURE_qt3d_simd_sse2 AND NOT QT_FEATURE_qt3d_simd_avx2
+qt_internal_extend_target(3DCore CONDITION
+    CONDITION ( TEST_architecture_arch STREQUAL i386 ) OR
+        ( TEST_architecture_arch STREQUAL x86_64 ) OR
+        ( CMAKE_OSX_ARCHITECTURES MATCHES "x86_64" ) OR
+        ( CMAKE_OSX_ARCHITECTURES MATCHES "x86_64h" ) OR
+        ( CMAKE_OSX_ARCHITECTURES MATCHES "i386" )
     SOURCES
-        aligned_malloc_p.h
-        resources/qresourcemanager.cpp resources/qresourcemanager_p.h
+        transforms/matrix4x4_avx2_p.h
+        transforms/matrix4x4_sse.cpp transforms/matrix4x4_sse_p.h
+        transforms/vector3d_sse.cpp transforms/vector3d_sse_p.h
+        transforms/vector4d_sse.cpp transforms/vector4d_sse_p.h
 )
 
 qt_internal_add_docs(3DCore

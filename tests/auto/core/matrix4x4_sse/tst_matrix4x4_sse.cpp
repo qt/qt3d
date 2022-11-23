@@ -11,6 +11,7 @@ class tst_Matrix4x4_SSE: public QObject
 {
     Q_OBJECT
 
+#ifdef __SSE2__
 private Q_SLOTS:
 
     void defaultConstruction()
@@ -496,6 +497,7 @@ private Q_SLOTS:
             QCOMPARE(resultingVec.toQVector3D(), tmpMat.mapVector(tmpVec3));
         }
     }
+#endif // __SSE2__
 };
 
 QTEST_MAIN(tst_Matrix4x4_SSE)

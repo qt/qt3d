@@ -4,7 +4,7 @@
 #include "vector4d_sse_p.h"
 #include <QDebug>
 
-#ifdef QT_COMPILER_SUPPORTS_SSE2
+#ifdef __SSE2__
 
 QT_BEGIN_NAMESPACE
 
@@ -20,4 +20,4 @@ QDebug operator<<(QDebug dbg, const Vector4D_SSE &v)
 
 QT_END_NAMESPACE
 
-#endif // QT_COMPILER_SUPPORTS_SSE2
+#endif // __SSE2__

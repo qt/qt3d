@@ -20,7 +20,7 @@
 #include <private/qsimd_p.h>
 #include <QMatrix4x4>
 
-#ifdef QT_COMPILER_SUPPORTS_AVX2
+#ifdef __AVX2__
 
 // Some GCC versions don't have _mm256_set_m128 available
 // Work around that
@@ -33,22 +33,22 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class Matrix4x4_AVX2
+class Matrix4x4_SSE
 {
 public:
 
-    Q_ALWAYS_INLINE Matrix4x4_AVX2() { setToIdentity(); }
-    explicit Q_ALWAYS_INLINE Matrix4x4_AVX2(Qt::Initialization) {}
+    Q_ALWAYS_INLINE Matrix4x4_SSE() { setToIdentity(); }
+    explicit Q_ALWAYS_INLINE Matrix4x4_SSE(Qt::Initialization) {}
 
     // Assumes data is 32 bytes aligned (and in column major order)
-    explicit Q_ALWAYS_INLINE Matrix4x4_AVX2(float *data)
+    explicit Q_ALWAYS_INLINE Matrix4x4_SSE(float *data)
     {
         m_col12 = _mm256_load_ps(data);
         m_col34 = _mm256_load_ps(data + 8);
     }
 
     // QMatrix4x4::constData returns in column major order
-    explicit Q_ALWAYS_INLINE Matrix4x4_AVX2(const QMatrix4x4 &mat)
+    explicit Q_ALWAYS_INLINE Matrix4x4_SSE(const QMatrix4x4 &mat)
     {
         // data may not be properly aligned, using unaligned loads
         const float *data = mat.constData();
@@ -57,7 +57,7 @@ public:
     }
 
     // In (row major) but we store in column major order
-    explicit Q_ALWAYS_INLINE Matrix4x4_AVX2(float m11, float m12, float m13, float m14,
+    explicit Q_ALWAYS_INLINE Matrix4x4_SSE(float m11, float m12, float m13, float m14,
                                             float m21, float m22, float m23, float m24,
                                             float m31, float m32, float m33, float m34,
                                             float m41, float m42, float m43, float m44)
@@ -96,7 +96,7 @@ public:
         // Using a static identity matrix and assigning it is 27 instructions
     }
 
-    Q_ALWAYS_INLINE Matrix4x4_AVX2 operator*(const Matrix4x4_AVX2 &other) const
+    Q_ALWAYS_INLINE Matrix4x4_SSE operator*(const Matrix4x4_SSE &other) const
     {
         // Shuffling: (Latency 1)
         // (8 bits -> first two pairs used to select from the first vector, second pairs from second vector)
@@ -182,58 +182,58 @@ public:
         tmp2 = _mm256_add_ps(_mm256_mul_ps(_mm256_shuffle_ps(otherCol34, otherCol34, 0xaa), _mm256_broadcast_ps(&col3)), tmp2);
         tmp2 = _mm256_add_ps(_mm256_mul_ps(_mm256_shuffle_ps(otherCol34, otherCol34, 0xff), _mm256_broadcast_ps(&col4)), tmp2);
 
-        Matrix4x4_AVX2 c(Qt::Uninitialized);
+        Matrix4x4_SSE c(Qt::Uninitialized);
         c.m_col12 = tmp;
         c.m_col34 = tmp2;
         return c;
     }
 
-    Q_ALWAYS_INLINE Matrix4x4_AVX2 operator-(const Matrix4x4_AVX2 &other) const
+    Q_ALWAYS_INLINE Matrix4x4_SSE operator-(const Matrix4x4_SSE &other) const
     {
-        Matrix4x4_AVX2 c(Qt::Uninitialized);
+        Matrix4x4_SSE c(Qt::Uninitialized);
 
         c.m_col12 = _mm256_sub_ps(m_col12, other.m_col12);
         c.m_col34 = _mm256_sub_ps(m_col34, other.m_col34);
         return c;
     }
 
-    Q_ALWAYS_INLINE Matrix4x4_AVX2 operator+(const Matrix4x4_AVX2 &other) const
+    Q_ALWAYS_INLINE Matrix4x4_SSE operator+(const Matrix4x4_SSE &other) const
     {
-        Matrix4x4_AVX2 c(Qt::Uninitialized);
+        Matrix4x4_SSE c(Qt::Uninitialized);
 
         c.m_col12 = _mm256_add_ps(m_col12, other.m_col12);
         c.m_col34 = _mm256_add_ps(m_col34, other.m_col34);
         return c;
     }
 
-    Q_ALWAYS_INLINE Matrix4x4_AVX2 &operator*=(const Matrix4x4_AVX2 &other)
+    Q_ALWAYS_INLINE Matrix4x4_SSE &operator*=(const Matrix4x4_SSE &other)
     {
         *this = *this * other;
         return *this;
     }
 
-    Q_ALWAYS_INLINE Matrix4x4_AVX2 &operator-=(const Matrix4x4_AVX2 &other)
+    Q_ALWAYS_INLINE Matrix4x4_SSE &operator-=(const Matrix4x4_SSE &other)
     {
         *this = *this - other;
         return *this;
     }
 
-    Q_ALWAYS_INLINE Matrix4x4_AVX2 &operator+=(const Matrix4x4_AVX2 &other)
+    Q_ALWAYS_INLINE Matrix4x4_SSE &operator+=(const Matrix4x4_SSE &other)
     {
         *this = *this + other;
         return *this;
     }
 
-    Q_ALWAYS_INLINE Matrix4x4_AVX2 transposed() const
+    Q_ALWAYS_INLINE Matrix4x4_SSE transposed() const
     {
-        Matrix4x4_AVX2 c(Qt::Uninitialized);
+        Matrix4x4_SSE c(Qt::Uninitialized);
         const __m128 col1 = _mm256_extractf128_ps(m_col12, 0);
         const __m128 col2 = _mm256_extractf128_ps(m_col12, 1);
         const __m128 col3 = _mm256_extractf128_ps(m_col34, 0);
         const __m128 col4 = _mm256_extractf128_ps(m_col34, 1);
 
         // ~117 instructions
-        // Matrix4x4_AVX2 c = *this;
+        // Matrix4x4_SSE c = *this;
         // _MM_TRANSPOSE4_PS(c.m_col1, c.m_col2, c.m_col3, c.m_col4);
 
         // ~131 instructions - AVX2
@@ -279,14 +279,14 @@ public:
         return c;
     }
 
-    Q_ALWAYS_INLINE Matrix4x4_AVX2 inverted() const
+    Q_ALWAYS_INLINE Matrix4x4_SSE inverted() const
     {
         // TO DO: Optimize
         const QMatrix4x4 mat = toQMatrix4x4();
-        return Matrix4x4_AVX2(mat.inverted());
+        return Matrix4x4_SSE(mat.inverted());
     }
 
-    Q_ALWAYS_INLINE bool operator==(const Matrix4x4_AVX2 &other) const
+    Q_ALWAYS_INLINE bool operator==(const Matrix4x4_SSE &other) const
     {
         // cmp returns (-1, -1, -1, -1, -1, -1, -1, -1) if the two m256 are equals
         // movemask takes the most significant bits (8x 1 in this case) which equals 0xff
@@ -295,7 +295,7 @@ public:
 
     }
 
-    Q_ALWAYS_INLINE bool operator!=(const Matrix4x4_AVX2 &other) const
+    Q_ALWAYS_INLINE bool operator!=(const Matrix4x4_SSE &other) const
     {
         return !(*this == other);
     }
@@ -450,13 +450,13 @@ public:
                         Vector3D_SSE::dotProduct(row3, vector));
     }
 
-    friend Vector4D operator*(const Vector4D &vector, const Matrix4x4_AVX2 &matrix);
-    friend Vector4D operator*(const Matrix4x4_AVX2 &matrix, const Vector4D &vector);
+    friend Vector4D operator*(const Vector4D &vector, const Matrix4x4_SSE &matrix);
+    friend Vector4D operator*(const Matrix4x4_SSE &matrix, const Vector4D &vector);
 
-    friend Vector3D operator*(const Vector3D &vector, const Matrix4x4_AVX2 &matrix);
-    friend Vector3D operator*(const Matrix4x4_AVX2 &matrix, const Vector3D &vector);
+    friend Vector3D operator*(const Vector3D &vector, const Matrix4x4_SSE &matrix);
+    friend Vector3D operator*(const Matrix4x4_SSE &matrix, const Vector3D &vector);
 
-    friend Q_3DCORE_PRIVATE_EXPORT QDebug operator<<(QDebug dbg, const Matrix4x4_AVX2 &m);
+    friend Q_3DCORE_PRIVATE_EXPORT QDebug operator<<(QDebug dbg, const Matrix4x4_SSE &m);
 
 private:
     // column major order
@@ -476,7 +476,7 @@ private:
     __m256 m_col34;
 };
 
-Q_ALWAYS_INLINE Vector4D operator*(const Vector4D &vector, const Matrix4x4_AVX2 &matrix)
+Q_ALWAYS_INLINE Vector4D operator*(const Vector4D &vector, const Matrix4x4_SSE &matrix)
 {
     const __m256 vecMultiplier = _mm256_broadcast_ps(&vector.m_xyzw);
     // a1 a2 a3 a4 b1 b2 b3 b4, c1 c2 c3 c4 d1 d2 d3 d4
@@ -495,13 +495,13 @@ Q_ALWAYS_INLINE Vector4D operator*(const Vector4D &vector, const Matrix4x4_AVX2 
     return v;
 }
 
-Q_ALWAYS_INLINE Vector4D operator*(const Matrix4x4_AVX2 &matrix, const Vector4D &vector)
+Q_ALWAYS_INLINE Vector4D operator*(const Matrix4x4_SSE &matrix, const Vector4D &vector)
 {
-    const Matrix4x4_AVX2 transposed = matrix.transposed();
+    const Matrix4x4_SSE transposed = matrix.transposed();
     return vector * transposed;
 }
 
-Q_ALWAYS_INLINE Vector3D operator*(const Vector3D &vector, const Matrix4x4_AVX2 &matrix)
+Q_ALWAYS_INLINE Vector3D operator*(const Vector3D &vector, const Matrix4x4_SSE &matrix)
 {
     const __m128 vec4 = _mm_set_ps(1.0f, vector.z(), vector.y(), vector.x());
     const __m256 vecMultiplier = _mm256_broadcast_ps(&vec4);
@@ -524,20 +524,20 @@ Q_ALWAYS_INLINE Vector3D operator*(const Vector3D &vector, const Matrix4x4_AVX2 
     return v;
 }
 
-Q_ALWAYS_INLINE Vector3D operator*(const Matrix4x4_AVX2 &matrix, const Vector3D &vector)
+Q_ALWAYS_INLINE Vector3D operator*(const Matrix4x4_SSE &matrix, const Vector3D &vector)
 {
-    const Matrix4x4_AVX2 transposed = matrix.transposed();
+    const Matrix4x4_SSE transposed = matrix.transposed();
     return vector * transposed;
 }
 
 } // Qt3DCore
 
-Q_DECLARE_TYPEINFO(Qt3DCore::Matrix4x4_AVX2, Q_PRIMITIVE_TYPE);
+Q_DECLARE_TYPEINFO(Qt3DCore::Matrix4x4_SSE, Q_PRIMITIVE_TYPE);
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DCore::Matrix4x4_AVX2)
+Q_DECLARE_METATYPE(Qt3DCore::Matrix4x4_SSE)
 
-#endif // QT_COMPILER_SUPPORTS_AVX
+#endif // __AVX2__
 
 #endif // QT3DCORE_MATRIX4X4_AVX2_P_H
