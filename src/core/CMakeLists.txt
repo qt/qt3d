@@ -120,10 +120,6 @@ function(qt3d_add_simd_part target)
     set(condition "QT_FEATURE_${arg_SIMD}")
     if("${arg_SIMD}" STREQUAL arch_haswell)
         set(condition "TEST_subarch_avx2 AND TEST_subarch_bmi AND TEST_subarch_bmi2 AND TEST_subarch_f16c AND TEST_subarch_fma AND TEST_subarch_lzcnt AND TEST_subarch_popcnt")
-    elseif("${arg_SIMD}" STREQUAL avx512common)
-        set(condition "TEST_subarch_avx512cd")
-    elseif("${arg_SIMD}" STREQUAL avx512core)
-        set(condition "TEST_subarch_avx512cd AND TEST_subarch_avx512bw AND TEST_subarch_avx512dq AND TEST_subarch_avx512vl")
     endif()
 
     qt_evaluate_config_expression(result ${condition})
@@ -169,7 +165,7 @@ if(QT_FEATURE_qt3d_simd_sse2 AND NOT QT_FEATURE_qt3d_simd_avx2)
 endif()
 
 if(QT_FEATURE_qt3d_simd_avx2)
-    qt3d_add_simd_part(3DCore SIMD avx2
+    qt3d_add_simd_part(3DCore SIMD arch_haswell
         SOURCES
             transforms/matrix4x4_avx2.cpp transforms/matrix4x4_avx2_p.h
             transforms/vector3d_sse.cpp transforms/vector3d_sse_p.h
