@@ -23,8 +23,6 @@ set(rhiRendererSources graphicshelpers/submissioncontext.cpp graphicshelpers/sub
     textures/texture.cpp textures/texture_p.h
 )
 
-find_package(Qt6 REQUIRED COMPONENTS ShaderTools)
-
 #####################################################################
 ## Static library used for Unit Tests:
 #####################################################################

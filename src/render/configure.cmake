@@ -28,6 +28,7 @@ qt_feature("qt3d-rhi-renderer" PUBLIC
     SECTION "Qt 3D Renderers"
     LABEL "RHI Renderer"
     PURPOSE "Use the RHI renderer (requires qtShaderTools module)"
+    CONDITION TARGET Qt::ShaderTools
 )
 qt_feature("qt3d-vulkan" PUBLIC
     LABEL "Vulkan"
