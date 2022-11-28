@@ -260,7 +260,7 @@ void tst_QResourceManager::heavyDutyMultiThreadedAccess()
 
     for (int i = 0; i < max; i++) {
         QVERIFY(manager->lookupResource(i) != nullptr);
-        QVERIFY(manager->lookupResource(i)->m_value = iterations);
+        QVERIFY(manager->lookupResource(i)->m_value == iterations);
     }
 
     qDeleteAll(threads);
