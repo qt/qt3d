@@ -4,7 +4,11 @@
 # Generated from core.pro.
 
 add_subdirectory(handle)
-add_subdirectory(qresourcemanager)
+if(NOT (UNIX AND NOT APPLE AND NOT WIN32 AND CMAKE_CROSSCOMPILING))
+    # that test is flacky on QEMU (crashes on app exit QTBUG-107693),
+    # so disabling when cross-compiling on linux
+    add_subdirectory(qresourcemanager)
+endif()
 add_subdirectory(nodes)
 add_subdirectory(qaspectengine)
 add_subdirectory(qaspectfactory)
