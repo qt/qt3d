@@ -104,7 +104,7 @@ void LoadSceneJob::run()
     }
 
     Q_D(LoadSceneJob);
-    d->m_sceneSubtree = sceneSubTree;
+    d->m_sceneSubtree = std::unique_ptr<Qt3DCore::QEntity>(sceneSubTree);
     d->m_status = finalStatus;
 
     if (d->m_sceneSubtree) {
@@ -161,7 +161,7 @@ void LoadSceneJobPrivate::postFrame(Qt3DCore::QAspectManager *manager)
     // any subtree it may hold
     // Set clone of sceneTree in sceneComponent. This will move the sceneSubTree
     // to the QCoreApplication thread which is where the frontend object tree lives.
-    dNode->setSceneRoot(m_sceneSubtree);
+    dNode->setSceneRoot(m_sceneSubtree.release());
 
     // Note: the status is set after the subtree so that bindinds depending on the status
     // in the frontend will be consistent
