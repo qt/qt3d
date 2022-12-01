@@ -16,6 +16,7 @@
 //
 
 #include <Qt3DCore/qaspectjob.h>
+#include <Qt3DCore/qentity.h>
 #include <Qt3DCore/private/qaspectjob_p.h>
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DRender/qsceneloader.h>
@@ -45,7 +46,7 @@ public:
 
     void postFrame(Qt3DCore::QAspectManager *manager) override;
 
-    Qt3DCore::QEntity *m_sceneSubtree = nullptr;
+    std::unique_ptr<Qt3DCore::QEntity> m_sceneSubtree;
     QSceneLoader::Status m_status = QSceneLoader::None;
 
     Q_DECLARE_PUBLIC(LoadSceneJob)
