@@ -26,6 +26,7 @@
 
 #include <QtGui/qguiapplication.h>
 #include <QtGui/qoffscreensurface.h>
+#include <QtQml/private/qqmlglobal_p.h>
 #include <QtQuick/qquickwindow.h>
 #include <QtQuick/qquickrendercontrol.h>
 
@@ -742,9 +743,13 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
             qCWarning(Scene3D) << "Renderer for Scene3DItem has requested a reset due to the item "
                                   "moving to another window";
             QObject::disconnect(m_windowConnection);
+            // We are in the Render thread, and the m_aspectEngineDestroyer lives in the Main
+            // thread, so we must avoid sending ChildRemoved or ChildAdded events to it with a
+            // QObject::setParent(). QCoreApplication::sendEvent() would fail with "Cannot
+            // send events to objects owned by a different thread."
+            QQml_setParent_noEvent(m_aspectEngine, nullptr);
             // Note: AspectEngine can only be deleted once we have set the root
             // entity on the new instance
-            m_aspectEngine->setParent(nullptr);
             m_aspectToDelete = m_aspectEngine;
             m_aspectEngine = nullptr;
         }
