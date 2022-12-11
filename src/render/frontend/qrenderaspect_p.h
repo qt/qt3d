@@ -76,7 +76,7 @@ public:
 
     void registerBackendTypes();
     void unregisterBackendTypes();
-    void loadSceneParsers();
+    void loadSceneImporters();
     void loadRenderPlugin(const QString &pluginName);
     void registerBackendType(const QMetaObject &, const Qt3DCore::QBackendNodeMapperPtr &functor);
     std::vector<Qt3DCore::QAspectJobPtr> createGeometryRendererJobs() const;
@@ -92,7 +92,8 @@ public:
 
     bool m_initialized;
     const bool m_renderAfterJobs;
-    QList<QSceneImporter *> m_sceneImporter;
+    bool m_sceneImportersLoaded;
+    QList<QSceneImporter *> m_sceneImporters;
     QList<QString> m_loadedPlugins;
     QList<Render::QRenderPlugin *> m_renderPlugins;
     Render::OffscreenSurfaceHelper *m_offscreenHelper;

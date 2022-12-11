@@ -257,7 +257,9 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::SubmissionType submiss
     , m_nodeManagers(nullptr)
     , m_renderer(nullptr)
     , m_initialized(false)
-    , m_renderAfterJobs(submissionType == QRenderAspect::Automatic || qEnvironmentVariableIsSet("QT3D_FORCE_SYNCHRONOUS_RENDER"))
+    , m_renderAfterJobs(submissionType == QRenderAspect::Automatic
+                        || qEnvironmentVariableIsSet("QT3D_FORCE_SYNCHRONOUS_RENDER"))
+    , m_sceneImportersLoaded(false)
     , m_offscreenHelper(nullptr)
     , m_updateTreeEnabledJob(Render::UpdateTreeEnabledJobPtr::create())
     , m_worldTransformJob(Render::UpdateWorldTransformJobPtr::create())
@@ -274,7 +276,6 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::SubmissionType submiss
     , m_submissionType(submissionType)
 {
     m_instances.append(this);
-    loadSceneParsers();
 
     m_updateWorldBoundingVolumeJob->addDependency(m_worldTransformJob);
     m_updateWorldBoundingVolumeJob->addDependency(m_calculateBoundingVolumeJob);
@@ -297,7 +298,7 @@ QRenderAspectPrivate::~QRenderAspectPrivate()
         qWarning() << Q_FUNC_INFO << "The renderer should have been deleted when reaching this point (this warning may be normal when running tests)";
     delete m_nodeManagers;
     m_instances.removeAll(this);
-    qDeleteAll(m_sceneImporter);
+    qDeleteAll(m_sceneImporters);
 }
 
 QRenderAspectPrivate *QRenderAspectPrivate::findPrivate(Qt3DCore::QAspectEngine *engine)
@@ -657,9 +658,12 @@ std::vector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         // One for urgent jobs that are mandatory for the rendering of a frame
         // Another for jobs that can span across multiple frames (Scene/Mesh loading)
         const std::vector<Render::LoadSceneJobPtr> sceneJobs = manager->sceneManager()->takePendingSceneLoaderJobs();
+        if (!sceneJobs.empty() && !d->m_sceneImportersLoaded) {
+            d->loadSceneImporters();
+        }
         for (const Render::LoadSceneJobPtr &job : sceneJobs) {
             job->setNodeManagers(d->m_nodeManagers);
-            job->setSceneImporters(d->m_sceneImporter);
+            job->setSceneImporters(d->m_sceneImporters);
             jobs.push_back(job);
         }
 
@@ -882,14 +886,15 @@ std::vector<QAspectJobPtr> QRenderAspectPrivate::createPreRendererJobs() const
     return jobs;
 }
 
-void QRenderAspectPrivate::loadSceneParsers()
+void QRenderAspectPrivate::loadSceneImporters()
 {
     const QStringList keys = QSceneImportFactory::keys();
     for (const QString &key : keys) {
         QSceneImporter *sceneIOHandler = QSceneImportFactory::create(key, QStringList());
         if (sceneIOHandler != nullptr)
-            m_sceneImporter.append(sceneIOHandler);
+            m_sceneImporters.append(sceneIOHandler);
     }
+    m_sceneImportersLoaded = true;
 }
 
 Render::AbstractRenderer *QRenderAspectPrivate::loadRendererPlugin()
