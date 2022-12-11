@@ -1528,6 +1528,9 @@ void Renderer::sendShaderChangesToFrontend(Qt3DCore::QAspectManager *manager)
     const std::vector<HShader> &activeShaders = m_nodesManager->shaderManager()->activeHandles();
     for (const HShader &handle : activeShaders) {
         Shader *s = m_nodesManager->shaderManager()->data(handle);
+        if (!s)
+            continue;
+
         if (s->requiresFrontendSync()) {
             QShaderProgram *frontend =
                     static_cast<decltype(frontend)>(manager->lookupNode(s->peerId()));
@@ -1545,6 +1548,9 @@ void Renderer::sendShaderChangesToFrontend(Qt3DCore::QAspectManager *manager)
     for (const ShaderBuilderUpdate &update : m_shaderBuilderUpdates) {
         QShaderProgramBuilder *builder =
                 static_cast<decltype(builder)>(manager->lookupNode(update.builderId));
+        if (!builder)
+            continue;
+
         QShaderProgramBuilderPrivate *dBuilder =
                 static_cast<decltype(dBuilder)>(QNodePrivate::get(builder));
         dBuilder->setShaderCode(update.shaderCode, update.shaderType);
