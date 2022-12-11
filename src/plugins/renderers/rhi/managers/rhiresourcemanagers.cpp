@@ -45,7 +45,7 @@ void RHIResourceManagers::releaseAllResources()
 
     releaseAll(m_rhiTextureManager);
     releaseAll(m_rhiBufferManager);
-    // releaseAll(m_rhiShaderManager);
+    qDeleteAll(m_rhiShaderManager->takeActiveResources());
     releaseAll(m_rhiRenderTargetManager);
     releaseAll(m_rhiGraphicsPipelineManager);
     releaseAll(m_rhiComputePipelineManager);
