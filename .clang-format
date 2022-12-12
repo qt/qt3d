@@ -1,0 +1,6 @@
+# Qt3D .clang-format with module-specific rules
+
+BasedOnStyle: InheritParentConfig
+
+BreakConstructorInitializers: BeforeComma
+
