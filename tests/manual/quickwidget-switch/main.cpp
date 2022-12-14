@@ -35,7 +35,8 @@ int main(int argc, char* argv[])
 
     QMainWindow w2;
     w2.winId();
-    w2.windowHandle()->setScreen(QGuiApplication::screens().at(1));
+    const int secondScreenIdx = QGuiApplication::screens().size() > 1 ? 1 : 0;
+    w2.windowHandle()->setScreen(QGuiApplication::screens().at(secondScreenIdx));
     auto mdiArea2 = new QMdiArea;
     auto button2 = new QPushButton("Switch to this window");
     configureMainWindow(&w2, mdiArea2, button2);
