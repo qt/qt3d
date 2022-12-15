@@ -309,7 +309,7 @@ private Q_SLOTS:
         pack.setUniformBuffer(ubo2);
 
         // THEN
-        QCOMPARE(pack.uniformBuffers().size(), 1);
+        QCOMPARE(pack.uniformBuffers().size(), 1U);
         QCOMPARE(pack.uniformBuffers().front().m_blockIndex, 1);
         QCOMPARE(pack.uniformBuffers().front().m_bufferID, nodeId2);
 
@@ -318,7 +318,7 @@ private Q_SLOTS:
         pack.setUniformBuffer(ubo3);
 
         // THEN
-        QCOMPARE(pack.uniformBuffers().size(), 2);
+        QCOMPARE(pack.uniformBuffers().size(), 2U);
         QCOMPARE(pack.uniformBuffers().front().m_blockIndex, 1);
         QCOMPARE(pack.uniformBuffers().front().m_bufferID, nodeId2);
         QCOMPARE(pack.uniformBuffers().back().m_blockIndex, 2);
@@ -340,7 +340,7 @@ private Q_SLOTS:
         pack.setShaderStorageBuffer(ssbo2);
 
         // THEN
-        QCOMPARE(pack.shaderStorageBuffers().size(), 1);
+        QCOMPARE(pack.shaderStorageBuffers().size(), 1U);
         QCOMPARE(pack.shaderStorageBuffers().front().m_blockIndex, 1);
         QCOMPARE(pack.shaderStorageBuffers().front().m_bufferID, nodeId2);
 
@@ -349,7 +349,7 @@ private Q_SLOTS:
         pack.setShaderStorageBuffer(ssbo3);
 
         // THEN
-        QCOMPARE(pack.shaderStorageBuffers().size(), 2);
+        QCOMPARE(pack.shaderStorageBuffers().size(), 2U);
         QCOMPARE(pack.shaderStorageBuffers().front().m_blockIndex, 1);
         QCOMPARE(pack.shaderStorageBuffers().front().m_bufferID, nodeId2);
         QCOMPARE(pack.shaderStorageBuffers().back().m_blockIndex, 2);
