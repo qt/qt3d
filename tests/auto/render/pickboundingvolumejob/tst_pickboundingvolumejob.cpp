@@ -2258,7 +2258,7 @@ private Q_SLOTS:
         std::vector<Qt3DRender::Render::PickingUtils::ViewportCameraAreaDetails> results = gatherer.gather(test->frameGraphRoot());
 
         // THEN
-        QCOMPARE(results.size(), 0);
+        QCOMPARE(results.size(), 0U);
 
         // WHEN
         Qt3DRender::Render::FrameGraphNode *backendFGNode = test->nodeManagers()->frameGraphManager()->lookupNode(noPicking->id());
@@ -2274,7 +2274,7 @@ private Q_SLOTS:
         results = gatherer.gather(test->frameGraphRoot());
 
         // THEN
-        QCOMPARE(results.size(), 1);
+        QCOMPARE(results.size(), 1U);
         auto vca = results.front();
         QCOMPARE(vca.area, QSize(600, 600));
         QCOMPARE(vca.cameraId, camera->id());
