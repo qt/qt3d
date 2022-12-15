@@ -223,7 +223,7 @@ private Q_SLOTS:
 
         // THEN -> empty if job ran properly
         const std::vector<Qt3DCore::QNodeId> dirtyTechniquesId = testAspect.nodeManagers()->techniqueManager()->takeDirtyTechniques();
-        QCOMPARE(dirtyTechniquesId.size(), 0);
+        QCOMPARE(dirtyTechniquesId.size(), 0U);
 
         // Check at least one technique is valid
         bool foundValid = false;
