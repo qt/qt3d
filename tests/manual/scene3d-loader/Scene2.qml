@@ -58,7 +58,7 @@ Scene3D {
         Entity {
             id: mainEntity
             objectName: "mainEntity"
-            components: [ mesh, material, transform ]
+            components: [ torusMesh, material, transform ]
         }
     }
 }
