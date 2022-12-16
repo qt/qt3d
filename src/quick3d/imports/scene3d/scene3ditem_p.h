@@ -126,7 +126,7 @@ private:
     QMetaObject::Connection m_windowConnection;
     qint8 m_framesToRender;
 
-    static const qint8 ms_framesNeededToFlushPipeline = 2;
+    static const qint8 ms_framesNeededToFlushPipeline = 3;
 };
 
 } // Qt3DRender
