@@ -174,10 +174,8 @@ bool RayCastingJob::pick(const QList<QPair<Entity *, RayCaster *>> &entities)
                     gathererFunctor.m_manager = m_manager;
                     gathererFunctor.m_ray = ray;
                     gathererFunctor.m_objectPickersRequired = false;
-                    const PickingUtils::HitList &hits = gathererFunctor.computeHits(entityPicker.entities(), QPickingSettings::AllPicks);
-                    sphereHits.insert(sphereHits.end(),
-                                      std::make_move_iterator(hits.begin()),
-                                      std::make_move_iterator(hits.end()));
+                    PickingUtils::HitList hits = gathererFunctor.computeHits(entityPicker.entities(), QPickingSettings::AllPicks);
+                    Qt3DCore::moveAtEnd(sphereHits, std::move(hits));
                 }
                 if (pickConfiguration.edgePickingRequested) {
                     PickingUtils::LineCollisionGathererFunctor gathererFunctor;
@@ -185,10 +183,8 @@ bool RayCastingJob::pick(const QList<QPair<Entity *, RayCaster *>> &entities)
                     gathererFunctor.m_ray = ray;
                     gathererFunctor.m_pickWorldSpaceTolerance = pickConfiguration.pickWorldSpaceTolerance;
                     gathererFunctor.m_objectPickersRequired = false;
-                    const PickingUtils::HitList &hits = gathererFunctor.computeHits(entityPicker.entities(), QPickingSettings::AllPicks);
-                    sphereHits.insert(sphereHits.end(),
-                                      std::make_move_iterator(hits.begin()),
-                                      std::make_move_iterator(hits.end()));
+                    PickingUtils::HitList hits = gathererFunctor.computeHits(entityPicker.entities(), QPickingSettings::AllPicks);
+                    Qt3DCore::moveAtEnd(sphereHits, std::move(hits));
                     PickingUtils::AbstractCollisionGathererFunctor::sortHits(sphereHits);
                 }
                 if (pickConfiguration.pointPickingRequested) {
@@ -197,17 +193,13 @@ bool RayCastingJob::pick(const QList<QPair<Entity *, RayCaster *>> &entities)
                     gathererFunctor.m_ray = ray;
                     gathererFunctor.m_pickWorldSpaceTolerance = pickConfiguration.pickWorldSpaceTolerance;
                     gathererFunctor.m_objectPickersRequired = false;
-                    const PickingUtils::HitList &hits = gathererFunctor.computeHits(entityPicker.entities(), QPickingSettings::AllPicks);
-                    sphereHits.insert(sphereHits.end(),
-                                      std::make_move_iterator(hits.begin()),
-                                      std::make_move_iterator(hits.end()));
+                    PickingUtils::HitList hits = gathererFunctor.computeHits(entityPicker.entities(), QPickingSettings::AllPicks);
+                    Qt3DCore::moveAtEnd(sphereHits, std::move(hits));
                     PickingUtils::AbstractCollisionGathererFunctor::sortHits(sphereHits);
                 }
                 if (!pickConfiguration.primitivePickingRequested) {
-                    const PickingUtils::HitList &hits = entityPicker.hits();
-                    sphereHits.insert(sphereHits.end(),
-                                      std::make_move_iterator(hits.begin()),
-                                      std::make_move_iterator(hits.end()));
+                    PickingUtils::HitList hits = entityPicker.hits();
+                    Qt3DCore::moveAtEnd(sphereHits, std::move(hits));
                     PickingUtils::AbstractCollisionGathererFunctor::sortHits(sphereHits);
                 }
             }

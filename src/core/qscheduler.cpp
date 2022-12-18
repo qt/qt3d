@@ -9,6 +9,7 @@
 #include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/qaspectjob_p.h>
 #include <Qt3DCore/private/qabstractaspectjobmanager_p.h>
+#include <Qt3DCore/private/vector_helper_p.h>
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDateTime>
@@ -86,10 +87,8 @@ int QScheduler::scheduleAndWaitForFrameAspectJobs(qint64 time, bool dumpJobs)
     // For now just queue them up as they are
     const QList<QAbstractAspect *> &aspects = m_aspectManager->aspects();
     for (QAbstractAspect *aspect : aspects) {
-        const std::vector<QAspectJobPtr> aspectJobs = QAbstractAspectPrivate::get(aspect)->jobsToExecute(time);
-        jobQueue.insert(jobQueue.end(),
-                        std::make_move_iterator(aspectJobs.begin()),
-                        std::make_move_iterator(aspectJobs.end()));
+        std::vector<QAspectJobPtr> aspectJobs = QAbstractAspectPrivate::get(aspect)->jobsToExecute(time);
+        Qt3DCore::moveAtEnd(jobQueue, std::move(aspectJobs));
     }
 
     if (jobQueue.empty())

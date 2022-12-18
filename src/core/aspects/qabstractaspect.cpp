@@ -17,6 +17,7 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DCore/private/vector_helper_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -303,9 +304,7 @@ std::vector<QAspectJobPtr> QAbstractAspectPrivate::jobsToExecute(qint64 time)
 
     {
         QMutexLocker lock(&m_singleShotMutex);
-        res.insert(res.end(),
-                   std::make_move_iterator(m_singleShotJobs.begin()),
-                   std::make_move_iterator(m_singleShotJobs.end()));
+        Qt3DCore::moveAtEnd(res, std::move(m_singleShotJobs));
         m_singleShotJobs.clear();
     }
 

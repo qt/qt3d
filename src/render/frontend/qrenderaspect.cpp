@@ -148,6 +148,7 @@
 #include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
 #include <Qt3DCore/private/calcboundingvolumejob_p.h>
+#include <Qt3DCore/private/vector_helper_p.h>
 
 #include <QThread>
 #include <QOpenGLContext>
@@ -667,11 +668,9 @@ std::vector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
             jobs.push_back(job);
         }
 
-        const std::vector<QAspectJobPtr> geometryJobs = d->createGeometryRendererJobs();
-        jobs.insert(jobs.end(), std::make_move_iterator(geometryJobs.begin()), std::make_move_iterator(geometryJobs.end()));
+        Qt3DCore::moveAtEnd(jobs, d->createGeometryRendererJobs());
 
-        const std::vector<QAspectJobPtr> preRenderingJobs = d->createPreRendererJobs();
-        jobs.insert(jobs.end(), std::make_move_iterator(preRenderingJobs.begin()), std::make_move_iterator(preRenderingJobs.end()));
+        Qt3DCore::moveAtEnd(jobs, d->createPreRendererJobs());
 
         // Don't spawn any rendering jobs, if the renderer decides to skip this frame
         // Note: this only affects rendering jobs (jobs that load buffers,
@@ -723,8 +722,7 @@ std::vector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         if (layersDirty)
             jobs.push_back(d->m_updateEntityLayersJob);
 
-        const std::vector<QAspectJobPtr> renderBinJobs = d->m_renderer->renderBinJobs();
-        jobs.insert(jobs.end(), std::make_move_iterator(renderBinJobs.begin()), std::make_move_iterator(renderBinJobs.end()));
+        Qt3DCore::moveAtEnd(jobs, d->m_renderer->renderBinJobs());
     }
 
     return jobs;

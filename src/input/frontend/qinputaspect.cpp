@@ -54,8 +54,8 @@
 #include <Qt3DInput/private/updateaxisactionjob_p.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
 #include <Qt3DCore/private/qservicelocator_p.h>
-
 #include <Qt3DCore/private/qaspectmanager_p.h>
+#include <Qt3DCore/private/vector_helper_p.h>
 
 #ifdef HAVE_QGAMEPAD
 # include <Qt3DInput/private/qgamepadinput_p.h>
@@ -202,8 +202,8 @@ std::vector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
 
     const auto integrations = d->m_inputHandler->inputDeviceIntegrations();
     for (QInputDeviceIntegration *integration : integrations) {
-        const std::vector<QAspectJobPtr> integrationJobs = integration->jobsToExecute(time);
-        jobs.insert(jobs.end(), std::make_move_iterator(integrationJobs.begin()), std::make_move_iterator(integrationJobs.end()));
+        std::vector<QAspectJobPtr> integrationJobs = integration->jobsToExecute(time);
+        Qt3DCore::moveAtEnd(jobs, std::move(integrationJobs));
     }
 
     const QList<Qt3DCore::QNodeId> proxiesToLoad = d->m_inputHandler->physicalDeviceProxyManager()->takePendingProxiesToLoad();

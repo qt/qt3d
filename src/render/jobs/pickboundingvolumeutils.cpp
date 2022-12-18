@@ -442,9 +442,7 @@ struct HighestPriorityHitReducer
 HitList reduceToAllHits(HitList &results, const HitList &intermediate)
 {
     if (!intermediate.empty())
-        results.insert(results.end(),
-                       std::make_move_iterator(intermediate.begin()),
-                       std::make_move_iterator(intermediate.end()));
+        results.insert(results.end(), intermediate.begin(), intermediate.end());
     return results;
 }
 
