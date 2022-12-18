@@ -2715,7 +2715,7 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
         if (rv->isCompute()) {
             // If we were running draw calls we stop the draw pass
             if (inDraw) {
-                cb->endPass();
+                cb->endPass(m_submissionContext->m_currentUpdates);
                 m_submissionContext->m_currentUpdates = m_submissionContext->rhi()->nextResourceUpdateBatch();
                 inDraw = false;
             }
@@ -2734,7 +2734,7 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
         } else {
             // Same logic than above but reversed
             if (inCompute) {
-                cb->endComputePass();
+                cb->endComputePass(m_submissionContext->m_currentUpdates);
                 m_submissionContext->m_currentUpdates = m_submissionContext->rhi()->nextResourceUpdateBatch();
                 inCompute = false;
             }

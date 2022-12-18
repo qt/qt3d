@@ -804,6 +804,11 @@ void SubmissionContext::releaseResources()
     m_renderBufferHash.clear();
     RHI_UNIMPLEMENTED;
 
+    if (m_currentUpdates) {
+        m_currentUpdates->release();
+        m_currentUpdates = nullptr;
+    }
+
     // Free RHI resources
     {
         qCDebug(Backend) << Q_FUNC_INFO;
