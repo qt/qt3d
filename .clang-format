@@ -4,3 +4,4 @@ BasedOnStyle: InheritParentConfig
 
 BreakConstructorInitializers: BeforeComma
 
+ColumnLimit: 0
