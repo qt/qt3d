@@ -753,11 +753,7 @@ void tst_gltfPlugins::compareComponents(Qt3DCore::QComponent *c1, Qt3DCore::QCom
                 auto property = c1->metaObject()->property(i);
                 auto v1 = c1->property(property.name());
                 auto v2 = c2->property(property.name());
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
                 const auto v1TypeId = v1.metaType().id();
-#else
-                const auto v1TypeId = v1.type();
-#endif
                 if (v1TypeId == QMetaType::Bool) {
                     QCOMPARE(v1.toBool(), v2.toBool());
                 } else if (v1TypeId == QMetaType::QColor) {
@@ -766,11 +762,7 @@ void tst_gltfPlugins::compareComponents(Qt3DCore::QComponent *c1, Qt3DCore::QCom
                     QCOMPARE(v1.value<QVector3D>(), v2.value<QVector3D>());
                 } else if (v1TypeId == QMetaType::QMatrix4x4) {
                     QCOMPARE(v1.value<QMatrix4x4>(), v2.value<QMatrix4x4>());
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
                 } else if (QMetaType::canConvert(v1.metaType(), QMetaType(QMetaType::Float))) {
-#else
-                } else if (v1.canConvert(QMetaType::Float)) {
-#endif
                     QVERIFY(qFuzzyCompare(v1.toFloat(), v2.toFloat()));
                 }
             }
@@ -852,11 +844,7 @@ void tst_gltfPlugins::compareParameters(const QList<Qt3DRender::QParameter *> &p
         for (auto p2 : params2) {
             if (p1->name() == p2->name()) {
                 pMatch = true;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
                 if (p1->value().metaType().id() == QMetaType::QColor) {
-#else
-                if (p1->value().type() == QMetaType::QColor) {
-#endif
                     // Colors are imported as QVector4Ds
                     QColor color = p1->value().value<QColor>();
                     QVector4D vec = p2->value().value<QVector4D>();

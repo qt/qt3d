@@ -15,12 +15,7 @@ QQuick3DKeyframeAnimation::QQuick3DKeyframeAnimation(QObject *parent)
 
 QQmlListProperty<Qt3DCore::QTransform> QQuick3DKeyframeAnimation::keyframes()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = Qt3DCore::QTransform;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *transform) {
         QQuick3DKeyframeAnimation *keyframeAnimation

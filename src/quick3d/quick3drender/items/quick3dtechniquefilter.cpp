@@ -16,12 +16,7 @@ Quick3DTechniqueFilter::Quick3DTechniqueFilter(QObject *parent)
 
 QQmlListProperty<QFilterKey> Quick3DTechniqueFilter::matchList()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = QFilterKey;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *criterion) {
         Quick3DTechniqueFilter *filter = qobject_cast<Quick3DTechniqueFilter *>(list->object);
@@ -56,12 +51,7 @@ QQmlListProperty<QFilterKey> Quick3DTechniqueFilter::matchList()
 
 QQmlListProperty<QParameter> Quick3DTechniqueFilter::parameterList()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = QParameter;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *param) {
         Quick3DTechniqueFilter *techniqueFilter = qobject_cast<Quick3DTechniqueFilter *>(list->object);

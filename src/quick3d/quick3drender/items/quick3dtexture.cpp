@@ -18,12 +18,7 @@ Quick3DTextureExtension::Quick3DTextureExtension(QObject *parent)
 
 QQmlListProperty<QAbstractTextureImage> Quick3DTextureExtension::textureImages()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = QAbstractTextureImage;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *textureImage) {
         Quick3DTextureExtension *self = qobject_cast<Quick3DTextureExtension *>(list->object);

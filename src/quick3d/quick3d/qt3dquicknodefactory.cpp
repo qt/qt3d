@@ -28,11 +28,7 @@ QNode *QuickNodeFactory::createNode(const char *type)
 
     if (!typeInfo.resolved) {
         typeInfo.resolved = true;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         typeInfo.t = QQmlMetaType::qmlType(QString::fromLatin1(typeInfo.quickName), QTypeRevision::fromVersion(typeInfo.version.first, typeInfo.version.second));
-#else
-        typeInfo.t = QQmlMetaType::qmlType(QString::fromLatin1(typeInfo.quickName), typeInfo.version.first, typeInfo.version.second);
-#endif
     }
 
     return typeInfo.t.isValid() ? qobject_cast<QNode *>(typeInfo.t.create()) : nullptr;

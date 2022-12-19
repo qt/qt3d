@@ -9,9 +9,7 @@
 #include <private/qopengltexturehelper_p.h>
 #include <QDebug>
 #include <QOpenGLFunctions>
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QtOpenGL/QOpenGLVersionFunctionsFactory>
-#endif
 #include <QOpenGLTexture>
 #include <QOpenGLPixelTransferOptions>
 #include <Qt3DRender/qtexture.h>
@@ -656,11 +654,7 @@ void GLTexture::introspectPropertiesFromSharedTextureId()
     if (ctxGLVersion.first > 4 || (ctxGLVersion.first == 4 && ctxGLVersion.second >= 5)) {
         // Only for GL 4.5+
 #ifdef GL_TEXTURE_TARGET
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         QOpenGLFunctions_4_5_Core *gl5 = QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_4_5_Core>();
-#else
-        QOpenGLFunctions_4_5_Core *gl5 = ctx->versionFunctions<QOpenGLFunctions_4_5_Core>();
-#endif
         if (gl5 != nullptr)
             gl5->glGetTextureParameteriv(m_sharedTextureId, GL_TEXTURE_TARGET, reinterpret_cast<int *>(&m_properties.target));
 #endif
@@ -732,11 +726,7 @@ void GLTexture::introspectPropertiesFromSharedTextureId()
 #if !QT_CONFIG(opengles2)
     // Try to retrieve dimensions (not available on ES 2.0)
     if (!ctx->isOpenGLES()) {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         QOpenGLFunctions_3_1 *gl3 = QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_3_1>();
-#else
-        QOpenGLFunctions_3_1 *gl3 = ctx->versionFunctions<QOpenGLFunctions_3_1>();
-#endif
         if (!gl3) {
             qWarning() << "Failed to retrieve shared texture dimensions";
             return;

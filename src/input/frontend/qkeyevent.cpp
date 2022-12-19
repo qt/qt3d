@@ -45,11 +45,7 @@ QKeyEvent::QKeyEvent(QEvent::Type type, int key, Qt::KeyboardModifiers modifiers
 
 QKeyEvent::QKeyEvent(const QT_PREPEND_NAMESPACE(QKeyEvent) &ke)
     : QObject()
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     , m_event(static_cast<QT_PREPEND_NAMESPACE(QKeyEvent) *>(ke.clone()))
-#else
-    , m_event(new QT_PREPEND_NAMESPACE(QKeyEvent)(ke))
-#endif
 {
     m_event->setAccepted(false);
 }

@@ -42,11 +42,7 @@ public:
                 e->type() <= QEvent::MouseMove) {
             QMouseEvent *me = static_cast<QMouseEvent *>(e);
             m_eventTypes.push_back(e->type());
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
             m_mousePoints.push_back(me->position());
-#else
-            m_mousePoints.push_back(me->pos());
-#endif
         }
         return QQuickWindow::event(e);
     }

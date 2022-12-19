@@ -15,12 +15,7 @@ QQuick3DAnimationController::QQuick3DAnimationController(QObject *parent)
 
 QQmlListProperty<QAnimationGroup> QQuick3DAnimationController::animationGroups()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = QAnimationGroup;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *bar) {
         QQuick3DAnimationController *controller = qobject_cast<QQuick3DAnimationController *>(list->object);

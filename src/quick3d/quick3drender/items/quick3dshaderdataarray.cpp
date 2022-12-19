@@ -27,12 +27,7 @@ Quick3DShaderDataArray::Quick3DShaderDataArray(QNode *parent)
 
 QQmlListProperty<QShaderData> Quick3DShaderDataArray::valuesList()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = QShaderData;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *bar) {
         Quick3DShaderDataArray *self = static_cast<Quick3DShaderDataArray *>(list->object);

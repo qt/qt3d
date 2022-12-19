@@ -15,12 +15,7 @@ QQuick3DMorphingAnimation::QQuick3DMorphingAnimation(QObject *parent)
 
 QQmlListProperty<Qt3DAnimation::QMorphTarget> QQuick3DMorphingAnimation::morphTargets()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = Qt3DAnimation::QMorphTarget;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *morphTarget) {
         QQuick3DMorphingAnimation *animation = qobject_cast<QQuick3DMorphingAnimation *>(list->object);

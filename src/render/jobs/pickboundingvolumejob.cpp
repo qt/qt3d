@@ -175,11 +175,7 @@ void PickBoundingVolumeJob::setRoot(Entity *root)
 
 bool PickBoundingVolumeJob::processMouseEvent(QObject* object, QMouseEvent *event)
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     m_pendingMouseEvents.emplace_back(object, std::unique_ptr<QMouseEvent>(static_cast<QMouseEvent *>(event->clone())));
-#else
-    m_pendingMouseEvents.emplace_back(object, new QMouseEvent(*event));
-#endif
     return false;
 }
 
@@ -383,11 +379,7 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent *event,
                     localIntersection = entity->worldTransform()->inverted().map(hit.m_intersection);
 
                 QPickEventPtr pickEvent;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
                 const auto eventPos = event->position();
-#else
-                const auto eventPos = event->pos();
-#endif
                 switch (hit.m_type) {
                 case QCollisionQueryResult::Hit::Triangle:
                     pickEvent.reset(new QPickTriangleEvent(eventPos,

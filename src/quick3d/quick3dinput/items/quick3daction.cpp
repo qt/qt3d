@@ -16,12 +16,7 @@ Quick3DAction::Quick3DAction(QObject *parent)
 
 QQmlListProperty<QAbstractActionInput> Quick3DAction::qmlActionInputs()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     auto appendFunction = [](QQmlListProperty<QAbstractActionInput> *list, QAbstractActionInput *input) {
         Quick3DAction *action = qobject_cast<Quick3DAction *>(list->object);
         action->parentAction()->addInput(input);

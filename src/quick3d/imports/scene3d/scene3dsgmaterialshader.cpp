@@ -42,13 +42,10 @@ Scene3DSGMaterialShader::Scene3DSGMaterialShader()
     // Generated with qsb, we target all GL version Qt3D can handle
     // qsb -b --glsl "460,450,440,430,420,410,400,330,150,120,320 es,300 es,100 es" --hlsl 50 --msl 12 -o scene3dmaterial.vert.qsb scene3dmaterial.vert
     // qsb --glsl "460,450,440,430,420,410,400,330,150,120,320 es,300 es,100 es" --hlsl 50 --msl 12 -o scene3dmaterial.frag.qsb scene3dmaterial.frag
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     setShaderFileName(VertexStage, QLatin1String(":/shaders/scene3dmaterial.vert.qsb"));
     setShaderFileName(FragmentStage, QLatin1String(":/shaders/scene3dmaterial.frag.qsb"));
-#endif
 }
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 bool Scene3DSGMaterialShader::updateUniformData(QSGMaterialShader::RenderState &state,
                                                 QSGMaterial *newMaterial,
                                                 QSGMaterial *oldMaterial)
@@ -117,100 +114,6 @@ void Scene3DSGMaterialShader::updateSampledImage(QSGMaterialShader::RenderState 
             *texture = t;
     }
 }
-
-#else
-
-const char * const *Qt3DRender::Scene3DSGMaterialShader::attributeNames() const
-{
-    static char const *const attr[] = { "qt_VertexPosition", "qt_VertexTexCoord", nullptr };
-    return attr;
-}
-
-const char *Scene3DSGMaterialShader::vertexShader() const
-{
-    QOpenGLContext *ctx = QOpenGLContext::currentContext();
-    if (ctx->format().version() >= qMakePair(3, 2) && ctx->format().profile() == QSurfaceFormat::CoreProfile) {
-        return ""
-               "#version 150 core                                   \n"
-               "uniform mat4 qt_Matrix;                             \n"
-               "in vec4 qt_VertexPosition;                          \n"
-               "in vec2 qt_VertexTexCoord;                          \n"
-               "out vec2 qt_TexCoord;                               \n"
-               "void main() {                                       \n"
-               "   qt_TexCoord = qt_VertexTexCoord;                 \n"
-               "   gl_Position = qt_Matrix * qt_VertexPosition;     \n"
-               "}";
-    } else {
-        return ""
-               "uniform highp mat4 qt_Matrix;                       \n"
-               "attribute highp vec4 qt_VertexPosition;             \n"
-               "attribute highp vec2 qt_VertexTexCoord;             \n"
-               "varying highp vec2 qt_TexCoord;                     \n"
-               "void main() {                                       \n"
-               "   qt_TexCoord = qt_VertexTexCoord;                 \n"
-               "   gl_Position = qt_Matrix * qt_VertexPosition;     \n"
-               "}";
-    }
-}
-const char *Scene3DSGMaterialShader::fragmentShader() const
-{
-    QOpenGLContext *ctx = QOpenGLContext::currentContext();
-    if (ctx->format().version() >= qMakePair(3, 2) && ctx->format().profile() == QSurfaceFormat::CoreProfile) {
-        return ""
-               "#version 150 core                                   \n"
-               "uniform sampler2D source;                           \n"
-               "uniform float qt_Opacity;                           \n"
-               "in vec2 qt_TexCoord;                                \n"
-               "out vec4 fragColor;                                 \n"
-               "void main() {                                       \n"
-               "   vec4 p = texture(source, qt_TexCoord);         \n"
-               "   float a = qt_Opacity * p.a;                      \n"
-               "   fragColor = vec4(p.rgb * a, a);                  \n"
-               "}";
-    } else {
-        return ""
-               "uniform highp sampler2D source;                         \n"
-               "uniform highp float qt_Opacity;                         \n"
-               "varying highp vec2 qt_TexCoord;                         \n"
-               "void main() {                                           \n"
-               "   highp vec4 p = texture2D(source, qt_TexCoord);       \n"
-               "   highp float a = qt_Opacity * p.a;                    \n"
-               "   gl_FragColor = vec4(p.rgb * a, a);                   \n"
-               "}";
-    }
-}
-void Scene3DSGMaterialShader::initialize()
-{
-    m_matrixId = program()->uniformLocation("qt_Matrix");
-    m_opacityId = program()->uniformLocation("qt_Opacity");
-}
-void Scene3DSGMaterialShader::updateState(const RenderState &state, QSGMaterial *newEffect, QSGMaterial *oldEffect)
-{
-    Q_ASSERT(oldEffect == 0 || newEffect->type() == oldEffect->type());
-    Scene3DSGMaterial *tx = static_cast<Scene3DSGMaterial *>(newEffect);
-    Scene3DSGMaterial *oldTx = static_cast<Scene3DSGMaterial *>(oldEffect);
-    QSGTexture *t = tx->texture();
-    bool npotSupported = const_cast<QOpenGLContext *>(state.context())
-            ->functions()->hasOpenGLFeature(QOpenGLFunctions::NPOTTextureRepeat);
-    if (!npotSupported) {
-        QSize size = t->textureSize();
-        const bool isNpot = !isPowerOfTwo(size.width()) || !isPowerOfTwo(size.height());
-        if (isNpot) {
-            t->setHorizontalWrapMode(QSGTexture::ClampToEdge);
-            t->setVerticalWrapMode(QSGTexture::ClampToEdge);
-        }
-    }
-    if (oldTx == 0 || oldTx->texture()->textureId() != t->textureId())
-        t->bind();
-    else
-        t->updateBindOptions();
-    if (state.isMatrixDirty())
-        program()->setUniformValue(m_matrixId, state.combinedMatrix());
-    if (state.isOpacityDirty())
-        program()->setUniformValue(m_opacityId, state.opacity());
-}
-
-#endif
 
 } // namespace Qt3DRender
 

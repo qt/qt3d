@@ -5,11 +5,7 @@
 #define QT3DRENDER_TEXTUREIMAGEDATA_H
 
 #include <Qt3DRender/qt3drender_global.h>
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QtOpenGL/qopengltexture.h>
-#else
-#include <QtGui/qopengltexture.h>
-#endif
 #include <QtGui/QImage>
 #include <QtCore/QSharedPointer>
 

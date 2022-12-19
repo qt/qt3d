@@ -17,12 +17,7 @@ QQuick3DAnimationGroup::QQuick3DAnimationGroup(QObject *parent)
 
 QQmlListProperty<Qt3DAnimation::QAbstractAnimation> QQuick3DAnimationGroup::animations()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = Qt3DAnimation::QAbstractAnimation;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *animation) {
         QQuick3DAnimationGroup *animationGroup = qobject_cast<QQuick3DAnimationGroup *>(list->object);

@@ -20,12 +20,7 @@ Quick3DMaterial::Quick3DMaterial(QObject *parent)
 
 QQmlListProperty<QParameter> Quick3DMaterial::qmlParameters()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = QParameter;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *param) {
         Quick3DMaterial *mat = qobject_cast<Quick3DMaterial *>(list->object);

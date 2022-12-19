@@ -28,15 +28,9 @@ Scene3DSGMaterial::Scene3DSGMaterial()
 {
 }
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 QSGMaterialShader *Scene3DSGMaterial::createShader(QSGRendererInterface::RenderMode renderMode) const
-#else
-QSGMaterialShader *Scene3DSGMaterial::createShader() const
-#endif
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     Q_UNUSED(renderMode);
-#endif
     return new Scene3DSGMaterialShader();
 }
 

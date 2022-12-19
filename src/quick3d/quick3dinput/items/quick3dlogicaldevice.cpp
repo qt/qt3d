@@ -16,12 +16,7 @@ Quick3DLogicalDevice::Quick3DLogicalDevice(QObject *parent)
 
 QQmlListProperty<QAxis> Quick3DLogicalDevice::qmlAxes()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = QAxis;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *axes) {
         Quick3DLogicalDevice *device = qobject_cast<Quick3DLogicalDevice *>(list->object);
@@ -47,12 +42,7 @@ QQmlListProperty<QAxis> Quick3DLogicalDevice::qmlAxes()
 
 QQmlListProperty<QAction> Quick3DLogicalDevice::qmlActions()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = QAction;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *action) {
         Quick3DLogicalDevice *device = qobject_cast<Quick3DLogicalDevice *>(list->object);

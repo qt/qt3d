@@ -152,11 +152,7 @@ void QShaderGraphLoader::load()
                 if (parameterValue.isObject()) {
                     const QJsonObject parameterObject = parameterValue.toObject();
                     const QString type = parameterObject.value(QStringLiteral("type")).toString();
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
                     const QMetaType typeId = QMetaType::fromName(type.toUtf8());
-#else
-                    const QMetaType typeId(QMetaType::type(type.toUtf8()));
-#endif
 
                     const QString value = parameterObject.value(QStringLiteral("value")).toString();
                     auto variant = QVariant(value);
@@ -168,17 +164,9 @@ void QShaderGraphLoader::load()
                         const QMetaEnum metaEnum = metaObject->enumerator(metaObject->indexOfEnumerator(enumName));
                         const int enumValue = metaEnum.keyToValue(value.toUtf8());
                         variant = QVariant(enumValue);
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
                         variant.convert(typeId);
-#else
-                        variant.convert(typeId.id());
-#endif
                     } else {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
                         variant.convert(typeId);
-#else
-                        variant.convert(typeId.id());
-#endif
                     }
                     node.setParameter(parameterName, variant);
                 } else {
