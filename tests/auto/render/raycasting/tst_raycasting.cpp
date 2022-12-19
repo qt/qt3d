@@ -24,6 +24,7 @@ public:
     ~tst_RayCasting() {}
 
 private Q_SLOTS:
+    void initTestCase();
     void shouldReturnValidHandle();
     void shouldReturnResultForEachHandle();
     void shouldReturnAllResults();
@@ -40,6 +41,13 @@ private:
     Sphere *volumeAt(int index);
     QList<Sphere> boundingVolumes;
 };
+
+void tst_RayCasting::initTestCase()
+{
+#if defined Q_OS_QNX
+    QSKIP("This test times out on QNX (QTBUG-107694)");
+#endif
+}
 
 void tst_RayCasting::shouldIntersect_data()
 {
