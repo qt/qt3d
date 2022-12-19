@@ -10,9 +10,7 @@
 #include <QtCore/qatomic.h>
 #include <QtGui/qevent.h>
 #include <QtGui/QOpenGLFunctions>
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QQuickRenderTarget>
-#endif
 
 #include <private/qscene2d_p.h>
 #include <private/scene2d_p.h>
@@ -214,11 +212,7 @@ void Scene2D::initializeRender()
         m_context->create();
 
         m_context->makeCurrent(m_sharedObject->m_surface);
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         m_sharedObject->m_renderControl->initialize();
-#else
-        m_sharedObject->m_renderControl->initialize(m_context);
-#endif
         m_context->doneCurrent();
 
         QCoreApplication::postEvent(m_sharedObject->m_renderManager,

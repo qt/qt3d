@@ -42,12 +42,8 @@ protected:
         case QEvent::HoverMove: {
             const QHoverEvent *he = static_cast<QHoverEvent *>(e);
             auto mouseEvent = QT_PREPEND_NAMESPACE(QMouseEvent)(QEvent::MouseMove,
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
                                                                 he->position(),
                                                                 he->globalPosition(),
-#else
-                                                                he->pos(),
-#endif
                                                                 Qt::NoButton, Qt::NoButton,
                                                                 he->modifiers());
             return processMouseEvent(obj, static_cast<QT_PREPEND_NAMESPACE(QMouseEvent) *>(&mouseEvent));

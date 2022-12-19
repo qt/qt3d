@@ -31,10 +31,6 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 namespace Quick {
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-#define QML_VALUE_TYPE(v)
-#endif
-
 class Q_3DQUICKSHARED_PRIVATE_EXPORT QQuick3DColorValueType
 {
     QColor v;
@@ -60,12 +56,10 @@ public:
 
     Q_INVOKABLE QString toString() const;
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     Q_INVOKABLE QVariant alpha(qreal value) const;
     Q_INVOKABLE QVariant lighter(qreal factor = 1.5) const;
     Q_INVOKABLE QVariant darker(qreal factor = 2.0) const;
     Q_INVOKABLE QVariant tint(QVariant factor) const;
-#endif
 
     qreal r() const;
     qreal g() const;
@@ -318,10 +312,6 @@ public:
     void setY(qreal);
     void setZ(qreal);
 };
-
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-#undef QML_VALUE_TYPE
-#endif
 
 } // namespace Quick
 } // namespace Qt3DCore

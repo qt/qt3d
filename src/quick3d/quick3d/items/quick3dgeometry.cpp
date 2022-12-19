@@ -15,12 +15,7 @@ Quick3DGeometry::Quick3DGeometry(QObject *parent)
 
 QQmlListProperty<Qt3DCore::QAttribute> Quick3DGeometry::attributeList()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = Qt3DCore::QAttribute;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *attribute) {
         Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);

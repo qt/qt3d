@@ -15,12 +15,7 @@ QQuick3DMorphTarget::QQuick3DMorphTarget(QObject *parent)
 
 QQmlListProperty<Qt3DCore::QAttribute> QQuick3DMorphTarget::attributes()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = Qt3DCore::QAttribute;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *bar) {
         QQuick3DMorphTarget *target = qobject_cast<QQuick3DMorphTarget *>(list->object);

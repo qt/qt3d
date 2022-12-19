@@ -31,12 +31,7 @@ Quick3DNode::Quick3DNode(QObject *parent)
 
 QQmlListProperty<QObject> Quick3DNode::data()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = QObject;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *obj) {
         if (!obj)
@@ -69,12 +64,7 @@ QQmlListProperty<QObject> Quick3DNode::data()
 
 QQmlListProperty<QNode> Quick3DNode::childNodes()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = QNode;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *obj) {
         if (!obj)

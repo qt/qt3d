@@ -111,20 +111,11 @@ void MouseDevice::updateMouseEvent(QT_PREPEND_NAMESPACE(QMouseEvent) *event)
     m_mouseState.rightPressed = event->buttons() & (Qt::RightButton);
     const bool pressed = m_mouseState.leftPressed || m_mouseState.centerPressed || m_mouseState.rightPressed;
     if (m_updateAxesContinuously || (m_wasPressed && pressed)) {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         m_mouseState.xAxis += m_sensitivity * float(event->globalPosition().x() - m_previousPos.x());
         m_mouseState.yAxis += m_sensitivity * float(m_previousPos.y() - event->globalPosition().y());
-#else
-        m_mouseState.xAxis += m_sensitivity * float(event->globalX() - m_previousPos.x());
-        m_mouseState.yAxis += m_sensitivity * float(m_previousPos.y() - event->globalY());
-#endif
     }
     m_wasPressed = pressed;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     m_previousPos = event->globalPosition();
-#else
-    m_previousPos = event->globalPos();
-#endif
 }
 
 void MouseDevice::resetMouseAxisState()

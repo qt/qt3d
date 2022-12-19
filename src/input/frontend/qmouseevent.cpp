@@ -223,11 +223,7 @@ typename EventClass::Modifiers modifiersForEvent(const QtEventClass *event)
  */
 QMouseEvent::QMouseEvent(const QT_PREPEND_NAMESPACE(QMouseEvent) &e)
     : QObject()
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
       , m_event(static_cast<QT_PREPEND_NAMESPACE(QMouseEvent)*>(e.clone()))
-#else
-    , m_event(new QT_PREPEND_NAMESPACE(QMouseEvent)(e))
-#endif
 {
 }
 
@@ -446,11 +442,7 @@ QMouseEvent::Modifiers QMouseEvent::modifiers() const
  */
 QWheelEvent::QWheelEvent(const QT_PREPEND_NAMESPACE(QWheelEvent) &e)
     : QObject()
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
       , m_event(static_cast<QT_PREPEND_NAMESPACE(QWheelEvent)*>(e.clone()))
-#else
-      , m_event(new QT_PREPEND_NAMESPACE(QWheelEvent)(e))
-#endif
 {
 }
 

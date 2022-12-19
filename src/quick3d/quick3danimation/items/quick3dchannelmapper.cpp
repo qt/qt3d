@@ -16,12 +16,7 @@ Quick3DChannelMapper::Quick3DChannelMapper(QObject *parent)
 
 QQmlListProperty<QAbstractChannelMapping> Quick3DChannelMapper::qmlMappings()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = QAbstractChannelMapping;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *mapping) {
         Quick3DChannelMapper *extension = qobject_cast<Quick3DChannelMapper *>(list->object);

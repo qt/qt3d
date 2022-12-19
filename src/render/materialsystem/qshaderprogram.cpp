@@ -841,11 +841,7 @@ QByteArray QShaderProgramPrivate::resolveAutoBindingIndices(const QByteArray &co
         do {
             matchStart = shaderCode.indexOf(regexp, matchStart);
             if (matchStart != -1) {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
                 const auto match = regexp.matchView(QStringView{shaderCode}.mid(matchStart));
-#else
-                const auto match = regexp.match(shaderCode.mid(matchStart));
-#endif
                 const auto length = match.capturedLength(0);
                 shaderCode.replace(matchStart, length, replacement.arg(variable++));
             }

@@ -17,12 +17,7 @@ Quick3DRenderPass::Quick3DRenderPass(QObject *parent)
 
 QQmlListProperty<QFilterKey> Quick3DRenderPass::filterKeyList()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = QFilterKey;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *filterKey) {
         Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
@@ -48,12 +43,7 @@ QQmlListProperty<QFilterKey> Quick3DRenderPass::filterKeyList()
 
 QQmlListProperty<QRenderState> Quick3DRenderPass::renderStateList()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = QRenderState;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *state) {
         Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
@@ -79,12 +69,7 @@ QQmlListProperty<QRenderState> Quick3DRenderPass::renderStateList()
 
 QQmlListProperty<QParameter> Quick3DRenderPass::parameterList()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = QParameter;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *param) {
         Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);

@@ -45,12 +45,7 @@ Quick3DEntity::Quick3DEntity(QObject *parent)
 
 QQmlListProperty<QComponent> Quick3DEntity::componentList()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = Qt3DCore::QComponent;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *comp) {
         if (comp == nullptr)

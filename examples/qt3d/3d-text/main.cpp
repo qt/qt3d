@@ -34,11 +34,7 @@ int main(int argc, char *argv[])
     auto *textMaterial = new Qt3DExtras::QPhongMaterial(root);
     { // text
         int i = 0;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         const QStringList fonts = QFontDatabase::families();
-#else
-        const QStringList fonts = QFontDatabase().families();
-#endif
 
         for (const QString &family : fonts)
         {

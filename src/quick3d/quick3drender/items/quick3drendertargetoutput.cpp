@@ -16,12 +16,7 @@ Quick3DRenderTargetOutput::Quick3DRenderTargetOutput(QObject * parent)
 
 QQmlListProperty<QRenderTargetOutput> Quick3DRenderTargetOutput::qmlAttachments()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = QRenderTargetOutput;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *output) {
         Quick3DRenderTargetOutput *rT = qobject_cast<Quick3DRenderTargetOutput *>(list->object);

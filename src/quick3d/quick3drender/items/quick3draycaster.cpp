@@ -20,12 +20,7 @@ Quick3DRayCaster::Quick3DRayCaster(QObject *parent)
 
 QQmlListProperty<Qt3DRender::QLayer> Qt3DRender::Render::Quick::Quick3DRayCaster::qmlLayers()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = Qt3DRender::QLayer;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *layer) {
         QAbstractRayCaster *filter = qobject_cast<QAbstractRayCaster *>(list->object);

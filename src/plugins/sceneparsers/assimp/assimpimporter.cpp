@@ -810,11 +810,7 @@ QGeometryRenderer *AssimpImporter::loadMesh(uint meshIndex)
                 = new Qt3DAnimation::QMorphingAnimation(geometryRenderer);
         QList<QString> names;
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         QList<Qt3DAnimation::QMorphTarget *> targets;
-#else
-        QVector<Qt3DAnimation::QMorphTarget *> targets;
-#endif
         uint voff = 0;
         uint noff = 0;
         uint tanoff = 0;
@@ -1131,11 +1127,7 @@ void AssimpImporter::loadAnimation(uint animationIndex)
         aiMesh *mesh = m_scene->m_aiScene->mMeshes[targetNode->mMeshes[0]];
 
         Qt3DAnimation::QMorphingAnimation *morphingAnimation = new Qt3DAnimation::QMorphingAnimation;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         QList<float> positions;
-#else
-        QVector<float> positions;
-#endif
         positions.resize(morphAnim->mNumKeys);
         // set so that weights array is allocated to correct size in morphingAnimation
         morphingAnimation->setTargetPositions(positions);
@@ -1143,11 +1135,7 @@ void AssimpImporter::loadAnimation(uint animationIndex)
             aiMeshMorphKey &key = morphAnim->mKeys[j];
             positions[j] = key.mTime * tickScale;
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
             QList<float> weights;
-#else
-            QVector<float> weights;
-#endif
             weights.resize(key.mNumValuesAndWeights);
             for (int k = 0; k < weights.size(); k++) {
                 const unsigned int value = key.mValues[k];

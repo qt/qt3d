@@ -60,12 +60,7 @@ public:
         static QVarLengthArray<char, 64> array(16 * byteSize);
         memset(array.data(), 0, array.size());
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         switch (v.metaType().id()) {
-#else
-        switch (v.type()) {
-#endif
-
             // 1 byte
         case QMetaType::Bool: {
             T data = v.value<bool>();
@@ -300,11 +295,7 @@ public:
                 }
             }
             else
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
                 qWarning() << Q_FUNC_INFO << "QVariant type conversion not handled for " << v.metaType().id();
-#else
-                qWarning() << Q_FUNC_INFO << "QVariant type conversion not handled for " << v.type();
-#endif
             break;
         }
 

@@ -18,12 +18,7 @@ Quick3DEffect::Quick3DEffect(QObject *parent)
 
 QQmlListProperty<QTechnique> Quick3DEffect::techniqueList()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = QTechnique;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *bar) {
         Quick3DEffect *eff = qobject_cast<Quick3DEffect*>(list->object);
@@ -59,12 +54,7 @@ QQmlListProperty<QTechnique> Quick3DEffect::techniqueList()
 
 QQmlListProperty<QParameter> Quick3DEffect::parameterList()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = QParameter;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *param) {
         Quick3DEffect *effect = qobject_cast<Quick3DEffect *>(list->object);

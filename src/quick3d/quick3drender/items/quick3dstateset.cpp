@@ -20,12 +20,7 @@ Quick3DStateSet::~Quick3DStateSet()
 
 QQmlListProperty<QRenderState> Quick3DStateSet::renderStateList()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = QRenderState;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *state) {
         Quick3DStateSet *stateSet = qobject_cast<Quick3DStateSet *>(list->object);

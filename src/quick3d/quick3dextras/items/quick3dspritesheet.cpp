@@ -21,12 +21,7 @@ Quick3DSpriteSheet::~Quick3DSpriteSheet()
 
 QQmlListProperty<Qt3DExtras::QSpriteSheetItem> Quick3DSpriteSheet::sprites()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = Qt3DExtras::QSpriteSheetItem;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *sprite) {
         Quick3DSpriteSheet *spritesheet = qobject_cast<Quick3DSpriteSheet *>(list->object);

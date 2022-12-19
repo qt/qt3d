@@ -61,7 +61,6 @@ QString QQuick3DColorValueType::toString() const
     return v.name(v.alpha() != 255 ? QColor::HexArgb : QColor::HexRgb);
 }
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 QVariant QQuick3DColorValueType::lighter(qreal factor) const
 {
     return QQml_colorProvider()->lighter(this->v, factor);
@@ -81,7 +80,6 @@ QVariant QQuick3DColorValueType::tint(QVariant tintColor) const
 {
     return QQml_colorProvider()->tint(this->v, tintColor);
 }
-#endif
 
 qreal QQuick3DColorValueType::r() const
 {
@@ -160,66 +158,42 @@ void QQuick3DColorValueType::setA(qreal a)
 
 void QQuick3DColorValueType::setHsvHue(qreal hsvHue)
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     float hue, saturation, value, alpha;
-#else
-    qreal hue, saturation, value, alpha;
-#endif
     v.getHsvF(&hue, &saturation, &value, &alpha);
     v.setHsvF(hsvHue, saturation, value, alpha);
 }
 
 void QQuick3DColorValueType::setHsvSaturation(qreal hsvSaturation)
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     float hue, saturation, value, alpha;
-#else
-    qreal hue, saturation, value, alpha;
-#endif
     v.getHsvF(&hue, &saturation, &value, &alpha);
     v.setHsvF(hue, hsvSaturation, value, alpha);
 }
 
 void QQuick3DColorValueType::setHsvValue(qreal hsvValue)
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     float hue, saturation, value, alpha;
-#else
-    qreal hue, saturation, value, alpha;
-#endif
     v.getHsvF(&hue, &saturation, &value, &alpha);
     v.setHsvF(hue, saturation, hsvValue, alpha);
 }
 
 void QQuick3DColorValueType::setHslHue(qreal hslHue)
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     float hue, saturation, lightness, alpha;
-#else
-    qreal hue, saturation, lightness, alpha;
-#endif
     v.getHslF(&hue, &saturation, &lightness, &alpha);
     v.setHslF(hslHue, saturation, lightness, alpha);
 }
 
 void QQuick3DColorValueType::setHslSaturation(qreal hslSaturation)
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     float hue, saturation, lightness, alpha;
-#else
-    qreal hue, saturation, lightness, alpha;
-#endif
     v.getHslF(&hue, &saturation, &lightness, &alpha);
     v.setHslF(hue, hslSaturation, lightness, alpha);
 }
 
 void QQuick3DColorValueType::setHslLightness(qreal hslLightness)
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     float hue, saturation, lightness, alpha;
-#else
-    qreal hue, saturation, lightness, alpha;
-#endif
     v.getHslF(&hue, &saturation, &lightness, &alpha);
     v.setHslF(hue, saturation, hslLightness, alpha);
 }

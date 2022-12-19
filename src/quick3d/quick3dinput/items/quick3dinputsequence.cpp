@@ -16,12 +16,7 @@ Quick3DInputSequence::Quick3DInputSequence(QObject *parent)
 
 QQmlListProperty<QAbstractActionInput> Quick3DInputSequence::qmlActionInputs()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = QAbstractActionInput;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *input) {
         Quick3DInputSequence *action = qobject_cast<Quick3DInputSequence *>(list->object);

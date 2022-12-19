@@ -492,11 +492,7 @@ void tst_QRay3D::properties()
 void tst_QRay3D::metaTypes()
 {
     int id = qMetaTypeId<Qt3DRender::RayCasting::QRay3D>();
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QVERIFY(QMetaType::fromName("Qt3DRender::RayCasting::QRay3D").id() == id);
-#else
-    QVERIFY(QMetaType::type("Qt3DRender::RayCasting::QRay3D") == id);
-#endif
     QCOMPARE(QByteArray(QMetaType(id).name()), QByteArray("Qt3DRender::RayCasting::QRay3D"));
     QVERIFY(QMetaType::isRegistered(id));
 }

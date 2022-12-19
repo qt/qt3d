@@ -28,9 +28,7 @@
 #include <glshader_p.h>
 
 #if !QT_CONFIG(opengles2)
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QtOpenGL/QOpenGLVersionFunctionsFactory>
-#endif
 #include <QOpenGLFunctions_2_0>
 #include <QOpenGLFunctions_3_2_Core>
 #include <QOpenGLFunctions_3_3_Core>
@@ -48,12 +46,8 @@
 #include <QSurface>
 #include <QWindow>
 #include <QOpenGLTexture>
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #ifdef QT_OPENGL_LIB
 #include <QtOpenGL/QOpenGLDebugLogger>
-#endif
-#else
-#include <QOpenGLDebugLogger>
 #endif
 
 QT_BEGIN_NAMESPACE
@@ -358,32 +352,16 @@ GraphicsHelperInterface *GraphicsContext::resolveHighestOpenGLFunctions()
 #if !QT_CONFIG(opengles2)
     else {
         QAbstractOpenGLFunctions *glFunctions = nullptr;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         if ((glFunctions = QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_4_3_Core>()) != nullptr) {
-#else
-        if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_4_3_Core>()) != nullptr) {
-#endif
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 4.3";
             glHelper = new GraphicsHelperGL4();
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         } else if ((glFunctions = QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_3_3_Core>()) != nullptr) {
-#else
-        } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_3_Core>()) != nullptr) {
-#endif
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 3.3";
             glHelper = new GraphicsHelperGL3_3();
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         } else if ((glFunctions = QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_3_2_Core>()) != nullptr) {
-#else
-        } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_2_Core>()) != nullptr) {
-#endif
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 3.2";
             glHelper = new GraphicsHelperGL3_2();
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         } else if ((glFunctions = QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_2_0>()) != nullptr) {
-#else
-        } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_2_0>()) != nullptr) {
-#endif
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 2 Helper";
             glHelper = new GraphicsHelperGL2();
         }

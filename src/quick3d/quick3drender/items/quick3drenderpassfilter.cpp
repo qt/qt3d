@@ -16,11 +16,7 @@ Quick3DRenderPassFilter::Quick3DRenderPassFilter(QObject *parent)
 
 QQmlListProperty<QFilterKey> Quick3DRenderPassFilter::includeList()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
 
     auto appendFunction = [](QQmlListProperty<QFilterKey> *list, QFilterKey *v) {
         auto self = qobject_cast<Quick3DRenderPassFilter *>(list->object);
@@ -55,11 +51,7 @@ QQmlListProperty<QFilterKey> Quick3DRenderPassFilter::includeList()
 
 QQmlListProperty<QParameter> Quick3DRenderPassFilter::parameterList()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
 
     auto appendFunction = [](QQmlListProperty<QParameter> *list, QParameter *v) {
         auto self = qobject_cast<Quick3DRenderPassFilter *>(list->object);

@@ -29,23 +29,8 @@ public:
 
 protected:
     // QSGMaterialShader interface
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     bool updateUniformData(RenderState &state, QSGMaterial *newMaterial, QSGMaterial *oldMaterial) final;
     void updateSampledImage(RenderState &state, int binding, QSGTexture **texture, QSGMaterial *newMaterial, QSGMaterial *oldMaterial) final;
-#else
-public:
-    char const *const *attributeNames() const final;
-    void updateState(const RenderState &state, QSGMaterial *newMaterial, QSGMaterial *oldMaterial) final;
-
-protected:
-    const char *vertexShader() const final;
-    const char *fragmentShader() const final;
-    void initialize() final;
-
-private:
-    int m_matrixId = -1;
-    int m_opacityId = -1;
-#endif
 };
 
 } // namespace Qt3DRender

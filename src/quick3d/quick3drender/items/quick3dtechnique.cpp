@@ -16,12 +16,7 @@ Quick3DTechnique::Quick3DTechnique(QObject *parent)
 
 QQmlListProperty<QRenderPass> Quick3DTechnique::renderPassList()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = QRenderPass;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *renderPass) {
         Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
@@ -54,12 +49,7 @@ QQmlListProperty<QRenderPass> Quick3DTechnique::renderPassList()
 
 QQmlListProperty<QParameter> Quick3DTechnique::parameterList()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = QParameter;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *param) {
         Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
@@ -85,12 +75,7 @@ QQmlListProperty<QParameter> Quick3DTechnique::parameterList()
 
 QQmlListProperty<QFilterKey> Quick3DTechnique::filterKeyList()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = QFilterKey;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *filterKey) {
         Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);

@@ -1819,11 +1819,7 @@ void GLTFImporter::processJSONMesh(const QString &id, const QJsonObject &json)
                         target->setProperty(propName.constData(), QVariant(size));
                     }
                 } else {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
                     const QMetaType propType = target->property(propName.constData()).metaType();
-#else
-                    const QMetaType propType(target->property(propName.constData()).type());
-#endif
                     if (propType.id() == QMetaType::Int) {
                         target->setProperty(propName.constData(), QVariant(it.value().toInt()));
                     } else {

@@ -7,9 +7,7 @@
 #include <Qt3DRender/private/attachmentpack_p.h>
 #include <graphicshelpergl3_3_p.h>
 #include <QOpenGLBuffer>
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QOpenGLVersionFunctionsFactory>
-#endif
 #include <QOpenGLFunctions_3_3_Core>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLVertexArrayObject>
@@ -185,11 +183,7 @@ private Q_SLOTS:
             return;
         }
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         if ((m_func = QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_3_3_Core>()) != nullptr) {
-#else
-        if ((m_func = m_glContext.versionFunctions<QOpenGLFunctions_3_3_Core>())) {
-#endif
             m_glHelper.initializeHelper(&m_glContext, m_func);
             m_initializationSuccessful = true;
         }

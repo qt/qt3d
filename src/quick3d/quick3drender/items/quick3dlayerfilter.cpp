@@ -20,12 +20,7 @@ Quick3DLayerFilter::Quick3DLayerFilter(QObject *parent)
 
 QQmlListProperty<QLayer> Quick3DLayerFilter::qmlLayers()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = QLayer;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *layer) {
         Quick3DLayerFilter *filter = qobject_cast<Quick3DLayerFilter *>(list->object);

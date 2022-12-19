@@ -16,12 +16,7 @@ Quick3DAxis::Quick3DAxis(QObject *parent)
 
 QQmlListProperty<QAbstractAxisInput> Quick3DAxis::qmlAxisInputs()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using qt_size_type = qsizetype;
-#else
-    using qt_size_type = int;
-#endif
-
     using ListContentType = QAbstractAxisInput;
     auto appendFunction = [](QQmlListProperty<ListContentType> *list, ListContentType *input) {
         Quick3DAxis *axis = qobject_cast<Quick3DAxis *>(list->object);
