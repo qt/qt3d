@@ -116,9 +116,10 @@ void OpenGLVertexArrayObject::saveVertexAttribute(const SubmissionContext::VAOVe
     // Remove any vertexAttribute already at location
     m_vertexAttributes.erase(std::remove_if(m_vertexAttributes.begin(),
                                             m_vertexAttributes.end(),
-                                            [attr] (const SubmissionContext::VAOVertexAttribute &a) {
-        return a.location == attr.location;
-    }));
+                                            [attr](const SubmissionContext::VAOVertexAttribute &a) {
+                                                return a.location == attr.location;
+                                            }),
+                             m_vertexAttributes.end());
     m_vertexAttributes.push_back(attr);
 }
 
