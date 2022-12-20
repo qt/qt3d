@@ -80,7 +80,7 @@ QByteArray createSphereMeshIndexData(int rings, int slices)
     faces += 2 * slices; // tri per slice for both top and bottom
 
     QByteArray indexBytes;
-    const int indices = faces * 3;
+    const qsizetype indices = faces * 3;
     Q_ASSERT(indices < 65536);
     indexBytes.resize(indices * sizeof(quint16));
     quint16 *indexPtr = reinterpret_cast<quint16*>(indexBytes.data());

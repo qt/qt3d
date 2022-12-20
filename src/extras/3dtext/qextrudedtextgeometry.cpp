@@ -87,7 +87,7 @@ TriangulationData triangulate(const QString &text, const QFont &font)
 
     // Append new triangles to result.vertices
     result.vertices.reserve(size_t(triangles.vertices.size()) / 2);
-    for (int i = 0, m = triangles.vertices.size(); i < m; i += 2)
+    for (qsizetype i = 0, m = triangles.vertices.size(); i < m; i += 2)
         result.vertices.push_back(QVector3D(triangles.vertices[i] / font.pointSizeF(), triangles.vertices[i + 1] / font.pointSizeF(), 0.0f));
 
     return result;

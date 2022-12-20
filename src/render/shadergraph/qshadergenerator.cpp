@@ -611,17 +611,17 @@ QByteArray QShaderGenerator::createShaderCode(const QStringList &enabledLayers) 
             variableReplacements.append(std::move(replacement));
         }
 
-        int begin = 0;
+        qsizetype begin = 0;
         while ((begin = line.indexOf('$', begin)) != -1) {
-            int end = begin + 1;
+            qsizetype end = begin + 1;
             char endChar = line.at(end);
-            const int size = line.size();
+            const qsizetype size = line.size();
             while (end < size && (std::isalnum(endChar) || endChar == '_')) {
                 ++end;
                 endChar = line.at(end);
             }
 
-            const int placeholderLength = end - begin;
+            const qsizetype placeholderLength = end - begin;
 
             const QByteArray variableName = line.mid(begin, placeholderLength);
             const auto replacementIt =

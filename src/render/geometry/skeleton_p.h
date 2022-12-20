@@ -68,7 +68,7 @@ public:
     void setName(const QString &name) { m_name = name; }
     QString name() const { return m_name; }
 
-    int jointCount() const { return m_skeletonData.joints.size(); }
+    qsizetype jointCount() const { return m_skeletonData.joints.size(); }
     QVector<JointInfo> joints() const { return m_skeletonData.joints; }
     QVector<QString> jointNames() const { return m_skeletonData.jointNames; }
     QVector<Qt3DCore::Sqt> localPoses() const { return m_skeletonData.localPoses; }

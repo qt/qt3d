@@ -176,9 +176,9 @@ Qt3DCore::QJoint *LoadSkeletonJob::createFrontendJoints(const SkeletonData &skel
 
     // Create frontend joints from the joint info objects
     QList<Qt3DCore::QJoint *> frontendJoints;
-    const int jointCount = skeletonData.joints.size();
+    const qsizetype jointCount = skeletonData.joints.size();
     frontendJoints.reserve(jointCount);
-    for (int i = 0; i < jointCount; ++i) {
+    for (qsizetype i = 0; i < jointCount; ++i) {
         const QMatrix4x4 &inverseBindMatrix = skeletonData.joints[i].inverseBindPose;
         const QString &jointName = skeletonData.jointNames[i];
         const Qt3DCore::Sqt &localPose = skeletonData.localPoses[i];
@@ -186,7 +186,7 @@ Qt3DCore::QJoint *LoadSkeletonJob::createFrontendJoints(const SkeletonData &skel
     }
 
     // Now go through and resolve the parent for each joint
-    for (int i = 0; i < frontendJoints.size(); ++i) {
+    for (qsizetype i = 0; i < frontendJoints.size(); ++i) {
         const auto parentIndex = skeletonData.joints[i].parentIndex;
         if (parentIndex == -1)
             continue;
@@ -226,7 +226,7 @@ void LoadSkeletonJob::processJointHierarchy(Qt3DCore::QNodeId jointId,
     skeletonData.localPoses.push_back(joint->localPose());
     skeletonData.jointNames.push_back(joint->name());
 
-    const int jointIndex = skeletonData.joints.size() - 1;
+    const qsizetype jointIndex = skeletonData.joints.size() - 1;
     const HJoint jointHandle = m_nodeManagers->jointManager()->lookupHandle(jointId);
     skeletonData.jointIndices.insert(jointHandle, jointIndex);
 

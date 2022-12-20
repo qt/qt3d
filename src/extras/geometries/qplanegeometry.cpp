@@ -80,7 +80,7 @@ QByteArray createPlaneIndexData(const QSize &resolution)
 {
     // Create the index data. 2 triangles per rectangular face
     const int faces = 2 * (resolution.width() - 1) * (resolution.height() - 1);
-    const int indices = 3 * faces;
+    const qsizetype indices = 3 * faces;
     Q_ASSERT(indices < std::numeric_limits<quint16>::max());
     QByteArray indexBytes;
     indexBytes.resize(indices * sizeof(quint16));

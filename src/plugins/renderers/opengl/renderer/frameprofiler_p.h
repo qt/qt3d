@@ -121,8 +121,8 @@ public:
 
             Qt3DCore::QSystemInformationServicePrivate *dservice = Qt3DCore::QSystemInformationServicePrivate::get(m_service);
 
-            int j = 0;
-            for (int i = 0, m = m_recordings.size(); i < m; ++i) {
+            qsizetype j = 0;
+            for (qsizetype i = 0, m = m_recordings.size(); i < m; ++i) {
                 const GLRecording rec = m_recordings.at(i);
                 Qt3DCore::QSystemInformationServicePrivate::JobRunStats glRecordingStat;
 

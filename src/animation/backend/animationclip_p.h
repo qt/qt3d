@@ -51,9 +51,9 @@ public:
     void loadAnimation();
     void setDuration(float duration);
     float duration() const { return m_duration; }
-    int channelIndex(const QString &channelName, int jointIndex) const;
-    int channelCount() const { return m_channelComponentCount; }
-    int channelComponentBaseIndex(int channelGroupIndex) const;
+    qsizetype channelIndex(const QString &channelName, qsizetype jointIndex) const;
+    qsizetype channelCount() const { return m_channelComponentCount; }
+    qsizetype channelComponentBaseIndex(qsizetype channelGroupIndex) const;
 
     // Allow unit tests to set the data type
 #if !defined(QT_BUILD_INTERNAL)
@@ -74,7 +74,7 @@ private:
     void loadAnimationFromData();
     void clearData();
     float findDuration();
-    int findChannelComponentCount();
+    qsizetype findChannelComponentCount();
 
     QMutex m_mutex;
 
@@ -86,7 +86,7 @@ private:
     QString m_name;
     QVector<Channel> m_channels;
     float m_duration;
-    int m_channelComponentCount;
+    qsizetype m_channelComponentCount;
 
     Qt3DCore::QNodeIdVector m_dependingAnimators;
     Qt3DCore::QNodeIdVector m_dependingBlendedAnimators;

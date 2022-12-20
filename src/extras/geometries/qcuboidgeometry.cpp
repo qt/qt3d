@@ -325,7 +325,7 @@ QByteArray createCuboidIndexData(const QSize &yzResolution,
     const int yzIndices = 2 * 3 * (yzResolution.width() - 1) * (yzResolution.height() - 1);
     const int xzIndices = 2 * 3 * (xzResolution.width() - 1) * (xzResolution.height() - 1);
     const int xyIndices = 2 * 3 * (xyResolution.width() - 1) * (xyResolution.height() - 1);
-    const int indexCount = 2 * (yzIndices + xzIndices + xyIndices);
+    const qsizetype indexCount = 2 * (yzIndices + xzIndices + xyIndices);
 
     QByteArray indexData;
     indexData.resize(indexCount * sizeof(quint16));

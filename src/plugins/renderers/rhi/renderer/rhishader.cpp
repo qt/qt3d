@@ -350,7 +350,7 @@ bool isGeneratedUBOName(const QByteArray& arr)
         return false;
     if (!arr.startsWith('_'))
         return false;
-    for (int i = 1, N = arr.size(); i < N; i++) {
+    for (qsizetype i = 1, N = arr.size(); i < N; i++) {
         if (arr[i] < '0' || arr[i] > '9')
             return false;
     }

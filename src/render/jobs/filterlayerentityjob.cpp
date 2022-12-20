@@ -163,7 +163,7 @@ void FilterLayerEntityJob::filterLayerAndEntity()
         Qt3DCore::QNodeIdVector layerIds = layerFilter->layerIds();
 
         // Remove layerIds which are not active/enabled
-        for (int i = layerIds.size() - 1; i >= 0; --i) {
+        for (qsizetype i = layerIds.size() - 1; i >= 0; --i) {
             Layer *backendLayer = layerManager->lookupResource(layerIds.at(i));
             if (backendLayer == nullptr || !backendLayer->isEnabled())
                 layerIds.removeAt(i);

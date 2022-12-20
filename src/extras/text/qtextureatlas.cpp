@@ -223,7 +223,7 @@ bool QTextureAtlas::hasImage(TextureId id) const
     return d->m_textures.contains(id);
 }
 
-int QTextureAtlas::imageCount() const
+qsizetype QTextureAtlas::imageCount() const
 {
     Q_D(const QTextureAtlas);
     return d->m_textures.size();

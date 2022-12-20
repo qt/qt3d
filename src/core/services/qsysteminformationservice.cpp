@@ -153,7 +153,7 @@ void QSystemInformationServicePrivate::writeFrameJobLogStats()
     // Write submission thread
     {
         QMutexLocker lock(&m_localStoragesMutex);
-        const int submissionJobSize = m_submissionStorage != nullptr ? m_submissionStorage->size() : 0;
+        const qsizetype submissionJobSize = m_submissionStorage != nullptr ? m_submissionStorage->size() : 0;
         if (submissionJobSize > 0) {
             FrameHeader header;
             header.frameId = m_frameId;

@@ -47,7 +47,7 @@ public:
 
 struct QBufferUpdate
 {
-    int offset;
+    qsizetype offset;
     QByteArray data;
 };
 

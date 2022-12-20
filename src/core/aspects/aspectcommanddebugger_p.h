@@ -40,10 +40,10 @@ public:
 
     struct Q_3DCORE_PRIVATE_EXPORT ReadBuffer {
         QByteArray buffer;
-        int startIdx = 0;
-        int endIdx = 0;
+        qsizetype startIdx = 0;
+        qsizetype endIdx = 0;
 
-        inline int size() const { return endIdx - startIdx; }
+        inline qsizetype size() const { return endIdx - startIdx; }
         void insert(const QByteArray &array);
         void trim();
     };

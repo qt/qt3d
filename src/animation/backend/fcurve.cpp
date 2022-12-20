@@ -136,7 +136,7 @@ void FCurve::read(const QJsonObject &json)
     clearKeyframes();
 
     const QJsonArray keyframeArray = json[QLatin1String("keyFrames")].toArray();
-    const int keyframeCount = keyframeArray.size();
+    const qsizetype keyframeCount = keyframeArray.size();
 
     for (int i = 0; i < keyframeCount; ++i) {
         const QJsonObject keyframeData = keyframeArray.at(i).toObject();
@@ -208,10 +208,10 @@ void Channel::read(const QJsonObject &json)
     if (!jointIndexValue.isUndefined())
         jointIndex = jointIndexValue.toInt();
     const QJsonArray channelComponentsArray = json[QLatin1String("channelComponents")].toArray();
-    const int channelCount = channelComponentsArray.size();
+    const qsizetype channelCount = channelComponentsArray.size();
     channelComponents.resize(channelCount);
 
-    for (int i = 0; i < channelCount; ++i) {
+    for (qsizetype i = 0; i < channelCount; ++i) {
         const QJsonObject channel = channelComponentsArray.at(i).toObject();
         channelComponents[i].read(channel);
     }
@@ -222,7 +222,7 @@ void Channel::setFromQChannel(const QChannel &qch)
     name = qch.name();
     jointIndex = qch.jointIndex();
     channelComponents.resize(qch.channelComponentCount());
-    int i = 0;
+    qsizetype i = 0;
     for (const auto &frontendChannelComponent : qch)
         channelComponents[i++].setFromQChannelComponent(frontendChannelComponent);
 }

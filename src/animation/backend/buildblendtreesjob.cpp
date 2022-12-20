@@ -125,8 +125,8 @@ void BuildBlendTreesJob::run()
         for (const auto valueNode : valueNodes) {
             ClipFormat &f = valueNode->clipFormat(blendClipAnimator->peerId());
 
-            const int channelCount = blendTreeChannelMask.size();
-            for (int i = 0; i < channelCount; ++i) {
+            const qsizetype channelCount = blendTreeChannelMask.size();
+            for (qsizetype i = 0; i < channelCount; ++i) {
                 if (blendTreeChannelMask[i] == f.sourceClipMask[i])
                     continue; // Masks match, nothing to do
 
@@ -140,7 +140,7 @@ void BuildBlendTreesJob::run()
                 // values and store them in the format.
                 const ComponentIndices &componentIndices = f.formattedComponentIndices[i];
                 Q_ASSERT(componentIndices.size() == defaultValue.size());
-                for (int j = 0; j < defaultValue.size(); ++j)
+                for (qsizetype j = 0; j < defaultValue.size(); ++j)
                     f.defaultComponentValues.push_back({componentIndices[j], defaultValue[j]});
             }
         }

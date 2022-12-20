@@ -121,8 +121,8 @@ double phaseFromElapsedTime(double t_current_local,
 */
 ComponentIndices channelComponentsToIndices(const Channel &channel,
                                             int dataType,
-                                            int expectedComponentCount,
-                                            int offset)
+                                            qsizetype expectedComponentCount,
+                                            qsizetype offset)
 {
     static const QList<char> standardSuffixes = { 'X', 'Y', 'Z', 'W' };
     static const QList<char> quaternionSuffixes = { 'W', 'X', 'Y', 'Z' };
@@ -147,11 +147,11 @@ ComponentIndices channelComponentsToIndices(const Channel &channel,
 }
 
 ComponentIndices channelComponentsToIndicesHelper(const Channel &channel,
-                                                  int expectedComponentCount,
-                                                  int offset,
+                                                  qsizetype expectedComponentCount,
+                                                  qsizetype offset,
                                                   const QList<char> &suffixes)
 {
-    const int actualComponentCount = int(channel.channelComponents.size());
+    const qsizetype actualComponentCount = channel.channelComponents.size();
     if (actualComponentCount != expectedComponentCount) {
         qWarning() << "Data type expects" << expectedComponentCount
                    << "but found" << actualComponentCount << "components in the animation clip";
@@ -162,7 +162,7 @@ ComponentIndices channelComponentsToIndicesHelper(const Channel &channel,
     // Generate the set of channel suffixes
     QList<char> channelSuffixes;
     channelSuffixes.reserve(expectedComponentCount);
-    for (int i = 0; i < expectedComponentCount; ++i) {
+    for (qsizetype i = 0; i < expectedComponentCount; ++i) {
         const QString &componentName = channel.channelComponents[i].name;
 
         // An unset component name indicates that the no mapping is necessary
@@ -181,8 +181,8 @@ ComponentIndices channelComponentsToIndicesHelper(const Channel &channel,
         return indices;
 
     // Find index of standard index in channel indexes
-    for (int i = 0; i < expectedComponentCount; ++i) {
-        int index = channelSuffixes.indexOf(suffixes[i]);
+    for (qsizetype i = 0; i < expectedComponentCount; ++i) {
+        qsizetype index = channelSuffixes.indexOf(suffixes[i]);
         if (index != -1)
             indices[i] = index + offset;
         else
@@ -509,7 +509,7 @@ QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping *> &chan
                                                      mapping->componentCount(),
                                                      mapping->peerId()
                                                    };
-            const int index = channelNamesAndTypes.indexOf(nameAndType);
+            const qsizetype index = channelNamesAndTypes.indexOf(nameAndType);
             if (index != -1) {
                 // Do we have any animation data for this channel? If not, don't bother
                 // adding a mapping for it.
@@ -541,15 +541,15 @@ QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping *> &chan
                 mappingData.targetId = mapping->skeletonId();
                 mappingData.skeleton = mapping->skeleton();
 
-                const int propertyCount = jointProperties.size();
-                for (int propertyIndex = 0; propertyIndex < propertyCount; ++propertyIndex) {
+                const qsizetype propertyCount = jointProperties.size();
+                for (qsizetype propertyIndex = 0; propertyIndex < propertyCount; ++propertyIndex) {
                     // Get the name, type and index
                     ChannelNameAndType nameAndType = jointProperties[propertyIndex];
                     nameAndType.jointIndex = jointIndex;
                     nameAndType.mappingId = mapping->peerId();
 
                     // Try to find matching channel name and type
-                    const int index = channelNamesAndTypes.indexOf(nameAndType);
+                    const qsizetype index = channelNamesAndTypes.indexOf(nameAndType);
                     if (index == -1)
                         continue;
 
@@ -635,7 +635,7 @@ QVector<ChannelNameAndType> buildRequiredChannelsAndTypes(Handler *handler,
             Skeleton *skeleton = handler->skeletonManager()->lookupResource(mapping->skeletonId());
             const int jointCount = skeleton->jointCount();
             for (int jointIndex = 0; jointIndex < jointCount; ++jointIndex) {
-                const int propertyCount = jointProperties.size();
+                const qsizetype propertyCount = jointProperties.size();
                 for (int propertyIndex = 0; propertyIndex < propertyCount; ++propertyIndex) {
                     // Get the name, type and index
                     ChannelNameAndType nameAndType = jointProperties[propertyIndex];
@@ -724,12 +724,12 @@ ClipFormat generateClipFormatIndices(const QVector<ChannelNameAndType> &targetCh
     Q_ASSERT(targetChannels.size() == targetIndices.size());
 
     // Reserve enough storage for all the format indices
-    const int channelCount = targetChannels.size();
+    const qsizetype channelCount = targetChannels.size();
     ClipFormat f;
     f.namesAndTypes.resize(channelCount);
     f.formattedComponentIndices.resize(channelCount);
     f.sourceClipMask.resize(channelCount);
-    int indexCount = 0;
+    qsizetype indexCount = 0;
     for (const auto &targetIndexVec : std::as_const(targetIndices))
         indexCount += targetIndexVec.size();
     ComponentIndices &sourceIndices = f.sourceClipIndices;
@@ -737,18 +737,18 @@ ClipFormat generateClipFormatIndices(const QVector<ChannelNameAndType> &targetCh
 
     // Iterate through the target channels
     auto formatIt = sourceIndices.begin();
-    for (int i = 0; i < channelCount; ++i) {
+    for (qsizetype i = 0; i < channelCount; ++i) {
         // Find the index of the channel from the clip
         const ChannelNameAndType &targetChannel = targetChannels[i];
-        const int clipChannelIndex = clip->channelIndex(targetChannel.name,
-                                                        targetChannel.jointIndex);
-        const int componentCount = targetIndices[i].size();
+        const qsizetype clipChannelIndex = clip->channelIndex(targetChannel.name,
+                                                              targetChannel.jointIndex);
+        const qsizetype componentCount = targetIndices[i].size();
 
         if (clipChannelIndex != -1) {
             // Found a matching channel in the clip. Populate the corresponding
             // entries in the format vector with the *source indices*
             // needed to build the formatted results.
-            const int baseIndex = clip->channelComponentBaseIndex(clipChannelIndex);
+            const qsizetype baseIndex = clip->channelComponentBaseIndex(clipChannelIndex);
             const auto channelIndices = channelComponentsToIndices(clip->channels()[clipChannelIndex],
                                                                    targetChannel.type,
                                                                    targetChannel.componentCount,
@@ -756,7 +756,7 @@ ClipFormat generateClipFormatIndices(const QVector<ChannelNameAndType> &targetCh
             std::copy(channelIndices.begin(), channelIndices.end(), formatIt);
 
             f.sourceClipMask[i].resize(componentCount);
-            for (int j = 0; j < componentCount; ++j)
+            for (qsizetype j = 0; j < componentCount; ++j)
                 f.sourceClipMask[i].setBit(j, channelIndices[j] != -1);
         } else {
             // No such channel in this clip. We'll use default values when
@@ -777,7 +777,7 @@ ClipResults formatClipResults(const ClipResults &rawClipResults,
                               const ComponentIndices &format)
 {
     // Resize the output to match the number of indices
-    const int elementCount = format.size();
+    const qsizetype elementCount = format.size();
     ClipResults formattedClipResults(elementCount);
 
     // Perform a gather operation to format the data
@@ -787,7 +787,7 @@ ClipResults formatClipResults(const ClipResults &rawClipResults,
     // TODO: We could potentially avoid having holes in these intermediate
     // vectors by adjusting the component indices stored in the MappingData
     // and format vectors. Needs careful investigation!
-    for (int i = 0; i < elementCount; ++i) {
+    for (qsizetype i = 0; i < elementCount; ++i) {
         if (format[i] == -1)
             continue;
         formattedClipResults[i] = rawClipResults[format[i]];

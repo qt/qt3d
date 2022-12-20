@@ -34,7 +34,7 @@ ClipBlendNode::BlendType Animation::ClipBlendNode::blendType() const
 void ClipBlendNode::setClipResults(Qt3DCore::QNodeId animatorId, const ClipResults &clipResults)
 {
     // Do we already have an entry for this animator?
-    const int animatorIndex = m_animatorIds.indexOf(animatorId);
+    const qsizetype animatorIndex = m_animatorIds.indexOf(animatorId);
     if (animatorIndex == -1) {
         // Nope, add it
         m_animatorIds.push_back(animatorId);
@@ -46,7 +46,7 @@ void ClipBlendNode::setClipResults(Qt3DCore::QNodeId animatorId, const ClipResul
 
 ClipResults ClipBlendNode::clipResults(Qt3DCore::QNodeId animatorId) const
 {
-    const int animatorIndex = m_animatorIds.indexOf(animatorId);
+    const qsizetype animatorIndex = m_animatorIds.indexOf(animatorId);
     if (animatorIndex != -1)
         return m_clipResults[animatorIndex];
     return ClipResults();
@@ -98,7 +98,7 @@ void ClipBlendNode::blend(Qt3DCore::QNodeId animatorId)
 {
     // Obtain the clip results from each of the dependencies
     const QList<Qt3DCore::QNodeId> dependencyNodeIds = currentDependencyIds();
-    const int dependencyCount = dependencyNodeIds.size();
+    const qsizetype dependencyCount = dependencyNodeIds.size();
     QList<ClipResults> blendData;
     blendData.reserve(dependencyCount);
     for (const auto &dependencyId : dependencyNodeIds) {

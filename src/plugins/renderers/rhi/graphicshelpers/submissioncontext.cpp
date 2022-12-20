@@ -1279,7 +1279,7 @@ void SubmissionContext::uploadDataToRHIBuffer(Buffer *buffer, RHIBuffer *b)
         // We have a partial update
         if (update->offset >= 0) {
             // accumulate sequential updates as single one
-            int bufferSize = update->data.size();
+            qsizetype bufferSize = update->data.size();
             auto it2 = it + 1;
             while ((it2 != updates.end()) && (it2->offset - update->offset == bufferSize)) {
                 bufferSize += it2->data.size();
@@ -1361,7 +1361,7 @@ void preprocessRHIShader(std::vector<QByteArray> &shaderCodes)
                            "\\s*,\\s*std140.*)\\)\\s*uniform\\s*([a-zA-Z0-9_]+)"));
 
     auto replaceBinding = [&bindings, &assignedBindings](
-                                  int &offset, QRegularExpressionMatch &match, QString &code,
+                                  qsizetype &offset, QRegularExpressionMatch &match, QString &code,
                                   int indexCapture, int variableCapture) noexcept {
         int index = match.captured(indexCapture).toInt();
         QByteArray variable = match.captured(variableCapture).toUtf8();
@@ -1375,9 +1375,9 @@ void preprocessRHIShader(std::vector<QByteArray> &shaderCodes)
                     return;
                 }
 
-                const int indexStartOffset = match.capturedStart(indexCapture);
-                const int indexEndOffset = match.capturedEnd(indexCapture);
-                const int indexLength = indexEndOffset - indexStartOffset;
+                const qsizetype indexStartOffset = match.capturedStart(indexCapture);
+                const qsizetype indexEndOffset = match.capturedEnd(indexCapture);
+                const qsizetype indexLength = indexEndOffset - indexStartOffset;
                 code.replace(indexStartOffset, indexLength, QByteArray::number(index));
             }
 
@@ -1385,9 +1385,9 @@ void preprocessRHIShader(std::vector<QByteArray> &shaderCodes)
             bindings.emplace(std::move(variable), index);
         } else {
             int indexToUse = it->second;
-            const int indexStartOffset = match.capturedStart(indexCapture);
-            const int indexEndOffset = match.capturedEnd(indexCapture);
-            const int indexLength = indexEndOffset - indexStartOffset;
+            const qsizetype indexStartOffset = match.capturedStart(indexCapture);
+            const qsizetype indexEndOffset = match.capturedEnd(indexCapture);
+            const qsizetype indexLength = indexEndOffset - indexStartOffset;
             code.replace(indexStartOffset, indexLength, QByteArray::number(indexToUse));
         }
         // This may fail in the case where the replaced offset is an incredibly long number,
@@ -1400,7 +1400,7 @@ void preprocessRHIShader(std::vector<QByteArray> &shaderCodes)
         QString shaderString = shaderCode;
 
         // Regex for the sampler variables
-        int offset = 0;
+        qsizetype offset = 0;
         auto match = samplerRegex.match(shaderString, offset);
         while (match.hasMatch()) {
             const int indexCapture = 1;

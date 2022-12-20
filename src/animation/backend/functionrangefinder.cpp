@@ -58,10 +58,10 @@ int FunctionRangeFinder::locate(float x) const
     if (m_x->size() < 2 || m_rangeSize < 2 || m_rangeSize > m_x->size())
         return -1;
 
-    int jLower = 0;
-    int jUpper = m_x->size() - 1;
+    qsizetype jLower = 0;
+    qsizetype jUpper = m_x->size() - 1;
     while (jUpper - jLower > 1) {
-        int jMid = (jUpper + jLower) >> 1;
+        qsizetype jMid = (jUpper + jLower) >> 1;
         if ((x >= m_x->at(jMid)) == m_ascending)
             jLower = jMid;
         else
@@ -83,14 +83,14 @@ int FunctionRangeFinder::hunt(float x) const
     if (m_x->size() < 2 || m_rangeSize < 2 || m_rangeSize > m_x->size())
         return -1;
 
-    int jLower = m_previousLowerBound;
-    int jMid;
-    int jUpper;
+    qsizetype jLower = m_previousLowerBound;
+    qsizetype jMid;
+    qsizetype jUpper;
     if (jLower < 0 || jLower > (m_x->size() - 1)) {
         jLower = 0;
         jUpper = m_x->size() - 1;
     } else {
-        int increment = 1;
+        qsizetype increment = 1;
         if ((x >= m_x->at(jLower)) == m_ascending) {
             for (;;) {
                 jUpper = jLower + increment;

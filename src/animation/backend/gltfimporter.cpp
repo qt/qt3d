@@ -418,17 +418,17 @@ bool GLTFImporter::load(QIODevice *ioDev)
     return parse();
 }
 
-QHash<int, int> GLTFImporter::createNodeIndexToJointIndexMap(const Skin &skin) const
+QHash<qsizetype, qsizetype> GLTFImporter::createNodeIndexToJointIndexMap(const Skin &skin) const
 {
-    const int jointCount = skin.jointNodeIndices.size();
-    QHash<int, int> nodeIndexToJointIndexMap;
+    const qsizetype jointCount = skin.jointNodeIndices.size();
+    QHash<qsizetype, qsizetype> nodeIndexToJointIndexMap;
     nodeIndexToJointIndexMap.reserve(jointCount);
-    for (int i = 0; i < jointCount; ++i)
+    for (qsizetype i = 0; i < jointCount; ++i)
         nodeIndexToJointIndexMap.insert(skin.jointNodeIndices[i], i);
     return nodeIndexToJointIndexMap;
 }
 
-GLTFImporter::AnimationNameAndChannels GLTFImporter::createAnimationData(int animationIndex, const QString &animationName) const
+GLTFImporter::AnimationNameAndChannels GLTFImporter::createAnimationData(qsizetype animationIndex, const QString &animationName) const
 {
     AnimationNameAndChannels nameAndChannels;
     if (m_animations.isEmpty()) {
@@ -439,7 +439,7 @@ GLTFImporter::AnimationNameAndChannels GLTFImporter::createAnimationData(int ani
     if (m_animations.size() == 1) {
         animationIndex = 0;
     } else if (animationIndex < 0 && !animationName.isEmpty()) {
-        for (int i = 0; i < m_animations.size(); ++i) {
+        for (qsizetype i = 0; i < m_animations.size(); ++i) {
             if (m_animations[i].name == animationName) {
                 animationIndex = i;
                 break;
@@ -455,7 +455,7 @@ GLTFImporter::AnimationNameAndChannels GLTFImporter::createAnimationData(int ani
     nameAndChannels.name = animation.name;
 
     // Create node index to joint index lookup tables for each skin
-    QList<QHash<int, int>> nodeIndexToJointIndexMaps;
+    QList<QHash<qsizetype, qsizetype>> nodeIndexToJointIndexMaps;
     nodeIndexToJointIndexMaps.reserve(m_skins.size());
     for (const auto &skin : m_skins)
         nodeIndexToJointIndexMaps.push_back(createNodeIndexToJointIndexMap(skin));
@@ -468,7 +468,7 @@ GLTFImporter::AnimationNameAndChannels GLTFImporter::createAnimationData(int ani
         // Find the node index to joint index map that contains the target node and
         // look up the joint index from it. If no such map is found, the target joint
         // is not part of a skeleton and so we can just set the jointIndex to -1.
-        int jointIndex = -1;
+        qsizetype jointIndex = -1;
         for (const auto &map : nodeIndexToJointIndexMaps) {
             const auto result = map.find(channel.targetNodeIndex);
             if (result != map.cend()) {
@@ -606,7 +606,7 @@ GLTFImporter::RawData GLTFImporter::accessorData(int accessorIndex, int index) c
     const char *rawData = ba.constData() + bufferView.byteOffset + accessor.byteOffset;
 
     const uint typeSize = accessorTypeSize(accessor.type);
-    const int stride = (accessor.byteStride == 0)
+    const qsizetype stride = (accessor.byteStride == 0)
             ? accessor.dataSize * typeSize
             : accessor.byteStride;
 
@@ -791,10 +791,10 @@ bool GLTFImporter::processJSONNode(const QJsonObject &json)
 
 void GLTFImporter::setupNodeParentLinks()
 {
-    const int nodeCount = m_nodes.size();
-    for (int i = 0; i < nodeCount; ++i) {
+    const qsizetype nodeCount = m_nodes.size();
+    for (qsizetype i = 0; i < nodeCount; ++i) {
         const Node &node = m_nodes[i];
-        const QList<int> &childNodeIndices = node.childNodeIndices;
+        const QList<qsizetype> &childNodeIndices = node.childNodeIndices;
         for (const auto childNodeIndex : childNodeIndices) {
             Q_ASSERT(childNodeIndex < m_nodes.size());
             Node &childNode = m_nodes[childNodeIndex];

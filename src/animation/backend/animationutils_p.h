@@ -39,7 +39,7 @@ class AnimationClip;
 class ChannelMapper;
 class ChannelMapping;
 
-using ComponentIndices = QVector<int>;
+using ComponentIndices = QVector<qsizetype>;
 
 enum JointTransformComponent {
     NoTransformComponent = 0,
@@ -99,10 +99,10 @@ struct ChannelNameAndType
     QString jointName;
     QString name;
     int type;
-    int jointIndex;
+    qsizetype jointIndex;
     Qt3DCore::QNodeId mappingId;
     JointTransformComponent jointTransformComponent;
-    int componentCount;
+    qsizetype componentCount;
 
     static const int invalidIndex = -1;
 
@@ -182,7 +182,7 @@ inline QDebug operator<<(QDebug dbg, const ChannelNameAndType &nameAndType)
 
 struct ComponentValue
 {
-    int componentIndex;
+    qsizetype componentIndex;
     float value;
 };
 QT3D_DECLARE_TYPEINFO_2(Qt3DAnimation, Animation, ComponentValue, Q_PRIMITIVE_TYPE)
@@ -203,18 +203,18 @@ struct ClipFormat
 inline QDebug operator<<(QDebug dbg, const ClipFormat &format)
 {
     QDebugStateSaver saver(dbg);
-    int sourceIndex = 0;
-    for (int i = 0; i < format.namesAndTypes.size(); ++i) {
+    qsizetype sourceIndex = 0;
+    for (qsizetype i = 0; i < format.namesAndTypes.size(); ++i) {
         dbg << i
             << format.namesAndTypes[i].jointIndex
             << format.namesAndTypes[i].jointName
             << format.namesAndTypes[i].name
             << format.namesAndTypes[i].type
             << "formatted results dst indices =" << format.formattedComponentIndices[i];
-        const int componentCount = format.formattedComponentIndices[i].size();
+        const qsizetype componentCount = format.formattedComponentIndices[i].size();
 
         dbg << "clip src indices =";
-        for (int j = sourceIndex; j < sourceIndex + componentCount; ++j)
+        for (qsizetype j = sourceIndex; j < sourceIndex + componentCount; ++j)
             dbg << format.sourceClipIndices[j] << "";
 
         dbg << "src clip mask =" << format.sourceClipMask[i];
@@ -308,13 +308,13 @@ ClipEvaluationData evaluationDataForClip(AnimationClip *clip,
 Q_AUTOTEST_EXPORT
 ComponentIndices channelComponentsToIndices(const Channel &channel,
                                             int dataType,
-                                            int expectedComponentCount,
-                                            int offset);
+                                            qsizetype expectedComponentCount,
+                                            qsizetype offset);
 
 Q_AUTOTEST_EXPORT
 ComponentIndices channelComponentsToIndicesHelper(const Channel &channelGroup,
-                                                  int expectedComponentCount,
-                                                  int offset,
+                                                  qsizetype expectedComponentCount,
+                                                  qsizetype offset,
                                                   const QList<char> &suffixes);
 
 Q_AUTOTEST_EXPORT

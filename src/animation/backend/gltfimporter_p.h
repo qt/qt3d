@@ -84,7 +84,7 @@ public:
 
         QString name;
         int inverseBindAccessorIndex;
-        QList<int> jointNodeIndices;
+        QList<qsizetype> jointNodeIndices;
     };
 
     class Channel
@@ -136,7 +136,7 @@ public:
         explicit Node(const QJsonObject &json);
 
         Qt3DCore::Sqt localTransform;
-        QList<int> childNodeIndices;
+        QList<qsizetype> childNodeIndices;
         QString name;
         int parentNodeIndex;
         int cameraIndex;
@@ -154,7 +154,7 @@ public:
         QString name;
         QVector<Qt3DAnimation::Animation::Channel> channels;
     };
-    AnimationNameAndChannels createAnimationData(int animationIndex, const QString &animationName = QString()) const;
+    AnimationNameAndChannels createAnimationData(qsizetype animationIndex, const QString &animationName = QString()) const;
 
 private:
     static Qt3DCore::QAttribute::VertexBaseType accessorTypeFromJSON(int componentType);
@@ -173,7 +173,7 @@ private:
     bool parse();
     bool parseGLTF2();
     void cleanup();
-    QHash<int, int> createNodeIndexToJointIndexMap(const Skin &skin) const;
+    QHash<qsizetype, qsizetype> createNodeIndexToJointIndexMap(const Skin &skin) const;
 
     bool processJSONBuffer(const QJsonObject &json);
     bool processJSONBufferView(const QJsonObject &json);

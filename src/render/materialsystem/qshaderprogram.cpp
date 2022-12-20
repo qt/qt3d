@@ -835,9 +835,9 @@ QByteArray QShaderProgramPrivate::resolveAutoBindingIndices(const QByteArray &co
     // This lambda will replace all occurrences of a string (e.g. "binding = auto") by another,
     // with the incremented int passed as argument (e.g. "binding = 1", "binding = 2" ...)
     const auto replaceAndIncrement = [&](const QRegularExpression &regexp,
-            int &variable,
-            const QString &replacement) noexcept {
-        int matchStart = 0;
+                                         int &variable,
+                                         const QString &replacement) noexcept {
+        qsizetype matchStart = 0;
         do {
             matchStart = shaderCode.indexOf(regexp, matchStart);
             if (matchStart != -1) {

@@ -115,7 +115,7 @@ inline QDebug operator<<(QDebug dbg, const ChannelComponent &channelComponent)
 struct Channel
 {
     QString name;
-    int jointIndex = -1;
+    qsizetype jointIndex = -1;
     QVector<ChannelComponent> channelComponents;
 
     void read(const QJsonObject &json);

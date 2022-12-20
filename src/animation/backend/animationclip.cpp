@@ -201,7 +201,7 @@ void AnimationClip::loadAnimationFromUrl()
         // TODO: Allow loading of a named animation from a file containing many
         const QJsonArray animationsArray = rootObject[QLatin1String("animations")].toArray();
         qCDebug(Jobs) << "Found" << animationsArray.size() << "animations:";
-        for (int i = 0; i < animationsArray.size(); ++i) {
+        for (qsizetype i = 0; i < animationsArray.size(); ++i) {
             QJsonObject animation = animationsArray.at(i).toObject();
             qCDebug(Jobs) << "Animation Name:" << animation[QLatin1String("animationName")].toString();
         }
@@ -218,7 +218,7 @@ void AnimationClip::loadAnimationFromUrl()
         } else if (animationIndex < 0 && !animationName.isEmpty()) {
             // Can we find an animation of the correct name?
             bool foundAnimation = false;
-            for (int i = 0; i < animationsArray.size(); ++i) {
+            for (qsizetype i = 0; i < animationsArray.size(); ++i) {
                 if (animationsArray.at(i)[ANIMATION_NAME_KEY].toString() == animationName) {
                     animationIndex = i;
                     foundAnimation = true;
@@ -241,9 +241,9 @@ void AnimationClip::loadAnimationFromUrl()
         m_name = animation[QLatin1String("animationName")].toString();
 
         QJsonArray channelsArray = animation[QLatin1String("channels")].toArray();
-        const int channelCount = channelsArray.size();
+        const qsizetype channelCount = channelsArray.size();
         m_channels.resize(channelCount);
-        for (int i = 0; i < channelCount; ++i) {
+        for (qsizetype i = 0; i < channelCount; ++i) {
             const QJsonObject group = channelsArray.at(i).toObject();
             m_channels[i].read(group);
         }
@@ -257,7 +257,7 @@ void AnimationClip::loadAnimationFromData()
 {
     // Reformat data from QAnimationClipData to backend format
     m_channels.resize(m_clipData.channelCount());
-    int i = 0;
+    qsizetype i = 0;
     for (const auto &frontendChannel : std::as_const(m_clipData))
         m_channels[i++].setFromQChannel(frontendChannel);
 }
@@ -282,10 +282,10 @@ void AnimationClip::setDuration(float duration)
     m_duration = duration;
 }
 
-int AnimationClip::channelIndex(const QString &channelName, int jointIndex) const
+qsizetype AnimationClip::channelIndex(const QString &channelName, qsizetype jointIndex) const
 {
-    const int channelCount = m_channels.size();
-    for (int i = 0; i < channelCount; ++i) {
+    const qsizetype channelCount = m_channels.size();
+    for (qsizetype i = 0; i < channelCount; ++i) {
         if (m_channels[i].name == channelName
             && (jointIndex == -1 || m_channels[i].jointIndex == jointIndex)) {
             return i;
@@ -304,10 +304,10 @@ int AnimationClip::channelIndex(const QString &channelName, int jointIndex) cons
     for the first group, so the first channel of the second group occurs
     at index 3.
  */
-int AnimationClip::channelComponentBaseIndex(int channelIndex) const
+qsizetype AnimationClip::channelComponentBaseIndex(qsizetype channelIndex) const
 {
-    int index = 0;
-    for (int i = 0; i < channelIndex; ++i)
+    qsizetype index = 0;
+    for (qsizetype i = 0; i < channelIndex; ++i)
         index += m_channels[i].channelComponents.size();
     return index;
 }
@@ -332,9 +332,9 @@ float AnimationClip::findDuration()
     return tMax;
 }
 
-int AnimationClip::findChannelComponentCount()
+qsizetype AnimationClip::findChannelComponentCount()
 {
-    int channelCount = 0;
+    qsizetype channelCount = 0;
     for (const Channel &channel : std::as_const(m_channels))
         channelCount += channel.channelComponents.size();
     return channelCount;

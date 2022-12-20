@@ -200,18 +200,18 @@ std::vector<Qt3DCore::QAspectJobPtr> Handler::jobsToExecute(qint64 time)
         qCDebug(HandlerLogic) << "Added EvaluateClipAnimatorJobs";
 
         // Ensure we have a job per clip animator
-        const int oldSize = m_evaluateClipAnimatorJobs.size();
-        const int newSize = m_runningClipAnimators.size();
+        const qsizetype oldSize = m_evaluateClipAnimatorJobs.size();
+        const qsizetype newSize = m_runningClipAnimators.size();
         if (oldSize < newSize) {
             m_evaluateClipAnimatorJobs.resize(newSize);
-            for (int i = oldSize; i < newSize; ++i) {
+            for (qsizetype i = oldSize; i < newSize; ++i) {
                 m_evaluateClipAnimatorJobs[i] = QSharedPointer<EvaluateClipAnimatorJob>::create();
                 m_evaluateClipAnimatorJobs[i]->setHandler(this);
             }
         }
 
         // Set each job up with an animator to process and set dependencies
-        for (int i = 0; i < newSize; ++i) {
+        for (qsizetype i = 0; i < newSize; ++i) {
             m_evaluateClipAnimatorJobs[i]->setClipAnimator(m_runningClipAnimators[i]);
             Qt3DCore::QAspectJobPrivate::get(m_evaluateClipAnimatorJobs[i].data())->clearDependencies();
             if (hasLoadAnimationClipJob)
@@ -226,18 +226,18 @@ std::vector<Qt3DCore::QAspectJobPtr> Handler::jobsToExecute(qint64 time)
     cleanupHandleList(&m_runningBlendedClipAnimators);
     if (!m_runningBlendedClipAnimators.isEmpty()) {
         // Ensure we have a job per clip animator
-        const int oldSize = m_evaluateBlendClipAnimatorJobs.size();
-        const int newSize = m_runningBlendedClipAnimators.size();
+        const qsizetype oldSize = m_evaluateBlendClipAnimatorJobs.size();
+        const qsizetype newSize = m_runningBlendedClipAnimators.size();
         if (oldSize < newSize) {
             m_evaluateBlendClipAnimatorJobs.resize(newSize);
-            for (int i = oldSize; i < newSize; ++i) {
+            for (qsizetype i = oldSize; i < newSize; ++i) {
                 m_evaluateBlendClipAnimatorJobs[i] = QSharedPointer<EvaluateBlendClipAnimatorJob>::create();
                 m_evaluateBlendClipAnimatorJobs[i]->setHandler(this);
             }
         }
 
         // Set each job up with an animator to process and set dependencies
-        for (int i = 0; i < newSize; ++i) {
+        for (qsizetype i = 0; i < newSize; ++i) {
             m_evaluateBlendClipAnimatorJobs[i]->setBlendClipAnimator(m_runningBlendedClipAnimators[i]);
             Qt3DCore::QAspectJobPrivate::get(m_evaluateBlendClipAnimatorJobs[i].data())->clearDependencies();
             if (hasLoadAnimationClipJob)

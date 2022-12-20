@@ -175,7 +175,7 @@ bool ObjGeometryLoader::doLoad(QIODevice *ioDev, const QString &subMesh)
 
     // Iterate over the faceIndexMap and pull out pos, texCoord and normal data
     // thereby generating unique vertices of data (by OpenGL definition)
-    const int vertexCount = faceIndexMap.size();
+    const qsizetype vertexCount = faceIndexMap.size();
     const bool hasTexCoords = !texCoords.isEmpty();
     const bool hasNormals = !normals.isEmpty();
 
@@ -200,7 +200,7 @@ bool ObjGeometryLoader::doLoad(QIODevice *ioDev, const QString &subMesh)
     }
 
     // Now iterate over the face indices and lookup the unique vertex index
-    const int indexCount = faceIndexVector.size();
+    const qsizetype indexCount = faceIndexVector.size();
     m_indices.clear();
     m_indices.reserve(indexCount);
     for (const FaceIndices &faceIndices : std::as_const(faceIndexVector)) {

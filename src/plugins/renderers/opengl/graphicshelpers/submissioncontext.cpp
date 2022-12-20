@@ -1497,7 +1497,7 @@ void SubmissionContext::uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool r
         // We have a partial update
         if (update->offset >= 0) {
             //accumulate sequential updates as single one
-            int bufferSize = update->data.size();
+            qsizetype bufferSize = update->data.size();
             auto it2 = it + 1;
             while ((it2 != updates.end())
                    && (it2->offset - update->offset == bufferSize)) {
@@ -1517,7 +1517,7 @@ void SubmissionContext::uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool r
             // We have an update that was done by calling QBuffer::setData
             // which is used to resize or entirely clear the buffer
             // Note: we use the buffer data directly in that case
-            const int bufferSize = buffer->data().size();
+            const qsizetype bufferSize = buffer->data().size();
             b->allocate(this, bufferSize, false); // orphan the buffer
             b->allocate(this, buffer->data().constData(), bufferSize, false);
         }

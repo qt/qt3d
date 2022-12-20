@@ -91,7 +91,7 @@ QByteArray createTorusIndexData(int requestedRings, int requestedSlices)
 {
     const int slices = requestedSlices + 1;
     int triangles = triangleCount(requestedRings, requestedSlices);
-    int indices = triangles * 3;
+    qsizetype indices = triangles * 3;
     Q_ASSERT(indices < 65536);
     QByteArray indexBytes;
     indexBytes.resize(indices * sizeof(quint16));

@@ -91,8 +91,8 @@ private:
 
         const Vector3D tcenter = viewMatrix.map(center);
         const double dist = double(tcenter.length());
-        const int n = thresholds.size();
-        for (int i=0; i<n; ++i) {
+        const qsizetype n = thresholds.size();
+        for (qsizetype i = 0; i < n; ++i) {
             if (dist <= thresholds[i] || i == n -1) {
                 m_filterValue = approxRollingAverage<30>(m_filterValue, i);
                 i = qBound(0, static_cast<int>(qRound(m_filterValue)), n - 1);
@@ -137,8 +137,8 @@ private:
         const QRect r = windowViewport(vca.area, vca.viewport);
         area =  std::sqrt(area * float(r.width()) * float(r.height()));
 
-        const int n = thresholds.size();
-        for (int i = 0; i < n; ++i) {
+        const qsizetype n = thresholds.size();
+        for (qsizetype i = 0; i < n; ++i) {
             if (thresholds[i] < area || i == n -1) {
                 m_filterValue = approxRollingAverage<30>(m_filterValue, i);
                 i = qBound(0, static_cast<int>(qRound(m_filterValue)), n - 1);

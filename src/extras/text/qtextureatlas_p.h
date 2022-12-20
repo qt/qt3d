@@ -42,7 +42,7 @@ public:
     TextureId addImage(const QImage &image, int padding);
     void removeImage(TextureId id);
 
-    int imageCount() const;
+    qsizetype imageCount() const;
 
     bool hasImage(TextureId id) const;
     QRect imagePosition(TextureId id) const;
