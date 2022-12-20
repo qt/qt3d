@@ -171,23 +171,16 @@ private:
     // States
     void applyState(const StateVariant &state, QRhiGraphicsPipeline *graphicsPipeline);
 
+    bool m_initialized;
     bool m_ownsRhiCtx;
     bool m_drivenExternally;
     const unsigned int m_id;
-    QSurface *m_surface;
-    QSize m_surfaceSize;
 
     QHash<Qt3DCore::QNodeId, HRHIBuffer> m_renderBufferHash;
-    QHash<Qt3DCore::QNodeId, GLuint> m_renderTargets;
-    QHash<GLuint, QSize> m_renderTargetsSize;
-    QAbstractTexture::TextureFormat m_renderTargetFormat;
 
     Material *m_material;
 
     Renderer *m_renderer;
-    QByteArray m_uboTempArray;
-
-    bool m_initialized;
 
     GraphicsApiFilterData m_contextInfo;
 

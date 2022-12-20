@@ -465,15 +465,12 @@ static QShader::Stage rhiShaderStage(QShaderProgram::ShaderType type) noexcept
 } // anonymous
 
 SubmissionContext::SubmissionContext()
-    : m_ownsRhiCtx(false),
+    : m_initialized(false),
+      m_ownsRhiCtx(false),
       m_drivenExternally(false),
       m_id(nextFreeContextId()),
-      m_surface(nullptr),
-      m_renderTargetFormat(QAbstractTexture::NoFormat),
       m_material(nullptr),
       m_renderer(nullptr),
-      m_uboTempArray(QByteArray(1024, 0)),
-      m_initialized(false),
       m_rhi(nullptr),
       m_currentSwapChain(nullptr),
       m_currentRenderPassDescriptor(nullptr),
@@ -611,8 +608,6 @@ bool SubmissionContext::beginDrawing(QSurface *surface)
 {
     Q_ASSERT(surface);
 
-    m_surface = surface;
-
     Q_ASSERT(isInitialized());
 
     // In the Scene3D case it does not make sense to create SwapChains as we
@@ -627,7 +622,7 @@ bool SubmissionContext::beginDrawing(QSurface *surface)
     QRhiSwapChain *swapChain = swapChainInfo->swapChain;
 
     // Resize swapchain if needed
-    if (m_surface->size() != swapChain->currentPixelSize()) {
+    if (surface->size() != swapChain->currentPixelSize()) {
         bool couldRebuild = swapChain->createOrResize();
         if (!couldRebuild)
             return false;
