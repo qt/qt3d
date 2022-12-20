@@ -25,7 +25,6 @@
 
 QT_BEGIN_NAMESPACE
 
-class QAbstractCollisionQueryServicePrivate;
 namespace Qt3DRender {
 namespace RayCasting {
 

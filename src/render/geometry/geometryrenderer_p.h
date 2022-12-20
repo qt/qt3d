@@ -23,9 +23,6 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-namespace RayCasting {
-class QBoundingVolume;
-}
 
 namespace Render {
 
