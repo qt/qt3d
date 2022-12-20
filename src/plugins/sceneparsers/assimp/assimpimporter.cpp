@@ -786,7 +786,7 @@ QGeometryRenderer *AssimpImporter::loadMesh(uint meshIndex)
         for (uint i = 0; i < mesh->mNumFaces; i++) {
             aiFace face = mesh->mFaces[i];
             Q_ASSERT(face.mNumIndices == 3);
-            for (ushort j = 0; j < face.mNumIndices; j++)
+            for (uint j = 0; j < face.mNumIndices; j++)
                 reinterpret_cast<quint16*>(ibufferContent.data())[i * 3 + j] = face.mIndices[j];
         }
     }
