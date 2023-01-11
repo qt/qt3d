@@ -19,7 +19,7 @@ qt_internal_add_test(tst_qnodeinstantiator
         stringmodel.h
         tst_quick3dnodeinstantiator.cpp
     DEFINES
-        QT_QMLTEST_DATADIR=\\\"${CMAKE_CURRENT_SOURCE_DIR}/data\\\"
+        QT_QMLTEST_DATADIR="${CMAKE_CURRENT_SOURCE_DIR}/data"
     INCLUDE_DIRECTORIES
         ../../shared
     LIBRARIES
