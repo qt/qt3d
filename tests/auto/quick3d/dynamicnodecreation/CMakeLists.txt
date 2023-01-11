@@ -18,7 +18,7 @@ qt_internal_add_test(tst_dynamicnodecreation
         ../../shared/util.cpp ../../shared/util.h
         tst_dynamicnodecreation.cpp
     DEFINES
-        QT_QMLTEST_DATADIR=\\\"${CMAKE_CURRENT_SOURCE_DIR}/data\\\"
+        QT_QMLTEST_DATADIR="${CMAKE_CURRENT_SOURCE_DIR}/data"
     INCLUDE_DIRECTORIES
         ../../shared
     LIBRARIES
