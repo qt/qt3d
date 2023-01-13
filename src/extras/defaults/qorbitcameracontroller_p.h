@@ -31,6 +31,10 @@ public:
     void init();
 
     float m_zoomInLimit;
+    QVector3D m_upVector;
+    bool m_inverseXTranslate, m_inverseYTranslate;
+    bool m_inversePan, m_inverseTilt;
+    bool m_zoomTranslateViewCenter;
 
 private:
     QOrbitCameraController *q_ptr;
