@@ -153,11 +153,16 @@ public:
         : TrianglesVisitor(manager), m_root(root), m_ray(ray), m_triangleIndex(0)
         , m_frontFaceRequested(frontFaceRequested), m_backFaceRequested(backFaceRequested)
     {
+        m_worldMatrix = *m_root->worldTransform();
+        m_localRay = m_ray;
+        m_localRay.transform(m_worldMatrix.inverted());
     }
 
 private:
     const Entity *m_root;
     RayCasting::QRay3D m_ray;
+    RayCasting::QRay3D m_localRay;
+    Matrix4x4 m_worldMatrix;
     uint m_triangleIndex;
     bool m_frontFaceRequested;
     bool m_backFaceRequested;
@@ -172,26 +177,19 @@ private:
 
 void TriangleCollisionVisitor::visit(uint andx, const Vector3D &a, uint bndx, const Vector3D &b, uint cndx, const Vector3D &c)
 {
-    const Matrix4x4 &mat = *m_root->worldTransform();
-    const Vector3D tA = mat.map(a);
-    const Vector3D tB = mat.map(b);
-    const Vector3D tC = mat.map(c);
-
-    bool intersected = m_frontFaceRequested &&
-            intersectsSegmentTriangle(cndx, tC, bndx, tB, andx, tA);    // front facing
+    bool intersected = m_frontFaceRequested && intersectsSegmentTriangle(cndx, c, bndx, b, andx, a); // front facing
     if (!intersected && m_backFaceRequested) {
-        intersected = intersectsSegmentTriangle(andx, tA, bndx, tB, cndx, tC);    // back facing
+        intersected = intersectsSegmentTriangle(andx, a, bndx, b, cndx, c); // back facing
     }
 
     m_triangleIndex++;
 }
 
-
 bool TriangleCollisionVisitor::intersectsSegmentTriangle(uint andx, const Vector3D &a, uint bndx, const Vector3D &b, uint cndx, const Vector3D &c)
 {
     float t = 0.0f;
     Vector3D uvw;
-    bool intersected = Render::intersectsSegmentTriangle(m_ray, a, b, c, uvw, t);
+    bool intersected = Render::intersectsSegmentTriangle(m_localRay, a, b, c, uvw, t);
     if (intersected) {
         QCollisionQueryResult::Hit queryResult;
         queryResult.m_type = QCollisionQueryResult::Hit::Triangle;
@@ -201,7 +199,7 @@ bool TriangleCollisionVisitor::intersectsSegmentTriangle(uint andx, const Vector
         queryResult.m_vertexIndex[1] = bndx;
         queryResult.m_vertexIndex[2] = cndx;
         queryResult.m_uvw = uvw;
-        queryResult.m_intersection = m_ray.point(t * m_ray.distance());
+        queryResult.m_intersection = m_worldMatrix.map(m_localRay.point(t * m_localRay.distance()));
         queryResult.m_distance = m_ray.projectedDistance(queryResult.m_intersection);
         hits.push_back(queryResult);
     }
