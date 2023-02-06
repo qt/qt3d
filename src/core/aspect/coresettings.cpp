@@ -6,7 +6,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
+namespace Qt3DCore {
 
 CoreSettings::CoreSettings()
     : QBackendNode()
@@ -56,5 +56,7 @@ void CoreSettingsFunctor::destroy(Qt3DCore::QNodeId id) const
     delete m_settings;
     m_settings = nullptr;
 }
+
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE

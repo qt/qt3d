@@ -7,8 +7,6 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
-
 /*!
    \class Qt3DCore::QCoreSettings
    \brief The QCoreSettings class holds settings related to core data handling process.
