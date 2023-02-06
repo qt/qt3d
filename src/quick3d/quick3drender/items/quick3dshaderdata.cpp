@@ -14,8 +14,6 @@ namespace Render {
 namespace Quick {
 
 namespace {
-
-const int qjsValueTypeId = qMetaTypeId<QJSValue>();
 const int quick3DShaderDataArrayTypeId = qMetaTypeId<Quick3DShaderDataArray*>();
 Q_DECL_UNUSED const int quick3DShaderDataTypeId = qMetaTypeId<Quick3DShaderData*>();
 
@@ -30,6 +28,8 @@ public:
 
     QVariant readProperty(const QVariant &v) override
     {
+        static const int qjsValueTypeId = qMetaTypeId<QJSValue>();
+
         // qjsValueTypeId are not compile time constant (no switch)
         if (v.userType() == qjsValueTypeId) {
             QJSValue jsValue = v.value<QJSValue>();
