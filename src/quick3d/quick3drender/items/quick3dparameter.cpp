@@ -12,10 +12,6 @@ namespace Qt3DRender {
 namespace Render {
 namespace Quick {
 
-namespace {
-const int qjsValueTypeId = qMetaTypeId<QJSValue>();
-}
-
 Quick3DParameterPrivate::Quick3DParameterPrivate()
     : QParameterPrivate()
 {
@@ -23,6 +19,8 @@ Quick3DParameterPrivate::Quick3DParameterPrivate()
 
 void Quick3DParameterPrivate::setValue(const QVariant &value)
 {
+    static const int qjsValueTypeId = qMetaTypeId<QJSValue>();
+
     if (value.userType() == qjsValueTypeId) {
         QJSValue v = value.value<QJSValue>();
         if (v.isArray())
