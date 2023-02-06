@@ -312,6 +312,9 @@ qt_internal_add_module(3DRender
         Qt::3DCorePrivate
 )
 
+# QTransform conflicts
+set_target_properties(3DRender PROPERTIES UNITY_BUILD OFF)
+
 # Resources:
 set(materialsystem_resource_files
     "materialsystem/prototypes/default.json"
