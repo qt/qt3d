@@ -95,6 +95,9 @@ qt_internal_add_plugin(RhiRendererPlugin
         Qt::ShaderToolsPrivate
 )
 
+# QTransform conflicts
+set_target_properties(RhiRendererPlugin PROPERTIES UNITY_BUILD OFF)
+
 #### Keys ignored in scope 1:.:.:rhi.pro:<TRUE>:
 # DISTFILES = "rhirenderer.json"
 

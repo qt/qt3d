@@ -86,6 +86,9 @@ qt_internal_add_module(3DExtras
         Qt::CorePrivate
 )
 
+# QTransform conflicts
+set_target_properties(3DExtras PROPERTIES UNITY_BUILD OFF)
+
 # Resources:
 set(extras_resource_files
     "shaders/es2/coordinatesystems.inc"

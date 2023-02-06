@@ -121,6 +121,9 @@ qt_internal_add_plugin(OpenGLRendererPlugin
         Qt::OpenGLPrivate
 )
 
+# QTransform conflicts
+set_target_properties(OpenGLRendererPlugin PROPERTIES UNITY_BUILD OFF)
+
 qt_internal_extend_target(OpenGLRendererPlugin CONDITION NOT INTEGRITY
     SOURCES
         debug/imguirenderer.cpp debug/imguirenderer_p.h
