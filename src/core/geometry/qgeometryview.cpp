@@ -12,7 +12,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
+namespace Qt3DCore {
 
 namespace {
 
@@ -95,7 +95,6 @@ public:
 };
 
 }
-
 
 bool BoundingVolumeCalculator::apply(QAttribute *positionAttribute,
                                      QAttribute *indexAttribute,
@@ -577,6 +576,8 @@ void QGeometryView::setPrimitiveType(QGeometryView::PrimitiveType primitiveType)
     d->m_primitiveType = primitiveType;
     emit primitiveTypeChanged(primitiveType);
 }
+
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 

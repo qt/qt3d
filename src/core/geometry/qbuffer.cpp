@@ -7,8 +7,6 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
-
 namespace Qt3DCore {
 
 const char *QBufferPrivate::UpdateDataPropertyName = "QT3D_updateData";

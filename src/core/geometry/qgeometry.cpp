@@ -9,7 +9,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
+namespace Qt3DCore {
 
 QGeometryFactory::~QGeometryFactory()
 {
@@ -237,6 +237,8 @@ QList<QAttribute *> QGeometry::attributes() const
     Q_D(const QGeometry);
     return d->m_attributes;
 }
+
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 

@@ -11,7 +11,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
+namespace Qt3DCore {
 
 QCoreAspectPrivate::QCoreAspectPrivate()
     : Qt3DCore::QAbstractAspectPrivate()
@@ -113,6 +113,8 @@ void QCoreAspect::frameDone()
     auto scene = d->m_aspectManager->scene();
     scene->clearDirtyBits();
 }
+
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
