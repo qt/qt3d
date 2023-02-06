@@ -1,8 +1,8 @@
 // Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#ifndef QT3DEXTRAS_QSPRITESHEET_P_H
-#define QT3DEXTRAS_QSPRITESHEET_P_H
+#ifndef QT3DEXTRAS_QSPRITESHEETITEM_P_H
+#define QT3DEXTRAS_QSPRITESHEETITEM_P_H
 
 //
 //  W A R N I N G
@@ -39,5 +39,5 @@ class QSpriteSheetItemPrivate: public Qt3DCore::QNodePrivate
 
 QT_END_NAMESPACE
 
-#endif // QT3DEXTRAS_QSPRITESHEET_P_H
+#endif // QT3DEXTRAS_QSPRITESHEETITEM_P_H
 
