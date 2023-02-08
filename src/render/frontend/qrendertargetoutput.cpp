@@ -20,6 +20,9 @@ namespace Qt3DRender {
     that is attached to render target. In addition to the attachment point, texture
     miplevel, layer and cubemap face can be specified. The texture attached to the
     QRenderTargetOutput must be compatible with the given parameters.
+
+    \note Left and Right attachment points are special values. They do not refer to
+    render target objects to be either of the back buffers used for stereo rendering.
  */
 
 /*!
@@ -35,6 +38,9 @@ namespace Qt3DRender {
     that is attached to render target. In addition to the attachment point, texture
     miplevel, layer and cubemap face can be specified. The texture attached to the
     RenderTargetOutput must be compatible with the given parameters.
+
+    \note Left and Right attachment points are special values. They do not refer to
+    render target objects to be either of the back buffers used for stereo rendering.
  */
 
 /*!
@@ -61,6 +67,8 @@ namespace Qt3DRender {
     \value Depth Depth attachment point
     \value Stencil Stencil attachment point
     \value DepthStencil DepthStencil attachment point
+    \value Left Back Left Draw Buffer
+    \value Right Back Right Draw Buffer
 */
 
 /*!
@@ -86,6 +94,8 @@ namespace Qt3DRender {
     \li RenderTargetOutput.Depth
     \li RenderTargetOutput.Stencil
     \li RenderTargetOutput.DepthStencil
+    \li RenderTargetOutput.Left
+    \li RenderTargetOutput.Right
     \endlist
 
     \sa Qt3DRender::QRenderTargetOutput::AttachmentPoint
@@ -123,6 +133,8 @@ namespace Qt3DRender {
 /*!
     \property QRenderTargetOutput::attachmentPoint
     Holds the attachment point of the QRenderTargetOutput.
+
+
 */
 
 /*!

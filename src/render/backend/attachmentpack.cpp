@@ -7,6 +7,13 @@
 
 QT_BEGIN_NAMESPACE
 
+#ifndef GL_BACK_LEFT
+#define GL_BACK_LEFT                      0x0402
+#endif
+#ifndef GL_BACK_RIGHT
+#define GL_BACK_RIGHT                     0x0403
+#endif
+
 namespace Qt3DRender {
 namespace Render {
 
@@ -39,15 +46,32 @@ AttachmentPack::AttachmentPack(const RenderTarget *target,
     // If nothing is specified, use all the attachments as draw buffers
     if (drawBuffers.empty()) {
         m_drawBuffers.reserve(m_attachments.size());
-        for (const Attachment &attachment : std::as_const(m_attachments))
-            // only consider Color Attachments
-            if (attachment.m_point <= QRenderTargetOutput::Color15)
-                m_drawBuffers.push_back((int) attachment.m_point);
+        for (const Attachment &attachment : std::as_const(m_attachments)) {
+            switch (attachment.m_point) {
+            case QRenderTargetOutput::Left:
+                m_drawBuffers.push_back(GL_BACK_LEFT);
+            case QRenderTargetOutput::Right:
+                m_drawBuffers.push_back(GL_BACK_RIGHT);
+            default:
+                if (attachment.m_point >= QRenderTargetOutput::Color0 && attachment.m_point <= QRenderTargetOutput::Color15)
+                    m_drawBuffers.push_back((int) attachment.m_point);
+                break;
+            }
+        }
     } else {
         m_drawBuffers.reserve(drawBuffers.size());
-        for (QRenderTargetOutput::AttachmentPoint drawBuffer : drawBuffers)
-            if (drawBuffer <= QRenderTargetOutput::Color15)
-                m_drawBuffers.push_back((int) drawBuffer);
+        for (QRenderTargetOutput::AttachmentPoint drawBuffer : drawBuffers) {
+            switch (drawBuffer) {
+            case QRenderTargetOutput::Left:
+                m_drawBuffers.push_back(GL_BACK_LEFT);
+            case QRenderTargetOutput::Right:
+                m_drawBuffers.push_back(GL_BACK_RIGHT);
+            default:
+                if (drawBuffer >= QRenderTargetOutput::Color0 && drawBuffer <= QRenderTargetOutput::Color15)
+                    m_drawBuffers.push_back((int) drawBuffer);
+                break;
+            }
+        }
     }
 }
 

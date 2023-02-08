@@ -44,7 +44,9 @@ public:
         Color15,
         Depth,
         Stencil,
-        DepthStencil
+        DepthStencil,
+        Left,
+        Right
     };
     Q_ENUM(AttachmentPoint) // LCOV_EXCL_LINE
 

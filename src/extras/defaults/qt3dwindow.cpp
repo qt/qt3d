@@ -303,7 +303,8 @@ void setupWindowSurface(QWindow *window, Qt3DRender::API api) noexcept
     }
 
     format.setDepthBufferSize(24);
-    format.setSamples(4);
+    if (!QSurfaceFormat::defaultFormat().stereo())
+        format.setSamples(4);
     format.setStencilBufferSize(8);
     window->setFormat(format);
     QSurfaceFormat::setDefaultFormat(format);

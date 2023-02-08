@@ -466,7 +466,17 @@ void SubmissionContext::activateRenderTarget(Qt3DCore::QNodeId renderTargetNodeI
     GLuint fboId = defaultFboId; // Default FBO
     resolveRenderTargetFormat(); // Reset m_renderTargetFormat based on the default FBO
 
-    if (renderTargetNodeId) {
+    // check if target buffer is GL_BACK_LEFT or GL_BACK_RIGHT, as they don't need an
+    // own fbo
+    auto allLeftOrRight = std::all_of(attachments.attachments().begin(), attachments.attachments().end(),
+                                      [](const Attachment& att){
+                                          return att.m_point == QRenderTargetOutput::Left || att.m_point == QRenderTargetOutput::Right;
+                                      });
+
+    const bool allAttachmentsAreLeftOrRight = attachments.attachments().size() > 0 && allLeftOrRight;
+    const bool shouldCreateRenderTarget = !allAttachmentsAreLeftOrRight && renderTargetNodeId;
+
+    if (shouldCreateRenderTarget) {
         // New RenderTarget
         if (!m_renderTargets.contains(renderTargetNodeId)) {
             if (m_defaultFBO && fboId == m_defaultFBO) {
@@ -857,6 +867,9 @@ void SubmissionContext::activateDrawBuffers(const AttachmentPack &attachments)
                 // Set up MRT, glDrawBuffers...
                 m_glHelper->drawBuffers(GLsizei(activeDrawBuffers.size()), activeDrawBuffers.data());
             }
+        }
+        else if (activeDrawBuffers.size() == 1){
+            m_glHelper->drawBuffer(activeDrawBuffers.at(0));
         }
     } else {
         qCWarning(Backend) << "FBO incomplete";
