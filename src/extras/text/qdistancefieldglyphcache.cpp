@@ -125,6 +125,7 @@ DistanceFieldFont::DistanceFieldFont(const QRawFont &font, bool doubleRes, Qt3DC
     , m_doubleGlyphResolution(doubleRes)
     , m_parentNode(parent)
 {
+    Q_ASSERT(m_parentNode);
 }
 
 DistanceFieldFont::~DistanceFieldFont()
@@ -251,7 +252,8 @@ DistanceFieldFont* QDistanceFieldGlyphCache::getOrCreateDistanceFieldFont(const 
     // create new font cache
     // we set the parent node to nullptr, since the parent node of QTextureAtlasses
     // will be set when we pass them to QText2DMaterial later
-    DistanceFieldFont *dff = new DistanceFieldFont(actualFont, useDoubleRes, nullptr);
+    Q_ASSERT(m_rootNode);
+    DistanceFieldFont *dff = new DistanceFieldFont(actualFont, useDoubleRes, m_rootNode);
     m_fonts.insert(key, dff);
     return dff;
 }
@@ -288,11 +290,10 @@ QDistanceFieldGlyphCache::Glyph refAndGetGlyph(DistanceFieldFont *dff, quint32 g
     if (dff) {
         const auto entry = dff->refGlyph(glyph);
 
-        if (entry.atlas()) {
-            ret.glyphPathBoundingRect = entry.glyphPathBoundingRect();
-            ret.texCoords = entry.texCoords();
-            ret.texture = entry.atlas();
-        }
+        Q_ASSERT(entry.atlas());
+        ret.glyphPathBoundingRect = entry.glyphPathBoundingRect();
+        ret.texCoords = entry.texCoords();
+        ret.texture = entry.atlas();
     }
 
     return ret;
