@@ -274,8 +274,9 @@ void QText2DEntityPrivate::setCurrentGlyphRuns(const QList<QGlyphRun> &runs)
         delete m_renderers.takeLast();
 
     while (m_renderers.size() < renderData.size()) {
-        DistanceFieldTextRenderer *renderer = new DistanceFieldTextRenderer(q_func());
+        DistanceFieldTextRenderer *renderer = new DistanceFieldTextRenderer();
         renderer->setColor(m_color);
+        renderer->setParent(q_func());
         m_renderers << renderer;
     }
 
