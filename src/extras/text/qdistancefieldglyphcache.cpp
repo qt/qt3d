@@ -161,6 +161,7 @@ DistanceFieldFont::DistanceFieldFont(const QRawFont &font, bool doubleRes, Qt3DC
     , m_doubleGlyphResolution(doubleRes)
     , m_parentNode(parent)
 {
+    Q_ASSERT(m_parentNode);
 }
 
 DistanceFieldFont::~DistanceFieldFont()
@@ -197,13 +198,14 @@ StoredGlyph DistanceFieldFont::refGlyph(quint32 glyph)
         // scenarios
         const int size = m_doubleGlyphResolution ? 512 : 256;
 
-        QTextureAtlas *atlas = new QTextureAtlas(m_parentNode);
+        QTextureAtlas *atlas = new QTextureAtlas();
         atlas->setWidth(size);
         atlas->setHeight(size);
         atlas->setFormat(Qt3DRender::QAbstractTexture::R8_UNorm);
         atlas->setPixelFormat(QOpenGLTexture::Red);
         atlas->setMinificationFilter(Qt3DRender::QAbstractTexture::Linear);
         atlas->setMagnificationFilter(Qt3DRender::QAbstractTexture::Linear);
+        atlas->setParent(m_parentNode);
         m_atlasses << atlas;
 
         if (!storedGlyph.addToTextureAtlas(atlas))
@@ -236,7 +238,12 @@ void DistanceFieldFont::derefGlyph(quint32 glyph)
             Q_ASSERT(m_atlasses.contains(atlas));
 
             m_atlasses.removeAll(atlas);
-            delete atlas;
+
+            // This function might have been called as a result of destroying
+            // the scene root which traverses the entire scene tree. Calling
+            // delete on the atlas here could lead to dangling pointers in the
+            // least of children being traversed for destruction.
+            atlas->deleteLater();
         }
 
         m_glyphs.erase(it);
@@ -287,7 +294,8 @@ DistanceFieldFont* QDistanceFieldGlyphCache::getOrCreateDistanceFieldFont(const 
     // create new font cache
     // we set the parent node to nullptr, since the parent node of QTextureAtlasses
     // will be set when we pass them to QText2DMaterial later
-    DistanceFieldFont *dff = new DistanceFieldFont(actualFont, useDoubleRes, nullptr);
+    Q_ASSERT(m_rootNode);
+    DistanceFieldFont *dff = new DistanceFieldFont(actualFont, useDoubleRes, m_rootNode);
     m_fonts.insert(key, dff);
     return dff;
 }
@@ -324,11 +332,10 @@ QDistanceFieldGlyphCache::Glyph refAndGetGlyph(DistanceFieldFont *dff, quint32 g
     if (dff) {
         const auto entry = dff->refGlyph(glyph);
 
-        if (entry.atlas()) {
-            ret.glyphPathBoundingRect = entry.glyphPathBoundingRect();
-            ret.texCoords = entry.texCoords();
-            ret.texture = entry.atlas();
-        }
+        Q_ASSERT(entry.atlas());
+        ret.glyphPathBoundingRect = entry.glyphPathBoundingRect();
+        ret.texCoords = entry.texCoords();
+        ret.texture = entry.atlas();
     }
 
     return ret;
