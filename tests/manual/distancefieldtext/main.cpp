@@ -7,6 +7,9 @@
 
 int main(int argc, char **argv)
 {
+    qputenv("QSG_RHI_BACKEND", "opengl");
+    qputenv("QT3D_RENDERER", "opengl");
+
     QGuiApplication app(argc, argv);
 
     QSurfaceFormat format;
