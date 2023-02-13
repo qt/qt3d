@@ -198,13 +198,14 @@ StoredGlyph DistanceFieldFont::refGlyph(quint32 glyph)
         // scenarios
         const int size = m_doubleGlyphResolution ? 512 : 256;
 
-        QTextureAtlas *atlas = new QTextureAtlas(m_parentNode);
+        QTextureAtlas *atlas = new QTextureAtlas();
         atlas->setWidth(size);
         atlas->setHeight(size);
         atlas->setFormat(Qt3DRender::QAbstractTexture::R8_UNorm);
         atlas->setPixelFormat(QOpenGLTexture::Red);
         atlas->setMinificationFilter(Qt3DRender::QAbstractTexture::Linear);
         atlas->setMagnificationFilter(Qt3DRender::QAbstractTexture::Linear);
+        atlas->setParent(m_parentNode);
         m_atlasses << atlas;
 
         if (!storedGlyph.addToTextureAtlas(atlas))
@@ -237,7 +238,12 @@ void DistanceFieldFont::derefGlyph(quint32 glyph)
             Q_ASSERT(m_atlasses.contains(atlas));
 
             m_atlasses.removeAll(atlas);
-            delete atlas;
+
+            // This function might have been called as a result of destroying
+            // the scene root which traverses the entire scene tree. Calling
+            // delete on the atlas here could lead to dangling pointers in the
+            // least of children being traversed for destruction.
+            atlas->deleteLater();
         }
 
         m_glyphs.erase(it);
