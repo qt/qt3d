@@ -44,7 +44,7 @@ void tst_qtext2dentity::checkChangeArbiter()
     auto atlases = lookupNodeByClassName(rootEntity.data(), "Qt3DExtras::QTextureAtlas");
     QVERIFY(atlases.size() == 1);
     auto atlas = atlases[0];
-    QTRY_VERIFY(Qt3DCore::QNodePrivate::get(atlas)->m_changeArbiter);
+    QVERIFY(Qt3DCore::QNodePrivate::get(atlas)->m_changeArbiter);
 }
 
 QTEST_MAIN(tst_qtext2dentity)
