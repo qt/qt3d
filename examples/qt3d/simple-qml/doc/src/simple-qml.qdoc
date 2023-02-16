@@ -20,25 +20,20 @@
     To be able to use the types in the Q3D and Q3D Render modules, we must
     import the modules:
 
-    \quotefromfile simple-qml/main.qml
-    \skipto import Qt3D.Core
-    \printuntil Render 2.0
+    \snippet simple-qml/main.qml 0
 
     The first entities we create are a \l Camera, which represents the camera
     used for the final rendering, and a camera controller, which allows us to
     control this camera using the keyboard or the mouse:
 
-    \skipto Camera {
-    \printuntil }
-    \printuntil }
+    \snippet simple-qml/main.qml 1
 
     A \l RenderSettings entity specifies a ForwardRenderer as the active
     framegraph:
 
-    \printuntil },
+    \snippet simple-qml/main.qml 2
 
     The event source is set by the Qt3DQuickWindow:
 
-    \skipto InputSettings
-    \printuntil }
+    \snippet simple-qml/main.qml 3
 */

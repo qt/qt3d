@@ -16,7 +16,7 @@ Entity {
     property bool validBounds: sphereMesh.implicitPointsValid
     property vector3d sphereMinPt: sphereMesh.implicitMinPoint
     property vector3d sphereMaxPt: sphereMesh.implicitMaxPoint
-
+    //! [0]
     Camera {
         id: camera
         projectionType: CameraLens.PerspectiveProjection
@@ -27,6 +27,7 @@ Entity {
         upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
         viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
     }
+    //! [0]
 
     FirstPersonCameraController { camera: camera }
 

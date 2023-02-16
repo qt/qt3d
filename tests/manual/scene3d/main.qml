@@ -44,7 +44,7 @@ Item {
             origin.x: scene.width / 2
             origin.y: scene.height / 2
         }
-
+        //! [0]
         Scene3D {
             id: scene3d
             anchors.fill: parent
@@ -57,6 +57,7 @@ Item {
                 id: rootEntity
             }
         }
+        //! [0]
     }
 
     Rectangle {
