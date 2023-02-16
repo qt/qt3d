@@ -15,7 +15,7 @@ RenderSettings {
 
     activeFrameGraph: RenderSurfaceSelector {
         id: surfaceSelector
-
+        //! [0]
         Viewport {
             id: mainViewport
             normalizedRect: Qt.rect(0, 0, 1, 1)
@@ -49,5 +49,6 @@ RenderSettings {
                 CameraSelector { id: cameraSelectorBottomRightViewport }
             }
         }
+        //! [0]
     }
 }

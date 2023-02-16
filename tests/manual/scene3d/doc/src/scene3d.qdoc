@@ -19,14 +19,9 @@
 
     We set up the 3D scene and specify the entity to animate in \e main.qml:
 
-    \quotefromfile scene3d/main.qml
-    \skipto Scene3D {
-    \printuntil }
-    \printuntil }
+    \snippet scene3d/main.qml 0
 
     We specify the active camera in \e scene3d/AnimatedEntity.qml:
 
-    \quotefromfile scene3d/AnimatedEntity.qml
-    \skipto Camera
-    \printuntil }
+    \snippet scene3d/AnimatedEntity.qml 0
 */
