@@ -17,7 +17,6 @@ if(TARGET Qt::Quick)
     qt_internal_add_example(instanced-arrays-qml)
     qt_internal_add_example(multiviewport)
     qt_internal_add_example(planets-qml)
-#    qt_internal_add_example(scene2d) # Restore once Scene2D support has been ported to Qt6
     qt_internal_add_example(scene3d)
     qt_internal_add_example(simple-qml)
     qt_internal_add_example(simplecustommaterial)
