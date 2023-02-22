@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>ComputeFrameGraph.qml</file>
+        <file>ComputeMaterial.qml</file>
+        <file>ParticlesScene.qml</file>
+        <file>shaders/gl43/particles.frag</file>
+        <file>shaders/gl43/particles.vert</file>
+        <file>shaders/gl43/particles.comp</file>
+        <file>shaders/gl45/particles.frag</file>
+        <file>shaders/gl45/particles.vert</file>
+        <file>shaders/gl45/particles.comp</file>
+    </qresource>
+</RCC>

@@ -93,7 +93,7 @@ Entity
             SceneLoader {
                 id: sceneLoader
                 source: "qrc:/assets/test_scene.dae"
-                onStatusChanged: {
+                onStatusChanged: (status) => {
                     console.log("SceneLoader status: " + status);
                     if (status == SceneLoader.Ready) {
                         console.log("Scene is ready");
