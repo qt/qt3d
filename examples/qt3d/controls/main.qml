@@ -1,8 +1,8 @@
 // Copyright (C) 2016 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
 
-import QtQuick 2.0
-import QtQuick.Scene3D 2.0
+import QtQuick 2.14
+import QtQuick.Scene3D 2.14
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.2
 
@@ -11,12 +11,18 @@ Item {
 
     property real rotationValue: 0
 
+    // If compositingMode == Scene3D.Underlay
+    // Position in the QML file and sizing of the Scene3D
+    // have no actual effect:
+    // The 3D content will be drawn before any QtQuick content
+    // and assume a FullScreen viewport
     Scene3D {
         id: scene3D
         anchors.fill: parent
         anchors.verticalCenter: parent.verticalCenter
         focus: true
         aspects: "input"
+        compositingMode: _useUnderLayCompositingMode ? Scene3D.Underlay : Scene3D.FBO
 
         Logo {
             id: watch
@@ -32,8 +38,8 @@ Item {
         anchors.top: scene3D.top
         spacing: 5
 
-        Text { text: "Appearance"; font.bold: true }
-        Text { text: "Ambient color RGB" }
+        Text { text: qsTr("Appearance"); font.bold: true }
+        Text { text: qsTr("Ambient color RGB") }
         RowLayout {
             Text { text: "R" }
             Slider {
@@ -64,7 +70,7 @@ Item {
                 value: 66
             }
         }
-        Text { text: "Shininess" }
+        Text { text: qsTr("Shininess") }
         Slider {
             id: shining
             Layout.fillWidth: true
@@ -83,8 +89,8 @@ Item {
         anchors.topMargin: 10
         spacing: 5
 
-        Text { text: "Item transform"; font.bold: true }
-        Text { text: "Rotation" }
+        Text { text: qsTr("Item transform"); font.bold: true }
+        Text { text: qsTr("Rotation") }
         RowLayout {
             Text { text: "X" }
             Slider {
@@ -130,8 +136,8 @@ Item {
         anchors.topMargin: 10
         spacing: 5
 
-        Text { text: "Camera"; font.bold: true }
-        Text { text: "View Ctr Z: " + watch.cameraZ.toFixed(2) }
+        Text { text: qsTr("Camera"); font.bold: true }
+        Text { text: qsTr("View Ctr Z: ") + watch.cameraZ.toFixed(2) }
         Slider {
             id: viewCenter_z
             Layout.fillWidth: true
@@ -143,9 +149,17 @@ Item {
         Button {
             id: viewAll
             Layout.fillWidth: true
-            text: "View All"
+            text: qsTr("View All")
             onClicked: watch.viewLogo()
         }
+    }
+
+    RowLayout {
+        id: compositingMode
+        anchors.bottom: parent.bottom
+        x: 5
+
+        Text { text: qsTr("Compositing: ") + (scene3D.compositingMode == Scene3D.FBO ? "FBO" : "Underlay") }
     }
 
     SequentialAnimation {
