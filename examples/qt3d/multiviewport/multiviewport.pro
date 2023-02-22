@@ -13,5 +13,4 @@ OTHER_FILES += \
     main.qml
 
 RESOURCES += \
-    multiviewport.qrc \
-    ../exampleresources/test_scene.qrc
+    multiviewport.qrc

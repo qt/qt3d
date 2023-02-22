@@ -37,6 +37,7 @@ target_link_libraries(multiviewport PUBLIC
 
 # Resources:
 set(multiviewport_resource_files
+    "test_scene.dae"
     "Gear_scene.dae"
     "QuadViewportFrameGraph.qml"
     "SimpleCamera.qml"
@@ -48,19 +49,6 @@ qt6_add_resources(multiviewport "multiviewport"
         "/"
     FILES
         ${multiviewport_resource_files}
-)
-
-set(test_scene_resource_files
-    "../exampleresources/assets/test_scene.dae"
-)
-
-qt6_add_resources(multiviewport "test_scene"
-    PREFIX
-        "/"
-    BASE
-        "../exampleresources"
-    FILES
-        ${test_scene_resource_files}
 )
 
 install(TARGETS multiviewport

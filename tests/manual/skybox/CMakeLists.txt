@@ -35,21 +35,21 @@ qt_internal_add_resource(skybox "skybox"
         ${skybox_resource_files}
 )
 set(cubemaps_resource_files
-    "../../../examples/qt3d/exampleresources/assets/cubemaps/default/default_irradiance.dds"
-    "../../../examples/qt3d/exampleresources/assets/cubemaps/default/default_specular.dds"
-    "../../../examples/qt3d/exampleresources/assets/cubemaps/miramar/miramar_negx.webp"
-    "../../../examples/qt3d/exampleresources/assets/cubemaps/miramar/miramar_negy.webp"
-    "../../../examples/qt3d/exampleresources/assets/cubemaps/miramar/miramar_negz.webp"
-    "../../../examples/qt3d/exampleresources/assets/cubemaps/miramar/miramar_posx.webp"
-    "../../../examples/qt3d/exampleresources/assets/cubemaps/miramar/miramar_posy.webp"
-    "../../../examples/qt3d/exampleresources/assets/cubemaps/miramar/miramar_posz.webp"
+    "../exampleresources/assets/cubemaps/default/default_irradiance.dds"
+    "../exampleresources/assets/cubemaps/default/default_specular.dds"
+    "../exampleresources/assets/cubemaps/miramar/miramar_negx.webp"
+    "../exampleresources/assets/cubemaps/miramar/miramar_negy.webp"
+    "../exampleresources/assets/cubemaps/miramar/miramar_negz.webp"
+    "../exampleresources/assets/cubemaps/miramar/miramar_posx.webp"
+    "../exampleresources/assets/cubemaps/miramar/miramar_posy.webp"
+    "../exampleresources/assets/cubemaps/miramar/miramar_posz.webp"
 )
 
 qt_internal_add_resource(skybox "cubemaps"
     PREFIX
         "/"
     BASE
-        "../../../examples/qt3d/exampleresources"
+        "../exampleresources"
     FILES
         ${cubemaps_resource_files}
 )

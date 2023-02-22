@@ -49,18 +49,18 @@ qt_internal_add_resource(clip-planes-qml "clip-planes-qml"
         ${clip-planes-qml_resource_files}
 )
 set(obj_resource_files
-    "../../../examples/qt3d/exampleresources/assets/obj/ball.obj"
-    "../../../examples/qt3d/exampleresources/assets/obj/material-sphere.obj"
-    "../../../examples/qt3d/exampleresources/assets/obj/plane-10x10.obj"
-    "../../../examples/qt3d/exampleresources/assets/obj/toyplane.obj"
-    "../../../examples/qt3d/exampleresources/assets/obj/trefoil.obj"
+    "../exampleresources/assets/obj/ball.obj"
+    "../exampleresources/assets/obj/material-sphere.obj"
+    "../exampleresources/assets/obj/plane-10x10.obj"
+    "../exampleresources/assets/obj/toyplane.obj"
+    "../exampleresources/assets/obj/trefoil.obj"
 )
 
 qt_internal_add_resource(clip-planes-qml "obj"
     PREFIX
         "/"
     BASE
-        "../../../examples/qt3d/exampleresources"
+        "../exampleresources"
     FILES
         ${obj_resource_files}
 )

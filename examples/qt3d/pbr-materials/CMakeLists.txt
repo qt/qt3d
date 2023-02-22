@@ -87,7 +87,7 @@ qt6_add_resources(pbr-materials "obj"
         ${obj_resource_files}
 )
 
-qt6_add_big_resources(big_resources ../exampleresources/textures.qrc)
+qt6_add_resources(big_resources ../exampleresources/textures.qrc)
 target_sources(pbr-materials PRIVATE ${big_resources})
 
 install(TARGETS pbr-materials

@@ -39,69 +39,69 @@ qt_internal_add_resource(rigged-simple "rigged-simple"
         ${rigged-simple_resource_files}
 )
 set(cubemaps_resource_files
-    "../../../examples/qt3d/exampleresources/assets/cubemaps/default/default_irradiance.dds"
-    "../../../examples/qt3d/exampleresources/assets/cubemaps/default/default_specular.dds"
-    "../../../examples/qt3d/exampleresources/assets/cubemaps/miramar/miramar_negx.webp"
-    "../../../examples/qt3d/exampleresources/assets/cubemaps/miramar/miramar_negy.webp"
-    "../../../examples/qt3d/exampleresources/assets/cubemaps/miramar/miramar_negz.webp"
-    "../../../examples/qt3d/exampleresources/assets/cubemaps/miramar/miramar_posx.webp"
-    "../../../examples/qt3d/exampleresources/assets/cubemaps/miramar/miramar_posy.webp"
-    "../../../examples/qt3d/exampleresources/assets/cubemaps/miramar/miramar_posz.webp"
+    "../exampleresources/assets/cubemaps/default/default_irradiance.dds"
+    "../exampleresources/assets/cubemaps/default/default_specular.dds"
+    "../exampleresources/assets/cubemaps/miramar/miramar_negx.webp"
+    "../exampleresources/assets/cubemaps/miramar/miramar_negy.webp"
+    "../exampleresources/assets/cubemaps/miramar/miramar_negz.webp"
+    "../exampleresources/assets/cubemaps/miramar/miramar_posx.webp"
+    "../exampleresources/assets/cubemaps/miramar/miramar_posy.webp"
+    "../exampleresources/assets/cubemaps/miramar/miramar_posz.webp"
 )
 
 qt_internal_add_resource(rigged-simple "cubemaps"
     PREFIX
         "/"
     BASE
-        "../../../examples/qt3d/exampleresources"
+        "../exampleresources"
     FILES
         ${cubemaps_resource_files}
 )
-set_source_files_properties("../../../examples/qt3d/exampleresources/assets/envmaps/cedar-bridge/cedar_bridge_irradiance.dds"
+set_source_files_properties("../exampleresources/assets/envmaps/cedar-bridge/cedar_bridge_irradiance.dds"
     PROPERTIES QT_RESOURCE_ALIAS "assets/envmaps/cedar-bridge/cedar_bridge_irradiance.dds"
 )
-set_source_files_properties("../../../examples/qt3d/exampleresources/assets/envmaps/cedar-bridge/cedar_bridge_specular.dds"
+set_source_files_properties("../exampleresources/assets/envmaps/cedar-bridge/cedar_bridge_specular.dds"
     PROPERTIES QT_RESOURCE_ALIAS "assets/envmaps/cedar-bridge/cedar_bridge_specular.dds"
 )
 set(envmaps_resource_files
-    "../../../examples/qt3d/exampleresources/assets/envmaps/cedar-bridge/cedar_bridge_irradiance.dds"
-    "../../../examples/qt3d/exampleresources/assets/envmaps/cedar-bridge/cedar_bridge_specular.dds"
+    "../exampleresources/assets/envmaps/cedar-bridge/cedar_bridge_irradiance.dds"
+    "../exampleresources/assets/envmaps/cedar-bridge/cedar_bridge_specular.dds"
 )
 
 qt_internal_add_resource(rigged-simple "envmaps"
     PREFIX
         "/"
     BASE
-        "../../../examples/qt3d/exampleresources"
+        "../exampleresources"
     FILES
         ${envmaps_resource_files}
 )
 set(gltf_resource_files
-    "../../../examples/qt3d/exampleresources/assets/gltf/2.0/RiggedFigure/RiggedFigure.gltf"
-    "../../../examples/qt3d/exampleresources/assets/gltf/2.0/RiggedFigure/RiggedFigure0.bin"
-    "../../../examples/qt3d/exampleresources/assets/gltf/2.0/RiggedSimple/RiggedSimple.gltf"
-    "../../../examples/qt3d/exampleresources/assets/gltf/2.0/RiggedSimple/RiggedSimple0.bin"
-    "../../../examples/qt3d/exampleresources/assets/gltf/wine/Wood_Cherry_Original_.jpg"
-    "../../../examples/qt3d/exampleresources/assets/gltf/wine/_2004_old_vine_zinfandel_btl_xlg.jpg"
-    "../../../examples/qt3d/exampleresources/assets/gltf/wine/artezin_bottle.jpg"
-    "../../../examples/qt3d/exampleresources/assets/gltf/wine/wine.bin"
-    "../../../examples/qt3d/exampleresources/assets/gltf/wine/wine.dae"
-    "../../../examples/qt3d/exampleresources/assets/gltf/wine/wine.gltf"
-    "../../../examples/qt3d/exampleresources/assets/gltf/wine/wine0FS.glsl"
-    "../../../examples/qt3d/exampleresources/assets/gltf/wine/wine0VS.glsl"
-    "../../../examples/qt3d/exampleresources/assets/gltf/wine/wine1FS.glsl"
-    "../../../examples/qt3d/exampleresources/assets/gltf/wine/wine1VS.glsl"
-    "../../../examples/qt3d/exampleresources/assets/gltf/wine/wine2FS.glsl"
-    "../../../examples/qt3d/exampleresources/assets/gltf/wine/wine2VS.glsl"
-    "../../../examples/qt3d/exampleresources/assets/gltf/wine/wine3FS.glsl"
-    "../../../examples/qt3d/exampleresources/assets/gltf/wine/wine3VS.glsl"
+    "../exampleresources/assets/gltf/2.0/RiggedFigure/RiggedFigure.gltf"
+    "../exampleresources/assets/gltf/2.0/RiggedFigure/RiggedFigure0.bin"
+    "../exampleresources/assets/gltf/2.0/RiggedSimple/RiggedSimple.gltf"
+    "../exampleresources/assets/gltf/2.0/RiggedSimple/RiggedSimple0.bin"
+    "../exampleresources/assets/gltf/wine/Wood_Cherry_Original_.jpg"
+    "../exampleresources/assets/gltf/wine/_2004_old_vine_zinfandel_btl_xlg.jpg"
+    "../exampleresources/assets/gltf/wine/artezin_bottle.jpg"
+    "../exampleresources/assets/gltf/wine/wine.bin"
+    "../exampleresources/assets/gltf/wine/wine.dae"
+    "../exampleresources/assets/gltf/wine/wine.gltf"
+    "../exampleresources/assets/gltf/wine/wine0FS.glsl"
+    "../exampleresources/assets/gltf/wine/wine0VS.glsl"
+    "../exampleresources/assets/gltf/wine/wine1FS.glsl"
+    "../exampleresources/assets/gltf/wine/wine1VS.glsl"
+    "../exampleresources/assets/gltf/wine/wine2FS.glsl"
+    "../exampleresources/assets/gltf/wine/wine2VS.glsl"
+    "../exampleresources/assets/gltf/wine/wine3FS.glsl"
+    "../exampleresources/assets/gltf/wine/wine3VS.glsl"
 )
 
 qt_internal_add_resource(rigged-simple "gltf"
     PREFIX
         "/"
     BASE
-        "../../../examples/qt3d/exampleresources"
+        "../exampleresources"
     FILES
         ${gltf_resource_files}
 )

@@ -4,5 +4,6 @@
         <file>QuadViewportFrameGraph.qml</file>
         <file>SimpleCamera.qml</file>
         <file>Gear_scene.dae</file>
+        <file>test_scene.dae</file>
     </qresource>
 </RCC>
