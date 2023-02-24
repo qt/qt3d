@@ -466,6 +466,8 @@ void SubmissionContext::endDrawing(bool swapBuffers)
 void SubmissionContext::activateRenderTarget(Qt3DCore::QNodeId renderTargetNodeId, const AttachmentPack &attachments, GLuint defaultFboId)
 {
     GLuint fboId = defaultFboId; // Default FBO
+    resolveRenderTargetFormat(); // Reset m_renderTargetFormat based on the default FBO
+
     if (renderTargetNodeId) {
         // New RenderTarget
         if (!m_renderTargets.contains(renderTargetNodeId)) {
@@ -476,9 +478,10 @@ void SubmissionContext::activateRenderTarget(Qt3DCore::QNodeId renderTargetNodeI
                 fboId = createRenderTarget(renderTargetNodeId, attachments);
             }
         } else {
-            fboId = updateRenderTarget(renderTargetNodeId, attachments, true);
+            fboId = updateRenderTarget(renderTargetNodeId, attachments, true); // Overwrites m_renderTargetFormat based on custom FBO
         }
     }
+
     m_activeFBO = fboId;
     m_activeFBONodeId = renderTargetNodeId;
     m_glHelper->bindFrameBufferObject(m_activeFBO, GraphicsHelperInterface::FBODraw);
@@ -608,6 +611,7 @@ QImage SubmissionContext::readFramebuffer(const QRect &rect)
     QImage::Format imageFormat;
     uint stride;
 
+    // m_renderTargetFormat is set when the current RV FBO is set in activateRenderTarget
     /* format value should match GL internalFormat */
     GLenum internalFormat = m_renderTargetFormat;
 
