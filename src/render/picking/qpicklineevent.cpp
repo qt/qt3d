@@ -171,3 +171,5 @@ uint QPickLineEvent::vertex2Index() const
 
 QT_END_NAMESPACE
 
+#include "moc_qpicklineevent.cpp"
+

@@ -7,6 +7,7 @@
 qt_internal_add_test(tst_qanalogaxisinput
     SOURCES
         ../commons/testdevice.h
+        ../commons/testdevice.cpp
         ../commons/testdeviceproxy.h
         tst_qanalogaxisinput.cpp
     INCLUDE_DIRECTORIES

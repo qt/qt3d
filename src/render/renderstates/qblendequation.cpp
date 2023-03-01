@@ -124,3 +124,5 @@ void QBlendEquation::setBlendFunction(QBlendEquation::BlendFunction blendFunctio
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qblendequation.cpp"

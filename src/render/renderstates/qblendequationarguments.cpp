@@ -206,7 +206,7 @@ void QBlendEquationArguments::setSourceAlpha(QBlendEquationArguments::Blending s
 }
 
 /*!
-    \qmlproperty enumeration BlendEquationArguments::DestinationAlpha
+    \qmlproperty enumeration BlendEquationArguments::destinationAlpha
 
  */
 
@@ -293,3 +293,5 @@ void QBlendEquationArguments::setBufferIndex(int bufferIndex)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qblendequationarguments.cpp"

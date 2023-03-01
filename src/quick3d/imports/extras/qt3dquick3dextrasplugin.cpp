@@ -159,3 +159,5 @@ void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
 
 
 QT_END_NAMESPACE
+
+#include "moc_qt3dquick3dextrasplugin.cpp"

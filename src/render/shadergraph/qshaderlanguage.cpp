@@ -55,3 +55,5 @@ void qt_register_ShaderLanguage_enums()
 }
 
 QT_END_NAMESPACE
+
+#include "moc_qshaderlanguage_p.cpp"

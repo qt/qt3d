@@ -125,3 +125,5 @@ void QSpriteSheetItem::setHeight(int height)
 } // namespace Qt3DExtras
 
 QT_END_NAMESPACE
+
+#include "moc_qspritesheetitem.cpp"

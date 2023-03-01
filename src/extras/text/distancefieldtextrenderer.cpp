@@ -154,3 +154,5 @@ void DistanceFieldTextRenderer::setColor(const QColor &color)
 } // namespace Qt3DExtras
 
 QT_END_NAMESPACE
+
+#include "moc_distancefieldtextrenderer_p.cpp"

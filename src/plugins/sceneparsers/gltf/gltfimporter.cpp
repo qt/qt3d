@@ -2630,4 +2630,5 @@ bool GLTFRawTextureImage::GLTFRawTextureImageFunctor::operator ==(const QTexture
 
 QT_END_NAMESPACE
 
+#include "moc_gltfimporter.cpp"
 #include "gltfimporter.moc"

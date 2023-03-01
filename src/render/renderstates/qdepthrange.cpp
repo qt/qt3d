@@ -143,3 +143,5 @@ void QDepthRange::setFarValue(double value)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qdepthrange.cpp"

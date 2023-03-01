@@ -974,3 +974,5 @@ QByteArray QShaderProgram::loadSource(const QUrl &sourceUrl)
 } // of namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qshaderprogram.cpp"

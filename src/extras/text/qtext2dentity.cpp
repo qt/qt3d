@@ -490,3 +490,5 @@ void QText2DEntity::setHeight(float height)
 } // namespace Qt3DExtras
 
 QT_END_NAMESPACE
+
+#include "moc_qtext2dentity.cpp"

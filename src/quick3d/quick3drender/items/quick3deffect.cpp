@@ -129,3 +129,5 @@ QQmlListProperty<QParameter> Quick3DEffect::parameterList()
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_quick3deffect_p.cpp"

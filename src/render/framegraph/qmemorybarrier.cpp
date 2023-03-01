@@ -157,3 +157,5 @@ QMemoryBarrier::QMemoryBarrier(QMemoryBarrierPrivate &dd, Qt3DCore::QNode *paren
 } // Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qmemorybarrier.cpp"

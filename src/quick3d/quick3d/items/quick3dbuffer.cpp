@@ -141,3 +141,5 @@ void Quick3DBuffer::initEngines()
 } // Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_quick3dbuffer_p.cpp"

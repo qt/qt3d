@@ -121,7 +121,7 @@ QEffectPrivate::QEffectPrivate()
     Effect {
         id: effect
 
-        technique: [
+        techniques: [
             Technique {
                 id: gl3Technique
                 graphicsApiFilter {
@@ -270,3 +270,5 @@ QList<QTechnique *> QEffect::techniques() const
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qeffect.cpp"

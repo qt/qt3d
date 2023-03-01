@@ -58,6 +58,7 @@
 #include <assimp/DefaultLogger.hpp>
 
 #include <QtCore/QDir>
+#include <QtCore/QHash>
 #include <QtCore/QList>
 #include <QtCore/QLoggingCategory>
 

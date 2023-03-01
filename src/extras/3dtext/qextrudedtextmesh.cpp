@@ -167,3 +167,5 @@ float QExtrudedTextMesh::depth() const
 } // namespace Qt3DExtras
 
 QT_END_NAMESPACE
+
+#include "moc_qextrudedtextmesh.cpp"

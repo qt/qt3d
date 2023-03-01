@@ -7,6 +7,7 @@
 qt_internal_add_test(tst_inputsequence
     SOURCES
         ../commons/testdevice.h
+        ../commons/testdevice.cpp
         ../commons/testdeviceproxy.h
         tst_inputsequence.cpp
     INCLUDE_DIRECTORIES

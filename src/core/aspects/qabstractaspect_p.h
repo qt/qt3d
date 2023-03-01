@@ -51,6 +51,7 @@
 // We mean it.
 //
 
+#include <QtCore/QHash>
 #include <Qt3DCore/qabstractaspect.h>
 
 #include <Qt3DCore/private/qaspectjobproviderinterface_p.h>

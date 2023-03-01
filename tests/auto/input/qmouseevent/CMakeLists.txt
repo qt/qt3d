@@ -9,6 +9,7 @@ qt_internal_add_test(tst_qt3d_qmouseevent
 #special case end
     SOURCES
         ../commons/testdevice.h
+        ../commons/testdevice.cpp
         ../commons/testdeviceproxy.h
         tst_qmouseevent.cpp
     INCLUDE_DIRECTORIES

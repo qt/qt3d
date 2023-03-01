@@ -2199,8 +2199,10 @@ void Renderer::jobsDone(Qt3DCore::QAspectManager *manager)
     // called in main thread once all jobs are done running
 
     // sync captured renders to frontend
+    QMutexLocker lock(&m_pendingRenderCaptureSendRequestsMutex);
     const std::vector<Qt3DCore::QNodeId> pendingCaptureIds =
             Qt3DCore::moveAndClear(m_pendingRenderCaptureSendRequests);
+    lock.unlock();
     for (const Qt3DCore::QNodeId &id : qAsConst(pendingCaptureIds)) {
         auto *backend = static_cast<Qt3DRender::Render::RenderCapture *>(
                 m_nodesManager->frameGraphManager()->lookupNode(id));
@@ -2786,6 +2788,7 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
 
                         Render::RenderCapture *renderCapture = static_cast<Render::RenderCapture*>(m_nodesManager->frameGraphManager()->lookupNode(renderCaptureId));
                         renderCapture->addRenderCapture(request.captureId, image);
+                        QMutexLocker lock(&m_pendingRenderCaptureSendRequestsMutex);
                         if (!Qt3DCore::contains(m_pendingRenderCaptureSendRequests, renderCaptureId))
                             m_pendingRenderCaptureSendRequests.push_back(renderCaptureId);
                     };

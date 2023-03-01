@@ -435,3 +435,5 @@ void QBlitFramebuffer::setInterpolationMethod(QBlitFramebuffer::InterpolationMet
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qblitframebuffer.cpp"

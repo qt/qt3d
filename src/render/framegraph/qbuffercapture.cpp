@@ -81,3 +81,5 @@ QBufferCapture::~QBufferCapture()
 } //Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qbuffercapture.cpp"

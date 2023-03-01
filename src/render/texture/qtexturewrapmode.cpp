@@ -182,3 +182,5 @@ QTextureWrapMode::WrapMode QTextureWrapMode::z() const
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qtexturewrapmode.cpp"

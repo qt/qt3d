@@ -541,3 +541,5 @@ QAttribute *QSphereGeometry::indexAttribute() const
 
 QT_END_NAMESPACE
 
+#include "moc_qspheregeometry.cpp"
+

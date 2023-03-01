@@ -95,3 +95,5 @@ void QSkeletonMapping::setSkeleton(Qt3DCore::QAbstractSkeleton *skeleton)
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
+
+#include "moc_qskeletonmapping.cpp"

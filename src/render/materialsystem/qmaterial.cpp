@@ -73,7 +73,7 @@
     Effect {
         id: effect
 
-        technique: [
+        techniques: [
             Technique {
                 id: gl3Technique
                 graphicsApiFilter {
@@ -302,3 +302,5 @@ QList<QParameter *> QMaterial::parameters() const
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qmaterial.cpp"

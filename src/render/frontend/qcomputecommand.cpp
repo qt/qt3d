@@ -279,3 +279,5 @@ void QComputeCommand::trigger(int workGroupX, int workGroupY, int workGroupZ, in
 } // Render
 
 QT_END_NAMESPACE
+
+#include "moc_qcomputecommand.cpp"

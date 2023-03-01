@@ -124,14 +124,6 @@ namespace Qt3DRender {
  */
 
 /*!
-    \qmlsignal Qt3D.Render::ObjectPicker::clicked(PickEvent pick)
-
-    This signal is emitted when the bounding volume defined by the pickAttribute
-    property intersects with a ray on a mouse click the PickEvent \a pick contains
-    details of the event.
-*/
-
-/*!
     \qmlsignal Qt3D.Render::ObjectPicker::pressed(PickEvent pick)
 
     This signal is emitted when the bounding volume defined by the
@@ -476,3 +468,5 @@ void QObjectPickerPrivate::releasedEvent(QPickEvent *event)
 } // Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qobjectpicker.cpp"

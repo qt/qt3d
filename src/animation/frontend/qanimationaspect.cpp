@@ -150,3 +150,5 @@ std::vector<QAspectJobPtr> QAnimationAspect::jobsToExecute(qint64 time)
 QT_END_NAMESPACE
 
 QT3D_REGISTER_NAMESPACED_ASPECT("animation", QT_PREPEND_NAMESPACE(Qt3DAnimation), QAnimationAspect)
+
+#include "moc_qanimationaspect.cpp"

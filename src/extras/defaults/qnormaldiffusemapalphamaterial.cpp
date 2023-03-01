@@ -219,3 +219,5 @@ QNormalDiffuseMapAlphaMaterial::~QNormalDiffuseMapAlphaMaterial()
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qnormaldiffusemapalphamaterial.cpp"

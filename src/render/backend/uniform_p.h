@@ -58,6 +58,7 @@
 #include <Qt3DCore/private/vector4d_p.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
 #include <QMatrix4x4>
+#include <QVarLengthArray>
 #include <QVector2D>
 #include <QVector3D>
 #include <QColor>

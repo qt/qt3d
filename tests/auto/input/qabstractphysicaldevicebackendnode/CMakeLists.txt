@@ -7,6 +7,7 @@
 qt_internal_add_test(tst_qabstractphysicaldevicebackendnode
     SOURCES
         ../commons/testdevice.h
+        ../commons/testdevice.cpp
         ../commons/testdeviceproxy.h
         tst_qabstractphysicaldevicebackendnode.cpp
     INCLUDE_DIRECTORIES

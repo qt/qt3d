@@ -86,3 +86,5 @@ void QSceneImporter::logInfo(const QString &info)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qsceneimporter_p.cpp"

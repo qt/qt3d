@@ -140,3 +140,5 @@ void QPointSize::setValue(float size)
 
 QT_END_NAMESPACE
 
+#include "moc_qpointsize.cpp"
+

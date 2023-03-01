@@ -153,3 +153,5 @@ QList<QRenderTargetOutput *> QRenderTarget::outputs() const
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qrendertarget.cpp"

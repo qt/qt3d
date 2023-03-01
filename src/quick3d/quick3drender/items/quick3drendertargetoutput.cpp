@@ -93,3 +93,5 @@ QQmlListProperty<QRenderTargetOutput> Quick3DRenderTargetOutput::qmlAttachments(
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_quick3drendertargetoutput_p.cpp"

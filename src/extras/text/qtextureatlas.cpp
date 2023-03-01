@@ -297,3 +297,5 @@ int QTextureAtlas::imagePadding(TextureId id) const
 } // namespace Qt3DExtras
 
 QT_END_NAMESPACE
+
+#include "moc_qtextureatlas_p.cpp"

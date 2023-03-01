@@ -69,7 +69,7 @@
     \badcode
     Material {
         Effect {
-            technique: [
+            techniques: [
                 Technique {
                     id: gl3Technique
                     graphicsApiFilter {

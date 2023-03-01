@@ -1402,4 +1402,6 @@ AssimpImporter::SceneImporter::~SceneImporter()
 
 QT_END_NAMESPACE
 
+#include "moc_assimpimporter.cpp"
+
 #include "assimpimporter.moc"

@@ -86,3 +86,5 @@ QQmlListProperty<QAxisSetting> Quick3DPhysicalDevice::axisSettings()
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_quick3dphysicaldevice_p.cpp"

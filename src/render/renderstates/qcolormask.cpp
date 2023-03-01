@@ -186,3 +186,5 @@ void QColorMask::setAlphaMasked(bool alphaMasked)
 
 QT_END_NAMESPACE
 
+#include "moc_qcolormask.cpp"
+

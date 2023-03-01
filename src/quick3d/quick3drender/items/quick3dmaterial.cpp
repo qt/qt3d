@@ -101,3 +101,5 @@ QQmlListProperty<QParameter> Quick3DMaterial::qmlParameters()
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#include "moc_quick3dmaterial_p.cpp"

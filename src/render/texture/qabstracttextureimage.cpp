@@ -274,3 +274,5 @@ QAbstractTextureImage::QAbstractTextureImage(QAbstractTextureImagePrivate &dd, Q
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qabstracttextureimage.cpp"
