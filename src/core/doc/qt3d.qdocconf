@@ -86,15 +86,7 @@ excludedirs += \
               ../../plugins/sceneparsers
 
 macro.TODO = " "
-imagedirs   += images \
-               ../../../examples/qt3d/shadow-map-qml/doc/images \
-               ../../../examples/qt3d/basicshapes-cpp/doc/images \
-               ../../../examples/qt3d/planets-qml/doc/images \
-               ../../../examples/qt3d/wireframe/doc/images \
-               ../../../examples/qt3d/audio-visualizer-qml/doc/images \
-               ../../../examples/qt3d/simplecustommaterial/doc/images \
-               ../../../examples/qt3d/scene2d/doc/images \
-               ../../../examples/qt3d/advancedcustommaterial/doc/images
+imagedirs   += images
 
 manifestmeta.thumbnail.names += "Qt3D/Qt 3D: Deferred Renderer C++ Example"
 
