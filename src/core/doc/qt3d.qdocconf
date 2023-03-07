@@ -76,7 +76,8 @@ sourcedirs += . \
 
 
 exampledirs += ../../../examples/qt3d \
-               snippets
+               snippets \
+               ../../../tests/manual
 
 examples.fileextensions       += "*.fraq *.geom *.vert"
 examples.imageextensions      += "*.png"
