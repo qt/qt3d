@@ -56,7 +56,6 @@
     For examples of using materials, see the following examples:
     \list
       \li \l {Qt 3D: Simple Custom Material QML Example}
-      \li \l {Qt 3D: Advanced Custom Material QML Example}
       \li \l {Qt 3D: PBR Materials QML Example}
     \endlist
 
@@ -66,8 +65,7 @@
     vertex, tessellation control, tessellation evaluation, geometry, and
     fragment shaders. Compute shaders are planned for a future release.
 
-    For examples of using shaders, see the \l {Qt 3D: Shadow Map QML Example},
-    \l{Qt 3D: Wireframe QML Example}, and \l {Qt 3D: Wave QML Example}.
+    For examples of using shaders, see the \l{Qt 3D: Wireframe QML Example}.
 
     \section2 Shadow Mapping
 
@@ -127,8 +125,6 @@
     texture. The shadow map texture can then be sampled at the given coordinates
     and the fragment's depth can be compared with the result of the sampling. If
     the fragment is further away, then it is in shadow; otherwise it is lit.
-
-    For example code, see the \l {Qt 3D: Shadow Map QML Example}.
 
     \section2 Instanced Rendering
 
