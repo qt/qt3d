@@ -548,8 +548,11 @@ void Scene3DItem::createDummySurface(QWindow *rw, Qt3DRender::QRenderSurfaceSele
  */
 void Scene3DItem::setItemAreaAndDevicePixelRatio(QSize area, qreal devicePixelRatio)
 {
-    Qt3DRender::QRenderSurfaceSelector *surfaceSelector
-            = Qt3DRender::QRenderSurfaceSelectorPrivate::find(entity());
+    Qt3DCore::QEntity *rootEntity = entity();
+    if (!rootEntity) {
+        return;
+    }
+    Qt3DRender::QRenderSurfaceSelector *surfaceSelector = Qt3DRender::QRenderSurfaceSelectorPrivate::find(rootEntity);
     if (surfaceSelector) {
         surfaceSelector->setExternalRenderTargetSize(area);
         surfaceSelector->setSurfacePixelRatio(devicePixelRatio);
