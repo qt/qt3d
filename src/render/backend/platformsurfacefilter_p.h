@@ -18,6 +18,7 @@
 #include <private/qt3drender_global_p.h>
 
 #include <QtCore/qobject.h>
+#include <QtCore/qpointer.h>
 #include <QtGui/qsurface.h>
 #include <QSemaphore>
 
@@ -64,7 +65,7 @@ public:
         }
     }
 private:
-    QObject *m_obj;
+    QPointer<QObject> m_obj;
     QSurface *m_surface;
 
     static QSemaphore m_surfacesSemaphore;
