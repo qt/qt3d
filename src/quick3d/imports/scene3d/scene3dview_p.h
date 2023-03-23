@@ -53,6 +53,7 @@
 
 #include <QtQuick/QQuickItem>
 #include <QtCore/QFlags>
+#include <QtCore/QPointer>
 
 QT_BEGIN_NAMESPACE
 
@@ -76,6 +77,7 @@ class Scene3DView : public QQuickItem
     Q_OBJECT
     Q_PROPERTY(Qt3DCore::QEntity* entity READ entity WRITE setEntity NOTIFY entityChanged)
     Q_PROPERTY(Qt3DRender::Scene3DItem *scene3D READ scene3D WRITE setScene3D NOTIFY scene3DChanged)
+    Q_PROPERTY(bool ownsEntity READ ownsEntity WRITE setOwnsEntity NOTIFY ownsEntityChanged)
     Q_CLASSINFO("DefaultProperty", "entity")
 
 public:
@@ -97,15 +99,19 @@ public:
     void setTexture(QSGTexture *texture);
     QSGTexture *texture() const;
 
+    bool ownsEntity() const;
+
     void markSGNodeDirty();
 
 public Q_SLOTS:
     void setEntity(Qt3DCore::QEntity *entity);
     void setScene3D(Scene3DItem *scene3D);
+    void setOwnsEntity(bool ownsEntity);
 
 Q_SIGNALS:
     void entityChanged();
     void scene3DChanged();
+    void ownsEntityChanged();
 
 private:
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *nodeData) override;
@@ -113,7 +119,7 @@ private:
     void abandonSubtree(Qt3DCore::QEntity *subtree);
 
     Scene3DItem *m_scene3D;
-    Qt3DCore::QEntity *m_entity;
+    QPointer<Qt3DCore::QEntity> m_entity;
     Qt3DCore::QNode *m_previousFGParent;
 
     Qt3DCore::QEntity *m_holderEntity;
@@ -125,6 +131,7 @@ private:
 
     DirtyFlags m_dirtyFlags;
     QSGTexture *m_texture;
+    bool m_ownsEntity;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Scene3DView::DirtyFlags)
