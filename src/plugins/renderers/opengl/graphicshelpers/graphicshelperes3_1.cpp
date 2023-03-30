@@ -118,7 +118,7 @@ namespace OpenGL {
 
 namespace {
 
-GLbitfield memoryBarrierGLBitfield(QMemoryBarrier::Operations barriers)
+GLbitfield memoryBarrierGL3Bitfield(QMemoryBarrier::Operations barriers)
 {
     GLbitfield bits = 0;
 
@@ -204,7 +204,7 @@ void GraphicsHelperES3_1::dispatchCompute(GLuint wx, GLuint wy, GLuint wz)
 
 void GraphicsHelperES3_1::memoryBarrier(QMemoryBarrier::Operations barriers)
 {
-    m_extraFuncs->glMemoryBarrier(memoryBarrierGLBitfield(barriers));
+    m_extraFuncs->glMemoryBarrier(memoryBarrierGL3Bitfield(barriers));
 }
 
 void GraphicsHelperES3_1::drawArraysIndirect(GLenum mode, void *indirect)

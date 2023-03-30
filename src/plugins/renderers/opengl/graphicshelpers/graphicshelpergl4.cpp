@@ -85,7 +85,7 @@ namespace OpenGL {
 
 namespace {
 
-GLbitfield memoryBarrierGLBitfield(QMemoryBarrier::Operations barriers)
+GLbitfield memoryBarrierGL4Bitfield(QMemoryBarrier::Operations barriers)
 {
     GLbitfield bits = 0;
 
@@ -1306,7 +1306,7 @@ GLint GraphicsHelperGL4::maxClipPlaneCount()
 
 void GraphicsHelperGL4::memoryBarrier(QMemoryBarrier::Operations barriers)
 {
-    m_funcs->glMemoryBarrier(memoryBarrierGLBitfield(barriers));
+    m_funcs->glMemoryBarrier(memoryBarrierGL4Bitfield(barriers));
 }
 
 void GraphicsHelperGL4::enablePrimitiveRestart(int primitiveRestartIndex)
