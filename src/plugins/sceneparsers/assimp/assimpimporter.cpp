@@ -20,9 +20,8 @@
 #include <Qt3DExtras/qdiffusespecularmapmaterial.h>
 #include <Qt3DExtras/qphongmaterial.h>
 #include <Qt3DExtras/qmorphphongmaterial.h>
-#include <Qt3DExtras/qdiffusemapmaterial.h>
-#include <Qt3DExtras/qdiffusespecularmapmaterial.h>
-#include <Qt3DExtras/qphongmaterial.h>
+#include <Qt3DExtras/qnormaldiffusemapmaterial.h>
+#include <Qt3DExtras/qnormaldiffusespecularmapmaterial.h>
 #include <Qt3DAnimation/qkeyframeanimation.h>
 #include <Qt3DAnimation/qmorphinganimation.h>
 #include <QtCore/QFileInfo>
@@ -69,6 +68,8 @@ const QString ASSIMP_MATERIAL_AMBIENT_TEXTURE = QLatin1String("ambientTex");
 const QString ASSIMP_MATERIAL_SPECULAR_TEXTURE = QLatin1String("specularTexture");
 const QString ASSIMP_MATERIAL_EMISSIVE_TEXTURE = QLatin1String("emissiveTex");
 const QString ASSIMP_MATERIAL_NORMALS_TEXTURE = QLatin1String("normalsTex");
+// Keep the old "normalsTex" parameter name to keep backwards compatibility, add "normalTexture" as a new one
+const QString ASSIMP_MATERIAL_NORMALS_TEXTURE2 = QLatin1String("normalTexture");
 const QString ASSIMP_MATERIAL_OPACITY_TEXTURE = QLatin1String("opacityTex");
 const QString ASSIMP_MATERIAL_REFLECTION_TEXTURE = QLatin1String("reflectionTex");
 const QString ASSIMP_MATERIAL_HEIGHT_TEXTURE = QLatin1String("heightTex");
@@ -115,9 +116,14 @@ inline QString aiStringToQString(const aiString &str)
 QMaterial *createBestApproachingMaterial(const aiMaterial *assimpMaterial)
 {
     aiString path; // unused but necessary
+    const bool hasNormalTexture = (assimpMaterial->GetTexture(aiTextureType_NORMALS, 0, &path) == AI_SUCCESS);
     const bool hasDiffuseTexture = (assimpMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS);
     const bool hasSpecularTexture = (assimpMaterial->GetTexture(aiTextureType_SPECULAR, 0, &path) == AI_SUCCESS);
 
+    if (hasNormalTexture && hasDiffuseTexture && hasSpecularTexture)
+        return QAbstractNodeFactory::createNode<QNormalDiffuseSpecularMapMaterial>("QNormalDiffuseSpecularMapMaterial");
+    if (hasNormalTexture && hasDiffuseTexture)
+        return QAbstractNodeFactory::createNode<QNormalDiffuseMapMaterial>("QNormalDiffuseMapMaterial");
     if (hasDiffuseTexture && hasSpecularTexture)
         return QAbstractNodeFactory::createNode<QDiffuseSpecularMapMaterial>("QDiffuseSpecularMapMaterial");
     if (hasDiffuseTexture)
@@ -1274,8 +1280,12 @@ void AssimpImporter::copyMaterialTextures(QMaterial *material, aiMaterial *assim
             tex->setWrapMode(wrapMode);
 
             qCDebug(AssimpImporterLog) << Q_FUNC_INFO << " Loaded Texture " << fullPath;
-            setParameterValue(m_scene->m_textureToParameterName[textureType[i]],
-                    material, QVariant::fromValue(tex));
+            const QString parameterName = m_scene->m_textureToParameterName[textureType[i]];
+            setParameterValue(parameterName, material, QVariant::fromValue(tex));
+
+            if (parameterName == ASSIMP_MATERIAL_NORMALS_TEXTURE) {
+                setParameterValue(ASSIMP_MATERIAL_NORMALS_TEXTURE2, material, QVariant::fromValue(tex));
+            }
         }
     }
 }
