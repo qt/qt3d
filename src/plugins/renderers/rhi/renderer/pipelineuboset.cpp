@@ -597,7 +597,7 @@ void PipelineUBOSet::uploadUBOsForCommand(const RenderCommand &command,
                             uploadUniform(uniforms, ubo,
                                           arrayStructMember,
                                           distanceToCommand,
-                                          i * blockVariable.size / arr0);
+                                          int(i * blockVariable.size / arr0));
                         }
                     }
                 } else { // Array of scalars
