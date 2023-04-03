@@ -29,10 +29,6 @@
 #define GL_VERTEX_ARRAY_BINDING           0x85B5
 #endif
 
-#ifdef _MSC_VER
-#pragma warning (disable: 4996)     // 'This function or variable may be unsafe': strcpy, strdup, sprintf, vsnprintf, sscanf, fopen
-#endif
-
 QT_BEGIN_NAMESPACE
 
 using namespace Qt3DRender;
@@ -162,7 +158,7 @@ void ImGuiRenderer::renderDebugOverlay(const std::vector<RenderView *> &renderVi
     {
         ImGui::Begin("Qt3D Profiling");
         char caption[50];
-        sprintf(caption, "Avg %.3f ms/frame (%.1f FPS)", static_cast<double>(1000.0f / ImGui::GetIO().Framerate), static_cast<double>(ImGui::GetIO().Framerate));
+        snprintf(caption, sizeof(caption), "Avg %.3f ms/frame (%.1f FPS)", static_cast<double>(1000.0f / ImGui::GetIO().Framerate), static_cast<double>(ImGui::GetIO().Framerate));
         ImGui::PlotLines("FPS", m_fpsLog, logIndex + 1, 0, caption, m_fpsRange.first, m_fpsRange.second, ImVec2(0, 80));
         ImGui::PlotHistogram("Jobs", m_jobsLog, logIndex + 1, 0, nullptr, m_jobsRange.first, m_jobsRange.second, ImVec2(0, 80));
 
