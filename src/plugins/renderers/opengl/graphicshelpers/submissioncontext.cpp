@@ -61,8 +61,6 @@ QT_BEGIN_NAMESPACE
 #define GL_DRAW_FRAMEBUFFER 0x8CA9
 #endif
 
-using namespace Qt3DCore;
-
 namespace Qt3DRender {
 namespace Render {
 namespace OpenGL {
@@ -83,14 +81,14 @@ unsigned int nextFreeContextId()
 
 namespace {
 
-GLBuffer::Type attributeTypeToGLBufferType(QAttribute::AttributeType type)
+GLBuffer::Type attributeTypeToGLBufferType(Qt3DCore::QAttribute::AttributeType type)
 {
     switch (type) {
-    case QAttribute::VertexAttribute:
+    case Qt3DCore::QAttribute::VertexAttribute:
         return GLBuffer::ArrayBuffer;
-    case QAttribute::IndexAttribute:
+    case Qt3DCore::QAttribute::IndexAttribute:
         return GLBuffer::IndexBuffer;
-    case QAttribute::DrawIndirectAttribute:
+    case Qt3DCore::QAttribute::DrawIndirectAttribute:
         return GLBuffer::DrawIndirectBuffer;
     default:
         Q_UNREACHABLE();

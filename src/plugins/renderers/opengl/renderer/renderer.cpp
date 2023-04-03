@@ -90,8 +90,6 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
-
 namespace Qt3DRender {
 namespace Render {
 namespace OpenGL {
@@ -322,7 +320,7 @@ void Renderer::setNodeManagers(NodeManagers *managers)
     m_computableEntityFilterJob->setManager(m_nodesManager->renderNodesManager());
 }
 
-void Renderer::setServices(QServiceLocator *services)
+void Renderer::setServices(Qt3DCore::QServiceLocator *services)
 {
     m_services = services;
 
@@ -678,12 +676,12 @@ void Renderer::render(bool swapBuffers)
 
     // RenderQueue is complete (but that means it may be of size 0)
     if (!queueIsEmpty) {
-        QTaskLogger submissionStatsPart1(m_services->systemInformation(),
-                                         {JobTypes::FrameSubmissionPart1, 0},
-                                         QTaskLogger::Submission);
-        QTaskLogger submissionStatsPart2(m_services->systemInformation(),
-                                         {JobTypes::FrameSubmissionPart2, 0},
-                                         QTaskLogger::Submission);
+        Qt3DCore::QTaskLogger submissionStatsPart1(m_services->systemInformation(),
+                                                   { JobTypes::FrameSubmissionPart1, 0 },
+                                                   Qt3DCore::QTaskLogger::Submission);
+        Qt3DCore::QTaskLogger submissionStatsPart2(m_services->systemInformation(),
+                                                   { JobTypes::FrameSubmissionPart2, 0 },
+                                                   Qt3DCore::QTaskLogger::Submission);
         { // Scoped to destroy surfaceLock
             QSurface *surface = nullptr;
             for (const RenderView *rv: renderViews) {
@@ -979,10 +977,10 @@ void Renderer::lookForDirtyTextures()
     const std::vector<HTexture> &activeTextureHandles = textureManager->activeHandles();
     for (const HTexture &handle: activeTextureHandles) {
         Texture *texture = textureManager->data(handle);
-        const QNodeIdVector imageIds = texture->textureImageIds();
+        const Qt3DCore::QNodeIdVector imageIds = texture->textureImageIds();
 
         // Does the texture reference any of the dirty texture images?
-        for (const QNodeId &imageId: imageIds) {
+        for (const Qt3DCore::QNodeId &imageId : imageIds) {
             if (dirtyImageIds.contains(imageId)) {
                 texture->addDirtyFlag(Texture::DirtyImageGenerators);
                 break;
@@ -1010,7 +1008,7 @@ void Renderer::reloadDirtyShaders()
         // If api of the renderer matches the one from the technique
         if (technique->isCompatibleWithRenderer()) {
             const auto passIds = technique->renderPasses();
-            for (const QNodeId &passId : passIds) {
+            for (const Qt3DCore::QNodeId &passId : passIds) {
                 RenderPass *renderPass = m_nodesManager->renderPassManager()->lookupResource(passId);
                 HShader shaderHandle = m_nodesManager->shaderManager()->lookupHandle(renderPass->shaderProgram());
                 Shader *shader = m_nodesManager->shaderManager()->data(shaderHandle);
@@ -1073,7 +1071,7 @@ void Renderer::sendShaderChangesToFrontend(Qt3DCore::QAspectManager *manager)
             // the time needed to destroy the GLShader assoicated with it.
             if (!frontend)
                 continue;
-            QShaderProgramPrivate *dFrontend = static_cast<decltype(dFrontend)>(QNodePrivate::get(frontend));
+            QShaderProgramPrivate *dFrontend = static_cast<decltype(dFrontend)>(Qt3DCore::QNodePrivate::get(frontend));
             s->unsetRequiresFrontendSync();
             dFrontend->setStatus(s->status());
             dFrontend->setLog(s->log());
@@ -1084,7 +1082,7 @@ void Renderer::sendShaderChangesToFrontend(Qt3DCore::QAspectManager *manager)
     const std::vector<ShaderBuilderUpdate> shaderBuilderUpdates = Qt3DCore::moveAndClear(m_shaderBuilderUpdates);
     for (const ShaderBuilderUpdate &update : shaderBuilderUpdates) {
         QShaderProgramBuilder *builder = static_cast<decltype(builder)>(manager->lookupNode(update.builderId));
-        QShaderProgramBuilderPrivate *dBuilder = static_cast<decltype(dBuilder)>(QNodePrivate::get(builder));
+        QShaderProgramBuilderPrivate *dBuilder = static_cast<decltype(dBuilder)>(Qt3DCore::QNodePrivate::get(builder));
         dBuilder->setShaderCode(update.shaderCode, update.shaderType);
     }
 }
@@ -1116,7 +1114,7 @@ void Renderer::sendTextureChangesToFrontend(Qt3DCore::QAspectManager *manager)
            texture->setFormat(properties.format);
            texture->blockNotifications(blocked);
 
-           QAbstractTexturePrivate *dTexture = static_cast<QAbstractTexturePrivate *>(QNodePrivate::get(texture));
+           QAbstractTexturePrivate *dTexture = static_cast<QAbstractTexturePrivate *>(Qt3DCore::QNodePrivate::get(texture));
 
            dTexture->setStatus(properties.status);
            dTexture->setHandleType(pair.first.handleType);
@@ -1135,7 +1133,7 @@ void Renderer::sendSetFenceHandlesToFrontend(Qt3DCore::QAspectManager *manager)
         if (fgNode != nullptr) { // Node could have been deleted before we got a chance to notify it
             Q_ASSERT(fgNode->nodeType() == FrameGraphNode::SetFence);
             QSetFence *frontend = static_cast<decltype(frontend)>(manager->lookupNode(fgNode->peerId()));
-            QSetFencePrivate *dFrontend = static_cast<decltype(dFrontend)>(QNodePrivate::get(frontend));
+            QSetFencePrivate *dFrontend = static_cast<decltype(dFrontend)>(Qt3DCore::QNodePrivate::get(frontend));
             dFrontend->setHandleType(QSetFence::OpenGLFenceId);
             dFrontend->setHandle(QVariant::fromValue(pair.second));
         }
@@ -1267,7 +1265,7 @@ void Renderer::updateGLResources()
         // We want to upload textures data at this point as the SubmissionThread and
         // AspectThread are locked ensuring no races between Texture/TextureImage and
         // GLTexture
-        QNodeIdVector updatedTexturesForFrame;
+        Qt3DCore::QNodeIdVector updatedTexturesForFrame;
         if (m_submissionContext != nullptr) {
             GLTextureManager *glTextureManager = m_glResourceManagers->glTextureManager();
             const std::vector<HGLTexture> &glTextureHandles = glTextureManager->activeHandles();
@@ -1281,7 +1279,7 @@ void Renderer::updateGLResources()
                 // GLTexture creation provides us width/height/format ... information
                 // for textures which had not initially specified these information (TargetAutomatic...)
                 // Gather these information and store them to be distributed by a change next frame
-                const QNodeIdVector referenceTextureIds = { glTextureManager->texNodeIdForGLTexture.value(glTexture) };
+                const Qt3DCore::QNodeIdVector referenceTextureIds = { glTextureManager->texNodeIdForGLTexture.value(glTexture) };
                 // Store properties and referenceTextureIds
                 if (info.wasUpdated) {
                     Texture::TextureUpdateInfo updateInfo;
@@ -1307,7 +1305,7 @@ void Renderer::updateGLResources()
 
     // Remove destroyed FBOs
     {
-        const QNodeIdVector destroyedRenderTargetIds = m_nodesManager->renderTargetManager()->takeRenderTargetIdsToCleanup();
+        const Qt3DCore::QNodeIdVector destroyedRenderTargetIds = m_nodesManager->renderTargetManager()->takeRenderTargetIdsToCleanup();
         for (const Qt3DCore::QNodeId &renderTargetId : destroyedRenderTargetIds)
             m_submissionContext->releaseRenderTarget(renderTargetId);
     }
@@ -1349,11 +1347,11 @@ void Renderer::updateTexture(Texture *texture)
 
     // Will make the texture requestUpload
     if (dirtyFlags.testFlag(Texture::DirtyImageGenerators)) {
-        const QNodeIdVector textureImageIds = texture->textureImageIds();
+        const Qt3DCore::QNodeIdVector textureImageIds = texture->textureImageIds();
         std::vector<GLTexture::Image> images;
         images.reserve(textureImageIds.size());
         // TODO: Move this into GLTexture directly
-        for (const QNodeId &textureImageId : textureImageIds) {
+        for (const Qt3DCore::QNodeId &textureImageId : textureImageIds) {
             const TextureImage *img = m_nodesManager->textureImageManager()->lookupResource(textureImageId);
             if (img == nullptr) {
                 qWarning() << Q_FUNC_INFO << "invalid TextureImage handle";
@@ -1609,7 +1607,7 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const std::vector
             Render::RenderCapture *renderCapture =
                     static_cast<Render::RenderCapture*>(m_nodesManager->frameGraphManager()->lookupNode(renderView->renderCaptureNodeId()));
             renderCapture->addRenderCapture(request.captureId, image);
-            const QNodeId renderCaptureId = renderView->renderCaptureNodeId();
+            const Qt3DCore::QNodeId renderCaptureId = renderView->renderCaptureNodeId();
             QMutexLocker lock(&m_pendingRenderCaptureSendRequestsMutex);
             if (!Qt3DCore::contains(m_pendingRenderCaptureSendRequests, renderCaptureId))
                 m_pendingRenderCaptureSendRequests.push_back(renderView->renderCaptureNodeId());
@@ -1621,8 +1619,8 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const std::vector
         // Perform BlitFramebuffer operations
         if (renderView->hasBlitFramebufferInfo()) {
             const auto &blitFramebufferInfo = renderView->blitFrameBufferInfo();
-            const QNodeId inputTargetId = blitFramebufferInfo.sourceRenderTargetId;
-            const QNodeId outputTargetId = blitFramebufferInfo.destinationRenderTargetId;
+            const Qt3DCore::QNodeId inputTargetId = blitFramebufferInfo.sourceRenderTargetId;
+            const Qt3DCore::QNodeId outputTargetId = blitFramebufferInfo.destinationRenderTargetId;
             const QRect inputRect = blitFramebufferInfo.sourceRect;
             const QRect outputRect = blitFramebufferInfo.destinationRect;
             const QRenderTargetOutput::AttachmentPoint inputAttachmentPoint = blitFramebufferInfo.sourceAttachmentPoint;
@@ -1761,7 +1759,7 @@ bool Renderer::processKeyEvent(QObject *object, QKeyEvent *event)
 }
 
 // Jobs we may have to run even if no rendering will happen
-std::vector<QAspectJobPtr> Renderer::preRenderingJobs()
+std::vector<Qt3DCore::QAspectJobPtr> Renderer::preRenderingJobs()
 {
     if (m_sendBufferCaptureJob->hasRequests())
         return {m_sendBufferCaptureJob};
@@ -1774,10 +1772,10 @@ std::vector<QAspectJobPtr> Renderer::preRenderingJobs()
 // for the rendering of the scene
 std::vector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
 {
-    std::vector<QAspectJobPtr> renderBinJobs;
+    std::vector<Qt3DCore::QAspectJobPtr> renderBinJobs;
 
     // Remove previous dependencies
-    m_cleanupJob->removeDependency(QWeakPointer<QAspectJob>());
+    m_cleanupJob->removeDependency(QWeakPointer<Qt3DCore::QAspectJob>());
 
     const bool dirtyParametersForCurrentFrame = m_dirtyBits.marked & AbstractRenderer::ParameterDirty;
     const BackendNodeDirtySet dirtyBitsForFrame = m_dirtyBits.marked | m_dirtyBits.remaining;
@@ -1848,7 +1846,7 @@ std::vector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
             m_updatedDisableSubtreeEnablers.push_back(node->peerId());
     }
 
-    int idealThreadCount = QAspectJobManager::idealThreadCount();
+    int idealThreadCount = Qt3DCore::QAspectJobManager::idealThreadCount();
 
     const size_t fgBranchCount = m_frameGraphLeaves.size();
     if (fgBranchCount > 1) {
@@ -1903,7 +1901,7 @@ std::vector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     return renderBinJobs;
 }
 
-QAbstractFrameAdvanceService *Renderer::frameAdvanceService() const
+Qt3DCore::QAbstractFrameAdvanceService *Renderer::frameAdvanceService() const
 {
     return static_cast<Qt3DCore::QAbstractFrameAdvanceService *>(m_vsyncFrameAdvanceService.data());
 }
@@ -2139,7 +2137,7 @@ bool Renderer::updateVAOWithAttributes(Geometry *geometry,
     m_dirtyAttributes.reserve(m_dirtyAttributes.size() + geometry->attributes().size());
     const auto attributeIds = geometry->attributes();
 
-    for (QNodeId attributeId : attributeIds) {
+    for (Qt3DCore::QNodeId attributeId : attributeIds) {
         // TO DO: Improvement we could store handles and use the non locking policy on the attributeManager
         Attribute *attribute = m_nodesManager->attributeManager()->lookupResource(attributeId);
 
@@ -2155,7 +2153,7 @@ bool Renderer::updateVAOWithAttributes(Geometry *geometry,
 
         // Index Attribute
         bool attributeWasDirty = false;
-        if (attribute->attributeType() == QAttribute::IndexAttribute) {
+        if (attribute->attributeType() == Qt3DCore::QAttribute::IndexAttribute) {
             if ((attributeWasDirty = attribute->isDirty()) == true || forceUpdate)
                 m_submissionContext->specifyIndices(buffer);
             // Vertex Attribute
@@ -2196,16 +2194,14 @@ bool Renderer::requiresVAOAttributeUpdate(Geometry *geometry,
 {
     const auto attributeIds = geometry->attributes();
 
-    for (QNodeId attributeId : attributeIds) {
+    for (Qt3DCore::QNodeId attributeId : attributeIds) {
         // TO DO: Improvement we could store handles and use the non locking policy on the attributeManager
         Attribute *attribute = m_nodesManager->attributeManager()->lookupResource(attributeId);
 
         if (attribute == nullptr)
             continue;
 
-        if ((attribute->attributeType() == QAttribute::IndexAttribute && attribute->isDirty()) ||
-                (Qt3DCore::contains(command->m_activeAttributes, attribute->nameId()) &&
-                 attribute->isDirty()))
+        if ((attribute->attributeType() == Qt3DCore::QAttribute::IndexAttribute && attribute->isDirty()) || (Qt3DCore::contains(command->m_activeAttributes, attribute->nameId()) && attribute->isDirty()))
             return true;
     }
     return false;
