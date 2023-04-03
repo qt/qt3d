@@ -93,8 +93,6 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
-
 namespace Qt3DRender {
 namespace Render {
 namespace Rhi {
@@ -336,7 +334,7 @@ void Renderer::setNodeManagers(NodeManagers *managers)
     m_computableEntityFilterJob->setManager(m_nodesManager->renderNodesManager());
 }
 
-void Renderer::setServices(QServiceLocator *services)
+void Renderer::setServices(Qt3DCore::QServiceLocator *services)
 {
     m_services = services;
 
@@ -613,12 +611,12 @@ void Renderer::render(bool swapBuffers)
 
     // RenderQueue is complete (but that means it may be of size 0)
     if (!queueIsEmpty) {
-        QTaskLogger submissionStatsPart1(m_services->systemInformation(),
-                                         { JobTypes::FrameSubmissionPart1, 0 },
-                                         QTaskLogger::Submission);
-        QTaskLogger submissionStatsPart2(m_services->systemInformation(),
-                                         { JobTypes::FrameSubmissionPart2, 0 },
-                                         QTaskLogger::Submission);
+        Qt3DCore::QTaskLogger submissionStatsPart1(m_services->systemInformation(),
+                                                   { JobTypes::FrameSubmissionPart1, 0 },
+                                                   Qt3DCore::QTaskLogger::Submission);
+        Qt3DCore::QTaskLogger submissionStatsPart2(m_services->systemInformation(),
+                                                   { JobTypes::FrameSubmissionPart2, 0 },
+                                                   Qt3DCore::QTaskLogger::Submission);
 
         std::vector<RHIPassInfo> rhiPassesInfo;
 
@@ -759,8 +757,8 @@ QSurfaceFormat Renderer::format()
 namespace {
 std::optional<QRhiVertexInputAttribute::Format> rhiAttributeType(Attribute *attr) {
     switch (attr->vertexBaseType()) {
-    case QAttribute::Byte:
-    case QAttribute::UnsignedByte: {
+    case Qt3DCore::QAttribute::Byte:
+    case Qt3DCore::QAttribute::UnsignedByte: {
         if (attr->vertexSize() == 1)
             return QRhiVertexInputAttribute::UNormByte;
         if (attr->vertexSize() == 2)
@@ -769,7 +767,7 @@ std::optional<QRhiVertexInputAttribute::Format> rhiAttributeType(Attribute *attr
             return QRhiVertexInputAttribute::UNormByte4;
         break;
     }
-    case QAttribute::UnsignedInt: {
+    case Qt3DCore::QAttribute::UnsignedInt: {
         if (attr->vertexSize() == 1)
             return QRhiVertexInputAttribute::UInt;
         if (attr->vertexSize() == 2)
@@ -780,7 +778,7 @@ std::optional<QRhiVertexInputAttribute::Format> rhiAttributeType(Attribute *attr
             return QRhiVertexInputAttribute::UInt4;
         break;
     }
-    case QAttribute::Float: {
+    case Qt3DCore::QAttribute::Float: {
         if (attr->vertexSize() == 1)
             return QRhiVertexInputAttribute::Float;
         if (attr->vertexSize() == 2)
@@ -1442,10 +1440,10 @@ void Renderer::lookForDirtyTextures()
     const std::vector<HTexture> &activeTextureHandles = textureManager->activeHandles();
     for (const HTexture &handle : activeTextureHandles) {
         Texture *texture = textureManager->data(handle);
-        const QNodeIdVector imageIds = texture->textureImageIds();
+        const Qt3DCore::QNodeIdVector imageIds = texture->textureImageIds();
 
         // Does the texture reference any of the dirty texture images?
-        for (const QNodeId &imageId : imageIds) {
+        for (const Qt3DCore::QNodeId &imageId : imageIds) {
             if (dirtyImageIds.contains(imageId)) {
                 texture->addDirtyFlag(Texture::DirtyImageGenerators);
                 break;
@@ -1475,7 +1473,7 @@ void Renderer::reloadDirtyShaders()
         // If api of the renderer matches the one from the technique
         if (technique->isCompatibleWithRenderer()) {
             const auto passIds = technique->renderPasses();
-            for (const QNodeId &passId : passIds) {
+            for (const Qt3DCore::QNodeId &passId : passIds) {
                 RenderPass *renderPass =
                         m_nodesManager->renderPassManager()->lookupResource(passId);
                 HShader shaderHandle =
@@ -1536,7 +1534,7 @@ void Renderer::sendShaderChangesToFrontend(Qt3DCore::QAspectManager *manager)
                     static_cast<decltype(frontend)>(manager->lookupNode(s->peerId()));
             if (frontend) {
                 QShaderProgramPrivate *dFrontend =
-                        static_cast<decltype(dFrontend)>(QNodePrivate::get(frontend));
+                        static_cast<decltype(dFrontend)>(Qt3DCore::QNodePrivate::get(frontend));
                 dFrontend->setStatus(s->status());
                 dFrontend->setLog(s->log());
                 s->unsetRequiresFrontendSync();
@@ -1552,7 +1550,7 @@ void Renderer::sendShaderChangesToFrontend(Qt3DCore::QAspectManager *manager)
             continue;
 
         QShaderProgramBuilderPrivate *dBuilder =
-                static_cast<decltype(dBuilder)>(QNodePrivate::get(builder));
+                static_cast<decltype(dBuilder)>(Qt3DCore::QNodePrivate::get(builder));
         dBuilder->setShaderCode(update.shaderCode, update.shaderType);
     }
     m_shaderBuilderUpdates.clear();
@@ -1588,7 +1586,7 @@ void Renderer::sendTextureChangesToFrontend(Qt3DCore::QAspectManager *manager)
             texture->blockNotifications(blocked);
 
             QAbstractTexturePrivate *dTexture =
-                    static_cast<QAbstractTexturePrivate *>(QNodePrivate::get(texture));
+                    static_cast<QAbstractTexturePrivate *>(Qt3DCore::QNodePrivate::get(texture));
             dTexture->setStatus(properties.status);
             dTexture->setHandleType(pair.first.handleType);
             dTexture->setHandle(pair.first.handle);
@@ -1648,7 +1646,7 @@ bool Renderer::prepareGeometryInputBindings(const Geometry *geometry, const RHIS
 
     for (Qt3DCore::QNodeId attribute_id : attributesIds) {
         Attribute *attrib = m_nodesManager->attributeManager()->lookupResource(attribute_id);
-        if (attrib->attributeType() != QAttribute::VertexAttribute)
+        if (attrib->attributeType() != Qt3DCore::QAttribute::VertexAttribute)
             continue;
         const int location = locationForAttribute(attrib, shader);
         // In case the shader doesn't use the attribute, we would get no
@@ -1662,20 +1660,20 @@ bool Renderer::prepareGeometryInputBindings(const Geometry *geometry, const RHIS
                 ? QRhiVertexInputBinding::PerInstance
                 : QRhiVertexInputBinding::PerVertex;
 
-        auto getAttributeByteSize = [] (const QAttribute::VertexBaseType type) {
+        auto getAttributeByteSize = [](const Qt3DCore::QAttribute::VertexBaseType type) {
             switch (type) {
-            case QAttribute::Byte:
-            case QAttribute::UnsignedByte:
+            case Qt3DCore::QAttribute::Byte:
+            case Qt3DCore::QAttribute::UnsignedByte:
                 return 1;
-            case QAttribute::Short:
-            case QAttribute::UnsignedShort:
-            case QAttribute::HalfFloat:
+            case Qt3DCore::QAttribute::Short:
+            case Qt3DCore::QAttribute::UnsignedShort:
+            case Qt3DCore::QAttribute::HalfFloat:
                 return 2;
-            case QAttribute::Int:
-            case QAttribute::UnsignedInt:
-            case QAttribute::Float:
+            case Qt3DCore::QAttribute::Int:
+            case Qt3DCore::QAttribute::UnsignedInt:
+            case Qt3DCore::QAttribute::Float:
                 return 4;
-            case QAttribute::Double:
+            case Qt3DCore::QAttribute::Double:
                 return 8;
             }
             return 0;
@@ -1842,7 +1840,7 @@ void Renderer::updateResources()
                     // for textures which had not initially specified these information
                     // (TargetAutomatic...) Gather these information and store them to be distributed by
                     // a change next frame
-                    const QNodeIdVector referenceTextureIds = { rhiTextureManager->texNodeIdForRHITexture.value(rhiTexture) };
+                    const Qt3DCore::QNodeIdVector referenceTextureIds = { rhiTextureManager->texNodeIdForRHITexture.value(rhiTexture) };
                     // Store properties and referenceTextureIds
                     Texture::TextureUpdateInfo updateInfo;
                     updateInfo.properties = info.properties;
@@ -1964,11 +1962,11 @@ void Renderer::updateTexture(Texture *texture)
 
     // Will make the texture requestUpload
     if (dirtyFlags.testFlag(Texture::DirtyImageGenerators)) {
-        const QNodeIdVector textureImageIds = texture->textureImageIds();
+        const Qt3DCore::QNodeIdVector textureImageIds = texture->textureImageIds();
         std::vector<RHITexture::Image> images;
         images.reserve(textureImageIds.size());
         // TODO: Move this into RHITexture directly
-        for (const QNodeId &textureImageId : textureImageIds) {
+        for (const Qt3DCore::QNodeId &textureImageId : textureImageIds) {
             const TextureImage *img =
                     m_nodesManager->textureImageManager()->lookupResource(textureImageId);
             if (img == nullptr) {
@@ -2224,7 +2222,7 @@ bool Renderer::processKeyEvent(QObject *object, QKeyEvent *event)
 }
 
 // Jobs we may have to run even if no rendering will happen
-std::vector<QAspectJobPtr> Renderer::preRenderingJobs()
+std::vector<Qt3DCore::QAspectJobPtr> Renderer::preRenderingJobs()
 {
     if (m_sendBufferCaptureJob->hasRequests())
         return { m_sendBufferCaptureJob };
@@ -2238,10 +2236,10 @@ std::vector<QAspectJobPtr> Renderer::preRenderingJobs()
 // for the rendering of the scene
 std::vector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
 {
-    std::vector<QAspectJobPtr> renderBinJobs;
+    std::vector<Qt3DCore::QAspectJobPtr> renderBinJobs;
 
     // Remove previous dependencies
-    m_cleanupJob->removeDependency(QWeakPointer<QAspectJob>());
+    m_cleanupJob->removeDependency(QWeakPointer<Qt3DCore::QAspectJob>());
 
     const bool dirtyParametersForCurrentFrame = m_dirtyBits.marked & AbstractRenderer::ParameterDirty;
     const BackendNodeDirtySet dirtyBitsForFrame = m_dirtyBits.marked | m_dirtyBits.remaining;
@@ -2315,7 +2313,7 @@ std::vector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
                 m_updatedDisableSubtreeEnablers.push_back(node->peerId());
         }
 
-        int idealThreadCount = QAspectJobManager::idealThreadCount();
+        int idealThreadCount = Qt3DCore::QAspectJobManager::idealThreadCount();
 
         const size_t fgBranchCount = m_frameGraphLeaves.size();
         if (fgBranchCount > 1) {
@@ -2379,7 +2377,7 @@ std::vector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     return renderBinJobs;
 }
 
-QAbstractFrameAdvanceService *Renderer::frameAdvanceService() const
+Qt3DCore::QAbstractFrameAdvanceService *Renderer::frameAdvanceService() const
 {
     return static_cast<Qt3DCore::QAbstractFrameAdvanceService *>(m_vsyncFrameAdvanceService.data());
 }
@@ -2404,12 +2402,12 @@ bool Renderer::performCompute(QRhiCommandBuffer *cb, RenderCommand &command)
     return true;
 }
 
-static auto rhiIndexFormat(QAttribute::VertexBaseType type)
+static auto rhiIndexFormat(Qt3DCore::QAttribute::VertexBaseType type)
 {
     switch (type) {
-    case QAttribute::VertexBaseType ::UnsignedShort:
+    case Qt3DCore::QAttribute::VertexBaseType ::UnsignedShort:
         return QRhiCommandBuffer::IndexUInt16;
-    case QAttribute::VertexBaseType ::UnsignedInt:
+    case Qt3DCore::QAttribute::VertexBaseType ::UnsignedInt:
         return QRhiCommandBuffer::IndexUInt32;
     default:
         std::abort();
@@ -2481,7 +2479,7 @@ bool Renderer::uploadBuffersForCommand(RHIGraphicsPipeline* graphicsPipeline, Re
         Buffer *buffer = m_nodesManager->bufferManager()->lookupResource(attrib->bufferId());
         RHIBuffer *hbuf = m_RHIResourceManagers->rhiBufferManager()->lookupResource(buffer->peerId());
         switch (attrib->attributeType()) {
-        case QAttribute::VertexAttribute: {
+        case Qt3DCore::QAttribute::VertexAttribute: {
             if (!hbuf->bind(&*m_submissionContext, RHIBuffer::Type((int)RHIBuffer::Type::ArrayBuffer | (int)RHIBuffer::Type::ShaderStorageBuffer)))
                 return false;
             assert(hbuf->rhiBuffer());
@@ -2494,7 +2492,7 @@ bool Renderer::uploadBuffersForCommand(RHIGraphicsPipeline* graphicsPipeline, Re
                 command.vertex_input[bindingIndex] = { hbuf->rhiBuffer(), 0 };
             break;
         }
-        case QAttribute::IndexAttribute: {
+        case Qt3DCore::QAttribute::IndexAttribute: {
             if (!hbuf->bind(&*m_submissionContext, RHIBuffer::Type::IndexBuffer))
                 return false;
             assert(hbuf->rhiBuffer());
@@ -2503,7 +2501,7 @@ bool Renderer::uploadBuffersForCommand(RHIGraphicsPipeline* graphicsPipeline, Re
             command.indexAttribute = attrib;
             break;
         }
-        case QAttribute::DrawIndirectAttribute:
+        case Qt3DCore::QAttribute::DrawIndirectAttribute:
             RHI_UNIMPLEMENTED;
             break;
         }
