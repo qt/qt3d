@@ -19,6 +19,8 @@ find_package(Qt6 ${PROJECT_VERSION} QUIET CONFIG OPTIONAL_COMPONENTS
     Network Concurrent Widgets Qml Quick ShaderTools Gamepad OpenGL Multimedia QuickWidgets)
 # special case end
 
+qt_internal_project_setup()
+
 if(NOT TARGET Qt::Gui)
     message(NOTICE "Skipping the build as the condition \"TARGET Qt::Gui\" is not met.")
     return()
