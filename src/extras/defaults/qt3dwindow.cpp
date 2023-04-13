@@ -264,7 +264,7 @@ void setupWindowSurface(QWindow *window, Qt3DRender::API api) noexcept
         break;
     case Qt3DRender::API::DirectX:
         qputenv("QSG_RHI_BACKEND", "d3d11");
-        window->setSurfaceType(QSurface::OpenGLSurface);
+        window->setSurfaceType(QSurface::Direct3DSurface);
         break;
     case Qt3DRender::API::Null:
         qputenv("QSG_RHI_BACKEND", "null");
