@@ -1164,6 +1164,13 @@ void RenderView::updateRenderCommand(const EntityRenderCommandDataSubView &subVi
             memcpy(&command.m_commandUBO.inverseModelViewProjectionMatrix,
                    &inverseModelViewProjection, sizeof(Matrix4x4));
             copyNormalMatrix(command.m_commandUBO.modelViewNormalMatrix, modelViewNormalMatrix.constData());
+
+            const Armature *armature = entity->renderComponent<Armature>();
+            if (armature) {
+                const UniformValue &skinningPalette = armature->skinningPaletteUniform();
+                memcpy(&command.m_commandUBO.skinningPalette, skinningPalette.constData<float>(),
+                       qMin<size_t>(skinningPalette.byteSize(), 100 * 16 * sizeof(float)));
+            }
         }
     });
 }
