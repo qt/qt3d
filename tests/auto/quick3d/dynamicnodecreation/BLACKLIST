@@ -1,3 +1,4 @@
 # See qtbase/src/testlib/qtestblacklist.cpp for format
 [createEntityAndDynamicChild]
 ci ubuntu-20.04 # QTBUG-106519
+sles-15.4 # QTBUG-102315
