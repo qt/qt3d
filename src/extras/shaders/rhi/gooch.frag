@@ -50,14 +50,17 @@ const int TYPE_DIRECTIONAL = 1;
 const int TYPE_SPOT = 2;
 
 struct Light {
-    int type;
     vec3 position;
+    int type;
     vec3 color;
     float intensity;
     vec3 direction;
     float constantAttenuation;
+    vec3 padding0;
     float linearAttenuation;
+    vec3 padding1;
     float quadraticAttenuation;
+    vec3 padding2;
     float cutOffAngle;
 };
 
