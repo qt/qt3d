@@ -1,4 +1,4 @@
 # See qtbase/src/testlib/qtestblacklist.cpp for format
 #QTBUG-101556
 [bindFrameBufferAttachment]
-ubuntu-20
+ubuntu-20.04

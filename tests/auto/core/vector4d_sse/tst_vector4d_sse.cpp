@@ -30,12 +30,16 @@
 #include <Qt3DCore/private/vector4d_sse_p.h>
 #include <Qt3DCore/qt3dcore-config.h>
 
+#ifdef QT_COMPILER_SUPPORTS_SSE2
 using namespace Qt3DCore;
+#endif
 
 class tst_Vector4D_SSE: public QObject
 {
     Q_OBJECT
 private Q_SLOTS:
+
+#ifdef QT_COMPILER_SUPPORTS_SSE2
     void defaultConstruction()
     {
         // GIVEN
@@ -915,6 +919,7 @@ private Q_SLOTS:
             QVERIFY(!v0.isNull());
         }
     }
+#endif // QT_COMPILER_SUPPORTS_SSE2
 };
 
 QTEST_APPLESS_MAIN(tst_Vector4D_SSE)

@@ -29,7 +29,9 @@
 #include <QtTest/QtTest>
 #include <Qt3DCore/private/matrix4x4_sse_p.h>
 
+#ifdef QT_COMPILER_SUPPORTS_SSE2
 using namespace Qt3DCore;
+#endif
 
 class tst_Matrix4x4_SSE: public QObject
 {
@@ -37,6 +39,7 @@ class tst_Matrix4x4_SSE: public QObject
 
 private Q_SLOTS:
 
+#ifdef QT_COMPILER_SUPPORTS_SSE2
     void defaultConstruction()
     {
         // GIVEN
@@ -520,6 +523,7 @@ private Q_SLOTS:
             QCOMPARE(resultingVec.toQVector3D(), tmpMat.mapVector(tmpVec3));
         }
     }
+#endif // QT_COMPILER_SUPPORTS_SSE2
 };
 
 QTEST_MAIN(tst_Matrix4x4_SSE)
