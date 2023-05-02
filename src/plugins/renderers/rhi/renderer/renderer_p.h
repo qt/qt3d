@@ -37,7 +37,7 @@
 #include <Qt3DRender/private/renderercache_p.h>
 #include <Qt3DRender/private/renderviewinitializerjob_p.h>
 
-#include <QtGui/private/qrhi_p.h>
+#include <rhi/qrhi.h>
 
 #include <shaderparameterpack_p.h>
 #include <logging_p.h>

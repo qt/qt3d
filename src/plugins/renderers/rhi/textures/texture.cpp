@@ -5,7 +5,7 @@
 #include "texture_p.h"
 
 #include <private/qdebug_p.h>
-#include <private/qrhi_p.h>
+#include <rhi/qrhi.h>
 #include <QDebug>
 #include <Qt3DCore/private/vector_helper_p.h>
 #include <Qt3DRender/qtexture.h>

@@ -16,7 +16,7 @@
 //
 
 #include <rhihandle_types_p.h>
-#include <private/qrhi_p.h>
+#include <rhi/qrhi.h>
 #include <shadervariables_p.h>
 #include <rhishader_p.h>
 

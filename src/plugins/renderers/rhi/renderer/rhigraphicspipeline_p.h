@@ -15,7 +15,7 @@
 // We mean it.
 //
 
-#include <private/qrhi_p.h>
+#include <rhi/qrhi.h>
 #include <rhihandle_types_p.h>
 #include <pipelineuboset_p.h>
 #include <Qt3DCore/qnodeid.h>

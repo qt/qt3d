@@ -26,7 +26,7 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
 #include <QMatrix4x4>
-#include <QtGui/private/qrhi_p.h>
+#include <rhi/qrhi.h>
 #include <Qt3DCore/qattribute.h>
 #include <variant>
 

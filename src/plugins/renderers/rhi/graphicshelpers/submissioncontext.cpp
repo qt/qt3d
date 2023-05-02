@@ -41,23 +41,9 @@
 #include <private/qdebug_p.h>
 #include <QSurface>
 #include <QWindow>
-#include <QtShaderTools/private/qshaderbaker_p.h>
+#include <rhi/qrhi.h>
+#include <rhi/qshaderbaker.h>
 
-#ifdef Q_OS_WIN
-#include <QtGui/private/qrhid3d11_p.h>
-#endif
-
-#if defined(Q_OS_MACOS) || defined(Q_OS_IOS)
-#include <QtGui/private/qrhimetal_p.h>
-#endif
-
-#ifndef QT_NO_OPENGL
-#include <QtGui/private/qrhigles2_p.h>
-#endif
-
-#if QT_CONFIG(vulkan)
-#include <QtGui/private/qrhivulkan_p.h>
-#endif
 #include <bitset>
 
 QT_BEGIN_NAMESPACE

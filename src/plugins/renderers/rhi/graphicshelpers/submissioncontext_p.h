@@ -27,8 +27,8 @@
 #include <shadervariables_p.h>
 #include <rhihandle_types_p.h>
 #include <QSurface>
-#include <QtGui/private/qrhi_p.h>
 #include <QOffscreenSurface>
+#include <rhi/qrhi.h>
 
 QT_BEGIN_NAMESPACE
 

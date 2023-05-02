@@ -20,7 +20,7 @@
 #include <Qt3DRender/qshaderprogram.h>
 #include <QMutex>
 #include <QtGui/private/qshader_p.h>
-#include <QtGui/private/qrhi_p.h>
+#include <rhi/qrhi.h>
 
 QT_BEGIN_NAMESPACE
 

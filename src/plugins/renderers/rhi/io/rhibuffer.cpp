@@ -3,7 +3,8 @@
 
 #include "rhibuffer_p.h"
 #include <submissioncontext_p.h>
-#include <QtGui/private/qrhi_p.h>
+#include <rhi/qrhi.h>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {

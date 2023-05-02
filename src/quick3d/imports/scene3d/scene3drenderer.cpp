@@ -9,7 +9,7 @@
 #include <qopenglcontext.h>
 #include <qopenglframebufferobject.h>
 #include <QtQuick/qquickwindow.h>
-#include <private/qrhi_p.h>
+#include <rhi/qrhi.h>
 
 #include <Qt3DRender/private/qrenderaspect_p.h>
 #include <Qt3DRender/private/abstractrenderer_p.h>
