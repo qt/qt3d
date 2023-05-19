@@ -11,15 +11,12 @@ qt_internal_add_qml_module(quick3dinputplugin
     URI "Qt3D.Input"
     VERSION "2.${PROJECT_VERSION_MINOR}"
     CLASS_NAME Qt3DQuick3DInputPlugin
+    NO_PLUGIN_OPTIONAL
     DEPENDENCIES
         QtQml/auto
     PLUGIN_TARGET quick3dinputplugin
-    NO_PLUGIN_OPTIONAL
-    NO_GENERATE_PLUGIN_SOURCE
-    NO_GENERATE_QMLTYPES
-    INSTALL_SOURCE_QMLTYPES "plugins.qmltypes"
     SOURCES
-        qt3dquick3dinputplugin.cpp qt3dquick3dinputplugin.h
+        qt3dquick3dinputforeign_p.h
     LIBRARIES
         Qt::3DCore
         Qt::3DInput
