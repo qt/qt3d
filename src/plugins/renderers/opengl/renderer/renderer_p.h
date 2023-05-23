@@ -54,6 +54,7 @@
 #include <QSemaphore>
 #include <QMouseEvent>
 #include <QKeyEvent>
+#include <private/qlatch_p.h>
 
 #include <functional>
 
@@ -291,7 +292,7 @@ private:
     QScopedPointer<VSyncFrameAdvanceService> m_vsyncFrameAdvanceService;
 
     QSemaphore m_submitRenderViewsSemaphore;
-    QSemaphore m_waitForInitializationToBeCompleted;
+    QLatch m_waitForInitializationToBeCompleted{1};
     mutable QMutex m_hasBeenInitializedMutex;
 
     QAtomicInt m_running;

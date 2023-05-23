@@ -21,8 +21,6 @@
 
 QT_BEGIN_NAMESPACE
 
-class QSemaphore;
-
 namespace Qt3DCore {
 class QScene;
 }

@@ -54,6 +54,7 @@
 #include <QAtomicInt>
 #include <QScopedPointer>
 #include <QSemaphore>
+#include <private/qlatch_p.h>
 
 #include <functional>
 
@@ -292,7 +293,7 @@ private:
     QScopedPointer<VSyncFrameAdvanceService> m_vsyncFrameAdvanceService;
 
     QSemaphore m_submitRenderViewsSemaphore;
-    QSemaphore m_waitForInitializationToBeCompleted;
+    QLatch m_waitForInitializationToBeCompleted{1};
     QMutex m_hasBeenInitializedMutex;
 
     QAtomicInt m_running;

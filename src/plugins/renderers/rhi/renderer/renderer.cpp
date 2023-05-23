@@ -203,7 +203,6 @@ Renderer::Renderer()
       m_defaultRenderStateSet(nullptr),
       m_submissionContext(nullptr),
       m_vsyncFrameAdvanceService(new VSyncFrameAdvanceService(false)),
-      m_waitForInitializationToBeCompleted(0),
       m_hasBeenInitializedMutex(),
       m_exposed(0),
       m_lastFrameCorrect(0),
@@ -472,7 +471,7 @@ void Renderer::initialize()
         }
 
         // Awake setScenegraphRoot in case it was waiting
-        m_waitForInitializationToBeCompleted.release(1);
+        m_waitForInitializationToBeCompleted.countDown();
 
         // Allow the aspect manager to proceed
         m_vsyncFrameAdvanceService->proceedToNextFrame();
@@ -562,7 +561,7 @@ Render::FrameGraphNode *Renderer::frameGraphRoot() const
 
 // QAspectThread context
 // Order of execution :
-// 1) RenderThread is created -> release 1 of m_waitForInitializationToBeCompleted when started
+// 1) RenderThread is created -> countDown() of m_waitForInitializationToBeCompleted when started
 // 2) setSceneRoot waits to acquire initialization
 // 3) submitRenderView -> check for surface
 //    -> make surface current + create proper glHelper if needed
@@ -571,7 +570,7 @@ void Renderer::setSceneRoot(Entity *sgRoot)
     Q_ASSERT(sgRoot);
 
     // If initialization hasn't been completed we must wait
-    m_waitForInitializationToBeCompleted.acquire();
+    m_waitForInitializationToBeCompleted.wait();
 
     m_renderSceneRoot = sgRoot;
     if (!m_renderSceneRoot)
