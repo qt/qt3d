@@ -35,13 +35,16 @@ QSkyboxEntityPrivate::QSkyboxEntityPrivate()
     , m_loadedTexture(new QTextureLoader())
     , m_gl3Shader(new QShaderProgram())
     , m_gl2es2Shader(new QShaderProgram())
+    , m_rhiShader(new QShaderProgram())
     , m_gl2Technique(new QTechnique())
     , m_es2Technique(new QTechnique())
     , m_gl3Technique(new QTechnique())
+    , m_rhiTechnique(new QTechnique())
     , m_filterKey(new QFilterKey)
     , m_gl2RenderPass(new QRenderPass())
     , m_es2RenderPass(new QRenderPass())
     , m_gl3RenderPass(new QRenderPass())
+    , m_rhiRenderPass(new QRenderPass())
     , m_mesh(new QCuboidMesh())
     , m_gammaStrengthParameter(new QParameter(QStringLiteral("gammaStrength"), 0.0f))
     , m_textureParameter(new QParameter(QStringLiteral("skyboxTexture"), m_skyboxTexture))
@@ -66,6 +69,8 @@ void QSkyboxEntityPrivate::init()
     m_gl3Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/skybox.frag"))));
     m_gl2es2Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/skybox.vert"))));
     m_gl2es2Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/skybox.frag"))));
+    m_rhiShader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/rhi/skybox.vert"))));
+    m_rhiShader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/rhi/skybox.frag"))));
 
     m_gl3Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
     m_gl3Technique->graphicsApiFilter()->setMajorVersion(3);
@@ -82,6 +87,10 @@ void QSkyboxEntityPrivate::init()
     m_es2Technique->graphicsApiFilter()->setMinorVersion(0);
     m_es2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
+    m_rhiTechnique->graphicsApiFilter()->setApi(QGraphicsApiFilter::RHI);
+    m_rhiTechnique->graphicsApiFilter()->setMajorVersion(1);
+    m_rhiTechnique->graphicsApiFilter()->setMinorVersion(0);
+
     m_filterKey->setParent(m_effect);
     m_filterKey->setName(QStringLiteral("renderingStyle"));
     m_filterKey->setValue(QStringLiteral("forward"));
@@ -89,10 +98,12 @@ void QSkyboxEntityPrivate::init()
     m_gl3Technique->addFilterKey(m_filterKey);
     m_gl2Technique->addFilterKey(m_filterKey);
     m_es2Technique->addFilterKey(m_filterKey);
+    m_rhiTechnique->addFilterKey(m_filterKey);
 
     m_gl3RenderPass->setShaderProgram(m_gl3Shader);
     m_gl2RenderPass->setShaderProgram(m_gl2es2Shader);
     m_es2RenderPass->setShaderProgram(m_gl2es2Shader);
+    m_rhiRenderPass->setShaderProgram(m_rhiShader);
 
     QCullFace *cullFront = new QCullFace();
     cullFront->setMode(QCullFace::Front);
@@ -107,14 +118,18 @@ void QSkyboxEntityPrivate::init()
     m_gl2RenderPass->addRenderState(depthTest);
     m_es2RenderPass->addRenderState(cullFront);
     m_es2RenderPass->addRenderState(depthTest);
+    m_rhiRenderPass->addRenderState(cullFront);
+    m_rhiRenderPass->addRenderState(depthTest);
 
     m_gl3Technique->addRenderPass(m_gl3RenderPass);
     m_gl2Technique->addRenderPass(m_gl2RenderPass);
     m_es2Technique->addRenderPass(m_es2RenderPass);
+    m_rhiTechnique->addRenderPass(m_rhiRenderPass);
 
     m_effect->addTechnique(m_gl3Technique);
     m_effect->addTechnique(m_gl2Technique);
     m_effect->addTechnique(m_es2Technique);
+    m_effect->addTechnique(m_rhiTechnique);
 
     m_material->setEffect(m_effect);
     m_material->addParameter(m_gammaStrengthParameter);
