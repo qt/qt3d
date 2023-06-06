@@ -134,7 +134,7 @@ QObject *Quick3DEntityLoader::entity() const
 }
 
 /*!
-    \qmlproperty url Qt3DCore::EntityLoader::source
+    \qmlproperty url Qt3D.Core::EntityLoader::source
     Holds the source url.
 */
 QUrl Quick3DEntityLoader::source() const
@@ -175,7 +175,7 @@ void Quick3DEntityLoader::setSourceComponent(QQmlComponent *component)
 }
 
 /*!
-    \qmlproperty Status Qt3DCore::EntityLoader::status
+    \qmlproperty Status Qt3D.Core::EntityLoader::status
 
     Holds the status of the entity loader.
     \list

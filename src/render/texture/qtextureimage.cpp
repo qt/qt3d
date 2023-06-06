@@ -164,7 +164,7 @@ void QTextureImage::setSource(const QUrl &source)
 */
 
 /*!
-  \qmlproperty bool Qt3DRender::QTextureImage::mirrored
+  \qmlproperty bool Qt3D.Render::TextureImage::mirrored
 
   This property specifies whether the image should be mirrored when loaded. This
   is a convenience to avoid having to manipulate images to match the origin of
