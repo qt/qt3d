@@ -117,12 +117,12 @@ namespace Quick {
 */
 
 /*!
-    \qmlproperty RenderTargetOutput Qt3D.Render::Scene2D::output
+    \qmlproperty RenderTargetOutput QtQuick.Scene2D::Scene2D::output
     Holds the RenderTargetOutput, which specifies where the Scene2D is rendering to.
  */
 
 /*!
-    \qmlproperty enumeration Qt3D.Render::Scene2D::renderPolicy
+    \qmlproperty enumeration QtQuick.Scene2D::Scene2D::renderPolicy
     Holds the render policy of this Scene2D.
 
     \list
@@ -132,12 +132,12 @@ namespace Quick {
     \endlist
  */
 /*!
-    \qmlproperty Item Qt3D.Render::Scene2D::item
+    \qmlproperty Item QtQuick.Scene2D::Scene2D::item
     Holds the Item, which is rendered by Scene2D to the texture.
  */
 
 /*!
-    \qmlproperty bool Qt3D.Render::Scene2D::mouseEnabled
+    \qmlproperty bool QtQuick.Scene2D::Scene2D::mouseEnabled
     Holds whether mouse events are enabled for the rendered item. The mouse events are
     generated from object picking events of the entities added to the Scene2D.
     Mouse is enabled by default.
@@ -146,7 +146,7 @@ namespace Quick {
           happening in the backend.
  */
 /*!
-    \qmlproperty list<Entity> Qt3D.Render::Scene2D::entities
+    \qmlproperty list<Entity> QtQuick.Scene2D::Scene2D::entities
     Holds the list of entities which are associated with the Scene2D object. If the
     entities have ObjectPicker, the pick events from that entity are sent to Scene2D
     and converted to mouse events.

@@ -18,13 +18,13 @@ namespace Qt3DExtras {
  */
 
 /*!
- * \qmlproperty QString Qt3DExtras::ExtrudedTextMesh::text
+ * \qmlproperty QString Qt3D.Extras::ExtrudedTextMesh::text
  *
  * Holds the text used for the mesh.
  */
 
 /*!
- * \qmlproperty QFont Qt3DExtras::ExtrudedTextMesh::font
+ * \qmlproperty QFont Qt3D.Extras::ExtrudedTextMesh::font
  *
  * Holds the font of the text.
 
@@ -34,7 +34,7 @@ namespace Qt3DExtras {
  */
 
 /*!
- * \qmlproperty float Qt3DExtras::ExtrudedTextMesh::depth
+ * \qmlproperty float Qt3D.Extras::ExtrudedTextMesh::depth
  *
  * Holds the extrusion depth of the text.
  */

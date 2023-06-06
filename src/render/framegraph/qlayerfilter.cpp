@@ -104,7 +104,7 @@ QLayerFilterPrivate::QLayerFilterPrivate()
  */
 
 /*!
-    \qmlproperty enumeration Qt3DRender::LayerFilter::filterMode
+    \qmlproperty enumeration Qt3D.Render::LayerFilter::filterMode
 
     Holds the filter mode specifying the entities to select for drawing.
 

@@ -245,13 +245,13 @@ void QCameraPrivate::updateViewMatrixAndTransform(bool doEmit)
  */
 
 /*!
- * \qmlproperty Qt3DRender::QCameraLens QCamera::lens
+ * \qmlproperty CameraLens Qt3D.Render::Camera::lens
  * Holds the CameraLens component of the camera.
  * \since 5.14
  */
 
 /*!
- * \qmlproperty Qt3DCore::QTransform QCamera::transform
+ * \qmlproperty Transform Qt3D.Render::Camera::transform
  * Holds the Transform component of the camera.
  * \since 5.14
  */

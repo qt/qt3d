@@ -15,7 +15,7 @@ Quick3DJoint::Quick3DJoint(QObject *parent)
 }
 
 /*!
-    \qmlproperty list<Joint> Qt3DCore::Joint::childJoints
+    \qmlproperty list<Joint> Qt3D.Core::Joint::childJoints
     \readonly
 */
 QQmlListProperty<QJoint> Quick3DJoint::childJoints()
