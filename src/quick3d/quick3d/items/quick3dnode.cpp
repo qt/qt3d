@@ -25,7 +25,7 @@ Quick3DNode::Quick3DNode(QObject *parent)
 }
 
 /*!
-    \qmlproperty list<QtQml::QtObject> Qt3DCore::Node::data
+    \qmlproperty list<QtQml::QtObject> Qt3D.Core::Node::data
     \qmldefault
 */
 
@@ -58,7 +58,7 @@ QQmlListProperty<QObject> Quick3DNode::data()
 }
 
 /*!
-    \qmlproperty list<Node> Qt3DCore::Node::childNodes
+    \qmlproperty list<Node> Qt3D.Core::Node::childNodes
     \readonly
 */
 

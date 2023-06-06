@@ -392,7 +392,7 @@ void QAbstractTexture::setSize(int w, int h, int d)
     Holds the width of the texture provider.
  */
 /*!
-    \qmlproperty int Qt3DRender::QAbstractTexture::width
+    \qmlproperty int Qt3D.Render::AbstractTexture::width
 
     Holds the width of the texture provider.
  */
@@ -415,7 +415,7 @@ void QAbstractTexture::setWidth(int width)
     Holds the height of the texture provider.
  */
 /*!
-    \qmlproperty int Qt3DRender::QAbstractTexture::height
+    \qmlproperty int Qt3D.Render::AbstractTexture::height
 
     Holds the height of the texture provider.
  */
@@ -437,7 +437,7 @@ void QAbstractTexture::setHeight(int height)
     Holds the depth of the texture provider.
  */
 /*!
-    \qmlproperty int Qt3DRender::QAbstractTexture::depth
+    \qmlproperty int Qt3D.Render::AbstractTexture::depth
 
     Holds the depth of the texture provider.
  */
@@ -490,7 +490,7 @@ int QAbstractTexture::depth() const
     array target formats.
  */
 /*!
-    \qmlproperty int Qt3DRender::QAbstractTexture::layers
+    \qmlproperty int Qt3D.Render::AbstractTexture::layers
 
     Holds the maximum layer count of the texture provider. By default, the
     maximum layer count is 1.
@@ -532,7 +532,7 @@ int QAbstractTexture::layers() const
     formats.
  */
 /*!
-    \qmlproperty int Qt3DRender::QAbstractTexture::samples
+    \qmlproperty int Qt3D.Render::AbstractTexture::samples
 
     Holds the number of samples per texel for the texture provider.
     By default, the number of samples is 1.
@@ -590,7 +590,7 @@ int QAbstractTexture::mipLevels() const
     Holds the format of the texture provider.
  */
 /*!
-    \qmlproperty TextureFormat Qt3DRender::QAbstractTexture::format
+    \qmlproperty TextureFormat Qt3D.Render::AbstractTexture::format
 
     Holds the format of the texture provider.
  */
@@ -621,7 +621,7 @@ QAbstractTexture::TextureFormat QAbstractTexture::format() const
     Holds the current status of the texture provider.
  */
 /*!
-    \qmlproperty Status Qt3DRender::QAbstractTexture::status readonly
+    \qmlproperty Status Qt3D.Render::AbstractTexture::status readonly
 
     Holds the current status of the texture provider.
  */
@@ -695,7 +695,7 @@ QAbstractTexture::Status QAbstractTexture::status() const
     \note The target format can only be set once.
  */
 /*!
-    \qmlproperty Target Qt3DRender::QAbstractTexture::target readonly
+    \qmlproperty Target Qt3D.Render::AbstractTexture::target readonly
 
     Holds the target format of the texture provider.
 
@@ -796,7 +796,7 @@ QList<QAbstractTextureImage *> QAbstractTexture::textureImages() const
     Holds whether the texture provider should auto generate mipmaps.
  */
 /*!
-    \qmlproperty bool Qt3DRender::QAbstractTexture::generateMipMaps
+    \qmlproperty bool Qt3D.Render::AbstractTexture::generateMipMaps
 
     Holds whether the texture provider should auto generate mipmaps.
  */
@@ -825,7 +825,7 @@ bool QAbstractTexture::generateMipMaps() const
     Holds the minification filter of the texture provider.
  */
 /*!
-    \qmlproperty Filter Qt3DRender::QAbstractTexture::minificationFilter
+    \qmlproperty Filter Qt3D.Render::AbstractTexture::minificationFilter
 
     Holds the minification filter of the texture provider.
  */
@@ -864,7 +864,7 @@ void QAbstractTexture::setMinificationFilter(Filter f)
     Holds the magnification filter of the texture provider.
  */
 /*!
-    \qmlproperty Filter Qt3DRender::QAbstractTexture::magnificationFilter
+    \qmlproperty Filter Qt3D.Render::AbstractTexture::magnificationFilter
 
     Holds the magnification filter of the texture provider.
  */
@@ -898,7 +898,7 @@ QAbstractTexture::Filter QAbstractTexture::magnificationFilter() const
     Holds the wrap mode of the texture provider.
  */
 /*!
-    \qmlproperty QTextureWrapMode Qt3DRender::QAbstractTexture::wrapMode
+    \qmlproperty QTextureWrapMode Qt3D.Render::AbstractTexture::wrapMode
 
     Holds the wrap mode of the texture provider.
  */
@@ -934,7 +934,7 @@ QTextureWrapMode *QAbstractTexture::wrapMode()
     Holds the maximum anisotropy of the texture provider.
  */
 /*!
-    \qmlproperty bool Qt3DRender::QAbstractTexture::maximumAnisotropy
+    \qmlproperty bool Qt3D.Render::AbstractTexture::maximumAnisotropy
 
     Holds the maximum anisotropy of the texture provider.
  */
@@ -965,7 +965,7 @@ float QAbstractTexture::maximumAnisotropy() const
     Holds the comparison function of the texture provider.
  */
 /*!
-    \qmlproperty ComparisonFunction Qt3DRender::QAbstractTexture::ComparisonFunction
+    \qmlproperty ComparisonFunction Qt3D.Render::AbstractTexture::ComparisonFunction
 
     Holds the comparison function of the texture provider.
  */
@@ -997,7 +997,7 @@ QAbstractTexture::ComparisonFunction QAbstractTexture::comparisonFunction() cons
  */
 
 /*!
-    \qmlproperty ComparisonMode Qt3DRender::QAbstractTexture::ComparisonMode
+    \qmlproperty ComparisonMode Qt3D.Render::AbstractTexture::ComparisonMode
 
     Holds the comparison mode of the texture provider.
  */
