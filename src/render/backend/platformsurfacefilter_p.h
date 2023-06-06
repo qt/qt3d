@@ -17,10 +17,10 @@
 
 #include <private/qt3drender_global_p.h>
 
+#include <QtCore/qmutex.h>
 #include <QtCore/qobject.h>
 #include <QtCore/qpointer.h>
 #include <QtGui/qsurface.h>
-#include <QSemaphore>
 
 QT_BEGIN_NAMESPACE
 
@@ -68,7 +68,7 @@ private:
     QPointer<QObject> m_obj;
     QSurface *m_surface;
 
-    static QSemaphore m_surfacesSemaphore;
+    static QBasicMutex m_surfacesMutex;
     static QHash<QSurface *, bool> m_surfacesValidity;
     void markSurfaceAsValid();
 };

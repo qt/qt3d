@@ -15,7 +15,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-QSemaphore PlatformSurfaceFilter::m_surfacesSemaphore(1);
+QBasicMutex PlatformSurfaceFilter::m_surfacesMutex {};
 QHash<QSurface *, bool> PlatformSurfaceFilter::m_surfacesValidity;
 
 // Surface protection
@@ -91,18 +91,18 @@ bool PlatformSurfaceFilter::eventFilter(QObject *obj, QEvent *e)
 
 void PlatformSurfaceFilter::lockSurface()
 {
-    PlatformSurfaceFilter::m_surfacesSemaphore.acquire(1);
+    PlatformSurfaceFilter::m_surfacesMutex.lock();
 }
 
 void PlatformSurfaceFilter::releaseSurface()
 {
-    PlatformSurfaceFilter::m_surfacesSemaphore.release(1);
+    PlatformSurfaceFilter::m_surfacesMutex.unlock();
 }
 
 bool PlatformSurfaceFilter::isSurfaceValid(QSurface *surface)
 {
     // Should be called only when the surface is locked
-    // with the semaphore
+    // with the mutex
     return m_surfacesValidity.value(surface, false);
 }
 
