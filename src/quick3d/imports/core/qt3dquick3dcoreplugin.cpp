@@ -94,3 +94,5 @@ Qt3DQuick3DCorePlugin::~Qt3DQuick3DCorePlugin()
 }
 
 QT_END_NAMESPACE
+
+#include "moc_qt3dquick3dcoreplugin.cpp"

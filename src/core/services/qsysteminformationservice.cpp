@@ -436,3 +436,5 @@ void QSystemInformationService::dumpCommand(const QString &command)
 }
 
 QT_END_NAMESPACE
+
+#include "moc_qsysteminformationservice_p.cpp"

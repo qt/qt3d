@@ -324,3 +324,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QBlendedClipAnimator::createNodeCreationChan
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
+
+#include "moc_qblendedclipanimator.cpp"

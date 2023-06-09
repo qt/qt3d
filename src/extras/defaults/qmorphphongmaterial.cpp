@@ -330,3 +330,5 @@ void QMorphPhongMaterial::setInterpolator(float interpolator)
 } // namespace Qt3DExtras
 
 QT_END_NAMESPACE
+
+#include "moc_qmorphphongmaterial.cpp"

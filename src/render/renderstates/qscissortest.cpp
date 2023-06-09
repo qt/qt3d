@@ -203,3 +203,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QScissorTest::createNodeCreationChange() con
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qscissortest.cpp"

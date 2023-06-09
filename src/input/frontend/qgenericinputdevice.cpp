@@ -98,3 +98,5 @@ void QGenericInputDevice::setButtonsMap(const QVariantMap &buttonsMap)
 } // Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_qgenericinputdevice_p.cpp"

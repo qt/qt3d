@@ -127,3 +127,5 @@ QInputAspect *QInputDeviceIntegration::inputAspect() const
 */
 
 QT_END_NAMESPACE
+
+#include "moc_qinputdeviceintegration_p.cpp"

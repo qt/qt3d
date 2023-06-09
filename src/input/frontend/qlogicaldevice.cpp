@@ -265,3 +265,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QLogicalDevice::createNodeCreationChange() c
 } // Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_qlogicaldevice.cpp"

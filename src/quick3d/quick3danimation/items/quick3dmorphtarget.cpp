@@ -91,3 +91,5 @@ void QQuick3DMorphTarget::clearAttributes(QQmlListProperty<Qt3DRender::QAttribut
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
+
+#include "moc_quick3dmorphtarget_p.cpp"

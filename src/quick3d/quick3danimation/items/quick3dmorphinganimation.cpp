@@ -95,3 +95,5 @@ void QQuick3DMorphingAnimation::clearMorphTargets(QQmlListProperty<Qt3DAnimation
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
+
+#include "moc_quick3dmorphinganimation_p.cpp"

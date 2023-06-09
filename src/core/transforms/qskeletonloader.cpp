@@ -261,3 +261,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QSkeletonLoader::createNodeCreationChange() 
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_qskeletonloader.cpp"

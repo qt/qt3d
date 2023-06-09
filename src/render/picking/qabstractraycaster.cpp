@@ -400,3 +400,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QAbstractRayCaster::createNodeCreationChange
 } // Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qabstractraycaster.cpp"

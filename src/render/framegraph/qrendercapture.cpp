@@ -408,3 +408,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QRenderCapture::createNodeCreationChange() c
 } // Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qrendercapture.cpp"

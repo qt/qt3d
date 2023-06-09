@@ -106,3 +106,5 @@ void Quick3DLayerFilter::clearLayers(QQmlListProperty<QLayer> *list)
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#include "moc_quick3dlayerfilter_p.cpp"

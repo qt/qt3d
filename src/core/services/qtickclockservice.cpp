@@ -98,3 +98,5 @@ void QTickClockService::stop()
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#include "moc_qtickclockservice_p.cpp"

@@ -252,3 +252,5 @@ void QAdditiveClipBlend::setAdditiveClip(QAbstractClipBlendNode *additiveClip)
 } // Qt3DAnimation
 
 QT_END_NAMESPACE
+
+#include "moc_qadditiveclipblend.cpp"

@@ -115,7 +115,7 @@ int QAspectJobManager::waitForAllJobs()
 
 void QAspectJobManager::waitForPerThreadFunction(JobFunction func, void *arg)
 {
-    const int threadCount = m_threadPooler->maxThreadCount();
+    const int threadCount = QAspectJobManager::idealThreadCount();
     QAtomicInt atomicCount(threadCount);
 
     QVector<RunnableInterface *> taskList;
@@ -128,6 +128,28 @@ void QAspectJobManager::waitForPerThreadFunction(JobFunction func, void *arg)
     future.waitForFinished();
 }
 
+int QAspectJobManager::idealThreadCount()
+{
+    static int jobCount = 0;
+    if (jobCount)
+        return jobCount;
+
+    const QByteArray maxThreadCount = qgetenv("QT3D_MAX_THREAD_COUNT");
+    if (!maxThreadCount.isEmpty()) {
+        bool conversionOK = false;
+        const int maxThreadCountValue = maxThreadCount.toInt(&conversionOK);
+        if (conversionOK) {
+            jobCount = maxThreadCountValue;
+            return jobCount;
+        }
+    }
+
+    jobCount = QThread::idealThreadCount();
+    return jobCount;
+}
+
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_qaspectjobmanager_p.cpp"

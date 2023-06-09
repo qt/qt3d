@@ -155,3 +155,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QFilterKey::createNodeCreationChange() const
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qfilterkey.cpp"

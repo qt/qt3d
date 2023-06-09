@@ -168,3 +168,5 @@ bool SurfaceLocker::isSurfaceValid() const
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_platformsurfacefilter_p.cpp"

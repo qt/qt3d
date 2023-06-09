@@ -248,3 +248,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QClearBuffers::createNodeCreationChange() co
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qclearbuffers.cpp"

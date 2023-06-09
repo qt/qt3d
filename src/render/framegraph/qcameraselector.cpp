@@ -151,3 +151,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QCameraSelector::createNodeCreationChange() 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qcameraselector.cpp"

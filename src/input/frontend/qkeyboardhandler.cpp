@@ -738,3 +738,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QKeyboardHandler::createNodeCreationChange()
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_qkeyboardhandler.cpp"

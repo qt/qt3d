@@ -307,3 +307,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QBlendEquationArguments::createNodeCreationC
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qblendequationarguments.cpp"

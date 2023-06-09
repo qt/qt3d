@@ -330,4 +330,6 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
 
 QT_END_NAMESPACE
 
+#include "moc_qt3dquick3drenderplugin.cpp"
+
 

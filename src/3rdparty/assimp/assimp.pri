@@ -18,7 +18,6 @@ DEFINES += \
     ASSIMP_BUILD_NO_MD3_IMPORTER \
     ASSIMP_BUILD_NO_MDL_IMPORTER \
     ASSIMP_BUILD_NO_MD2_IMPORTER \
-    ASSIMP_BUILD_NO_PLY_IMPORTER \
     ASSIMP_BUILD_NO_ASE_IMPORTER \
     ASSIMP_BUILD_NO_HMP_IMPORTER \
     ASSIMP_BUILD_NO_SMD_IMPORTER \
@@ -258,6 +257,8 @@ HEADERS += \
     $$PWD/src/code/FBX/FBXProperties.h \
     $$PWD/src/code/FBX/FBXMeshGeometry.h \
     $$PWD/src/code/FBX/FBXCommon.h \
+    $$PWD/src/code/Ply/PlyLoader.h \
+    $$PWD/src/code/Ply/PlyParser.h \
     $$PWD/src/code/PostProcessing/CalcTangentsProcess.h \
     $$PWD/src/code/PostProcessing/ComputeUVMappingProcess.h \
     $$PWD/src/code/PostProcessing/ConvertToLHProcess.h \
@@ -356,6 +357,8 @@ SOURCES += \
     $$PWD/src/code/FBX/FBXDeformer.cpp \
     $$PWD/src/code/FBX/FBXBinaryTokenizer.cpp \
     $$PWD/src/code/FBX/FBXDocumentUtil.cpp \
+    $$PWD/src/code/Ply/PlyLoader.cpp \
+    $$PWD/src/code/Ply/PlyParser.cpp \
     $$PWD/src/code/PostProcessing/CalcTangentsProcess.cpp \
     $$PWD/src/code/PostProcessing/ComputeUVMappingProcess.cpp \
     $$PWD/src/code/PostProcessing/ConvertToLHProcess.cpp \

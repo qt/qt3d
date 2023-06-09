@@ -177,3 +177,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QDispatchCompute::createNodeCreationChange()
 
 QT_END_NAMESPACE
 
+#include "moc_qdispatchcompute.cpp"
+

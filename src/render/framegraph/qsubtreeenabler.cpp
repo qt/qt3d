@@ -183,3 +183,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QSubtreeEnabler::createNodeCreationChange() 
 } //Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qsubtreeenabler.cpp"

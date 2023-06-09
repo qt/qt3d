@@ -610,3 +610,5 @@ QString Quick3DMatrix4x4ValueType::toString() const
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_qt3dquickvaluetypes_p.cpp"

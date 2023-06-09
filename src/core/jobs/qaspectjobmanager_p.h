@@ -79,6 +79,7 @@ public:
     int waitForAllJobs() override;
 
     void waitForPerThreadFunction(JobFunction func, void *arg) override;
+    static int idealThreadCount();
 
 private:
     QThreadPooler *m_threadPooler;

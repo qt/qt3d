@@ -524,3 +524,5 @@ void Scene2D::handlePickEvent(int type, const Qt3DRender::QPickEvent *ev)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_scene2d_p.cpp"

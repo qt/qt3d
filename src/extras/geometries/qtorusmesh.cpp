@@ -175,3 +175,5 @@ float QTorusMesh::minorRadius() const
 } // namespace  Qt3DExtras
 
 QT_END_NAMESPACE
+
+#include "moc_qtorusmesh.cpp"

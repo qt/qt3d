@@ -204,16 +204,12 @@ private Q_SLOTS:
 
         // WHEN
         renderGeometry.updateExtent(QVector3D(-1.0f, -1.0f, -1.0f), QVector3D(1.0f, 1.0f, 1.0f));
-        renderGeometry.notifyExtentChanged();
 
         // THEN
-        QCOMPARE(arbiter.events.count(), 1);
+        QCOMPARE(arbiter.dirtyNodes.count(), 0);
 
-        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "extent");
-        const QPair<QVector3D, QVector3D> v = change->value().value<QPair<QVector3D, QVector3D>>();
-        QCOMPARE(v.first, QVector3D(-1.0f, -1.0f, -1.0f));
-        QCOMPARE(v.second, QVector3D(1.0f, 1.0f, 1.0f));
+        QCOMPARE(renderGeometry.min(), QVector3D(-1.0f, -1.0f, -1.0f));
+        QCOMPARE(renderGeometry.max(), QVector3D(1.0f, 1.0f, 1.0f));
 
         arbiter.events.clear();
     }

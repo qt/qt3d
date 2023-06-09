@@ -558,3 +558,5 @@ QAttribute *QTorusGeometry::indexAttribute() const
 } //  Qt3DExtras
 
 QT_END_NAMESPACE
+
+#include "moc_qtorusgeometry.cpp"

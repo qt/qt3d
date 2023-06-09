@@ -39,18 +39,12 @@
 
 #include "renderviewbuilder_p.h"
 #include <Qt3DRender/private/qrenderaspect_p.h>
-
-#include <QThread>
+#include <Qt3DCore/private/qaspectjobmanager_p.h>
 
 namespace Qt3DRender {
 
 namespace Render {
 namespace Rhi {
-
-// In some cases having less jobs is better (especially on fast cpus where
-// splitting just adds more overhead). Ideally, we should try to set the value
-// depending on the platform/CPU/nbr of cores
-const int RenderViewBuilder::m_optimalParallelJobCount = QThread::idealThreadCount();
 
 namespace {
 
@@ -498,6 +492,10 @@ RenderViewBuilder::RenderViewBuilder(Render::FrameGraphNode *leafNode, int rende
       m_syncFilterEntityByLayerJob(),
       m_filterProximityJob(Render::FilterProximityDistanceJobPtr::create())
 {
+    // In some cases having less jobs is better (especially on fast cpus where
+    // splitting just adds more overhead). Ideally, we should try to set the value
+    // depending on the platform/CPU/nbr of cores
+    m_optimalParallelJobCount = Qt3DCore::QAspectJobManager::idealThreadCount();
 }
 
 RenderViewInitializerJobPtr RenderViewBuilder::renderViewJob() const

@@ -126,3 +126,5 @@ void Quick3DLogicalDevice::clearActions(QQmlListProperty<QAction> *list)
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_quick3dlogicaldevice_p.cpp"

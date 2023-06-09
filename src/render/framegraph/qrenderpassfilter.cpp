@@ -222,3 +222,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QRenderPassFilter::createNodeCreationChange(
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qrenderpassfilter.cpp"

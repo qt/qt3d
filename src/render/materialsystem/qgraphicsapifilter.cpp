@@ -373,3 +373,5 @@ bool operator !=(const QGraphicsApiFilter &reference, const QGraphicsApiFilter &
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qgraphicsapifilter.cpp"

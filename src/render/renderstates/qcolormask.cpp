@@ -199,3 +199,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QColorMask::createNodeCreationChange() const
 
 QT_END_NAMESPACE
 
+#include "moc_qcolormask.cpp"
+

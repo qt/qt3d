@@ -72,3 +72,5 @@ int Quick3DMemoryBarrier::waitFor() const
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_quick3dmemorybarrier_p.cpp"

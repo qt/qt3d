@@ -88,7 +88,7 @@ QViewportPrivate::QViewportPrivate()
  */
 
 /*!
-    \qmlproperty rect Viewport::gamma
+    \qmlproperty real Viewport::gamma
 
     Specifies the gamma factor for the viewport. The default is 2.2 which should give proper result on most screens.
  */
@@ -168,3 +168,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QViewport::createNodeCreationChange() const
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qviewport.cpp"

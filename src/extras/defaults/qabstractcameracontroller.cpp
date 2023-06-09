@@ -285,7 +285,8 @@ QAbstractCameraController::QAbstractCameraController(QAbstractCameraControllerPr
     d->init();
 
     QObject::connect(d->m_frameAction, &Qt3DLogic::QFrameAction::triggered,
-                     this, [=] (float dt) {
+                     this, [this] (float dt) {
+        Q_D(const QAbstractCameraController);
         InputState  state;
 
         state.rxAxisValue = d->m_rxAxis->value();

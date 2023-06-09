@@ -354,3 +354,5 @@ void QChangeArbiter::destroyThreadLocalChangeQueue(void *changeArbiter)
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_qchangearbiter_p.cpp"

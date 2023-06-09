@@ -90,3 +90,5 @@ void Quick3DChannelMapper::clearMappings(QQmlListProperty<QAbstractChannelMappin
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
+
+#include "moc_quick3dchannelmapper_p.cpp"

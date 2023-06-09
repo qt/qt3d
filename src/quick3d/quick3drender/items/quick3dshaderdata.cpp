@@ -104,3 +104,5 @@ Quick3DShaderData::Quick3DShaderData(QNode *parent)
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_quick3dshaderdata_p.cpp"

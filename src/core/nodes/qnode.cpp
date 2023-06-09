@@ -1219,4 +1219,6 @@ void NodePostConstructorInit::processNodes()
 
 QT_END_NAMESPACE
 
+#include "moc_qnode_p.cpp"
+
 #include "moc_qnode.cpp"

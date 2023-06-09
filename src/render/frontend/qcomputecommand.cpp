@@ -292,3 +292,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QComputeCommand::createNodeCreationChange() 
 } // Render
 
 QT_END_NAMESPACE
+
+#include "moc_qcomputecommand.cpp"

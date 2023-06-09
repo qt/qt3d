@@ -64,6 +64,24 @@ QGeometryPrivate::~QGeometryPrivate()
 {
 }
 
+void QGeometryPrivate::setExtent(const QVector3D &minExtent, const QVector3D &maxExtent)
+{
+    Q_Q(QGeometry);
+    if (m_minExtent != minExtent) {
+        m_minExtent = minExtent;
+        const auto wasBlocked = q->blockNotifications(true);
+        emit q->minExtentChanged(minExtent);
+        q->blockNotifications(wasBlocked);
+    }
+
+    if (m_maxExtent != maxExtent) {
+        m_maxExtent = maxExtent;
+        const auto wasBlocked = q->blockNotifications(true);
+        emit q->maxExtentChanged(maxExtent);
+        q->blockNotifications(wasBlocked);
+    }
+}
+
 /*!
     \qmltype Geometry
     \instantiates Qt3DRender::QGeometry
@@ -151,26 +169,9 @@ QGeometry::QGeometry(QGeometryPrivate &dd, QNode *parent)
 {
 }
 
-void QGeometry::sceneChangeEvent(const QSceneChangePtr &change)
+// TODO Unused remove in Qt6
+void QGeometry::sceneChangeEvent(const QSceneChangePtr &)
 {
-    Q_D(QGeometry);
-    QPropertyUpdatedChangePtr e = qSharedPointerCast<QPropertyUpdatedChange>(change);
-    if (e->type() == PropertyUpdated) {
-        const bool blocked = blockNotifications(true);
-        if (e->propertyName() == QByteArrayLiteral("extent")) {
-            const QPair<QVector3D, QVector3D> extent = e->value().value<QPair<QVector3D, QVector3D>>();
-
-            if (extent.first != d->m_minExtent) {
-                d->m_minExtent = extent.first;
-                emit minExtentChanged(extent.first);
-            }
-            if (extent.second != d->m_maxExtent) {
-                d->m_maxExtent = extent.second;
-                emit maxExtentChanged(d->m_maxExtent);
-            }
-        }
-        blockNotifications(blocked);
-    }
 }
 
 /*!

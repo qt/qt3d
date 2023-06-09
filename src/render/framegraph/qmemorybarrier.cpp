@@ -168,3 +168,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QMemoryBarrier::createNodeCreationChange() c
 } // Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qmemorybarrier.cpp"

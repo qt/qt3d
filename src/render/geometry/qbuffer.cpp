@@ -493,3 +493,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QBuffer::createNodeCreationChange() const
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qbuffer.cpp"

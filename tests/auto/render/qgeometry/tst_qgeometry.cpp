@@ -208,31 +208,26 @@ private Q_SLOTS:
         QCOMPARE(geometry->maxExtent(), QVector3D());
 
         // WHEN
-        Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-        valueChange->setPropertyName("extent");
-        valueChange->setValue(QVariant::fromValue(QPair<QVector3D, QVector3D>(QVector3D(10.0f, 10.f, 10.0f),
-                                                                              QVector3D())));
-        geometry->sceneChangeEvent(valueChange);
+        auto dNode = static_cast<Qt3DRender::QGeometryPrivate *>(Qt3DCore::QNodePrivate::get(geometry.data()));
+        const QVector3D minExt(-1.0f, -1.0f, -1.0f);
+        const QVector3D maxExt(1.0f, 1.0f, 1.0f);
+        dNode->setExtent(minExt, maxExt);
 
         // THEN
         QCOMPARE(spyMinExtent.count(), 1);
-        QCOMPARE(spyMaxExtent.count(), 0);
-        QCOMPARE(geometry->minExtent(), QVector3D(10.0f, 10.0f, 10.0f));
+        QCOMPARE(spyMaxExtent.count(), 1);
+        QCOMPARE(geometry->minExtent(), minExt);
+        QCOMPARE(geometry->maxExtent(), maxExt);
 
+        spyMaxExtent.clear();
         spyMinExtent.clear();
 
         // WHEN
-        valueChange->setPropertyName("extent");
-        valueChange->setValue(QVariant::fromValue(QPair<QVector3D, QVector3D>(QVector3D(10.0f, 10.f, 10.0f),
-                                                                              QVector3D(11.0f, 11.f, 11.0f))));
-        geometry->sceneChangeEvent(valueChange);
+        dNode->setExtent(minExt, maxExt);
 
         // THEN
         QCOMPARE(spyMinExtent.count(), 0);
-        QCOMPARE(spyMaxExtent.count(), 1);
-        QCOMPARE(geometry->maxExtent(), QVector3D(11.0f, 11.0f, 11.0f));
-
-        spyMaxExtent.clear();
+        QCOMPARE(spyMaxExtent.count(), 0);
     }
 };
 

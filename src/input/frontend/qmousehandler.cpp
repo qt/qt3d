@@ -354,3 +354,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QMouseHandler::createNodeCreationChange() co
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_qmousehandler.cpp"

@@ -111,3 +111,5 @@ void Qt3DQuick3DInputPlugin::registerTypes(const char *uri)
 }
 
 QT_END_NAMESPACE
+
+#include "moc_qt3dquick3dinputplugin.cpp"

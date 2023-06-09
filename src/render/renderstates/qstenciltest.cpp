@@ -161,3 +161,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QStencilTest::createNodeCreationChange() con
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qstenciltest.cpp"

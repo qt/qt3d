@@ -191,4 +191,6 @@ QUrl Quick3DLevelOfDetailLoader::source() const
 
 QT_END_NAMESPACE
 
+#include "moc_quick3dlevelofdetailloader_p.cpp"
+
 

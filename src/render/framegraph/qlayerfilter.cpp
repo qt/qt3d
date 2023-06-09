@@ -258,3 +258,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QLayerFilter::createNodeCreationChange() con
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qlayerfilter.cpp"

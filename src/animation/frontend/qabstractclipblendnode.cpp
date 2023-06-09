@@ -134,3 +134,5 @@ QAbstractClipBlendNode::~QAbstractClipBlendNode()
 } // Qt3DAnimation
 
 QT_END_NAMESPACE
+
+#include "moc_qabstractclipblendnode.cpp"

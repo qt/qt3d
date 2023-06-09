@@ -284,3 +284,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QAbstractTextureImage::createNodeCreationCha
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qabstracttextureimage.cpp"

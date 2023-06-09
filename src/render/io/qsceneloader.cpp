@@ -393,3 +393,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QSceneLoader::createNodeCreationChange() con
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qsceneloader.cpp"

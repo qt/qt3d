@@ -70,7 +70,6 @@ namespace Qt3DLogic {
 QLogicAspectPrivate::QLogicAspectPrivate()
     : QAbstractAspectPrivate()
     , m_time(0)
-    , m_initialized(false)
     , m_manager(new Logic::Manager)
     , m_executor(new Logic::Executor)
     , m_callbackJob(new Logic::CallbackJob)
@@ -147,3 +146,4 @@ QT_END_NAMESPACE
 
 QT3D_REGISTER_NAMESPACED_ASPECT("logic", QT_PREPEND_NAMESPACE(Qt3DLogic), QLogicAspect)
 
+#include "moc_qlogicaspect.cpp"

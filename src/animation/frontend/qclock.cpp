@@ -96,3 +96,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QClock::createNodeCreationChange() const
 }
 
 QT_END_NAMESPACE
+
+#include "moc_qclock.cpp"

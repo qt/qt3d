@@ -338,3 +338,5 @@ void QEntity::onParentChanged(QObject *)
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_qentity.cpp"

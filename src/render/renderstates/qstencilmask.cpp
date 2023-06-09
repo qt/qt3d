@@ -155,3 +155,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QStencilMask::createNodeCreationChange() con
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qstencilmask.cpp"

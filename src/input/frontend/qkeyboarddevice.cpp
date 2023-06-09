@@ -329,3 +329,5 @@ void QKeyboardDevice::setActiveInput(QKeyboardHandler *activeInput)
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_qkeyboarddevice.cpp"

@@ -164,3 +164,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QAction::createNodeCreationChange() const
 } // Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_qaction.cpp"

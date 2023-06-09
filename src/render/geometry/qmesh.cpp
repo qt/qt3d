@@ -445,3 +445,5 @@ void MeshDownloadRequest::onCompleted()
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qmesh.cpp"

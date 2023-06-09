@@ -64,3 +64,5 @@ QSceneImporter *QSceneImportPlugin::create(const QString &key, const QStringList
 
 QT_END_NAMESPACE
 
+#include "moc_qsceneimportplugin_p.cpp"
+

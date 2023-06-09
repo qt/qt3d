@@ -154,3 +154,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QDepthRange::createNodeCreationChange() cons
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qdepthrange.cpp"

@@ -57,3 +57,5 @@ QAbstractAspectJobManager::QAbstractAspectJobManager(QObject *parent)
 }
 
 QT_END_NAMESPACE
+
+#include "moc_qabstractaspectjobmanager_p.cpp"

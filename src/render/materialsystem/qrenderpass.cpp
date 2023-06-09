@@ -413,3 +413,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QRenderPass::createNodeCreationChange() cons
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qrenderpass.cpp"

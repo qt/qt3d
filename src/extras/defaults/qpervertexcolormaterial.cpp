@@ -175,3 +175,5 @@ void QPerVertexColorMaterialPrivate::init()
 } // namespace Qt3DExtras
 
 QT_END_NAMESPACE
+
+#include "moc_qpervertexcolormaterial.cpp"

@@ -129,3 +129,5 @@ uint QPickPointEvent::pointIndex() const
 
 QT_END_NAMESPACE
 
+#include "moc_qpickpointevent.cpp"
+

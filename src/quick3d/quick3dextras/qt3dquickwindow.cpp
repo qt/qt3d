@@ -273,4 +273,5 @@ void Qt3DQuickWindow::updateCameraAspectRatio()
 
 QT_END_NAMESPACE
 
+#include "moc_qt3dquickwindow.cpp"
 #include "qt3dquickwindow.moc"

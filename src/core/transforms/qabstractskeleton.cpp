@@ -137,3 +137,5 @@ void QAbstractSkeletonPrivate::setJointCount(int jointCount)
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#include "moc_qabstractskeleton.cpp"

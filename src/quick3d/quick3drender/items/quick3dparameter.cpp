@@ -85,4 +85,6 @@ Quick3DParameter::Quick3DParameter(Quick3DParameterPrivate &dd, QNode *parent)
 
 QT_END_NAMESPACE
 
+#include "moc_quick3dparameter_p.cpp"
+
 

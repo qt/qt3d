@@ -226,3 +226,5 @@ void QAbstractPhysicalDeviceProxyPrivate::resetDevice(QAbstractPhysicalDevice *d
 } // Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_qabstractphysicaldeviceproxy_p.cpp"

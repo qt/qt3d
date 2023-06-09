@@ -492,3 +492,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QObjectPicker::createNodeCreationChange() co
 } // Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qobjectpicker.cpp"

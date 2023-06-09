@@ -97,3 +97,5 @@ void QQuick3DAnimationGroup::clearAnimation(QQmlListProperty<Qt3DAnimation::QAbs
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
+
+#include "moc_quick3danimationgroup_p.cpp"

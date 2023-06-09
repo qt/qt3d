@@ -90,3 +90,5 @@ void Quick3DInputChord::clearActionInputs(QQmlListProperty<QAbstractActionInput>
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_quick3dinputchord_p.cpp"

@@ -121,3 +121,5 @@ QAbstractPhysicalDevice *QAbstractAxisInput::sourceDevice() const
 } // Qt3DInput
 
 QT_END_NAMESPACE
+
+#include "moc_qabstractaxisinput.cpp"
