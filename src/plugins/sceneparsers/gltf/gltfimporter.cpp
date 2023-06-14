@@ -1050,9 +1050,9 @@ QMaterial *GLTFImporter::commonMaterial(const QJsonObject &jsonObj)
     } else {
         for (QVariantHash::const_iterator it = params.constBegin(), itEnd = params.constEnd(); it != itEnd; ++it)
             mat->setProperty(it.key().toUtf8(), it.value());
-    }
 
-    renameFromJson(jsonObj, mat);
+        renameFromJson(jsonObj, mat);
+    }
 
     return mat;
 }
