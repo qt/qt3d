@@ -616,7 +616,7 @@ QByteArray QShaderGenerator::createShaderCode(const QStringList &enabledLayers) 
             int end = begin + 1;
             char endChar = line.at(end);
             const int size = line.size();
-            while (end < size && (std::isalnum(endChar) || endChar == '_')) {
+            while (end < size && (std::isalnum(uchar(endChar)) || endChar == '_')) {
                 ++end;
                 endChar = line.at(end);
             }
