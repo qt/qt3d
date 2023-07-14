@@ -44,7 +44,7 @@ QAxis::QAxis(Qt3DCore::QNode *parent)
     : Qt3DCore::QNode(*new QAxisPrivate(), parent)
 {
     Q_D(QAxis);
-    connect(this, &QAxis::enabledChanged, [d]() {
+    connect(this, &QAxis::enabledChanged, this, [d]() {
         d->setValue(0.);
     });
 }

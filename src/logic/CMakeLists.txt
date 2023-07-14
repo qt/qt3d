@@ -19,6 +19,8 @@ qt_internal_add_module(3DLogic
         qframeaction.cpp qframeaction.h qframeaction_p.h
         qlogicaspect.cpp qlogicaspect.h qlogicaspect_p.h
         qt3dlogic_global.h
+    DEFINES
+        QT_NO_CONTEXTLESS_CONNECT
     INCLUDE_DIRECTORIES
         ${CMAKE_CURRENT_SOURCE_DIR}
     LIBRARIES

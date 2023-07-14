@@ -73,15 +73,15 @@ QStencilTest::QStencilTest(QNode *parent)
 
     const auto resend = [d]() { d->update(); };
 
-    (void) connect(d->m_front, &QStencilTestArguments::comparisonMaskChanged, resend);
-    (void) connect(d->m_front, &QStencilTestArguments::faceModeChanged, resend);
-    (void) connect(d->m_front, &QStencilTestArguments::referenceValueChanged, resend);
-    (void) connect(d->m_front, &QStencilTestArguments::stencilFunctionChanged, resend);
+    (void) connect(d->m_front, &QStencilTestArguments::comparisonMaskChanged, this, resend);
+    (void) connect(d->m_front, &QStencilTestArguments::faceModeChanged, this, resend);
+    (void) connect(d->m_front, &QStencilTestArguments::referenceValueChanged, this, resend);
+    (void) connect(d->m_front, &QStencilTestArguments::stencilFunctionChanged, this, resend);
 
-    (void) connect(d->m_back, &QStencilTestArguments::comparisonMaskChanged, resend);
-    (void) connect(d->m_back, &QStencilTestArguments::faceModeChanged, resend);
-    (void) connect(d->m_back, &QStencilTestArguments::referenceValueChanged, resend);
-    (void) connect(d->m_back, &QStencilTestArguments::stencilFunctionChanged, resend);
+    (void) connect(d->m_back, &QStencilTestArguments::comparisonMaskChanged, this, resend);
+    (void) connect(d->m_back, &QStencilTestArguments::faceModeChanged, this, resend);
+    (void) connect(d->m_back, &QStencilTestArguments::referenceValueChanged, this, resend);
+    (void) connect(d->m_back, &QStencilTestArguments::stencilFunctionChanged, this, resend);
 }
 
 /*! \internal */

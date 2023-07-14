@@ -1483,7 +1483,7 @@ QTextureLoader::QTextureLoader(QNode *parent)
         if (!notificationsBlocked())    // check the change doesn't come from the backend
             d->updateGenerator();
     };
-    connect(this, &QAbstractTexture::formatChanged, regenerate);
+    connect(this, &QAbstractTexture::formatChanged, this, regenerate);
 }
 
 /*! \internal */

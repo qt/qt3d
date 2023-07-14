@@ -18,6 +18,8 @@ qt_internal_add_qml_module(qtquickscene2dplugin
     INSTALL_SOURCE_QMLTYPES "plugins.qmltypes"
     SOURCES
         qtquickscene2dplugin.cpp qtquickscene2dplugin.h
+    DEFINES
+        QT_NO_CONTEXTLESS_CONNECT
     LIBRARIES
         Qt::3DCore
         Qt::3DQuickScene2D

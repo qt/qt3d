@@ -79,6 +79,7 @@ void GLShader::setGraphicsContext(GraphicsContext *context)
     if (m_graphicsContext) {
         m_contextConnection = QObject::connect(m_graphicsContext->openGLContext(),
                                                &QOpenGLContext::aboutToBeDestroyed,
+                                               m_graphicsContext->openGLContext(),
                                                [this] { setGraphicsContext(nullptr); });
     }
 }

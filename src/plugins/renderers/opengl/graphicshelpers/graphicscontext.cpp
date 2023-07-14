@@ -380,7 +380,7 @@ GraphicsHelperInterface *GraphicsContext::resolveHighestOpenGLFunctions()
             qCDebug(Backend) << "Qt3D: Enabling OpenGL debug logging";
             m_debugLogger.reset(new QOpenGLDebugLogger);
             if (m_debugLogger->initialize()) {
-                QObject::connect(m_debugLogger.data(), &QOpenGLDebugLogger::messageLogged, &logOpenGLDebugMessage);
+                QObject::connect(m_debugLogger.data(), &QOpenGLDebugLogger::messageLogged, m_debugLogger.data(), &logOpenGLDebugMessage);
                 const QString mode = QString::fromLocal8Bit(debugLoggingMode);
                 m_debugLogger->startLogging(mode.startsWith(QLatin1String("sync"), Qt::CaseInsensitive)
                                             ? QOpenGLDebugLogger::SynchronousLogging

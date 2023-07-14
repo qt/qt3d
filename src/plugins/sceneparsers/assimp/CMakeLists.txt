@@ -15,6 +15,8 @@ qt_internal_add_plugin(AssimpSceneImportPlugin
         assimphelpers.cpp assimphelpers.h
         assimpimporter.cpp assimpimporter.h
         main.cpp
+    DEFINES
+        QT_NO_CONTEXTLESS_CONNECT
     LIBRARIES
         Qt::3DAnimation
         Qt::3DCore

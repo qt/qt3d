@@ -53,17 +53,17 @@ AspectCommandDebugger::AspectCommandDebugger(QSystemInformationService *parent)
 
 void AspectCommandDebugger::initialize()
 {
-    QObject::connect(this, &QTcpServer::newConnection, [this] {
+    QObject::connect(this, &QTcpServer::newConnection, this, [this] {
         QTcpSocket *socket = nextPendingConnection();
         m_connections.push_back(socket);
 
-        QObject::connect(socket, &QTcpSocket::disconnected, [this, socket] {
+        QObject::connect(socket, &QTcpSocket::disconnected, this, [this, socket] {
             m_connections.removeOne(socket);
             // Destroy object to make sure all QObject connection are removed
             socket->deleteLater();
         });
 
-        QObject::connect(socket, &QTcpSocket::readyRead, [this, socket] {
+        QObject::connect(socket, &QTcpSocket::readyRead, this, [this, socket] {
             onCommandReceived(socket);
         });
     });

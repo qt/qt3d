@@ -13,6 +13,8 @@ qt_internal_add_plugin(GLTFGeometryLoaderPlugin
     SOURCES
         gltfgeometryloader.cpp gltfgeometryloader.h
         main.cpp
+    DEFINES
+        QT_NO_CONTEXTLESS_CONNECT
     LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate

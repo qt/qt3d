@@ -72,15 +72,15 @@ QStencilOperation::QStencilOperation(QNode *parent)
 
     const auto resend = [d]() { d->update(); };
 
-    (void) connect(d->m_front, &QStencilOperationArguments::allTestsPassOperationChanged, resend);
-    (void) connect(d->m_front, &QStencilOperationArguments::depthTestFailureOperationChanged, resend);
-    (void) connect(d->m_front, &QStencilOperationArguments::stencilTestFailureOperationChanged, resend);
-    (void) connect(d->m_front, &QStencilOperationArguments::faceModeChanged, resend);
+    (void) connect(d->m_front, &QStencilOperationArguments::allTestsPassOperationChanged, this, resend);
+    (void) connect(d->m_front, &QStencilOperationArguments::depthTestFailureOperationChanged, this, resend);
+    (void) connect(d->m_front, &QStencilOperationArguments::stencilTestFailureOperationChanged, this, resend);
+    (void) connect(d->m_front, &QStencilOperationArguments::faceModeChanged, this, resend);
 
-    (void) connect(d->m_back, &QStencilOperationArguments::allTestsPassOperationChanged, resend);
-    (void) connect(d->m_back, &QStencilOperationArguments::depthTestFailureOperationChanged, resend);
-    (void) connect(d->m_back, &QStencilOperationArguments::stencilTestFailureOperationChanged, resend);
-    (void) connect(d->m_back, &QStencilOperationArguments::faceModeChanged, resend);
+    (void) connect(d->m_back, &QStencilOperationArguments::allTestsPassOperationChanged, this, resend);
+    (void) connect(d->m_back, &QStencilOperationArguments::depthTestFailureOperationChanged, this, resend);
+    (void) connect(d->m_back, &QStencilOperationArguments::stencilTestFailureOperationChanged, this, resend);
+    (void) connect(d->m_back, &QStencilOperationArguments::faceModeChanged, this, resend);
 }
 
 /*! \internal */

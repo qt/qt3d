@@ -282,6 +282,7 @@ qt_internal_add_module(3DRender
         texture/textureimage.cpp texture/textureimage_p.h
     DEFINES
         BUILD_QT3D_MODULE
+        QT_NO_CONTEXTLESS_CONNECT
     INCLUDE_DIRECTORIES
         backend
         framegraph

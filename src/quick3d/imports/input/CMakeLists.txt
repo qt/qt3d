@@ -17,6 +17,8 @@ qt_internal_add_qml_module(quick3dinputplugin
     PLUGIN_TARGET quick3dinputplugin
     SOURCES
         qt3dquick3dinputforeign_p.h
+    DEFINES
+        QT_NO_CONTEXTLESS_CONNECT
     LIBRARIES
         Qt::3DCore
         Qt::3DInput

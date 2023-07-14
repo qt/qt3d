@@ -437,12 +437,12 @@ void Renderer::initialize()
                 qCWarning(Backend) << Q_FUNC_INFO << "OpenGL context creation failed";
             m_ownedContext = true;
 
-            QObject::connect(m_glContext, &QOpenGLContext::aboutToBeDestroyed,
+            QObject::connect(m_glContext, &QOpenGLContext::aboutToBeDestroyed, m_glContext,
                              [this] { m_frameProfiler.reset(); });
         } else {
             // Context is not owned by us, so we need to know if it gets destroyed
             m_contextConnection = QObject::connect(m_glContext, &QOpenGLContext::aboutToBeDestroyed,
-                                                   [this] { releaseGraphicsResources(); });
+                                                   m_glContext, [this] { releaseGraphicsResources(); });
         }
 
         qCDebug(Backend) << "Qt3D shared context:" << m_glContext->shareContext();

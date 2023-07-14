@@ -86,7 +86,7 @@ public:
         // If the node is destoyed, we make sure not to keep a dangling pointer to it
         Q_Q(QNode);
         auto f = [q, func]() { (static_cast<Caller *>(q)->*func)(nullptr); };
-        m_destructionConnections.push_back({node, QObject::connect(node, &QNode::nodeDestroyed, f)});
+        m_destructionConnections.push_back({node, QObject::connect(node, &QNode::nodeDestroyed, q, f)});
     }
 
     template<typename Caller, typename NodeType>
@@ -95,7 +95,7 @@ public:
         // If the node is destoyed, we make sure not to keep a dangling pointer to it
         Q_Q(QNode);
         auto f = [q, func, node]() { (static_cast<Caller *>(q)->*func)(node); };
-        m_destructionConnections.push_back({node, QObject::connect(node, &QNode::nodeDestroyed, f)});
+        m_destructionConnections.push_back({node, QObject::connect(node, &QNode::nodeDestroyed, q, f)});
     }
 
     template<typename Caller, typename NodeType>
@@ -104,7 +104,7 @@ public:
         // If the node is destoyed, we make sure not to keep a dangling pointer to it
         Q_Q(QNode);
         auto f = [q, func, node]() { (static_cast<Caller *>(q)->*func)(node); };
-        m_destructionConnections.push_back({node, QObject::connect(node, &QNode::nodeDestroyed, f)});
+        m_destructionConnections.push_back({node, QObject::connect(node, &QNode::nodeDestroyed, q, f)});
     }
 
     template<typename Caller, typename ValueType>
@@ -117,15 +117,16 @@ public:
         // If the node is destoyed, we make sure not to keep a dangling pointer to it
         Q_Q(QNode);
         auto f = [q, func, resetValue]() { (static_cast<Caller *>(q)->*func)(resetValue); };
-        m_destructionConnections.push_back({node, QObject::connect(node, &QNode::nodeDestroyed, f)});
+        m_destructionConnections.push_back({node, QObject::connect(node, &QNode::nodeDestroyed, q, f)});
     }
 
     template<typename Caller, typename NodeType>
     void registerPrivateDestructionHelper(NodeType *node, DestructionFunctionPointer<Caller, NodeType> func)
     {
+        Q_Q(QNode);
         // If the node is destoyed, we make sure not to keep a dangling pointer to it
         auto f = [this, func, node]() { (static_cast<Caller *>(this)->*func)(node); };
-        m_destructionConnections.push_back({node, QObject::connect(node, &QNode::nodeDestroyed, f)});
+        m_destructionConnections.push_back({node, QObject::connect(node, &QNode::nodeDestroyed, q, f)});
     }
 
     void unregisterDestructionHelper(QNode *node)

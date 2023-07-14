@@ -13,6 +13,8 @@ qt_internal_add_plugin(GLTFSceneImportPlugin
     SOURCES
         gltfimporter.cpp gltfimporter.h
         main.cpp
+    DEFINES
+        QT_NO_CONTEXTLESS_CONNECT
     LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate

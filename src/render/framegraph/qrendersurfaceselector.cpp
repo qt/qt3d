@@ -214,13 +214,13 @@ void QRenderSurfaceSelector::setSurface(QObject *surfaceObject)
             d->m_surfaceEventFilter->setSurface(window);
 
             if (window) {
-                d->m_widthConn = QObject::connect(window, &QWindow::widthChanged, [=] (int) {
+                d->m_widthConn = QObject::connect(window, &QWindow::widthChanged, this, [d]() {
                     d->update();
                 });
-                d->m_heightConn = QObject::connect(window, &QWindow::heightChanged, [=] (int) {
+                d->m_heightConn = QObject::connect(window, &QWindow::heightChanged, this, [d]() {
                     d->update();
                 });
-                d->m_screenConn = QObject::connect(window, &QWindow::screenChanged, [this] (QScreen *screen) {
+                d->m_screenConn = QObject::connect(window, &QWindow::screenChanged, this, [this] (QScreen *screen) {
                     if (screen && !qFuzzyCompare(surfacePixelRatio(), float(screen->devicePixelRatio())))
                         setSurfacePixelRatio(float(screen->devicePixelRatio()));
                 });
