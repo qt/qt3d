@@ -4,6 +4,7 @@
 /*!
     \example pbr-materials
     \title Qt 3D: PBR Materials QML Example
+    \examplecategory {Data Visualization & 3D}
     \ingroup qt3d-examples-qml
     \brief A QML application that demonstrates using PBR materials.
 

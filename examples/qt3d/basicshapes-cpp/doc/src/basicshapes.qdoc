@@ -4,6 +4,7 @@
 /*!
     \example basicshapes-cpp
     \title Qt 3D: Basic Shapes C++ Example
+    \examplecategory {Data Visualization & 3D}
     \ingroup qt3d-examples-cpp
     \brief Shows four basic shapes that Qt 3D offers and sets up a mesh for each of them.
 
