@@ -4,6 +4,7 @@
 /*!
     \example simple-cpp
     \title Qt 3D: Simple C++ Example
+    \examplecategory {Data Visualization & 3D}
     \ingroup qt3d-examples-cpp
     \brief A C++ application that demonstrates how to render a scene in Qt 3D.
 

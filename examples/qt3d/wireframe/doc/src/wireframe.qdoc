@@ -4,6 +4,7 @@
 /*!
     \example wireframe
     \title Qt 3D: Wireframe QML Example
+    \examplecategory {Data Visualization & 3D}
     \ingroup qt3d-examples-qml
 
     \brief A Qt 3D QML application that implements a single-pass wireframe

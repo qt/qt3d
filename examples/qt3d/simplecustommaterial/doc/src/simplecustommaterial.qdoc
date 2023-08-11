@@ -4,6 +4,7 @@
 /*!
     \example simplecustommaterial
     \title Qt 3D: Simple Custom Material QML Example
+    \examplecategory {Data Visualization & 3D}
     \ingroup qt3d-examples-qml
     \brief Demonstrates creating a custom material in Qt 3D.
 
