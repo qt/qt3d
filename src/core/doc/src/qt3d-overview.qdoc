@@ -4,7 +4,7 @@
 /*!
     \page qt3d-overview.html
     \title Qt 3D Overview
-    \ingroup explanation
+    \ingroup explanations-2dand3dgraphics
     \brief Qt 3D provides C++ and QML APIs to incorporate 3D content into Qt
     applications.
 
