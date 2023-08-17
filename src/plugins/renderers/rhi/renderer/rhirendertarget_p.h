@@ -30,9 +30,16 @@ struct RHIRenderTarget {
     // Note: only used when rendering to a FBO
     // as we don't want to remove the default framebuffer's rendertarget
     // TODO: at some point separate render target and graphics pipeline as the former can be reused
-    QRhiRenderTarget *renderTarget{};
-    QRhiRenderPassDescriptor *renderPassDescriptor{};
-    QRhiRenderBuffer *depthStencilBuffer{};
+    QRhiRenderTarget *renderTarget{ nullptr };
+    QRhiRenderPassDescriptor *renderPassDescriptor{ nullptr };
+    QRhiRenderBuffer *depthStencilBuffer{ nullptr };
+
+    enum class BackBuffer {
+        None,
+        Left,
+        Right,
+    };
+    BackBuffer backBuffer{ BackBuffer::None };
 
     ~RHIRenderTarget();
     void cleanup();
