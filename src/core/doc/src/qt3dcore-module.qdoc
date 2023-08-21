@@ -10,7 +10,7 @@
 
     \ingroup modules
     \ingroup qt3d-modules
-    \qtcmakepackage 3dcore
+    \qtcmakepackage 3DCore
     \qtvariable 3dcore
 
     The Qt 3D module provides the foundations and core types used for near-realtime
