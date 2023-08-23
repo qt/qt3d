@@ -20,8 +20,6 @@ qt_internal_add_qml_module(quick3drenderplugin
     INSTALL_SOURCE_QMLTYPES "plugins.qmltypes"
     SOURCES
         qt3dquick3drenderplugin.cpp qt3dquick3drenderplugin.h
-    DEFINES
-        QT_NO_CONTEXTLESS_CONNECT
     LIBRARIES
         Qt::3DCore
         Qt::3DQuick

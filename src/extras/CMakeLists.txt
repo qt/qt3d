@@ -64,7 +64,6 @@ qt_internal_add_module(3DExtras
         text/qtextureatlas_p_p.h
     DEFINES
         QT3DEXTRAS_LIBRARY
-        QT_NO_CONTEXTLESS_CONNECT
     INCLUDE_DIRECTORIES
         3dtext
         defaults

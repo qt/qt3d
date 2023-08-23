@@ -586,7 +586,7 @@ void tst_Entity::checkComponentBookkeeping()
         // WHEN
         int sigCount = 0;
         QObject *sigSender = comp.data();
-        connect(comp.data(), &QComponent::removedFromEntity, [&sigCount, sigSender](QEntity *) {
+        connect(comp.data(), &QComponent::removedFromEntity, this, [&sigCount, sigSender](QEntity *) {
             QComponent *c = qobject_cast<QComponent *>(sigSender);
             if (sigSender && c)
                 sigCount++; // test the sender is still a QComponent when signal is emitted

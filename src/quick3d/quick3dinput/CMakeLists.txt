@@ -17,8 +17,6 @@ qt_internal_add_module(3DQuickInput
         items/quick3dphysicaldevice.cpp items/quick3dphysicaldevice_p.h
         qt3dquickinput_global.cpp qt3dquickinput_global.h qt3dquickinput_global_p.h
         qt3dquickinputnodefactory.cpp qt3dquickinputnodefactory_p.h
-    DEFINES
-        QT_NO_CONTEXTLESS_CONNECT
     INCLUDE_DIRECTORIES
         items
     LIBRARIES

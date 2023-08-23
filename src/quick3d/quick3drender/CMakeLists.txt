@@ -32,8 +32,6 @@ qt_internal_add_module(3DQuickRender
         items/quick3dviewport.cpp items/quick3dviewport_p.h
         qt3dquickrender_global.cpp qt3dquickrender_global.h qt3dquickrender_global_p.h
         qt3dquickrendernodefactory.cpp qt3dquickrendernodefactory_p.h
-    DEFINES
-        QT_NO_CONTEXTLESS_CONNECT
     INCLUDE_DIRECTORIES
         items
     LIBRARIES

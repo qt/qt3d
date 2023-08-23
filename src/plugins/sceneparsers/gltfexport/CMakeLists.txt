@@ -13,8 +13,6 @@ qt_internal_add_plugin(GLTFSceneExportPlugin
     SOURCES
         gltfexporter.cpp gltfexporter.h
         main.cpp
-    DEFINES
-        QT_NO_CONTEXTLESS_CONNECT
     LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate

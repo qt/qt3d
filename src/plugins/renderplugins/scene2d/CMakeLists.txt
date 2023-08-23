@@ -13,8 +13,6 @@ qt_internal_add_plugin(Scene2DPlugin
     SOURCES
         main.cpp
         scene2dplugin.cpp scene2dplugin.h
-    DEFINES
-        QT_NO_CONTEXTLESS_CONNECT
     LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate

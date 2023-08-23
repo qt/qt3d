@@ -113,14 +113,14 @@ private Q_SLOTS:
         int scale3DChangedCount = 0;
         int translationChangedCount = 0;
 
-        QObject::connect(transform.data(), &Qt3DCore::QTransform::rotationChanged, [&] { ++rotationChangedCount; });
-        QObject::connect(transform.data(), &Qt3DCore::QTransform::rotationXChanged, [&] { ++rotationXChangedCount; });
-        QObject::connect(transform.data(), &Qt3DCore::QTransform::rotationYChanged, [&] { ++rotationYChangedCount; });
-        QObject::connect(transform.data(), &Qt3DCore::QTransform::rotationZChanged, [&] { ++rotationZChangedCount; });
-        QObject::connect(transform.data(), &Qt3DCore::QTransform::matrixChanged, [&] { ++matrixChangedCount; });
-        QObject::connect(transform.data(), &Qt3DCore::QTransform::scale3DChanged, [&] { ++scale3DChangedCount; });
-        QObject::connect(transform.data(), &Qt3DCore::QTransform::scaleChanged, [&] { ++scaleChangedCount; });
-        QObject::connect(transform.data(), &Qt3DCore::QTransform::translationChanged, [&] { ++translationChangedCount; });
+        QObject::connect(transform.data(), &Qt3DCore::QTransform::rotationChanged, this, [&] { ++rotationChangedCount; });
+        QObject::connect(transform.data(), &Qt3DCore::QTransform::rotationXChanged, this, [&] { ++rotationXChangedCount; });
+        QObject::connect(transform.data(), &Qt3DCore::QTransform::rotationYChanged, this, [&] { ++rotationYChangedCount; });
+        QObject::connect(transform.data(), &Qt3DCore::QTransform::rotationZChanged, this, [&] { ++rotationZChangedCount; });
+        QObject::connect(transform.data(), &Qt3DCore::QTransform::matrixChanged, this, [&] { ++matrixChangedCount; });
+        QObject::connect(transform.data(), &Qt3DCore::QTransform::scale3DChanged, this, [&] { ++scale3DChangedCount; });
+        QObject::connect(transform.data(), &Qt3DCore::QTransform::scaleChanged, this, [&] { ++scaleChangedCount; });
+        QObject::connect(transform.data(), &Qt3DCore::QTransform::translationChanged, this, [&] { ++translationChangedCount; });
 
         // WHEN
         transform->setRotationX(180.0f);

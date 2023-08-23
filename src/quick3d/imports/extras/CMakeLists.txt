@@ -21,8 +21,6 @@ qt_internal_add_qml_module(quick3dextrasplugin
         Qt3D.Logic/auto
     SOURCES
         qt3dquick3dextrasplugin.cpp qt3dquick3dextrasplugin.h
-    DEFINES
-        QT_NO_CONTEXTLESS_CONNECT
     LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate

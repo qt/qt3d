@@ -80,8 +80,6 @@ qt_internal_add_module(3DCore
         transforms/vector3d_p.h
         transforms/vector4d_p.h
         vector_helper_p.h
-    DEFINES
-        QT_NO_CONTEXTLESS_CONNECT
     INCLUDE_DIRECTORIES
         ${CMAKE_CURRENT_SOURCE_DIR}
         aspect

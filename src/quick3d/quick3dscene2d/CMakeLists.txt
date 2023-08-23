@@ -18,8 +18,6 @@ qt_internal_add_module(3DQuickScene2D
         qt3dquickscene2d_global.cpp qt3dquickscene2d_global.h qt3dquickscene2d_global_p.h
         qt3dquickscene2d_logging.cpp qt3dquickscene2d_logging_p.h
         qt3dquickscene2dnodefactory.cpp qt3dquickscene2dnodefactory_p.h
-    DEFINES
-        QT_NO_CONTEXTLESS_CONNECT
     INCLUDE_DIRECTORIES
         items
     LIBRARIES

@@ -72,7 +72,6 @@ qt_internal_add_module(3DAnimation
         qt3danimation_global.h qt3danimation_global_p.h
     DEFINES
         QT3DANIMATION_LIBRARY
-        QT_NO_CONTEXTLESS_CONNECT
     INCLUDE_DIRECTORIES
         backend
         frontend

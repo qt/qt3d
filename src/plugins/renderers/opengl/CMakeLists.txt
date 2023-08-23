@@ -71,7 +71,7 @@ if(QT_FEATURE_private_tests)
     target_compile_definitions(OpenGLRendererLib PRIVATE
         BUILD_QT3D_MODULE
         QT_BUILDING_QT
-        QT_NO_CONTEXTLESS_CONNECT
+        QT_NO_FOREACH
     )
 
     qt_internal_extend_target(OpenGLRendererLib CONDITION NOT INTEGRITY
@@ -100,7 +100,7 @@ qt_internal_add_plugin(OpenGLRendererPlugin
     DEFINES
         BUILD_QT3D_MODULE
         QT_BUILDING_QT
-        QT_NO_CONTEXTLESS_CONNECT
+        QT_NO_FOREACH
     INCLUDE_DIRECTORIES
         graphicshelpers
         io

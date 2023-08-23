@@ -18,8 +18,6 @@ qt_internal_add_module(3DQuickAnimation
         items/quick3dvertexblendanimation.cpp items/quick3dvertexblendanimation_p.h
         qt3dquickanimation_global.cpp qt3dquickanimation_global.h qt3dquickanimation_global_p.h
         qt3dquickanimationnodefactory.cpp qt3dquickanimationnodefactory_p.h
-    DEFINES
-        QT_NO_CONTEXTLESS_CONNECT
     INCLUDE_DIRECTORIES
         items
     LIBRARIES

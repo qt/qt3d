@@ -75,7 +75,6 @@ qt_internal_add_module(3DInput
         qt3dinput_global.h qt3dinput_global_p.h
     DEFINES
         QT3DINPUT_LIBRARY
-        QT_NO_CONTEXTLESS_CONNECT
     INCLUDE_DIRECTORIES
         backend
         frontend

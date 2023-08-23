@@ -16,8 +16,6 @@ qt_internal_add_module(3DQuickExtras
         qt3dquickextrasnodefactory.cpp qt3dquickextrasnodefactory_p.h
         qt3dquickwindow.cpp qt3dquickwindow.h qt3dquickwindow_p.h
         qt3dquickwindowlogging.cpp qt3dquickwindowlogging_p.h
-    DEFINES
-        QT_NO_CONTEXTLESS_CONNECT
     INCLUDE_DIRECTORIES
         items
     LIBRARIES

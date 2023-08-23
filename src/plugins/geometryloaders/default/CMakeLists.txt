@@ -16,8 +16,6 @@ qt_internal_add_plugin(DefaultGeometryLoaderPlugin
         objgeometryloader.cpp
         plygeometryloader.cpp
         stlgeometryloader.cpp
-    DEFINES
-        QT_NO_CONTEXTLESS_CONNECT
     LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate

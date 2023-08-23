@@ -32,8 +32,6 @@ qt_internal_add_qml_module(3DQuick
         qt3dquickforeign_p.h
         qt3dquicknodefactory.cpp qt3dquicknodefactory_p.h
         qt3dquickvaluetypes.cpp qt3dquickvaluetypes_p.h
-    DEFINES
-        QT_NO_CONTEXTLESS_CONNECT
     INCLUDE_DIRECTORIES
         items
     LIBRARIES
@@ -76,8 +74,6 @@ qt_internal_extend_target(quick3dcoreplugin
     SOURCES
         ../imports/core/qt3dquick3dcoreplugin.cpp
         ../imports/core/qt3dquick3dcoreplugin.h
-    DEFINES
-        QT_NO_CONTEXTLESS_CONNECT
     LIBRARIES
         Qt::3DCore
         Qt::3DCorePrivate
