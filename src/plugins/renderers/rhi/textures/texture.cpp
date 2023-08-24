@@ -191,15 +191,12 @@ void filterLayersAndFaces(const QTextureImageData &data, F f)
             f(createUploadEntry(level, 0, data.data(0, 0, level)));
         }
     } else if (layers > 1 && faces == 1) {
-        qWarning() << Q_FUNC_INFO << "Unsupported case, see QTBUG-83343";
-        /*
         for (int layer = 0; layer < data.layers(); layer++) {
-            for (int level = 0; level < mipLevels; level++) {
+            for (int level = 0; level < miplevels; level++) {
                 f(createUploadEntry(level, layer, data.data(layer, 0, level)));
             }
         }
-        */
-    } else if (faces > 1 && layers == 1) {
+        } else if (faces > 1 && layers == 1) {
         // Mip levels do not seem to be supported by cubemaps...
         for (int face = 0; face < data.faces(); face++) {
             f(createUploadEntry(0, face, data.data(0, face, 0)));
@@ -216,8 +213,7 @@ void filterLayerAndFace(int layer, int face, F f)
     if (layer == 0 && face == 0) {
         f(0);
     } else if (layer > 0 && face == 0) {
-        qWarning() << Q_FUNC_INFO << "Unsupported case, see QTBUG-83343";
-        // f(layer);
+        f(layer);
     } else if (layer == 0 && face > 0) {
         f(face);
     } else {
@@ -630,7 +626,17 @@ QRhiTexture *RHITexture::buildRhiTexture(SubmissionContext *ctx)
     }
     }
 
-    QRhiTexture *rhiTexture = ctx->rhi()->newTexture(rhiFormat, pixelSize, sampleCount, rhiFlags);
+    QRhiTexture *rhiTexture = nullptr;
+    switch (m_properties.target) {
+    case QAbstractTexture::Target1DArray:
+    case QAbstractTexture::Target2DArray:
+        //This will setup the array flags correctly
+        rhiTexture = ctx->rhi()->newTextureArray(rhiFormat, m_properties.layers, pixelSize, sampleCount, rhiFlags);
+        break;
+    default:
+        rhiTexture = ctx->rhi()->newTexture(rhiFormat, pixelSize, sampleCount, rhiFlags);
+        break;
+    }
 
     if (!rhiTexture->create()) {
         qWarning() << Q_FUNC_INFO << "creating QRhiTexture failed";
