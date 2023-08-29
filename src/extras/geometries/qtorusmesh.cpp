@@ -84,7 +84,7 @@ namespace  Qt3DExtras {
 
 /*!
  * \class Qt3DExtras::QTorusMesh
-   \ingroup qt3d-extras-geometries
+ * \ingroup qt3d-extras-geometries
  * \inheaderfile Qt3DExtras/QTorusMesh
  * \inmodule Qt3DExtras
  *
