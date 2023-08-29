@@ -65,7 +65,7 @@ namespace Qt3DExtras {
 
 /*!
  * \class Qt3DExtras::QConeMesh
-   \ingroup qt3d-extras-geometries
+ * \ingroup qt3d-extras-geometries
  * \inheaderfile Qt3DExtras/QConeMesh
  * \inmodule Qt3DExtras
  *
