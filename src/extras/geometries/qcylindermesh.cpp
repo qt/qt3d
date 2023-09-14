@@ -26,6 +26,9 @@ namespace Qt3DExtras {
  * \instantiates Qt3DExtras::QCylinderMesh
  * \inqmlmodule Qt3D.Extras
  * \brief A cylindrical mesh.
+ *
+ * This component can be used to render a cylinder when combined with a
+ * material component.
  */
 
 /*!
@@ -61,6 +64,9 @@ namespace Qt3DExtras {
  * \inherits Qt3DRender::QGeometryRenderer
  *
  * \brief A cylindrical mesh.
+ *
+ * This component can be used to render a cylinder when combined with a
+ * material component.
  */
 
 /*!
