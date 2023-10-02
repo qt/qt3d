@@ -37,9 +37,9 @@ void AspectCommandDebugger::ReadBuffer::insert(const QByteArray &array)
 void AspectCommandDebugger::ReadBuffer::trim()
 {
     if (startIdx != endIdx && startIdx != 0) {
-        memcpy(buffer.data(),
-               buffer.constData() + startIdx,
-               size());
+        memmove(buffer.data(),
+                buffer.constData() + startIdx,
+                size());
         endIdx -= startIdx;
         startIdx = 0;
     }
