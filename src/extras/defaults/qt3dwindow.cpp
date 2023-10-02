@@ -300,9 +300,6 @@ void setupWindowSurface(QWindow *window, Qt3DRender::API api) noexcept
             format.setProfile(QSurfaceFormat::CoreProfile);
         }
 #endif
-    } else {
-        // This is used for RHI
-        format.setVersion(1, 0);
     }
 
     format.setDepthBufferSize(24);
