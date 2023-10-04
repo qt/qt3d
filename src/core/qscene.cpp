@@ -8,6 +8,7 @@
 #include <QtCore/QReadLocker>
 
 #include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DCore/qaspectengine.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -19,7 +20,8 @@ public:
     QScenePrivate(QAspectEngine *engine)
         : m_engine(engine)
         , m_arbiter(nullptr)
-        , m_postConstructorInit(new NodePostConstructorInit)
+        //m_postConstructorInit needs the parent set correctly for QObject::moveToThread() to work correctly
+        , m_postConstructorInit(new NodePostConstructorInit(engine))
         , m_rootNode(nullptr)
     {
     }
@@ -28,7 +30,7 @@ public:
     QHash<QNodeId, QNode *> m_nodeLookupTable;
     QMultiHash<QNodeId, QNodeId> m_componentToEntities;
     QChangeArbiter *m_arbiter;
-    QScopedPointer<NodePostConstructorInit> m_postConstructorInit;
+    QScopedPointer<NodePostConstructorInit, QScopedPointerDeleteLater> m_postConstructorInit;
     mutable QReadWriteLock m_lock;
     mutable QReadWriteLock m_nodePropertyTrackModeLock;
     QNode *m_rootNode;

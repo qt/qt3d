@@ -12,6 +12,7 @@
 #include <QtCore/QEvent>
 #include <QtCore/QMetaObject>
 #include <QtCore/QMetaProperty>
+#include <QtCore/QThread>
 
 #include <Qt3DCore/private/corelogging_p.h>
 #include <Qt3DCore/private/qdestructionidandtypecollector_p.h>
@@ -877,6 +878,7 @@ void NodePostConstructorInit::removeNode(QNode *node)
  */
 void NodePostConstructorInit::processNodes()
 {
+    Q_ASSERT(thread() == QThread::currentThread());
     m_requestedProcessing = false;
     while (!m_nodesToConstruct.empty()) {
         auto node = m_nodesToConstruct.takeFirst();
