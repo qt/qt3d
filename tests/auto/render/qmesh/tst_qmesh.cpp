@@ -8,6 +8,7 @@ QT_WARNING_DISABLE_DEPRECATED
 #include <QtTest/QTest>
 #include <Qt3DRender/qmesh.h>
 #include <Qt3DRender/private/qmesh_p.h>
+#include <Qt3DCore/qaspectengine.h>
 #include <QObject>
 #include <QSignalSpy>
 #include <Qt3DCore/private/qscene_p.h>
@@ -91,8 +92,8 @@ private Q_SLOTS:
         Qt3DRender::QMesh mesh;
         arbiter.setArbiterOnNode(&mesh);
 
-        Qt3DCore::QAspectEngine *engine = reinterpret_cast<Qt3DCore::QAspectEngine*>(0xdeadbeefL);
-        Qt3DCore::QScene *scene = new Qt3DCore::QScene(engine);
+        Qt3DCore::QAspectEngine engine;
+        Qt3DCore::QScene *scene = new Qt3DCore::QScene(&engine);
         Qt3DCore::QNodePrivate *meshd = Qt3DCore::QNodePrivate::get(&mesh);
         meshd->setScene(scene);
         QCoreApplication::processEvents();
@@ -128,8 +129,8 @@ private Q_SLOTS:
         Qt3DRender::QMesh mesh;
         arbiter.setArbiterOnNode(&mesh);
 
-        Qt3DCore::QAspectEngine *engine = reinterpret_cast<Qt3DCore::QAspectEngine*>(0xdeadbeefL);
-        Qt3DCore::QScene *scene = new Qt3DCore::QScene(engine);
+        Qt3DCore::QAspectEngine engine;
+        Qt3DCore::QScene *scene = new Qt3DCore::QScene(&engine);
         Qt3DCore::QNodePrivate *meshd = Qt3DCore::QNodePrivate::get(&mesh);
         meshd->setScene(scene);
         QCoreApplication::processEvents();

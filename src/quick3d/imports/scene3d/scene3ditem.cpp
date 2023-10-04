@@ -769,6 +769,7 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
             // Needs to belong in the same thread as the item which is the same as
             // the original QAspectEngine
             m_aspectEngineDestroyer->moveToThread(thread());
+            m_aspectEngine->moveToThread(thread());
 
             // To destroy AspectEngine
             m_aspectEngineDestroyer->reset(2);
