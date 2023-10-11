@@ -123,6 +123,7 @@ private:
     bool m_shouldRender;
     bool m_dirtyViews;
     bool m_skipFrame;
+    bool m_skippedLastFrame;
     QSemaphore m_allowRendering;
     Scene3DItem::CompositingMode m_compositingMode;
     QVector<Scene3DView *> m_views;

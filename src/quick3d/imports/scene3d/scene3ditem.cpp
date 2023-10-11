@@ -200,6 +200,9 @@ private:
     expression that depends on property updates driven by the Qt 3D simulation
     loop (FrameAction) will never reavaluates.
  */
+
+qint8 Scene3DItem::ms_framesNeededToFlushPipeline = 3;
+
 Scene3DItem::Scene3DItem(QQuickItem *parent)
     : QQuickItem(parent)
     , m_entity(nullptr)
@@ -230,6 +233,11 @@ Scene3DItem::Scene3DItem(QQuickItem *parent)
     // we still won't get ignored by the QtQuick SG when in Underlay mode
     setWidth(1);
     setHeight(1);
+
+    const QByteArray framesToFlushCountEnvVar = qgetenv("QT3D_SCENE3D_FRAMES_FLUSH_COUNT");
+    if (!framesToFlushCountEnvVar.isEmpty()) {
+        ms_framesNeededToFlushPipeline = framesToFlushCountEnvVar.toInt();
+    }
 }
 
 Scene3DItem::~Scene3DItem()

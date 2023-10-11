@@ -481,6 +481,10 @@ bool SubmissionContext::beginDrawing(QSurface *surface)
     }
 
     m_boundArrayBuffer = nullptr;
+
+    // Record the default FBO value as there's no guarantee it remains constant over time
+    m_defaultFBO = m_gl->defaultFramebufferObject();
+
     return true;
 }
 
@@ -1225,6 +1229,10 @@ bool SubmissionContext::setParameters(ShaderParameterPack &parameterPack, GLShad
             }
         }
     }
+
+    // Set the pinned images of the previous material
+    // to pinable so that we should easily find an available image unit
+    m_imageContext.deactivateImages();
 
     // Fill Image Uniform Value with proper image units
     // so that they can be applied as regular uniforms in a second step
