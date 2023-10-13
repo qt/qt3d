@@ -17,6 +17,8 @@
 #endif
 #include <private/qqmlobjectmodel_p.h>
 
+#include <QtCore/qpointer.h>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {

@@ -6,6 +6,8 @@
 #include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/qaspectjobmanager_p.h>
 
+#include <QtCore/qpointer.h>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
