@@ -27,6 +27,7 @@ qt_internal_add_plugin(AssimpSceneImportPlugin
         Qt::Core
         Qt::CorePrivate
         Qt::Gui
+    NO_UNITY_BUILD
 )
 
 #### Keys ignored in scope 1:.:.:assimp.pro:<TRUE>:
