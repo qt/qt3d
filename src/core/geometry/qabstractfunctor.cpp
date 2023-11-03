@@ -26,7 +26,7 @@ namespace Qt3DCore {
     Returns a pointer to the id of the functor.
  */
 /*!
-   \fn qintptr Qt3DCore::functorTypeId()
+   \fn template <class T> qintptr Qt3DCore::functorTypeId()
 
    Returns a pointer to the type id of the functor.
 */

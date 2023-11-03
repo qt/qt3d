@@ -65,7 +65,7 @@ void QAbstractAspectPrivate::unregisterBackendType(const QMetaObject &mo)
  */
 
 /*!
- * \fn void Qt3DCore::QAbstractAspect::registerBackendType(const Qt3DCore::QBackendNodeMapperPtr &functor)
+ * \fn template <class Frontend> void Qt3DCore::QAbstractAspect::registerBackendType(const Qt3DCore::QBackendNodeMapperPtr &functor)
  * Registers backend with \a functor.
  */
 
