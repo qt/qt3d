@@ -74,9 +74,8 @@ public:
     // Block.Property nameId, property nameId, PropertyValue *
     using PropertyValuesForBlock = std::vector<std::tuple<int, int, const PropertyValue *>>;
 
-    bool hasPropertyValuesForBlock(int blockNameId) const;
     const PropertyValuesForBlock &propertyValuesForBlock(int blockNameId) const;
-    void generatePropertyValuesForBlock(const QString &blockName);
+    void generatePropertyValuesForBlockIfNeeded(const QString &blockName);
 
 protected:
     PropertyReaderInterfacePtr m_propertyReader;
