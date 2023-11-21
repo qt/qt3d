@@ -97,8 +97,7 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapStructHelper(Shader
 
     // Retrieve set of {NameId -> PropertyValue} for Block
     const int fullBlockNameId = StringToInt::lookupId(fullBlockName);
-    if (!rShaderData->hasPropertyValuesForBlock(fullBlockNameId))
-        rShaderData->generatePropertyValuesForBlock(fullBlockName);
+    rShaderData->generatePropertyValuesForBlockIfNeeded(fullBlockName);
     const ShaderData::PropertyValuesForBlock &propertiesForBlock = rShaderData->propertyValuesForBlock(fullBlockNameId);
 
     for (const auto &nameIdPropertyPair : propertiesForBlock) {

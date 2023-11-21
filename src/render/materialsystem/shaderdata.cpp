@@ -122,20 +122,22 @@ void ShaderData::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
     }
 }
 
-bool ShaderData::hasPropertyValuesForBlock(int blockName) const
-{
-    std::shared_lock readLocker(m_lock);
-    return m_blockNameToPropertyValues.find(blockName) != m_blockNameToPropertyValues.cend();
-}
-
 const ShaderData::PropertyValuesForBlock &ShaderData::propertyValuesForBlock(int blockName) const
 {
     std::shared_lock readLocker(m_lock);
     return m_blockNameToPropertyValues.at(blockName);
 }
 
-void ShaderData::generatePropertyValuesForBlock(const QString &fullBlockName)
+void ShaderData::generatePropertyValuesForBlockIfNeeded(const QString &fullBlockName)
 {
+    const int fullBlockNameId = StringToInt::lookupId(fullBlockName);
+
+    std::unique_lock readWriteLocker(m_lock);
+    const bool hasPropertyValuesForBlock = m_blockNameToPropertyValues.find(fullBlockNameId) != m_blockNameToPropertyValues.cend();
+    if (hasPropertyValuesForBlock) {
+        return;
+    }
+
     const QHash<QString, ShaderData::PropertyValue> &props = properties();
 
     ShaderData::PropertyValuesForBlock valueBlock;
@@ -162,7 +164,6 @@ void ShaderData::generatePropertyValuesForBlock(const QString &fullBlockName)
         ++it;
     }
 
-    std::unique_lock writeLocker(m_lock);
     m_blockNameToPropertyValues[StringToInt::lookupId(fullBlockName)] = std::move(valueBlock);
 }
 
