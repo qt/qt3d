@@ -243,7 +243,7 @@ std::vector<QRhiShaderResourceBinding> PipelineUBOSet::resourceBindings(const Re
 {
     RHITextureManager *textureManager = m_resourceManagers->rhiTextureManager();
     RHIShader *shader = command.m_rhiShader;
-    const QRhiShaderResourceBinding::StageFlags stages = QRhiShaderResourceBinding::VertexStage|QRhiShaderResourceBinding::FragmentStage;
+    const QRhiShaderResourceBinding::StageFlags stages = QRhiShaderResourceBinding::ComputeStage|QRhiShaderResourceBinding::VertexStage|QRhiShaderResourceBinding::FragmentStage;
     std::vector<QRhiShaderResourceBinding> bindings = {
         QRhiShaderResourceBinding::uniformBuffer(0, stages, m_rvUBO.buffer->rhiBuffer()),
     };
@@ -323,9 +323,10 @@ std::vector<QRhiShaderResourceBinding> PipelineUBOSet::resourceBindings(const Re
     for (const BlockToSSBO &ssbo : command.m_parameterPack.shaderStorageBuffers()) {
         RHIBuffer *buffer = m_resourceManagers->rhiBufferManager()->lookupResource(ssbo.m_bufferID);
         if (buffer) {
+            Q_ASSERT(stages & QRhiShaderResourceBinding::ComputeStage);
             bindings.push_back(QRhiShaderResourceBinding::bufferLoadStore(
                                    ssbo.m_bindingIndex,
-                                   stages|QRhiShaderResourceBinding::ComputeStage,
+                                   stages,
                                    buffer->rhiBuffer()));
         }
     }
