@@ -4,8 +4,10 @@
 #pragma include light.inc.frag
 
 void adsModel(const in FP vec3 vpos, const in FP vec3 vnormal, const in FP vec3 vview, const in FP float shininess,
+              out FP vec3 ambientColor,
               out FP vec3 diffuseColor, out FP vec3 specularColor)
 {
+    ambientColor = vec3(0.0);
     diffuseColor = vec3(0.0);
     specularColor = vec3(0.0);
 
@@ -58,6 +60,7 @@ void adsModel(const in FP vec3 vpos, const in FP vec3 vnormal, const in FP vec3 
             specular = normFactor * pow( max( dot( r, vview ), 0.0 ), shininess );
         }
 
+        ambientColor += att * light.intensity * 1.0 * light.color;
         diffuseColor += att * light.intensity * diffuse * light.color;
         specularColor += att * light.intensity * specular * light.color;
     }
@@ -72,11 +75,12 @@ FP vec4 phongFunction(const in FP vec4 ambient,
                       const in FP vec3 worldNormal)
 {
     // Calculate the lighting model, keeping the specular component separate
-    FP vec3 diffuseColor, specularColor;
-    adsModel(worldPosition, worldNormal, worldView, shininess, diffuseColor, specularColor);
+    FP vec3 ambientColor, diffuseColor, specularColor;
+    adsModel(worldPosition, worldNormal, worldView, shininess, ambientColor, diffuseColor, specularColor);
 
-    // Combine spec with ambient+diffuse for final fragment color
-    FP vec3 color = (ambient.rgb + diffuseColor) * diffuse.rgb
+    // Combine ambient, diffuse and specular components for final fragment color
+    FP vec3 color = ambientColor * ambient.rgb
+                  + diffuseColor * diffuse.rgb
                   + specularColor * specular.rgb;
 
     return vec4(color, diffuse.a);
