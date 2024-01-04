@@ -626,6 +626,9 @@ QRhiTexture *RHITexture::buildRhiTexture(SubmissionContext *ctx)
     }
     }
 
+    if(actualTarget == QAbstractTexture::Target3D)
+        rhiFlags |= QRhiTexture::ThreeDimensional;
+
     QRhiTexture *rhiTexture = nullptr;
     switch (m_properties.target) {
     case QAbstractTexture::Target1DArray:
