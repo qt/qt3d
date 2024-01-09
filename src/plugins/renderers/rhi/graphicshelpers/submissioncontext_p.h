@@ -174,7 +174,6 @@ private:
     bool m_initialized;
     bool m_ownsRhiCtx;
     bool m_drivenExternally;
-    const unsigned int m_id;
 
     QHash<Qt3DCore::QNodeId, HRHIBuffer> m_renderBufferHash;
 
