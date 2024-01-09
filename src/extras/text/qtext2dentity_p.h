@@ -62,6 +62,7 @@ public:
     QString m_text;
     float m_width;
     float m_height;
+    Qt::Alignment m_alignment;
 
     QList<DistanceFieldTextRenderer*> m_renderers;
 

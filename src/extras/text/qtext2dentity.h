@@ -24,6 +24,7 @@ class Q_3DEXTRASSHARED_EXPORT QText2DEntity : public Qt3DCore::QEntity
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(float width READ width WRITE setWidth NOTIFY widthChanged)
     Q_PROPERTY(float height READ height WRITE setHeight NOTIFY heightChanged)
+    Q_PROPERTY(Qt::Alignment alignment READ alignment WRITE setAlignment)
 
 public:
     explicit QText2DEntity(Qt3DCore::QNode *parent = nullptr);
@@ -43,6 +44,9 @@ public:
 
     void setWidth(float width);
     void setHeight(float height);
+
+    Qt::Alignment alignment() const;
+    void setAlignment(Qt::Alignment alignment);
 
 Q_SIGNALS:
     void fontChanged(const QFont &font);
