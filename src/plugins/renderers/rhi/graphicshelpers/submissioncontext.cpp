@@ -426,6 +426,13 @@ void applyStateHelper(const StencilMask *state, QRhiGraphicsPipeline *gp) noexce
     gp->setStencilReadMask(std::get<1>(values));
 }
 
+void applyStateHelper(const LineWidth *state, QRhiGraphicsPipeline *gp) noexcept
+{
+    const auto values = state->values();
+    gp->setLineWidth(std::get<0>(values));
+    // no GL_LINE_SMOOTH equivalent on RHI
+}
+
 static QShader::Stage rhiShaderStage(QShaderProgram::ShaderType type) noexcept
 {
     switch (type) {
