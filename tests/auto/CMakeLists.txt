@@ -7,6 +7,7 @@ if(NOT QT_FEATURE_qt3d_extras)
     return()
 endif()
 
+add_subdirectory(cmake)
 add_subdirectory(core)
 add_subdirectory(global)
 
