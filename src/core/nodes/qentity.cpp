@@ -139,7 +139,7 @@ QEntity::QEntity(QEntityPrivate &dd, QNode *parent)
 QEntity::~QEntity()
 {
     // remove all component aggregations
-    Q_D(const QEntity);
+    Q_D(QEntity);
     // to avoid hammering m_components by repeated removeComponent()
     // calls below, move all contents out, so the removeOne() calls in
     // removeComponent() don't actually remove something:
