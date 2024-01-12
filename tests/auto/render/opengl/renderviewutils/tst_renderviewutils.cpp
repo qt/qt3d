@@ -811,8 +811,8 @@ void tst_RenderViewUtils::transformedProperties()
 
     // THEN
     QCOMPARE(position0Value, positionQt);
-    QCOMPARE(position1Value, viewMatrix * worldMatrix * position);
-    QCOMPARE(position2Value, worldMatrix * position);
+    QCOMPARE(position1Value, (viewMatrix * worldMatrix).map(position));
+    QCOMPARE(position2Value, worldMatrix.map(position));
     QCOMPARE(position3Value, Vector3D((worldMatrix * Vector4D(position, 0.0f))));
 }
 

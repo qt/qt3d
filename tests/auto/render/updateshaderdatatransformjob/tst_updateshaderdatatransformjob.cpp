@@ -197,7 +197,7 @@ private Q_SLOTS:
         // See scene file to find translation
         const Qt3DRender::Render::ShaderData::PropertyValue propertyValue = props[QStringLiteral("eyePosition")];
         QCOMPARE(backendShaderData->getTransformedProperty(&propertyValue, Matrix4x4(camera->viewMatrix())).value<Vector3D>(),
-                 Matrix4x4(camera->viewMatrix()) * (Vector3D(1.0f, 1.0f, 1.0f) + Vector3D(0.0f, 5.0f, 0.0f)));
+                 Matrix4x4(camera->viewMatrix()).map(Vector3D(1.0f, 1.0f, 1.0f) + Vector3D(0.0f, 5.0f, 0.0f)));
     }
 
     void checkRunModelToWorld()
