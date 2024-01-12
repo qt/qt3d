@@ -36,6 +36,8 @@ public:
     void cleanup();
 
     Matrix4x4 transformMatrix() const;
+    bool hasViewMatrix() const { return m_hasViewMatrix; }
+    const Matrix4x4& viewMatrix() const { return m_viewMatrix; }
     QVector3D scale() const;
     QQuaternion rotation() const;
     QVector3D translation() const;
@@ -44,6 +46,8 @@ public:
 
 private:
     void updateMatrix();
+    bool m_hasViewMatrix;
+    Matrix4x4 m_viewMatrix;
     Matrix4x4 m_transformMatrix;
     QQuaternion m_rotation;
     QVector3D m_scale;
