@@ -28,7 +28,7 @@ struct TransformUpdate
     QMatrix4x4 worldTransformMatrix;
 };
 
-void updateWorldTransformAndBounds(NodeManagers *manager, Entity *node, const Matrix4x4 &parentTransform, QList<TransformUpdate> &updatedTransforms)
+void updateWorldTransformAndBounds(NodeManagers *manager, Entity *node, const Matrix4x4 &parentTransform, bool hasParentTransform, QList<TransformUpdate> &updatedTransforms)
 {
     if (!node->isEnabled())
         return;
@@ -45,12 +45,13 @@ void updateWorldTransformAndBounds(NodeManagers *manager, Entity *node, const Ma
         if (hasTransformComponent)
             updatedTransforms.push_back({nodeTransform->peerId(), convertToQMatrix4x4(worldTransform)});
     }
+    node->setParentLessTransform(!hasParentTransform);
 
     const auto &childrenHandles = node->childrenHandles();
     for (const HEntity &handle : childrenHandles) {
         Entity *child = manager->renderNodesManager()->data(handle);
         if (child)
-            updateWorldTransformAndBounds(manager, child, worldTransform, updatedTransforms);
+            updateWorldTransformAndBounds(manager, child, worldTransform, hasParentTransform || hasTransformComponent, updatedTransforms);
     }
 }
 
@@ -101,7 +102,7 @@ void UpdateWorldTransformJob::run()
     Entity *parent = m_node->parent();
     if (parent != nullptr)
         parentTransform = *(parent->worldTransform());
-    updateWorldTransformAndBounds(m_manager, m_node, parentTransform, d->m_updatedTransforms);
+    updateWorldTransformAndBounds(m_manager, m_node, parentTransform, false, d->m_updatedTransforms);
 
     qCDebug(Jobs) << "Exiting" << Q_FUNC_INFO << QThread::currentThread();
 }

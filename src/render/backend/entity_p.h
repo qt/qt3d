@@ -73,6 +73,8 @@ public:
 
     Matrix4x4 *worldTransform();
     const Matrix4x4 *worldTransform() const;
+    bool isParentLessTransform() const { return m_parentLessTransform; }
+    void setParentLessTransform(bool v) { m_parentLessTransform = v; }
     Sphere *localBoundingVolume() const { return m_localBoundingVolume.data(); }
     Sphere *worldBoundingVolume() const { return m_worldBoundingVolume.data(); }
     Sphere *worldBoundingVolumeWithChildren() const { return m_worldBoundingVolumeWithChildren.data(); }
@@ -151,6 +153,7 @@ private:
     QList<HEntity> m_childrenHandles;
 
     HMatrix m_worldTransform;
+    bool m_parentLessTransform;
     QSharedPointer<Sphere> m_localBoundingVolume;
     QSharedPointer<Sphere> m_worldBoundingVolume;
     QSharedPointer<Sphere> m_worldBoundingVolumeWithChildren;

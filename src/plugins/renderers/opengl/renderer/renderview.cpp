@@ -1077,8 +1077,16 @@ void RenderView::updateRenderCommand(const EntityRenderCommandDataSubView &subVi
 void RenderView::updateMatrices()
 {
     if (m_renderCameraNode && m_renderCameraLens && m_renderCameraLens->isEnabled()) {
-        const Matrix4x4 cameraWorld = *(m_renderCameraNode->worldTransform());
-        setViewMatrix(m_renderCameraLens->viewMatrix(cameraWorld));
+        auto transform = m_renderCameraNode->renderComponent<Transform>();
+        if (m_renderCameraNode->isParentLessTransform() && transform && transform->hasViewMatrix()) {
+            // optimization: if the entity is a QCamera and it doesn't have a parent with a transform component,
+            // then we use the frontend version of the viewMatrix to avoid extra calculations that may introduce
+            // rounding errors
+            setViewMatrix(transform->viewMatrix());
+        } else {
+            const Matrix4x4 cameraWorld = *(m_renderCameraNode->worldTransform());
+            setViewMatrix(m_renderCameraLens->viewMatrix(cameraWorld));
+        }
 
         setViewProjectionMatrix(m_renderCameraLens->projection() * viewMatrix());
         //To get the eyePosition of the camera, we need to use the inverse of the
