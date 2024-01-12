@@ -6,6 +6,7 @@
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/private/qtransform_p.h>
+#include <Qt3DRender/qcamera.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -65,6 +66,13 @@ void Transform::syncFromFrontEnd(const QNode *frontEnd, bool firstTime)
     m_translation = transform->translation();
 
     if (dirty || firstTime) {
+        auto camera = qobject_cast<const Qt3DRender::QCamera *>(transform->parentNode());
+        if (camera) {
+            m_viewMatrix = Matrix4x4(camera->viewMatrix());
+            m_hasViewMatrix = true;
+        } else {
+            m_hasViewMatrix = false;
+        }
         updateMatrix();
         markDirty(AbstractRenderer::TransformDirty);
     }

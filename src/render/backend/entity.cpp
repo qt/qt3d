@@ -67,6 +67,7 @@ void EntityPrivate::componentRemoved(Qt3DCore::QNode *frontend)
 Entity::Entity()
     : BackendNode(*new EntityPrivate)
     , m_nodeManagers(nullptr)
+    , m_parentLessTransform(true)
     , m_boundingDirty(false)
     , m_treeEnabled(true)
 {
