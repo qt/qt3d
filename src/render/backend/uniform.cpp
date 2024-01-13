@@ -193,7 +193,7 @@ UniformValue UniformValue::fromVariant(const QVariant &variant)
     }
     case QMetaType::QVariantList: {
         const QVariantList variants = variant.toList();
-        if (variants.size() < 1)
+        if (variants.empty())
             break;
 
         const int listEntryType = variants.first().userType();

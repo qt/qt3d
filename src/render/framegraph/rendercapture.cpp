@@ -30,7 +30,7 @@ void RenderCapture::requestCapture(const QRenderCaptureRequest &request)
 bool RenderCapture::wasCaptureRequested() const
 {
     QMutexLocker lock(&m_mutex);
-    return m_requestedCaptures.size() > 0 && isEnabled();
+    return !m_requestedCaptures.empty() && isEnabled();
 }
 
 // called by render view initializer job
@@ -50,7 +50,7 @@ void RenderCapture::syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool first
 
     const QRenderCapturePrivate *d = static_cast<const QRenderCapturePrivate *>(QFrameGraphNodePrivate::get(node));
     const auto newPendingsCaptures = Qt3DCore::moveAndClear(d->m_pendingRequests);
-    if (newPendingsCaptures.size() > 0) {
+    if (!newPendingsCaptures.empty()) {
         m_requestedCaptures.append(newPendingsCaptures);
         markDirty(AbstractRenderer::FrameGraphDirty);
     }

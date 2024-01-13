@@ -1383,7 +1383,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, ParameterInfoList 
     // only update values of uniforms that have changed
     // If parameters add been added/removed, the command would have been rebuild
     // and the parameter pack would be empty
-    const bool updateUniformsOnly = command->m_parameterPack.submissionUniformIndices().size() > 0;
+    const bool updateUniformsOnly = !command->m_parameterPack.submissionUniformIndices().empty();
 
     if (!updateUniformsOnly) {
         // Builds the QUniformPack, sets shader standard uniforms and store attributes name / glname

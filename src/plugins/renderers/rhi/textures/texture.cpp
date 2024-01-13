@@ -725,7 +725,7 @@ void RHITexture::uploadRhiTextureData(SubmissionContext *ctx)
         });
     }
 
-    if (uploadEntries.size() > 0) {
+    if (!uploadEntries.empty()) {
         QRhiTextureUploadDescription uploadDescription;
         uploadDescription.setEntries(uploadEntries.begin(), uploadEntries.end());
         ctx->m_currentUpdates->uploadTexture(m_rhi, uploadDescription);

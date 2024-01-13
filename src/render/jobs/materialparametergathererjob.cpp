@@ -77,7 +77,7 @@ void MaterialParameterGathererJob::run()
 
         if (Q_LIKELY(technique != nullptr)) {
             RenderPassList passes = findRenderPassesForTechnique(m_manager, m_renderPassFilter, technique);
-            if (Q_LIKELY(passes.size() > 0)) {
+            if (Q_LIKELY(!passes.empty())) {
                 // Order set:
                 // 1 Pass Filter
                 // 2 Technique Filter

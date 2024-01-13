@@ -764,8 +764,8 @@ bool HierarchicalEntityPicker::collectHits(NodeManagers *manager, Entity *root)
 
     // Note: PickBoundingVolumeJob filters against LayerFilter nodes (FG) whereas
     // the RayCastingJob filters only against a set of Layers and a filter Mode
-    const bool hasLayerFilters = m_layerFilterIds.size() > 0;
-    const bool hasLayers = m_layerIds.size() > 0;
+    const bool hasLayerFilters = !m_layerFilterIds.empty();
+    const bool hasLayers = !m_layerIds.empty();
     const bool hasLayerFiltering = hasLayerFilters || hasLayers;
     std::vector<Entity *> layerFilterEntities;
     FilterLayerEntityJob layerFilterJob;
@@ -774,7 +774,7 @@ bool HierarchicalEntityPicker::collectHits(NodeManagers *manager, Entity *root)
     if (hasLayerFilters) {
         // Note: we expect UpdateEntityLayersJob was called beforehand to handle layer recursivness
         // Filtering against LayerFilters (PickBoundingVolumeJob)
-        if (m_layerFilterIds.size()) {
+        if (!m_layerFilterIds.empty()) {
             layerFilterJob.setLayerFilters(m_layerFilterIds);
             layerFilterJob.run();
             layerFilterEntities = layerFilterJob.filteredEntities();

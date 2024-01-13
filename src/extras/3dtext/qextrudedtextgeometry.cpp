@@ -47,7 +47,7 @@ TriangulationData triangulate(const QString &text, const QFont &font)
     QList<QPolygonF> polygons = path.toSubpathPolygons(QTransform().scale(1., -1.));
 
     // maybe glyph has no geometry
-    if (polygons.size() == 0)
+    if (polygons.empty())
         return result;
 
     const size_t prevNumIndices = result.indices.size();

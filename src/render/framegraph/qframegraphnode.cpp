@@ -34,7 +34,7 @@ QString dumpNodeFilters(const Qt3DRender::QFrameGraphNode *n, const QList<Qt3DRe
     QStringList kv;
     for (auto filter: filters)
         kv.push_back(QString(QLatin1String("%1: %2")).arg(filter->name(), filter->value().toString()));
-    if (kv.size())
+    if (!kv.empty())
         res += QString(QLatin1String(" <%1>")).arg(kv.join(QLatin1String(", ")));
 
     return res;
@@ -120,7 +120,7 @@ void dumpFGPaths(const Qt3DRender::QFrameGraphNode *n, QStringList &result)
             parents.prepend(dumpNode(fgNode));
             fgNode = fgNode->parentFrameGraphNode();
         }
-        if (parents.size()) {
+        if (!parents.empty()) {
             result << QString(QLatin1String("%1 [ %2 ]")).arg(QString::number(rv), parents.join(QLatin1String(", ")));
             ++rv;
         }
@@ -154,7 +154,7 @@ void dumpFGFilterState(const Qt3DRender::QFrameGraphNode *n, QStringList &result
             fgNode = fgNode->parentFrameGraphNode();
         }
         if (parents) {
-            if (filters.size())
+            if (!filters.empty())
                 result << QString(QLatin1String("%1 [ %2 ]")).arg(QString::number(rv), filters.join(QLatin1String(", ")));
             else
                 result << QString(QObject::tr("%1 [ No Filters ]")).arg(rv);

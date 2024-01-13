@@ -512,13 +512,13 @@ void QAspectManager::processFrame()
 
         // Sync node / subnode relationship changes
         const auto dirtySubNodes = m_changeArbiter->takeDirtyEntityComponentNodes();
-        if (dirtySubNodes.size())
+        if (!dirtySubNodes.empty())
             for (QAbstractAspect *aspect : std::as_const(m_aspects))
                 QAbstractAspectPrivate::get(aspect)->syncDirtyEntityComponentNodes(dirtySubNodes);
 
         // Sync property updates
         const auto dirtyFrontEndNodes = m_changeArbiter->takeDirtyFrontEndNodes();
-        if (dirtyFrontEndNodes.size())
+        if (!dirtyFrontEndNodes.empty())
             for (QAbstractAspect *aspect : std::as_const(m_aspects))
                 QAbstractAspectPrivate::get(aspect)->syncDirtyFrontEndNodes(dirtyFrontEndNodes);
     }

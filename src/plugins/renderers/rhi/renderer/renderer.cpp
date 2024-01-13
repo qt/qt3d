@@ -1653,7 +1653,7 @@ bool Renderer::prepareGeometryInputBindings(const Geometry *geometry, const RHIS
                                             QHash<int, int> &attributeNameToBinding)
 {
     // shader requires no attributes
-    if (shader->attributes().size() == 0)
+    if (shader->attributes().empty())
         return true;
 
     // QRhiVertexInputBinding -> specifies the stride of an attribute,
@@ -2230,7 +2230,7 @@ void Renderer::jobsDone(Qt3DCore::QAspectManager *manager)
     }
 
     // Do we need to notify any texture about property changes?
-    if (m_updatedTextureProperties.size() > 0)
+    if (!m_updatedTextureProperties.empty())
         sendTextureChangesToFrontend(manager);
 
     sendDisablesToFrontend(manager);
