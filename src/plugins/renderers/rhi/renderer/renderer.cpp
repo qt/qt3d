@@ -2759,6 +2759,7 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
             if (supportsCompute) {
                 if (!inCompute) {
                     cb->beginComputePass(m_submissionContext->m_currentUpdates);
+                    m_submissionContext->m_currentUpdates = nullptr;
                     inCompute = true;
                 }
                 executeComputeRenderView(rv);
@@ -2780,6 +2781,7 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
                     continue;
                 }
                 cb->beginPass(rhiRenderTarget, clearColor, clearDepthStencil, m_submissionContext->m_currentUpdates);
+                m_submissionContext->m_currentUpdates = nullptr;
                 inDraw = true;
             }
 
@@ -2845,7 +2847,13 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
     else if (inCompute)
         cb->endComputePass();
 
-    m_submissionContext->m_currentUpdates = m_submissionContext->rhi()->nextResourceUpdateBatch();
+    if (!renderViews.empty()) {
+        Q_ASSERT(m_submissionContext->m_currentUpdates == nullptr); // ensures that we are not leaking a batch
+        m_submissionContext->m_currentUpdates = m_submissionContext->rhi()->nextResourceUpdateBatch();
+    }
+    else {
+        // Keep the m_submissionContext->m_currentUpdates
+    }
 
     return allCommandsIssued;
 }
