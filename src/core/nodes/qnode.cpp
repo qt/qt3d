@@ -849,7 +849,10 @@ void NodePostConstructorInit::addNode(QNode *node)
     while (nextNode != nullptr && !m_nodesToConstruct.contains(QNodePrivate::get(nextNode)))
         nextNode = nextNode->parentNode();
 
-    if (!nextNode) {
+    // An ancestor in the m_nodesToConstruct may already have been created (m_hasBackendNode)
+    // at this point (e.g. when a QComponent calls _q_ensureBackendNodeCreated()),
+    // that's why we also queue a creation request in this case.
+    if (!nextNode || QNodePrivate::get(nextNode)->m_hasBackendNode) {
         m_nodesToConstruct.append(QNodePrivate::get(node));
         if (!m_requestedProcessing){
             QMetaObject::invokeMethod(this, "processNodes", Qt::QueuedConnection);
