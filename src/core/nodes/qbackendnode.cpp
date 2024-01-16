@@ -156,7 +156,7 @@ QBackendNode::Mode QBackendNode::mode() const noexcept
  * \param frontEnd
  * \param firstTime
  *
- * This is called by the aspect when a \a frontEnd node needs to synchronize it's changes
+ * This is called by the aspect when a \a frontEnd node needs to synchronize its changes
  * with the backend (normally due to property changes).
  *
  * \a firstTime will be true if the backend node was just created
