@@ -52,8 +52,8 @@ public:
     bool isLoaded() const { return m_isLoaded; }
     void setLoaded(bool loaded) { m_isLoaded = loaded; }
 
-    void setFragOutputs(const QHash<QString, int> &fragOutputs);
-    const QHash<QString, int> fragOutputs() const;
+    void setFragOutputs(QHash<QString, int> fragOutputs);
+    const QHash<QString, int> &fragOutputs() const;
 
     inline const std::vector<int> &uniformsNamesIds() const { return m_uniformsNamesIds; }
     inline const std::vector<int> &standardUniformNameIds() const { return m_standardUniformNamesIds; }
@@ -94,7 +94,7 @@ public:
     bool hasUniform(int nameId) const noexcept;
     bool hasActiveVariables() const noexcept;
 
-    void setShaderCode(const std::vector<QByteArray> &shaderCode);
+    void setShaderCode(std::vector<QByteArray> shaderCode);
     const std::vector<QByteArray> &shaderCode() const;
 
     const QShader &shaderStage(QShader::Stage stage) const noexcept { return m_stages[stage]; }
@@ -146,12 +146,11 @@ private:
 
     // Private so that only SubmissionContext can call it
     friend class SubmissionContext;
-    void initializeAttributes(const std::vector<ShaderAttribute> &attributesDescription);
-    void initializeUniformBlocks(const std::vector<ShaderUniformBlock> &uniformBlockDescription);
-    void
-    initializeShaderStorageBlocks(const std::vector<ShaderStorageBlock> &shaderStorageBlockDescription);
-    void initializeSamplers(const std::vector<ShaderAttribute> &samplerDescription);
-    void initializeImages(const std::vector<ShaderAttribute> &imageDescription);
+    void initializeAttributes(std::vector<Qt3DRender::Render::Rhi::ShaderAttribute> attributesDescription);
+    void initializeUniformBlocks(std::vector<ShaderUniformBlock> uniformBlockDescription);
+    void initializeShaderStorageBlocks(std::vector<ShaderStorageBlock> shaderStorageBlockDescription);
+    void initializeSamplers(std::vector<ShaderAttribute> samplerDescription);
+    void initializeImages(std::vector<ShaderAttribute> imageDescription);
     void recordAllUniforms(UBO_Member &uboMember, QString parentName);
 
     std::vector<UBO_Block> m_uboBlocks;

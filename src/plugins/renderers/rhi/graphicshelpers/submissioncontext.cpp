@@ -1517,12 +1517,14 @@ void SubmissionContext::loadShader(Shader *shaderNode, ShaderManager *shaderMana
     const std::vector<Qt3DCore::QNodeId> &sharedShaderIds =
             rhiShaderManager->shaderIdsForProgram(rhiShader);
     if (sharedShaderIds.size() == 1) {
-        // Shader in the cache hasn't been loaded yet
-        // We want a copy of the QByteArray as preprocessRHIShader will
-        // modify them
-        std::vector<QByteArray> shaderCodes = shaderNode->shaderCode();
-        preprocessRHIShader(shaderCodes);
-        rhiShader->setShaderCode(shaderCodes);
+        {
+            // Shader in the cache hasn't been loaded yet
+            // We want a copy of the QByteArray as preprocessRHIShader will
+            // modify them
+            std::vector<QByteArray> shaderCodes = shaderNode->shaderCode();
+            preprocessRHIShader(shaderCodes);
+            rhiShader->setShaderCode(std::move(shaderCodes));
+        }
 
         const ShaderCreationInfo loadResult = createShaderProgram(rhiShader);
         shaderNode->setStatus(loadResult.linkSucceeded ? QShaderProgram::Ready
