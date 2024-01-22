@@ -21,6 +21,9 @@
                 "headerSnippets": [
                     "attribute highp $type $name;"
                 ],
+                "headerSnippetsFrag": [
+                    "varying highp $type $name;"
+                ],
                 "substitution": "highp $type $value = $name;"
             },
             {

@@ -79,7 +79,7 @@ private Q_SLOTS:
         job1->removeDependency(job2);
 
         // THEN
-        QCOMPARE(job1->dependencies().size(), 1);
+        QCOMPARE(job1->dependencies().size(), 1U);
         QCOMPARE(job1->dependencies().at(0).lock(), job3);
     }
 
@@ -98,7 +98,7 @@ private Q_SLOTS:
         job1->removeDependency(QWeakPointer<QAspectJob>());
 
         // THEN
-        QCOMPARE(job1->dependencies().size(), 1);
+        QCOMPARE(job1->dependencies().size(), 1U);
         QCOMPARE(job1->dependencies().at(0).lock(), job3);
     }
 };

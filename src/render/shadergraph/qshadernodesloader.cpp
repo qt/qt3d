@@ -280,7 +280,13 @@ void QShaderNodesLoader::load(const QJsonObject &prototypesObject)
 
                 const QByteArray substitution = substitutionValue.toString().toUtf8();
 
-                const QJsonValue snippetsValue = ruleObject.value(QStringLiteral("headerSnippets"));
+                // WA for QTBUG-99019
+                const auto wIt = (format.shaderType() == QShaderFormat::Fragment)
+                                 ? ruleObject.constFind(QStringLiteral("headerSnippetsFrag"))
+                                 : ruleObject.constEnd();
+                const QJsonValue snippetsValue = (wIt != ruleObject.constEnd())
+                                                 ? *wIt
+                                                 : ruleObject.value(QStringLiteral("headerSnippets"));
                 const QJsonArray snippetsArray = snippetsValue.toArray();
                 auto snippets = QByteArrayList();
                 std::transform(snippetsArray.constBegin(), snippetsArray.constEnd(),
