@@ -39,7 +39,7 @@ public:
     float valueForTime(float time) const;
     float parameterForTime(float time) const;
 
-    static int findCubicRoots(const float coefficients[], float roots[3]);
+    static int findCubicRoots(const float coefficients[4], float roots[3]);
 
 private:
     float m_time0;
