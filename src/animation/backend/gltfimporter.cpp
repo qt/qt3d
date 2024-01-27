@@ -460,7 +460,6 @@ GLTFImporter::AnimationNameAndChannels GLTFImporter::createAnimationData(qsizety
     for (const auto &skin : m_skins)
         nodeIndexToJointIndexMaps.push_back(createNodeIndexToJointIndexMap(skin));
 
-    int channelIndex = 0;
     for (const auto &channel : animation.channels) {
         Qt3DAnimation::Animation::Channel outputChannel;
         outputChannel.name = gltfTargetPropertyToChannelName(channel.targetProperty);
@@ -591,7 +590,6 @@ GLTFImporter::AnimationNameAndChannels GLTFImporter::createAnimationData(qsizety
         }
 
         nameAndChannels.channels.push_back(outputChannel);
-        ++channelIndex;
     }
 
     return nameAndChannels;
