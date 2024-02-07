@@ -21,9 +21,10 @@ QT_BEGIN_NAMESPACE
     static_cast<const wchar_t*>(static_cast<const void*>(string.utf16()))
 #endif
 
-using namespace Qt3DCore;
 
 namespace Qt3DRender {
+
+using namespace Qt3DCore;
 
 Q_LOGGING_CATEGORY(GLTFGeometryLoaderLog, "Qt3D.GLTFGeometryLoader", QtWarningMsg)
 

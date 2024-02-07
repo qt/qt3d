@@ -12,11 +12,12 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
 namespace Quick {
+
+using namespace Qt3DCore;
 
 /*!
     \namespace Qt3DRender::Quick

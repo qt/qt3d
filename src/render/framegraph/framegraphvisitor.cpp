@@ -12,10 +12,11 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
+
+using namespace Qt3DCore;
 
 FrameGraphVisitor::FrameGraphVisitor(const FrameGraphManager *manager)
     : m_manager(manager)

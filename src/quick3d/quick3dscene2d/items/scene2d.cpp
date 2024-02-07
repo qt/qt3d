@@ -35,13 +35,14 @@ QT_BEGIN_NAMESPACE
 #define GL_DEPTH24_STENCIL8 0x88F0
 #endif
 
-using namespace Qt3DRender::Quick;
 
 namespace Qt3DRender {
 
 namespace Render {
 
 namespace Quick {
+
+using namespace Qt3DRender::Quick;
 
 Q_GLOBAL_STATIC(QThread, renderThread)
 Q_GLOBAL_STATIC(QAtomicInt, renderThreadClientCount)

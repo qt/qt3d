@@ -16,9 +16,10 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
 
 namespace  Qt3DExtras {
+
+using namespace Qt3DCore;
 
 namespace {
 

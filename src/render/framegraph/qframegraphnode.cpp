@@ -11,7 +11,6 @@
 #include <QList>
 #include <QQueue>
 
-using namespace Qt3DCore;
 
 QT_BEGIN_NAMESPACE
 
@@ -340,6 +339,8 @@ QFrameGraphNode *QFrameGraphNode::parentFrameGraphNode() const
  */
 QList<QFrameGraphNode *> QFrameGraphNodePrivate::childFrameGraphNodes() const
 {
+    using namespace Qt3DCore;
+
     Q_Q(const QFrameGraphNode);
     QList<QFrameGraphNode *> result;
     QQueue<QNode *> queue;

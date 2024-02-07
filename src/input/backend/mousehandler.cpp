@@ -13,10 +13,11 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
 
 namespace Qt3DInput {
 namespace Input {
+
+using namespace Qt3DCore;
 
 MouseHandler::MouseHandler()
     : BackendNode(ReadWrite)

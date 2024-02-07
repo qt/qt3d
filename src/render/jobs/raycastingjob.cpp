@@ -19,9 +19,10 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DRender;
+namespace Qt3DRender {
+namespace Render {
+
 using namespace Qt3DRender::RayCasting;
-using namespace Render;
 
 namespace {
 
@@ -50,8 +51,7 @@ public:
 
 } // anonymous
 
-
-class Qt3DRender::Render::RayCastingJobPrivate : public Qt3DCore::QAspectJobPrivate
+class RayCastingJobPrivate : public Qt3DCore::QAspectJobPrivate
 {
 public:
     RayCastingJobPrivate(RayCastingJob *q) : q_ptr(q) { }
@@ -283,5 +283,8 @@ void RayCastingJob::dispatchHits(RayCaster *rayCaster, const PickingUtils::HitLi
     Q_D(RayCastingJob);
     d->dispatches.push_back({rayCaster, hits});
 }
+
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

@@ -19,9 +19,10 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
 
 namespace Qt3DLogic {
+
+using namespace Qt3DCore;
 
 /*!
  \class Qt3DLogic::QLogicAspect

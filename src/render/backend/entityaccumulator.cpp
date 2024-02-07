@@ -4,8 +4,10 @@
 #include "entityaccumulator_p.h"
 #include "entityvisitor_p.h"
 
-QT_USE_NAMESPACE
-using namespace Qt3DRender::Render;
+QT_BEGIN_NAMESPACE
+
+namespace Qt3DRender {
+namespace Render {
 
 namespace {
 
@@ -61,3 +63,8 @@ QList<Entity *> EntityAccumulator::apply(Entity *root) const
     a.apply(root);
     return a.m_entities;
 }
+
+} // namespace Render
+} // namespace Qt3DRender
+
+QT_END_NAMESPACE

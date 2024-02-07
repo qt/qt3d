@@ -190,6 +190,8 @@ bool CalculateBoundingVolumeJob::isRequired()
 
 void CalculateBoundingVolumeJob::run()
 {
+    using QBufferPrivate = Qt3DCore::QBufferPrivate;
+
     // There's 2 bounding volume jobs, one here in Core, the other in Render.
     // - This one computes bounding volumes for entities that have QBoundingVolume
     //   components and use QGeometryViews.
