@@ -8,14 +8,12 @@
 #include <Qt3DCore/qbuffer.h>
 #include <Qt3DCore/private/corelogging_p.h>
 
-#include <limits>
-
-
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
 
 namespace  Qt3DExtras {
+
+using namespace Qt3DCore;
 
 namespace {
 

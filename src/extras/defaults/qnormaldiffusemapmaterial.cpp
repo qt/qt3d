@@ -19,9 +19,9 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DRender;
-
 namespace Qt3DExtras {
+
+using namespace Qt3DRender;
 
 QNormalDiffuseMapMaterialPrivate::QNormalDiffuseMapMaterialPrivate()
     : QMaterialPrivate()

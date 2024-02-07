@@ -23,9 +23,10 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
 
 namespace Qt3DAnimation {
+
+using namespace Qt3DCore;
 
 QAnimationAspectPrivate::QAnimationAspectPrivate()
     : QAbstractAspectPrivate()

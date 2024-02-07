@@ -11,10 +11,11 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
 
 namespace Qt3DLogic {
 namespace Logic {
+
+using namespace Qt3DCore;
 
 Executor::Executor(QObject *parent)
     : QObject(parent)

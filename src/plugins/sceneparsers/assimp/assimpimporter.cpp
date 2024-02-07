@@ -35,10 +35,11 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
-using namespace Qt3DExtras;
 
 namespace Qt3DRender {
+
+using namespace Qt3DCore;
+using namespace Qt3DExtras;
 
 /*!
     \class Qt3DRender::AssimpImporter
