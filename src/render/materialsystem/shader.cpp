@@ -16,10 +16,10 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
-
 namespace Qt3DRender {
 namespace Render {
+
+using namespace Qt3DCore;
 const int Shader::modelMatrixNameId = StringToInt::lookupId(QLatin1String("modelMatrix"));
 const int Shader::viewMatrixNameId = StringToInt::lookupId(QLatin1String("viewMatrix"));
 const int Shader::projectionMatrixNameId = StringToInt::lookupId(QLatin1String("projectionMatrix"));

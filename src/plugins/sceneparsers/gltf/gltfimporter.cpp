@@ -239,8 +239,6 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
-using namespace Qt3DExtras;
 
 namespace {
 
@@ -286,6 +284,9 @@ Qt3DRender::QFilterKey *buildFilterKey(const QString &key, const QJsonValue &val
 } // namespace
 
 namespace Qt3DRender {
+
+using namespace Qt3DCore;
+using namespace Qt3DExtras;
 
 Q_LOGGING_CATEGORY(GLTFImporterLog, "Qt3D.GLTFImport", QtWarningMsg);
 

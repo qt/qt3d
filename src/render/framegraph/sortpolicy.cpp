@@ -6,10 +6,11 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
+
+using namespace Qt3DCore;
 
 SortPolicy::SortPolicy()
     : FrameGraphNode(FrameGraphNode::SortMethod)

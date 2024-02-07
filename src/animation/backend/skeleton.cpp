@@ -6,10 +6,11 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
 
 namespace Qt3DAnimation {
 namespace Animation {
+
+using namespace Qt3DCore;
 
 // Rather than store backend nodes for the individual joints, the
 // animation aspect operates on the vector of local poses as aggregated

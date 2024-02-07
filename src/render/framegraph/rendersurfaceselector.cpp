@@ -10,7 +10,6 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
 
 namespace {
 
@@ -32,6 +31,8 @@ QSurface *surfaceFromQObject(QObject *o)
 
 namespace Qt3DRender {
 namespace Render {
+
+using namespace Qt3DCore;
 
 RenderSurfaceSelector::RenderSurfaceSelector()
     : FrameGraphNode(FrameGraphNode::Surface)

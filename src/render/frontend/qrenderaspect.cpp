@@ -154,7 +154,6 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
 
 namespace {
 
@@ -232,6 +231,8 @@ QStringList dumpSGFilterState(Qt3DRender::Render::TechniqueManager *manager,
 
 }
 namespace Qt3DRender {
+
+using namespace Qt3DCore;
 
 #define CreateSynchronizerJobPtr(lambda, type) \
     Render::SynchronizerJobPtr::create(lambda, type, #type)

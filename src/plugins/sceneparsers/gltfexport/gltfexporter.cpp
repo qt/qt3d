@@ -186,10 +186,10 @@ inline void promoteColorsToRGBA(QJsonObject *obj)
 
 QT_BEGIN_NAMESPACE
 
+namespace Qt3DRender {
+
 using namespace Qt3DCore;
 using namespace Qt3DExtras;
-
-namespace Qt3DRender {
 
 Q_LOGGING_CATEGORY(GLTFExporterLog, "Qt3D.GLTFExport", QtWarningMsg)
 

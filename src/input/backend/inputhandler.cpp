@@ -17,10 +17,10 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
-
 namespace Qt3DInput {
 namespace Input {
+
+using namespace Qt3DCore;
 
 class InternalEventFilter : public QObject
 {
@@ -346,7 +346,6 @@ bool InternalEventFilter::processKeyEvent(QObject *obj, QT_PREPEND_NAMESPACE(QKe
 
     return false;
 }
-
 
 } // namespace Input
 } // namespace Qt3DInput
