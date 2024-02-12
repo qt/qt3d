@@ -135,7 +135,7 @@ QShaderProgramBuilder::QShaderProgramBuilder(QShaderProgramBuilderPrivate &dd, Q
     Holds the shader program on which this builder generates code.
 */
 /*!
-    \property QShaderProgramBuilder::shaderProgram
+    \property Qt3DRender::QShaderProgramBuilder::shaderProgram
 
     Holds the shader program on which this builder generates code.
 */
@@ -176,7 +176,7 @@ QShaderProgram *QShaderProgramBuilder::shaderProgram() const
     during code generation.
 */
 /*!
-    \property QShaderProgramBuilder::enabledLayers
+    \property Qt3DRender::QShaderProgramBuilder::enabledLayers
 
     Holds the list of layers this builder will activate on the shader graphs
     during code generation.
@@ -202,7 +202,7 @@ QStringList QShaderProgramBuilder::enabledLayers() const
     Holds the URL to the vertex shader graph used by this shader program builder.
 */
 /*!
-    \property QShaderProgramBuilder::vertexShaderGraph
+    \property Qt3DRender::QShaderProgramBuilder::vertexShaderGraph
 
     Holds the URL to the vertex shader graph used by this shader program builder.
 */
@@ -227,7 +227,7 @@ QUrl QShaderProgramBuilder::vertexShaderGraph() const
     Holds the URL to the tesselation control shader graph used by this shader program builder.
 */
 /*!
-    \property QShaderProgramBuilder::tessellationControlShaderGraph
+    \property Qt3DRender::QShaderProgramBuilder::tessellationControlShaderGraph
 
     Holds the URL to the tesselation control shader graph used by this shader program builder.
 */
@@ -252,7 +252,7 @@ QUrl QShaderProgramBuilder::tessellationControlShaderGraph() const
     Holds the URL to the tesselation evaluation shader graph used by this shader program builder.
 */
 /*!
-    \property QShaderProgramBuilder::tessellationEvaluationShaderGraph
+    \property Qt3DRender::QShaderProgramBuilder::tessellationEvaluationShaderGraph
 
     Holds the URL to the tesselation evaluation shader graph used by this shader program builder.
 */
@@ -277,7 +277,7 @@ QUrl QShaderProgramBuilder::tessellationEvaluationShaderGraph() const
     Holds the URL to the geometry shader graph used by this shader program builder.
 */
 /*!
-    \property QShaderProgramBuilder::geometryShaderGraph
+    \property Qt3DRender::QShaderProgramBuilder::geometryShaderGraph
 
     Holds the URL to the geometry shader graph used by this shader program builder.
 */
@@ -302,7 +302,7 @@ QUrl QShaderProgramBuilder::geometryShaderGraph() const
     Holds the URL to the fragment shader graph used by this shader program builder.
 */
 /*!
-    \property QShaderProgramBuilder::fragmentShaderGraph
+    \property Qt3DRender::QShaderProgramBuilder::fragmentShaderGraph
 
     Holds the URL to the fragment shader graph used by this shader program builder.
 */
@@ -327,7 +327,7 @@ QUrl QShaderProgramBuilder::fragmentShaderGraph() const
     Holds the URL to the compute shader graph used by this shader program builder.
 */
 /*!
-    \property QShaderProgramBuilder::computeShaderGraph
+    \property Qt3DRender::QShaderProgramBuilder::computeShaderGraph
 
     Holds the URL to the compute shader graph used by this shader program builder.
 */
@@ -353,7 +353,7 @@ QUrl QShaderProgramBuilder::computeShaderGraph() const
     \since 2.13
 */
 /*!
-    \property QShaderProgramBuilder::vertexShaderCode
+    \property Qt3DRender::QShaderProgramBuilder::vertexShaderCode
 
     Holds the generate vertex shader code.
     \since 5.13
@@ -371,7 +371,7 @@ QByteArray QShaderProgramBuilder::vertexShaderCode() const
     \since 2.13
 */
 /*!
-    \property QShaderProgramBuilder::tessellationControlShaderCode
+    \property Qt3DRender::QShaderProgramBuilder::tessellationControlShaderCode
 
     Holds the generate tessellation control shader code.
     \since 5.13
@@ -389,7 +389,7 @@ QByteArray QShaderProgramBuilder::tessellationControlShaderCode() const
     \since 2.13
 */
 /*!
-    \property QShaderProgramBuilder::tessellationEvaluationShaderCode
+    \property Qt3DRender::QShaderProgramBuilder::tessellationEvaluationShaderCode
 
     Holds the generate tessellation evaluation shader code.
     \since 5.13
@@ -407,7 +407,7 @@ QByteArray QShaderProgramBuilder::tessellationEvaluationShaderCode() const
     \since 2.13
 */
 /*!
-    \property QShaderProgramBuilder::geometryShaderCode
+    \property Qt3DRender::QShaderProgramBuilder::geometryShaderCode
 
     Holds the generate geometry shader code.
     \since 5.13
@@ -425,7 +425,7 @@ QByteArray QShaderProgramBuilder::geometryShaderCode() const
     \since 2.13
 */
 /*!
-    \property QShaderProgramBuilder::fragmentShaderCode
+    \property Qt3DRender::QShaderProgramBuilder::fragmentShaderCode
 
     Holds the generate fragment shader code.
     \since 5.13
@@ -443,7 +443,7 @@ QByteArray QShaderProgramBuilder::fragmentShaderCode() const
     \since 2.13
 */
 /*!
-    \property QShaderProgramBuilder::computeShaderCode
+    \property Qt3DRender::QShaderProgramBuilder::computeShaderCode
 
     Holds the generate compute shader code.
     \since 5.13

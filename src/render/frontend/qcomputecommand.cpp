@@ -79,22 +79,22 @@ namespace Qt3DRender {
  */
 
 /*!
-    \property QComputeCommand::workGroupX
+    \property Qt3DRender::QComputeCommand::workGroupX
     Specifies X workgroup size.
  */
 
 /*!
-    \property QComputeCommand::workGroupY
+    \property Qt3DRender::QComputeCommand::workGroupY
     Specifies Y workgroup size.
  */
 
 /*!
-    \property QComputeCommand::workGroupZ
+    \property Qt3DRender::QComputeCommand::workGroupZ
     Specifies Z workgroup size.
  */
 
 /*!
-    \property QComputeCommand::runType
+    \property Qt3DRender::QComputeCommand::runType
 
     Specifies whether the compute command should be performed every frame or
     manually triggered.

@@ -88,7 +88,7 @@ float QViewport::gamma() const
 }
 
 /*!
-    \property QViewport::normalizedRect
+    \property Qt3DRender::QViewport::normalizedRect
 
     Specifies the normalised rectangle for the viewport, i.e. the viewport rectangle
     is specified relative to the render surface size. Whole surface sized viewport
@@ -104,7 +104,7 @@ void QViewport::setNormalizedRect(const QRectF &normalizedRect)
 }
 
 /*!
-    \property QViewport::gamma
+    \property Qt3DRender::QViewport::gamma
 
     Specifies the gamma factor for the viewport. The default is 2.2 which should give proper result on most screens.
  */

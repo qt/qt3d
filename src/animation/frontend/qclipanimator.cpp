@@ -97,7 +97,7 @@ QClipAnimator::~QClipAnimator()
     The key frame data can be specified in either an AnimationClip or AnimationClipLoader.
 */
 /*!
-    \property QClipAnimator::clip
+    \property Qt3DAnimation::QClipAnimator::clip
 
     This property holds the animation clip which contains the key frame data to be played back.
     The key frame data can be specified in either a QAnimationClip or QAnimationClipLoader.

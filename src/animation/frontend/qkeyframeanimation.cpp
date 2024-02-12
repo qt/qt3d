@@ -71,7 +71,7 @@ namespace Qt3DAnimation {
     Holds the repeat mode for the position values greater than the last frame position.
 */
 /*!
-    \enum QKeyframeAnimation::RepeatMode
+    \enum Qt3DAnimation::QKeyframeAnimation::RepeatMode
 
     This enumeration specifies how position values outside keyframe values are handled.
     \value None The animation is not applied to the target transform.

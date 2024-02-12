@@ -117,43 +117,43 @@ typename EventClass::Modifiers modifiersForEvent(const QtEventClass *event)
  */
 
 /*!
- * \property QMouseEvent::x
+ * \property Qt3DInput::QMouseEvent::x
  * Specifies The X coordinate of the mouse event
  * \readonly
  */
 
 /*!
- * \property QMouseEvent::y
+ * \property Qt3DInput::QMouseEvent::y
  * Specifies The y coordinate of the mouse event
  * \readonly
  */
 
 /*!
- * \property QMouseEvent::wasHeld
+ * \property Qt3DInput::QMouseEvent::wasHeld
  * Specifies if a mouse button was held down during the mouse event
  * \readonly
  */
 
 /*!
- * \property QMouseEvent::button
+ * \property Qt3DInput::QMouseEvent::button
  * Specifies the button triggering the mouse event
  * \readonly
  */
 
 /*!
- * \property QMouseEvent::buttons
+ * \property Qt3DInput::QMouseEvent::buttons
  * Specifies the button triggering the mouse event
  * \readonly
  */
 
 /*!
- * \property QMouseEvent::modifiers
+ * \property Qt3DInput::QMouseEvent::modifiers
  * Specifies if any modifiers were applied to the mouse event
  * \readonly
  */
 
 /*!
- * \property QMouseEvent::accepted
+ * \property Qt3DInput::QMouseEvent::accepted
  * Specifies if the mouse event has been accepted
  */
 
@@ -331,37 +331,37 @@ QMouseEvent::Modifiers QMouseEvent::modifiers() const
  */
 
 /*!
- * \property QWheelEvent::x
+ * \property Qt3DInput::QWheelEvent::x
  * Specifies The X coordinate of the mouse wheel event
  * \readonly
  */
 
 /*!
- * \property QWheelEvent::y
+ * \property Qt3DInput::QWheelEvent::y
  * Specifies The Y coordinate of the mouse wheel event
  * \readonly
  */
 
 /*!
- * \property QWheelEvent::angleDelta
+ * \property Qt3DInput::QWheelEvent::angleDelta
  * Specifies The change wheel angle of the mouse wheel event
  * \readonly
  */
 
 /*!
- * \property QWheelEvent::buttons
+ * \property Qt3DInput::QWheelEvent::buttons
  * Specifies the button if present in the mouse wheel event
  * \readonly
  */
 
 /*!
- * \property  QWheelEvent::modifiers
+ * \property  Qt3DInput::QWheelEvent::modifiers
  * Specifies if any modifiers were applied to the mouse wheel event
  * \readonly
  */
 
 /*!
- * \property QWheelEvent::accepted
+ * \property Qt3DInput::QWheelEvent::accepted
  * Specifies if the mouse wheel event has been accepted
  */
 

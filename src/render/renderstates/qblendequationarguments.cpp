@@ -94,7 +94,7 @@ QBlendEquationArguments::QBlendEquationArguments(QBlendEquationArgumentsPrivate 
  */
 
 /*!
-    \property QBlendEquationArguments::sourceRgb
+    \property Qt3DRender::QBlendEquationArguments::sourceRgb
 
  */
 QBlendEquationArguments::Blending QBlendEquationArguments::sourceRgb() const
@@ -121,7 +121,7 @@ void QBlendEquationArguments::setSourceRgb(QBlendEquationArguments::Blending sou
  */
 
 /*!
-    \property QBlendEquationArguments::destinationRgb
+    \property Qt3DRender::QBlendEquationArguments::destinationRgb
 
  */
 QBlendEquationArguments::Blending QBlendEquationArguments::destinationRgb() const
@@ -148,7 +148,7 @@ void QBlendEquationArguments::setDestinationRgb(QBlendEquationArguments::Blendin
  */
 
 /*!
-    \property QBlendEquationArguments::sourceAlpha
+    \property Qt3DRender::QBlendEquationArguments::sourceAlpha
 
  */
 QBlendEquationArguments::Blending QBlendEquationArguments::sourceAlpha() const
@@ -175,7 +175,7 @@ void QBlendEquationArguments::setSourceAlpha(QBlendEquationArguments::Blending s
  */
 
 /*!
-    \property QBlendEquationArguments::destinationAlpha
+    \property Qt3DRender::QBlendEquationArguments::destinationAlpha
 
  */
 QBlendEquationArguments::Blending QBlendEquationArguments::destinationAlpha() const
@@ -234,7 +234,7 @@ void QBlendEquationArguments::setDestinationRgba(Blending destinationRgba)
  */
 
 /*!
-    \property QBlendEquationArguments::bufferIndex
+    \property Qt3DRender::QBlendEquationArguments::bufferIndex
 
     Specifies the index of the Draw Buffer that this BlendEquationArguments applies to.
     If negative, this will apply to all Draw Buffers.

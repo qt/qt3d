@@ -254,7 +254,7 @@ QNormalDiffuseSpecularMapMaterial::~QNormalDiffuseSpecularMapMaterial()
 }
 
 /*!
-    \property QNormalDiffuseSpecularMapMaterial::ambient
+    \property Qt3DExtras::QNormalDiffuseSpecularMapMaterial::ambient
 
     Holds the current ambient color.
 */
@@ -265,7 +265,7 @@ QColor QNormalDiffuseSpecularMapMaterial::ambient() const
 }
 
 /*!
-    \property QNormalDiffuseSpecularMapMaterial::diffuse
+    \property Qt3DExtras::QNormalDiffuseSpecularMapMaterial::diffuse
 
     Holds the current diffuse map texture.
 
@@ -285,7 +285,7 @@ QAbstractTexture *QNormalDiffuseSpecularMapMaterial::diffuse() const
 }
 
 /*!
-    \property QNormalDiffuseSpecularMapMaterial::normal
+    \property Qt3DExtras::QNormalDiffuseSpecularMapMaterial::normal
 
     Holds the current normal map texture.
 
@@ -304,7 +304,7 @@ QAbstractTexture *QNormalDiffuseSpecularMapMaterial::normal() const
 }
 
 /*!
-    \property QNormalDiffuseSpecularMapMaterial::specular
+    \property Qt3DExtras::QNormalDiffuseSpecularMapMaterial::specular
 
     Holds the current specular map texture.
 
@@ -324,7 +324,7 @@ QAbstractTexture *QNormalDiffuseSpecularMapMaterial::specular() const
 }
 
 /*!
-    \property QNormalDiffuseSpecularMapMaterial::shininess
+    \property Qt3DExtras::QNormalDiffuseSpecularMapMaterial::shininess
 
     Holds the current shininess as a float value.
 */
@@ -335,7 +335,7 @@ float QNormalDiffuseSpecularMapMaterial::shininess() const
 }
 
 /*!
-    \property QNormalDiffuseSpecularMapMaterial::textureScale
+    \property Qt3DExtras::QNormalDiffuseSpecularMapMaterial::textureScale
 
     Holds the current texture scale. It is applied as a multiplier to texture
     coordinates at render time. Defaults to 1.0.

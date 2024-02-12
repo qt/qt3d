@@ -78,7 +78,7 @@ void QPlaneGeometryView::setWidth(float width)
 }
 
 /*!
- * \property QPlaneGeometryView::width
+ * \property Qt3DExtras::QPlaneGeometryView::width
  *
  * Holds the plane width.
  */
@@ -93,7 +93,7 @@ void QPlaneGeometryView::setHeight(float height)
 }
 
 /*!
- * \property QPlaneGeometryView::height
+ * \property Qt3DExtras::QPlaneGeometryView::height
  *
  * Holds the plane height.
  */
@@ -108,7 +108,7 @@ void QPlaneGeometryView::setMeshResolution(const QSize &resolution)
 }
 
 /*!
- * \property QPlaneGeometryView::meshResolution
+ * \property Qt3DExtras::QPlaneGeometryView::meshResolution
  *
  * Holds the plane resolution.
  * The width and height values of this property specify the number of vertices generated for
@@ -125,7 +125,7 @@ void QPlaneGeometryView::setMirrored(bool mirrored)
 }
 
 /*!
- * \property QPlaneGeometryView::mirrored
+ * \property Qt3DExtras::QPlaneGeometryView::mirrored
  *
  * Controls if the UV coordinates of the plane should be flipped vertically.
  */

@@ -130,7 +130,7 @@ void QConeGeometryView::setLength(float length)
 }
 
 /*!
- * \property QConeGeometryView::hasTopEndcap
+ * \property Qt3DExtras::QConeGeometryView::hasTopEndcap
  *
  * Determines if the cone top is capped or open.
  */
@@ -140,7 +140,7 @@ bool QConeGeometryView::hasTopEndcap() const
 }
 
 /*!
- * \property QConeGeometryView::hasBottomEndcap
+ * \property Qt3DExtras::QConeGeometryView::hasBottomEndcap
  *
  * Determines if the cone bottom is capped or open.
  */
@@ -150,7 +150,7 @@ bool QConeGeometryView::hasBottomEndcap() const
 }
 
 /*!
- * \property QConeGeometryView::topRadius
+ * \property Qt3DExtras::QConeGeometryView::topRadius
  *
  * Holds the top radius of the cone.
  */
@@ -160,7 +160,7 @@ float QConeGeometryView::topRadius() const
 }
 
 /*!
- * \property QConeGeometryView::bottomRadius
+ * \property Qt3DExtras::QConeGeometryView::bottomRadius
  *
  * Holds the bottom radius of the cone.
  */
@@ -170,7 +170,7 @@ float QConeGeometryView::bottomRadius() const
 }
 
 /*!
- * \property QConeGeometryView::rings
+ * \property Qt3DExtras::QConeGeometryView::rings
  *
  * Holds the number of rings in the mesh.
  */
@@ -180,7 +180,7 @@ int QConeGeometryView::rings() const
 }
 
 /*!
- * \property QConeGeometryView::slices
+ * \property Qt3DExtras::QConeGeometryView::slices
  *
  * Holds the number of slices in the mesh.
  */
@@ -190,7 +190,7 @@ int QConeGeometryView::slices() const
 }
 
 /*!
- * \property QConeGeometryView::length
+ * \property Qt3DExtras::QConeGeometryView::length
  *
  * Holds the length of the cone.
  */

@@ -232,7 +232,7 @@ QMetalRoughMaterial::~QMetalRoughMaterial()
 }
 
 /*!
-    \property QMetalRoughMaterial::baseColor
+    \property Qt3DExtras::QMetalRoughMaterial::baseColor
 
     Holds the current base color of the material. This can be either a plain
     color value or a texture. By default the value of this property is "grey".
@@ -250,7 +250,7 @@ QVariant QMetalRoughMaterial::baseColor() const
 }
 
 /*!
-    \property QMetalRoughMaterial::metalness
+    \property Qt3DExtras::QMetalRoughMaterial::metalness
 
     Holds the current metalness level of the material, as a value between
     0 (purely dielectric, the default) and 1 (purely metallic). This can be
@@ -272,7 +272,7 @@ QVariant QMetalRoughMaterial::metalness() const
 }
 
 /*!
-    \property QMetalRoughMaterial::roughness
+    \property Qt3DExtras::QMetalRoughMaterial::roughness
 
     Holds the current roughness level of the material. This can be either a
     plain uniform value or a texture. By default the value of this property is
@@ -292,7 +292,7 @@ QVariant QMetalRoughMaterial::roughness() const
 }
 
 /*!
-    \property QMetalRoughMaterial::ambientOcclusion
+    \property Qt3DExtras::QMetalRoughMaterial::ambientOcclusion
 
     Holds the current ambient occlusion map texture of the material. This can
     only be a texture, otherwise it is ignored. By default this map is not set.
@@ -310,7 +310,7 @@ QVariant QMetalRoughMaterial::ambientOcclusion() const
 }
 
 /*!
-    \property QMetalRoughMaterial::normal
+    \property Qt3DExtras::QMetalRoughMaterial::normal
 
     Holds the current normal map texture of the material. This can only be a
     texture, otherwise it is ignored. By default this map is not set.
@@ -328,7 +328,7 @@ QVariant QMetalRoughMaterial::normal() const
 }
 
 /*!
-    \property QMetalRoughMaterial::textureScale
+    \property Qt3DExtras::QMetalRoughMaterial::textureScale
 
     Holds the current texture scale. It is applied as a multiplier to texture
     coordinates at render time. Defaults to 1.0.

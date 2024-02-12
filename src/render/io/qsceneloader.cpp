@@ -89,7 +89,7 @@ using namespace Qt3DCore;
  */
 
 /*!
-    \enum QSceneLoader::Status
+    \enum Qt3DRender::QSceneLoader::Status
 
     This enum identifies the state of loading
     \value None     The Qt3DRender::QSceneLoader hasn't been used yet.
@@ -99,7 +99,7 @@ using namespace Qt3DCore;
  */
 
 /*!
-    \enum QSceneLoader::ComponentType
+    \enum Qt3DRender::QSceneLoader::ComponentType
 
     This enum specifies a component type.
     \value UnknownComponent Unknown component type
@@ -131,13 +131,13 @@ using namespace Qt3DCore;
  */
 
 /*!
-    \property QSceneLoader::source
+    \property Qt3DRender::QSceneLoader::source
 
     Holds the url to the source to be loaded.
  */
 
 /*!
-    \property QSceneLoader::status
+    \property Qt3DRender::QSceneLoader::status
 
     Holds the status of scene loading.
     \list

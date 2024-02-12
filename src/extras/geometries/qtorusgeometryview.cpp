@@ -97,7 +97,7 @@ void QTorusGeometryView::setMinorRadius(float minorRadius)
 }
 
 /*!
- * \property QTorusGeometryView::rings
+ * \property Qt3DExtras::QTorusGeometryView::rings
  *
  * Holds the number of rings in the mesh.
  */
@@ -107,7 +107,7 @@ int QTorusGeometryView::rings() const
 }
 
 /*!
- * \property QTorusGeometryView::slices
+ * \property Qt3DExtras::QTorusGeometryView::slices
  *
  * Holds the number of slices in the mesh.
  */
@@ -117,7 +117,7 @@ int QTorusGeometryView::slices() const
 }
 
 /*!
- * \property QTorusGeometryView::radius
+ * \property Qt3DExtras::QTorusGeometryView::radius
  *
  * Holds the outer radius of the torus.
  */
@@ -127,7 +127,7 @@ float QTorusGeometryView::radius() const
 }
 
 /*!
- * \property QTorusGeometryView::minorRadius
+ * \property Qt3DExtras::QTorusGeometryView::minorRadius
  *
  * Holds the inner radius of the torus.
  */

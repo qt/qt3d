@@ -124,7 +124,7 @@ int QInputSequence::buttonInterval() const
 }
 
 /*!
-    \property QInputSequence::timeout
+    \property Qt3DInput::QInputSequence::timeout
 
     The time in which all QAbstractActionInput's in the input sequence must triggered within.
     The time is in milliseconds.
@@ -139,7 +139,7 @@ void QInputSequence::setTimeout(int timeout)
 }
 
 /*!
-    \property QInputSequence::buttonInterval
+    \property Qt3DInput::QInputSequence::buttonInterval
 
     The maximum time in between consecutive QAbstractActionInput's in the input sequence.
     The time is in milliseconds.

@@ -98,7 +98,7 @@ void QTorusMesh::setMinorRadius(float minorRadius)
 }
 
 /*!
- * \property QTorusMesh::rings
+ * \property Qt3DExtras::QTorusMesh::rings
  *
  * Holds the number of rings in the mesh.
  */
@@ -108,7 +108,7 @@ int QTorusMesh::rings() const
 }
 
 /*!
- * \property QTorusMesh::slices
+ * \property Qt3DExtras::QTorusMesh::slices
  *
  * Holds the number of slices in the mesh.
  */
@@ -118,7 +118,7 @@ int QTorusMesh::slices() const
 }
 
 /*!
- * \property QTorusMesh::radius
+ * \property Qt3DExtras::QTorusMesh::radius
  *
  * Holds the outer radius of the torus.
  */
@@ -128,7 +128,7 @@ float QTorusMesh::radius() const
 }
 
 /*!
- * \property QTorusMesh::minorRadius
+ * \property Qt3DExtras::QTorusMesh::minorRadius
  *
  * Holds the inner radius of the torus.
  */

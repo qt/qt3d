@@ -53,12 +53,12 @@ namespace Qt3DRender {
 */
 
 /*!
-    \property QStencilTest::front
+    \property Qt3DRender::QStencilTest::front
     Holds the stencil test arguments for front-facing polygons.
 */
 
 /*!
-    \property QStencilTest::back
+    \property Qt3DRender::QStencilTest::back
     Holds the stencil test arguments for back-facing polygons.
 */
 

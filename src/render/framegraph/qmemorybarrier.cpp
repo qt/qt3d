@@ -60,7 +60,7 @@ namespace Qt3DRender {
 */
 
 /*!
-    \enum QMemoryBarrier::Operation
+    \enum Qt3DRender::QMemoryBarrier::Operation
 
     This enum type describes types of buffer to be cleared.
     \value None

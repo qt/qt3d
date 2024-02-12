@@ -245,7 +245,7 @@ QPhongAlphaMaterial::~QPhongAlphaMaterial()
 }
 
 /*!
-    \property QPhongAlphaMaterial::ambient
+    \property Qt3DExtras::QPhongAlphaMaterial::ambient
 
     Holds the ambient color.
 */
@@ -256,7 +256,7 @@ QColor QPhongAlphaMaterial::ambient() const
 }
 
 /*!
-    \property QPhongAlphaMaterial::diffuse
+    \property Qt3DExtras::QPhongAlphaMaterial::diffuse
 
     Holds the diffuse color.
 */
@@ -267,7 +267,7 @@ QColor QPhongAlphaMaterial::diffuse() const
 }
 
 /*!
-    \property QPhongAlphaMaterial::specular
+    \property Qt3DExtras::QPhongAlphaMaterial::specular
 
     Holds the specular color.
 */
@@ -278,7 +278,7 @@ QColor QPhongAlphaMaterial::specular() const
 }
 
 /*!
-    \property QPhongAlphaMaterial::shininess
+    \property Qt3DExtras::QPhongAlphaMaterial::shininess
 
     Holds the shininess exponent.
 */
@@ -289,7 +289,7 @@ float QPhongAlphaMaterial::shininess() const
 }
 
 /*!
-    \property QPhongAlphaMaterial::alpha
+    \property Qt3DExtras::QPhongAlphaMaterial::alpha
 
     Holds the alpha component of the object which varies between 0 and 1.
 
@@ -302,7 +302,7 @@ float QPhongAlphaMaterial::alpha() const
 }
 
 /*!
-    \property QPhongAlphaMaterial::sourceRgbArg
+    \property Qt3DExtras::QPhongAlphaMaterial::sourceRgbArg
 
     Holds the blend equation source RGB blending argument.
 
@@ -315,7 +315,7 @@ QBlendEquationArguments::Blending QPhongAlphaMaterial::sourceRgbArg() const
 }
 
 /*!
-    \property QPhongAlphaMaterial::destinationRgbArg
+    \property Qt3DExtras::QPhongAlphaMaterial::destinationRgbArg
 
     Holds the blend equation destination RGB blending argument.
 
@@ -328,7 +328,7 @@ QBlendEquationArguments::Blending QPhongAlphaMaterial::destinationRgbArg() const
 }
 
 /*!
-    \property QPhongAlphaMaterial::sourceAlphaArg
+    \property Qt3DExtras::QPhongAlphaMaterial::sourceAlphaArg
 
     Holds the blend equation source alpha blending argument.
 
@@ -341,7 +341,7 @@ QBlendEquationArguments::Blending QPhongAlphaMaterial::sourceAlphaArg() const
 }
 
 /*!
-    \property QPhongAlphaMaterial::destinationAlphaArg
+    \property Qt3DExtras::QPhongAlphaMaterial::destinationAlphaArg
 
     Holds the blend equation destination alpha blending argument.
 
@@ -354,7 +354,7 @@ QBlendEquationArguments::Blending QPhongAlphaMaterial::destinationAlphaArg() con
 }
 
 /*!
-    \property QPhongAlphaMaterial::blendFunctionArg
+    \property Qt3DExtras::QPhongAlphaMaterial::blendFunctionArg
 
     Holds the blend equation function argument.
 

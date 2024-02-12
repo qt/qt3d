@@ -31,7 +31,7 @@ namespace Qt3DRender {
 */
 
 /*!
-    \enum QClearBuffers::BufferType
+    \enum Qt3DRender::QClearBuffers::BufferType
 
     This enum type describes types of buffer to be cleared.
     \value None No buffers will be cleared

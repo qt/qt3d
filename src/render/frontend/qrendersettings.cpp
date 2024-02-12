@@ -115,7 +115,7 @@ QRenderSettings::~QRenderSettings()
     \since 5.15
 */
 /*!
-    \property QRenderSettings::renderCapabilities
+    \property Qt3DRender::QRenderSettings::renderCapabilities
 
     Holds the details of the supported rendering engine
 
@@ -136,7 +136,7 @@ QRenderCapabilities *QRenderSettings::renderCapabilities()
     \readonly
 */
 /*!
-    \property QRenderSettings::pickingSettings
+    \property Qt3DRender::QRenderSettings::pickingSettings
 
     Holds the current pick settings for the \l{Qt 3D Render Framegraph}{FrameGraph}.
 
@@ -154,7 +154,7 @@ QPickingSettings *QRenderSettings::pickingSettings()
     Holds the currently active \l{Qt 3D Render Framegraph}{FrameGraph}.
 */
 /*!
-    \property QRenderSettings::activeFrameGraph
+    \property Qt3DRender::QRenderSettings::activeFrameGraph
 
     Holds the currently active \l{Qt 3D Render Framegraph}{FrameGraph}.
 */
@@ -166,7 +166,7 @@ QFrameGraphNode *QRenderSettings::activeFrameGraph() const
 
 
 /*!
-    \enum QRenderSettings::RenderPolicy
+    \enum Qt3DRender::QRenderSettings::RenderPolicy
 
     The render policy.
 
@@ -189,7 +189,7 @@ QFrameGraphNode *QRenderSettings::activeFrameGraph() const
     \sa Qt3DRender::QRenderSettings::RenderPolicy
 */
 /*!
-    \property QRenderSettings::renderPolicy
+    \property Qt3DRender::QRenderSettings::renderPolicy
 
     Holds the current render policy.
 */

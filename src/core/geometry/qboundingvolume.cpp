@@ -185,7 +185,7 @@ QBoundingVolume::~QBoundingVolume()
 * to compute the bounding volume.
 */
 /*!
-* \property QBoundingVolume::view
+* \property Qt3DCore::QBoundingVolume::view
 *
 * Holds a pointer to the instance of QGeometryView which will be used, if set,
 * to compute the bounding volume.
@@ -202,7 +202,7 @@ QGeometryView *QBoundingVolume::view() const
 * Holds minimum extent of the bounding volume computed from the specified view.
 */
 /*!
-* \property QBoundingVolume::implicitMinPoint
+* \property Qt3DCore::QBoundingVolume::implicitMinPoint
 *
 * Holds minimum extent of the bounding volume computed from the specified view.
 */
@@ -218,7 +218,7 @@ QVector3D QBoundingVolume::implicitMinPoint() const
 * Holds maximum extent of the bounding volume computed from the specified view.
 */
 /*!
-* \property QBoundingVolume::implicitMaxPoint
+* \property Qt3DCore::QBoundingVolume::implicitMaxPoint
 *
 * Holds maximum extent of the bounding volume computed from the specified view.
 */
@@ -236,7 +236,7 @@ QVector3D QBoundingVolume::implicitMaxPoint() const
 * \sa updateImplicitBounds
 */
 /*!
-* \property QBoundingVolume::implicitPointsValid
+* \property Qt3DCore::QBoundingVolume::implicitPointsValid
 *
 * True if a view has been assigned and the implicit extent properties are up to date.
 *
@@ -256,7 +256,7 @@ bool QBoundingVolume::areImplicitPointsValid() const
 * geometry.
 */
 /*!
-* \property QBoundingVolume::minPoint
+* \property Qt3DCore::QBoundingVolume::minPoint
 *
 * User specified minimum extent of the bounding volume. When set (along with maximum
 * extent), this will be used internally to avoid computing the volume from the
@@ -276,7 +276,7 @@ QVector3D QBoundingVolume::minPoint() const
 * geometry.
 */
 /*!
-* \property QBoundingVolume::maxPoint
+* \property Qt3DCore::QBoundingVolume::maxPoint
 *
 * User specified maximum extent of the bounding volume. When set (along with minimum
 * extent), this will be used internally to avoid computing the volume from the

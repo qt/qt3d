@@ -51,7 +51,7 @@ public:
  */
 
 /*!
- * \property QLevelOfDetailBoundingSphere::center
+ * \property Qt3DRender::QLevelOfDetailBoundingSphere::center
  *
  * Specifies the center of the bounding sphere
  */
@@ -63,7 +63,7 @@ public:
  */
 
 /*!
- * \property QLevelOfDetailBoundingSphere::radius
+ * \property Qt3DRender::QLevelOfDetailBoundingSphere::radius
  *
  * Specifies the radius of the bounding sphere
  */

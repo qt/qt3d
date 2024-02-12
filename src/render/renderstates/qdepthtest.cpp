@@ -76,7 +76,7 @@ namespace Qt3DRender {
 */
 
 /*!
-    \property QDepthTest::depthFunction
+    \property Qt3DRender::QDepthTest::depthFunction
     Holds the current function used by depth test. The default is Never.
 */
 

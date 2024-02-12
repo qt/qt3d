@@ -64,7 +64,7 @@ QButtonAxisInput::~QButtonAxisInput()
 }
 
 /*!
-    \property QButtonAxisInput::scale
+    \property Qt3DInput::QButtonAxisInput::scale
     Specifies how the axis output value is scaled. No scaling is applied by default
     so it defaults to 1.
  */
@@ -84,7 +84,7 @@ float QButtonAxisInput::scale() const
 }
 
 /*!
-    \property QButtonAxisInput::buttons
+    \property Qt3DInput::QButtonAxisInput::buttons
     Specifies the buttons which control the axis
  */
 void QButtonAxisInput::setButtons(const QList<int> &buttons)
@@ -103,7 +103,7 @@ QList<int> QButtonAxisInput::buttons() const
 }
 
 /*!
-    \property QButtonAxisInput::acceleration
+    \property Qt3DInput::QButtonAxisInput::acceleration
     Specifies the rate at which the axis value changes when a button is held
  */
 float QButtonAxisInput::acceleration() const
@@ -122,7 +122,7 @@ void QButtonAxisInput::setAcceleration(float acceleration)
 }
 
 /*!
-    \property QButtonAxisInput::deceleration
+    \property Qt3DInput::QButtonAxisInput::deceleration
     Specifies the rate at which the axis value returns to normal when a button is released
  */
 float QButtonAxisInput::deceleration() const

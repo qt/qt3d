@@ -72,7 +72,7 @@ void QTextureWrapMode::setX(WrapMode x)
 }
 
 /*!
-    \property QTextureWrapMode::x
+    \property Qt3DRender::QTextureWrapMode::x
 
     Returns the wrap mode of the x dimension.
  */
@@ -109,7 +109,7 @@ void QTextureWrapMode::setY(WrapMode y)
 }
 
 /*!
-    \property QTextureWrapMode::y
+    \property Qt3DRender::QTextureWrapMode::y
 
     Returns the wrap mode of the y dimension.
  */
@@ -133,7 +133,7 @@ void QTextureWrapMode::setZ(WrapMode z)
 }
 
 /*!
-    \property QTextureWrapMode::z
+    \property Qt3DRender::QTextureWrapMode::z
 
     Returns the wrap mode of the z dimension.
  */

@@ -108,7 +108,7 @@ QAbstractAnimationClip::~QAbstractAnimationClip()
 }
 
 /*!
-    \property QAbstractAnimationClip::duration
+    \property Qt3DAnimation::QAbstractAnimationClip::duration
 
     Holds the duration of the animation clip in seconds. Gets updated once the
     animation data is provided to Qt 3D using one of the concrete subclasses.

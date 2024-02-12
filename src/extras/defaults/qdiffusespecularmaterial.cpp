@@ -271,7 +271,7 @@ QDiffuseSpecularMaterial::~QDiffuseSpecularMaterial()
 }
 
 /*!
-    \property QDiffuseSpecularMaterial::ambient
+    \property Qt3DExtras::QDiffuseSpecularMaterial::ambient
 
     Holds the ambient color that is emitted by an object without any other
     light source.
@@ -289,7 +289,7 @@ QColor QDiffuseSpecularMaterial::ambient() const
 }
 
 /*!
-    \property QDiffuseSpecularMaterial::diffuse
+    \property Qt3DExtras::QDiffuseSpecularMaterial::diffuse
 
     Holds the diffuse color of the material that is emitted for rough surface
     reflections with the lights. This can be either a plain color value or a
@@ -309,7 +309,7 @@ QVariant QDiffuseSpecularMaterial::diffuse() const
 }
 
 /*!
-    \property QDiffuseSpecularMaterial::specular
+    \property Qt3DExtras::QDiffuseSpecularMaterial::specular
 
     Holds the specular color of the material that is emitted for shiny surface
     reflections with the lights. This can be either a plain color value or a
@@ -329,7 +329,7 @@ QVariant QDiffuseSpecularMaterial::specular() const
 }
 
 /*!
-    \property QDiffuseSpecularMaterial::shininess
+    \property Qt3DExtras::QDiffuseSpecularMaterial::shininess
 
     Holds the shininess exponent. Higher values of shininess result in
     a smaller and brighter highlight.
@@ -351,7 +351,7 @@ float QDiffuseSpecularMaterial::shininess() const
 }
 
 /*!
-    \property QDiffuseSpecularMaterial::normal
+    \property Qt3DExtras::QDiffuseSpecularMaterial::normal
 
     Holds the current normal map texture of the material. This can only be a
     texture, otherwise it is ignored. By default this map is not set.
@@ -369,7 +369,7 @@ QVariant QDiffuseSpecularMaterial::normal() const
 }
 
 /*!
-    \property QDiffuseSpecularMaterial::textureScale
+    \property Qt3DExtras::QDiffuseSpecularMaterial::textureScale
 
     Holds the current texture scale. It is applied as a multiplier to texture
     coordinates at render time. Defaults to 1.0.
@@ -395,7 +395,7 @@ float QDiffuseSpecularMaterial::textureScale() const
 }
 
 /*!
-    \property QDiffuseSpecularMaterial::alphaBlending
+    \property Qt3DExtras::QDiffuseSpecularMaterial::alphaBlending
 
     Indicates if the alpha information coming from the diffuse property will
     be taken into account during rendering. Defaults to false.

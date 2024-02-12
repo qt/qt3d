@@ -332,7 +332,7 @@ void QText2DEntityPrivate::updateGlyphs()
 }
 
 /*!
-  \property QText2DEntity::font
+  \property Qt3DExtras::QText2DEntity::font
 
   Holds the font for the text item that is displayed
   in the Qt Quick scene.
@@ -362,7 +362,7 @@ void QText2DEntity::setFont(const QFont &font)
 }
 
 /*!
-  \property QText2DEntity::color
+  \property Qt3DExtras::QText2DEntity::color
 
   Holds the color for the text item that is displayed in the Qt
   Quick scene.
@@ -387,7 +387,7 @@ void QText2DEntity::setColor(const QColor &color)
 }
 
 /*!
-  \property QText2DEntity::text
+  \property Qt3DExtras::QText2DEntity::text
 
   Holds the text that is displayed in the Qt Quick scene.
 */
@@ -409,7 +409,7 @@ void QText2DEntity::setText(const QString &text)
 }
 
 /*!
-  \property QText2DEntity::width
+  \property Qt3DExtras::QText2DEntity::width
 
   Returns the width of the text item that is displayed in the
   Qt Quick scene.
@@ -421,7 +421,7 @@ float QText2DEntity::width() const
 }
 
 /*!
-  \property QText2DEntity::height
+  \property Qt3DExtras::QText2DEntity::height
 
   Returns the height of the text item that is displayed in the
   Qt Quick scene.

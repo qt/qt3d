@@ -48,7 +48,7 @@ QAction::~QAction()
 */
 
 /*!
-    \property QAction::active
+    \property Qt3DInput::QAction::active
 
     Holds \c true if the action is active.
 

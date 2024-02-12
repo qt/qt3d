@@ -102,13 +102,13 @@ QAdditiveClipBlend::~QAdditiveClipBlend()
 }
 
 /*!
-    \qmlproperty real AdditiveClipBlend::additiveFactor
+    \qmlproperty real Qt3D.Animation::AdditiveClipBlend::additiveFactor
 
     Specifies the blending factor, typically between 0 and 1, to control the blending of
     two animation clips.
 */
 /*!
-    \property QAdditiveClipBlend::additiveFactor
+    \property Qt3DAnimation::QAdditiveClipBlend::additiveFactor
 
     Specifies the blending factor, typically between 0 and 1, to control the blending of
     two animation clips.
@@ -126,7 +126,7 @@ float QAdditiveClipBlend::additiveFactor() const
     also be the resulting clip of this blend node.
 */
 /*!
-    \property QAdditiveClipBlend::baseClip
+    \property Qt3DAnimation::QAdditiveClipBlend::baseClip
 
     This property holds the base animation clip. When the additiveFactor
     is zero the baseClip will also be the resulting clip of this blend node.
@@ -144,7 +144,7 @@ QAbstractClipBlendNode *QAdditiveClipBlend::baseClip() const
     is controlled by the additiveFactor property.
 */
 /*!
-    \property QAdditiveClipBlend::additiveClip
+    \property Qt3DAnimation::QAdditiveClipBlend::additiveClip
 
     This property holds the additive clip to be blended with the baseClip. The amount of blending
     is controlled by the additiveFactor property.

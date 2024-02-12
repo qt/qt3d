@@ -71,7 +71,7 @@ void QFilterKey::setName(const QString &name)
 }
 
 /*!
-    \property QFilterKey::value
+    \property Qt3DRender::QFilterKey::value
 
     Holds the value of the filter key.
 */
@@ -89,7 +89,7 @@ QVariant QFilterKey::value() const
 }
 
 /*!
-    \property QFilterKey::name
+    \property Qt3DRender::QFilterKey::name
 
     Holds the name of the filter key.
 */

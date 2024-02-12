@@ -121,7 +121,7 @@ namespace Qt3DRender {
 */
 
 /*!
-    \property QCullFace::mode
+    \property Qt3DRender::QCullFace::mode
     Holds the culling mode used by QCullFace. Default is set to QCullFace.Back.
 */
 

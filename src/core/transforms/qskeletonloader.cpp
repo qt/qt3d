@@ -95,7 +95,7 @@ void QSkeletonLoaderPrivate::setRootJoint(QJoint *rootJoint)
 */
 
 /*!
-    \enum QSkeletonLoader::Status
+    \enum Qt3DCore::QSkeletonLoader::Status
 
     This enum identifies the status of skeleton.
 

@@ -53,7 +53,7 @@ QInputSettings::~QInputSettings()
 }
 
 /*!
-    \property QInputSettings::eventSource
+    \property Qt3DInput::QInputSettings::eventSource
 
     Holds the current event source. An event source is an object that is capable
     of receiving various input events, such as mouse or keyboard events.

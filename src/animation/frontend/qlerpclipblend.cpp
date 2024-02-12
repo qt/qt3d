@@ -79,7 +79,7 @@ QLerpClipBlend::~QLerpClipBlend()
     two animation clips.
 */
 /*!
-    \property QLerpClipBlend::blendFactor
+    \property Qt3DAnimation::QLerpClipBlend::blendFactor
 
     Specifies the blending factor between 0 and 1 to control the blending of
     two animation clips.
@@ -98,7 +98,7 @@ float QLerpClipBlend::blendFactor() const
     the blendFactor is set to a value of 0.
 */
 /*!
-    \property QLerpClipBlend::startClip
+    \property Qt3DAnimation::QLerpClipBlend::startClip
 
     Holds the sub-tree that should be used as the start clip for this
     lerp blend node. That is, the clip returned by this blend node when
@@ -118,7 +118,7 @@ Qt3DAnimation::QAbstractClipBlendNode *QLerpClipBlend::startClip() const
     the blendFactor is set to a value of 1.
 */
 /*!
-    \property QLerpClipBlend::endClip
+    \property Qt3DAnimation::QLerpClipBlend::endClip
 
     Holds the sub-tree that should be used as the start clip for this
     lerp blend node. That is, the clip returned by this blend node when

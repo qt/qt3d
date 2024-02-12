@@ -111,7 +111,7 @@ void QCylinderMesh::setLength(float length)
 }
 
 /*!
- * \property QCylinderMesh::rings
+ * \property Qt3DExtras::QCylinderMesh::rings
  *
  * Holds the number of rings in the mesh.
  */
@@ -121,7 +121,7 @@ int QCylinderMesh::rings() const
 }
 
 /*!
- * \property QCylinderMesh::slices
+ * \property Qt3DExtras::QCylinderMesh::slices
  *
  * Holds the number of slices in the mesh.
  */
@@ -131,7 +131,7 @@ int QCylinderMesh::slices() const
 }
 
 /*!
- * \property QCylinderMesh::radius
+ * \property Qt3DExtras::QCylinderMesh::radius
  *
  * Holds the radius of the cylinder.
  */
@@ -141,7 +141,7 @@ float QCylinderMesh::radius() const
 }
 
 /*!
- * \property QCylinderMesh::length
+ * \property Qt3DExtras::QCylinderMesh::length
  *
  * Holds the length of the cylinder.
  */

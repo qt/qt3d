@@ -84,7 +84,7 @@ void QBufferPrivate::setData(const QByteArray &data)
  */
 
 /*!
- * \enum QBuffer::UsageType
+ * \enum Qt3DCore::QBuffer::UsageType
  *
  * The type of the usage.
  *
@@ -109,7 +109,7 @@ void QBufferPrivate::setData(const QByteArray &data)
  */
 
 /*!
- * \enum QBuffer::AccessType
+ * \enum Qt3DCore::QBuffer::AccessType
  *
  * \value Write
  *        Write access
@@ -184,7 +184,7 @@ QByteArray QBuffer::data() const
 }
 
 /*!
- * \property QBuffer::usage
+ * \property Qt3DCore::QBuffer::usage
  *
  * Holds the buffer usage.
  */

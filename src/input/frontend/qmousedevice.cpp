@@ -51,7 +51,7 @@ QMouseDevicePrivate::QMouseDevicePrivate()
  */
 
 /*!
-    \enum QMouseDevice::Axis
+    \enum Qt3DInput::QMouseDevice::Axis
 
     The mouse axis.
 

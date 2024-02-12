@@ -376,7 +376,7 @@ void QTorusGeometry::setMinorRadius(float minorRadius)
 }
 
 /*!
- * \property QTorusGeometry::rings
+ * \property Qt3DExtras::QTorusGeometry::rings
  *
  * Holds the number of rings in the torus.
  */
@@ -387,7 +387,7 @@ int QTorusGeometry::rings() const
 }
 
 /*!
- * \property QTorusGeometry::slices
+ * \property Qt3DExtras::QTorusGeometry::slices
  *
  * Holds the number of slices in the torus.
  */
@@ -398,7 +398,7 @@ int QTorusGeometry::slices() const
 }
 
 /*!
- * \property QTorusGeometry::radius
+ * \property Qt3DExtras::QTorusGeometry::radius
  *
  * Holds the outer radius of the torus.
  */
@@ -409,7 +409,7 @@ float QTorusGeometry::radius() const
 }
 
 /*!
- * \property QTorusGeometry::minorRadius
+ * \property Qt3DExtras::QTorusGeometry::minorRadius
  *
  * Holds the inner radius of the torus.
  */
@@ -420,7 +420,7 @@ float QTorusGeometry::minorRadius() const
 }
 
 /*!
- * \property QTorusGeometry::positionAttribute
+ * \property Qt3DExtras::QTorusGeometry::positionAttribute
  *
  * Holds the geometry position attribute.
  */
@@ -431,7 +431,7 @@ QAttribute *QTorusGeometry::positionAttribute() const
 }
 
 /*!
- * \property QTorusGeometry::normalAttribute
+ * \property Qt3DExtras::QTorusGeometry::normalAttribute
  *
  * Holds the geometry normal attribute.
  */
@@ -442,7 +442,7 @@ QAttribute *QTorusGeometry::normalAttribute() const
 }
 
 /*!
- * \property QTorusGeometry::texCoordAttribute
+ * \property Qt3DExtras::QTorusGeometry::texCoordAttribute
  *
  * Holds the geometry texture coordinate attribute.
  */
@@ -453,7 +453,7 @@ QAttribute *QTorusGeometry::texCoordAttribute() const
 }
 
 /*!
- * \property QTorusGeometry::indexAttribute
+ * \property Qt3DExtras::QTorusGeometry::indexAttribute
  *
  * Holds the geometry index attribute.
  */

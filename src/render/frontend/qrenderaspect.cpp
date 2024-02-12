@@ -566,7 +566,7 @@ void QRenderAspectPrivate::registerBackendType(const QMetaObject &obj,
 }
 
 /*!
- * \enum QRenderAspect::SubmissionType
+ * \enum Qt3DRender::QRenderAspect::SubmissionType
  *
  * \value Automatic
  *        The QRenderAspect takes care of submitting rendering commands to the

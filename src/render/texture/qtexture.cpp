@@ -1492,7 +1492,7 @@ QTextureLoader::~QTextureLoader()
 }
 
 /*!
-    \property QTextureLoader::source
+    \property Qt3DRender::QTextureLoader::source
 
     \brief The current texture source.
 */

@@ -48,7 +48,7 @@ QSortPolicyPrivate::QSortPolicyPrivate()
  */
 
 /*!
-    \enum QSortPolicy::SortType
+    \enum Qt3DRender::QSortPolicy::SortType
 
     This enum type describes the available sort types.
 
@@ -71,7 +71,7 @@ QSortPolicyPrivate::QSortPolicyPrivate()
 */
 
 /*!
-    \property QSortPolicy::sortTypes
+    \property Qt3DRender::QSortPolicy::sortTypes
     Specifies the sorting types to be used.
 */
 

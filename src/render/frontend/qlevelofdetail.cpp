@@ -165,7 +165,7 @@ void QLevelOfDetailPrivate::setCurrentIndex(int currentIndex)
  */
 
 /*!
- * \property QLevelOfDetail::camera
+ * \property Qt3DRender::QLevelOfDetail::camera
  *
  * Holds the id of the camera that is used to compute the actual distance or the screen size.
  */
@@ -177,7 +177,7 @@ void QLevelOfDetailPrivate::setCurrentIndex(int currentIndex)
  */
 
 /*!
- * \property QLevelOfDetail::currentIndex
+ * \property Qt3DRender::QLevelOfDetail::currentIndex
  *
  * The index in the range array which matches the current distance to the camera or screen size.
  */
@@ -189,7 +189,7 @@ void QLevelOfDetailPrivate::setCurrentIndex(int currentIndex)
  */
 
 /*!
- * \property QLevelOfDetail::thresholdType
+ * \property Qt3DRender::QLevelOfDetail::thresholdType
  *
  * Specifies how range values are interpreted.
  * \sa Qt3DRender::QLevelOfDetail::ThresholdType
@@ -209,7 +209,7 @@ void QLevelOfDetailPrivate::setCurrentIndex(int currentIndex)
  */
 
 /*!
- * \property QLevelOfDetail::thresholds
+ * \property Qt3DRender::QLevelOfDetail::thresholds
  *
  * Array of range values as float point numbers. The value for the most detailed representation
  * should be specified first.
@@ -241,7 +241,7 @@ void QLevelOfDetailPrivate::setCurrentIndex(int currentIndex)
  */
 
 /*!
- * \property QLevelOfDetail::volumeOverride
+ * \property Qt3DRender::QLevelOfDetail::volumeOverride
  *
  * The default is a sphere of radius 1 and centered at the local origin of the entity.
  * This proxy volume is used to compute the distance to the camera or the size

@@ -109,7 +109,7 @@ using namespace Qt3DCore;
  */
 
 /*!
-    \enum QScene2D::RenderPolicy
+    \enum Qt3DRender::Quick::QScene2D::RenderPolicy
 
     This enum type describes types of render policies available.
     \value Continuous The Scene2D is rendering continuously. This is the default render policy.
@@ -182,7 +182,7 @@ QScene2D::QScene2D(Qt3DCore::QNode *parent)
 }
 
 /*!
-    \property QScene2D::item
+    \property Qt3DRender::Quick::QScene2D::item
     Holds the QQuickItem, which is rendered by QScene2D to the texture.
  */
 QQuickItem* QScene2D::item() const
@@ -205,7 +205,7 @@ void QScene2D::setItem(QQuickItem *item)
 }
 
 /*!
-    \property QScene2D::renderPolicy
+    \property Qt3DRender::Quick::QScene2D::renderPolicy
 
     Holds the render policy of this Scene2D.
  */
@@ -225,7 +225,7 @@ void QScene2D::setRenderPolicy(QScene2D::RenderPolicy renderPolicy)
 }
 
 /*!
-    \property QScene2D::output
+    \property Qt3DRender::Quick::QScene2D::output
     Holds the QRenderTargetOutput, which specifies where the QScene2D is
     rendering to.
  */
@@ -293,7 +293,7 @@ void QScene2D::removeEntity(Qt3DCore::QEntity *entity)
 }
 
 /*!
-    \property QScene2D::mouseEnabled
+    \property Qt3DRender::Quick::QScene2D::mouseEnabled
     Holds whether mouse events are enabled for the rendered item. The mouse events are
     generated from object picking events of the entities added to the QScene2D.
     Mouse is enabled by default.

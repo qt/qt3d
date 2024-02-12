@@ -47,7 +47,7 @@ QAxisSetting::~QAxisSetting()
 }
 
 /*!
-    \property QAxisSetting::axes
+    \property Qt3DInput::QAxisSetting::axes
  */
 
 /*!
@@ -61,7 +61,7 @@ QList<int> QAxisSetting::axes() const
 }
 
 /*!
-    \property QAxisSetting::deadZoneRadius
+    \property Qt3DInput::QAxisSetting::deadZoneRadius
  */
 
 /*!
@@ -75,7 +75,7 @@ float QAxisSetting::deadZoneRadius() const
 }
 
 /*!
-    \property QAxisSetting::smooth
+    \property Qt3DInput::QAxisSetting::smooth
  */
 
 /*!

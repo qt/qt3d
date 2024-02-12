@@ -141,7 +141,7 @@ QChannelMapper *QAbstractClipAnimator::channelMapper() const
     repeat until it is explicitly stopped.
 */
 /*!
-    \enum QAbstractClipAnimator::Loops
+    \enum Qt3DAnimation::QAbstractClipAnimator::Loops
 
     Holds the number of times the animation should play.
 

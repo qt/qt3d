@@ -53,13 +53,13 @@ namespace Qt3DRender {
 */
 
 /*!
-    \property QDepthRange::nearValue
+    \property Qt3DRender::QDepthRange::nearValue
     The depth buffer value corresponding to the near clip plane. Valid values for are
     between 0 and 1.
 */
 
 /*!
-    \property QDepthRange::farValue
+    \property Qt3DRender::QDepthRange::farValue
     The depth buffer value corresponding to the far clip plane. Valid values for are
     between 0 and 1.
 */

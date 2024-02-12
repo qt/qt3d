@@ -671,7 +671,7 @@ void QCuboidGeometry::setXYMeshResolution(const QSize &resolution)
 }
 
 /*!
- * \property QCuboidGeometry::xExtent
+ * \property Qt3DExtras::QCuboidGeometry::xExtent
  *
  * Holds the x extent of the geometry.
  */
@@ -682,7 +682,7 @@ float QCuboidGeometry::xExtent() const
 }
 
 /*!
- * \property QCuboidGeometry::yExtent
+ * \property Qt3DExtras::QCuboidGeometry::yExtent
  *
  * Holds the y extent of the geometry.
  */
@@ -693,7 +693,7 @@ float QCuboidGeometry::yExtent() const
 }
 
 /*!
- * \property QCuboidGeometry::zExtent
+ * \property Qt3DExtras::QCuboidGeometry::zExtent
  *
  * Holds the z extent of the geometry.
  */
@@ -704,7 +704,7 @@ float QCuboidGeometry::zExtent() const
 }
 
 /*!
- * \property QCuboidGeometry::yzMeshResolution
+ * \property Qt3DExtras::QCuboidGeometry::yzMeshResolution
  *
  * Holds the y-z resolution.
  * The width and height values of this property specify the number of vertices generated for
@@ -717,7 +717,7 @@ QSize QCuboidGeometry::yzMeshResolution() const
 }
 
 /*!
- * \property QCuboidGeometry::xzMeshResolution
+ * \property Qt3DExtras::QCuboidGeometry::xzMeshResolution
  *
  * Holds the x-z resolution.
  * The width and height values of this property specify the number of vertices generated for
@@ -730,7 +730,7 @@ QSize QCuboidGeometry::xyMeshResolution() const
 }
 
 /*!
- * \property QCuboidGeometry::xyMeshResolution
+ * \property Qt3DExtras::QCuboidGeometry::xyMeshResolution
  *
  * Holds the x-y resolution.
  * The width and height values of this property specify the number of vertices generated for
@@ -743,7 +743,7 @@ QSize QCuboidGeometry::xzMeshResolution() const
 }
 
 /*!
- * \property QCuboidGeometry::positionAttribute
+ * \property Qt3DExtras::QCuboidGeometry::positionAttribute
  *
  * Holds the geometry position attribute.
  */
@@ -754,7 +754,7 @@ QAttribute *QCuboidGeometry::positionAttribute() const
 }
 
 /*!
- * \property QCuboidGeometry::normalAttribute
+ * \property Qt3DExtras::QCuboidGeometry::normalAttribute
  *
  * Holds the geometry normal attribute.
  */
@@ -765,7 +765,7 @@ QAttribute *QCuboidGeometry::normalAttribute() const
 }
 
 /*!
- * \property QCuboidGeometry::texCoordAttribute
+ * \property Qt3DExtras::QCuboidGeometry::texCoordAttribute
  *
  * Holds the geometry texture coordinate attribute.
  */
@@ -776,7 +776,7 @@ QAttribute *QCuboidGeometry::texCoordAttribute() const
 }
 
 /*!
- * \property QCuboidGeometry::tangentAttribute
+ * \property Qt3DExtras::QCuboidGeometry::tangentAttribute
  *
  * Holds the geometry tangent attribute.
  */
@@ -787,7 +787,7 @@ QAttribute *QCuboidGeometry::tangentAttribute() const
 }
 
 /*!
- * \property QCuboidGeometry::indexAttribute
+ * \property Qt3DExtras::QCuboidGeometry::indexAttribute
  *
  * Holds the geometry index attribute.
  */

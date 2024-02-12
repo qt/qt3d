@@ -178,7 +178,7 @@ QTextureMaterial::~QTextureMaterial()
 }
 
 /*!
-    \property QTextureMaterial::texture
+    \property Qt3DExtras::QTextureMaterial::texture
 
     Holds the current texture used by the material.
 */
@@ -189,7 +189,7 @@ QAbstractTexture *QTextureMaterial::texture() const
 }
 
 /*!
-    \property QTextureMaterial::textureOffset
+    \property Qt3DExtras::QTextureMaterial::textureOffset
 
     This is a utility property. It sets the translation component of the general
     texture transform matrix
@@ -204,7 +204,7 @@ QVector2D QTextureMaterial::textureOffset() const
 
 
 /*!
-    \property QTextureMaterial::textureTransform
+    \property Qt3DExtras::QTextureMaterial::textureTransform
 
     Holds the current texture transform. It is applied to texture
     coordinates at render time. Defaults to identity matrix.
@@ -238,7 +238,7 @@ void QTextureMaterial::setTextureTransform(const QMatrix3x3 &matrix)
 }
 
 /*!
-    \property QTextureMaterial::alphaBlending
+    \property Qt3DExtras::QTextureMaterial::alphaBlending
 
     Indicates if the alpha information coming from the diffuse property will
     be taken into account during rendering. Defaults to false.

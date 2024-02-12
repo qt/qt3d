@@ -55,12 +55,12 @@ namespace Qt3DRender {
 */
 
 /*!
-    \property  QPointSize::value
+    \property  Qt3DRender::QPointSize::value
     Specifies the point size value to be used.
 */
 
 /*!
-    \property QPointSize::sizeMode
+    \property Qt3DRender::QPointSize::sizeMode
     Specifies the sizeMode to be used.
 */
 

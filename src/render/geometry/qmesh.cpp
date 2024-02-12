@@ -194,7 +194,7 @@ void QMesh::setSource(const QUrl& source)
 }
 
 /*!
- * \property QMesh::source
+ * \property Qt3DRender::QMesh::source
  *
  * Holds the \a source url to the file containing the custom mesh.
  */
@@ -217,7 +217,7 @@ void QMesh::setMeshName(const QString &meshName)
 }
 
 /*!
- * \property QMesh::meshName
+ * \property Qt3DRender::QMesh::meshName
  *
  * Holds the name of the mesh.
  */
@@ -228,7 +228,7 @@ QString QMesh::meshName() const
 }
 
 /*!
-    \property QMesh::status
+    \property Qt3DRender::QMesh::status
 
     Holds the status of the mesh loading.
     \sa Qt3DRender::QMesh::Status

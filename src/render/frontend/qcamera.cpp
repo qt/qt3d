@@ -370,7 +370,7 @@ void QCameraPrivate::updateViewMatrixAndTransform(bool doEmit)
  */
 
 /*!
- * \property QCamera::projectionType
+ * \property Qt3DRender::QCamera::projectionType
  *
  * Holds the type of the camera projection. The default value is
  * QCameraLens::PerspectiveProjection.
@@ -387,31 +387,31 @@ void QCameraPrivate::updateViewMatrixAndTransform(bool doEmit)
  */
 
 /*!
- * \property QCamera::nearPlane
+ * \property Qt3DRender::QCamera::nearPlane
  * Holds the current camera near plane. Objects that are closer to the
  * camera than the nearPlane will not be rendered.
  */
 
 /*!
- * \property QCamera::farPlane
+ * \property Qt3DRender::QCamera::farPlane
  * Holds the current camera far plane. Objects that are farther from the
  * camera than the farPlane will not be rendered.
  */
 
 /*!
- * \property QCamera::lens
+ * \property Qt3DRender::QCamera::lens
  * Holds the Qt3DRender::QCameraLens component of the camera.
  * \since 5.14
  */
 
 /*!
- * \property QCamera::transform
+ * \property Qt3DRender::QCamera::transform
  * Holds the Qt3DCore::QTransform component of the camera.
  * \since 5.14
  */
 
 /*!
- * \property QCamera::fieldOfView
+ * \property Qt3DRender::QCamera::fieldOfView
  * Holds the current vertical field of view in degrees.
  *
  * Along with \l aspectRatio, this property determines how much of
@@ -425,12 +425,12 @@ void QCameraPrivate::updateViewMatrixAndTransform(bool doEmit)
  */
 
 /*!
- * \property QCamera::aspectRatio
+ * \property Qt3DRender::QCamera::aspectRatio
  * Holds the current aspect ratio.
  */
 
 /*!
- *\property QCamera::left
+ *\property Qt3DRender::QCamera::left
  * Holds the current left of the camera.
  *
  * This property is only relevant when \l projectionType is
@@ -438,7 +438,7 @@ void QCameraPrivate::updateViewMatrixAndTransform(bool doEmit)
  */
 
 /*!
- * \property QCamera::right
+ * \property Qt3DRender::QCamera::right
  * Holds the current right of the camera.
  *
  * This property is only relevant when \l projectionType is
@@ -446,7 +446,7 @@ void QCameraPrivate::updateViewMatrixAndTransform(bool doEmit)
  */
 
 /*!
- * \property QCamera::bottom
+ * \property Qt3DRender::QCamera::bottom
  * Holds the current bottom of the camera.
  *
  * This property is only relevant when \l projectionType is
@@ -454,7 +454,7 @@ void QCameraPrivate::updateViewMatrixAndTransform(bool doEmit)
  */
 
 /*!
- * \property QCamera::top
+ * \property Qt3DRender::QCamera::top
  * Holds the current top of the camera.
  *
  * This property is only relevant when \l projectionType is
@@ -462,12 +462,12 @@ void QCameraPrivate::updateViewMatrixAndTransform(bool doEmit)
  */
 
 /*!
- * \property QCamera::projectionMatrix
+ * \property Qt3DRender::QCamera::projectionMatrix
  * Holds the current projection matrix of the camera.
  */
 
 /*!
- * \property QCamera::exposure
+ * \property Qt3DRender::QCamera::exposure
  * Holds the current exposure of the camera.
  *
  * The default value is 0.0.
@@ -480,13 +480,13 @@ void QCameraPrivate::updateViewMatrixAndTransform(bool doEmit)
  */
 
 /*!
- * \property QCamera::position
+ * \property Qt3DRender::QCamera::position
  * Holds the camera's position in coordinates relative to
  * the parent entity.
  */
 
 /*!
- * \property QCamera::upVector
+ * \property Qt3DRender::QCamera::upVector
  * Holds the camera's up vector in coordinates relative to
  * the parent entity.
  *
@@ -498,7 +498,7 @@ void QCameraPrivate::updateViewMatrixAndTransform(bool doEmit)
  */
 
 /*!
- * \property QCamera::viewCenter
+ * \property Qt3DRender::QCamera::viewCenter
  * Holds the camera's view center in coordinates relative to
  * the parent entity.
  *
@@ -506,7 +506,7 @@ void QCameraPrivate::updateViewMatrixAndTransform(bool doEmit)
  */
 
 /*!
- * \property QCamera::viewVector
+ * \property Qt3DRender::QCamera::viewVector
  * Holds the camera's view vector in coordinates relative to
  * the parent entity.
  *
@@ -515,7 +515,7 @@ void QCameraPrivate::updateViewMatrixAndTransform(bool doEmit)
  */
 
 /*!
- * \property QCamera::viewMatrix
+ * \property Qt3DRender::QCamera::viewMatrix
  * \deprecated
  * Holds the camera's view matrix in coordinates relative to
  * the parent entity.

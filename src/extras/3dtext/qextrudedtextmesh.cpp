@@ -84,7 +84,7 @@ void QExtrudedTextMesh::setDepth(float depth)
 }
 
 /*!
- * \property QExtrudedTextMesh::text
+ * \property Qt3DExtras::QExtrudedTextMesh::text
  *
  * Holds the text used for the mesh.
  */
@@ -94,7 +94,7 @@ QString QExtrudedTextMesh::text() const
 }
 
 /*!
- * \property QExtrudedTextMesh::font
+ * \property Qt3DExtras::QExtrudedTextMesh::font
  *
  * Holds the font of the text.
  *
@@ -108,7 +108,7 @@ QFont QExtrudedTextMesh::font() const
 }
 
 /*!
- * \property QExtrudedTextMesh::depth
+ * \property Qt3DExtras::QExtrudedTextMesh::depth
  *
  * Holds the extrusion depth of the text.
  */

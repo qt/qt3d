@@ -322,7 +322,7 @@ QMatrix4x4 QTransform::matrix() const
 }
 
 /*!
-    \property QTransform::worldMatrix
+    \property Qt3DCore::QTransform::worldMatrix
 
     Holds the world transformation matrix for the transform. This assumes the
     QTransform component is being referenced by a QEntity. This makes it more

@@ -462,7 +462,7 @@
 */
 
 /*!
-    \enum QShaderProgram::ShaderType
+    \enum Qt3DRender::QShaderProgram::ShaderType
 
     This enum identifies the type of shader used.
 
@@ -475,7 +475,7 @@
 */
 
 /*!
-    \enum QShaderProgram::Status
+    \enum Qt3DRender::QShaderProgram::Status
 
     This enum identifies the status of shader used.
 
@@ -485,7 +485,7 @@
 */
 
 /*!
-    \enum QShaderProgram::Format
+    \enum Qt3DRender::QShaderProgram::Format
 
     This enum identifies the format of the shader code used.
 
@@ -549,7 +549,7 @@ QShaderProgram::QShaderProgram(QShaderProgramPrivate &dd, QNode *parent)
     Holds the vertex shader code used by this shader program.
 */
 /*!
-    \property QShaderProgram::vertexShaderCode
+    \property Qt3DRender::QShaderProgram::vertexShaderCode
 
     Holds the vertex shader code used by this shader program.
 */
@@ -574,7 +574,7 @@ QByteArray QShaderProgram::vertexShaderCode() const
     Holds the tesselation control shader code used by this shader program.
 */
 /*!
-    \property QShaderProgram::tessellationControlShaderCode
+    \property Qt3DRender::QShaderProgram::tessellationControlShaderCode
 
     Holds the tesselation control shader code used by this shader program.
 */
@@ -599,7 +599,7 @@ QByteArray QShaderProgram::tessellationControlShaderCode() const
     Holds the tesselation evaluation shader code used by this shader program.
 */
 /*!
-    \property QShaderProgram::tessellationEvaluationShaderCode
+    \property Qt3DRender::QShaderProgram::tessellationEvaluationShaderCode
 
     Holds the tesselation evaluation shader code used by this shader program.
 */
@@ -624,7 +624,7 @@ QByteArray QShaderProgram::tessellationEvaluationShaderCode() const
     Holds the geometry shader code used by this shader program.
 */
 /*!
-    \property QShaderProgram::geometryShaderCode
+    \property Qt3DRender::QShaderProgram::geometryShaderCode
 
     Holds the geometry shader code used by this shader program.
 */
@@ -649,7 +649,7 @@ QByteArray QShaderProgram::geometryShaderCode() const
     Holds the fragment shader code used by this shader program.
 */
 /*!
-    \property QShaderProgram::fragmentShaderCode
+    \property Qt3DRender::QShaderProgram::fragmentShaderCode
 
     Holds the fragment shader code used by this shader program.
 */
@@ -674,7 +674,7 @@ QByteArray QShaderProgram::fragmentShaderCode() const
     Holds the compute shader code used by this shader program.
 */
 /*!
-    \property QShaderProgram::computeShaderCode
+    \property Qt3DRender::QShaderProgram::computeShaderCode
 
     Holds the compute shader code used by this shader program.
 */
@@ -754,7 +754,7 @@ QByteArray QShaderProgram::shaderCode(ShaderType type) const
     compilation failure of the shader program.
 */
 /*!
-    \property QShaderProgram::log
+    \property Qt3DRender::QShaderProgram::log
 
     Holds the log of the current shader program. This is useful to diagnose a
     compilation failure of the shader program.
@@ -771,7 +771,7 @@ QString QShaderProgram::log() const
     Holds the status of the current shader program.
 */
 /*!
-    \property QShaderProgram::status
+    \property Qt3DRender::QShaderProgram::status
 
     Holds the status of the current shader program.
 */
@@ -801,7 +801,7 @@ void QShaderProgram::setFormat(QShaderProgram::Format format)
     The default is ShaderProgram.GLSL
 */
 /*!
-    \property QShaderProgram::format
+    \property Qt3DRender::QShaderProgram::format
     \since 5.15
 
     Holds the format of the code provided on the ShaderProgram.

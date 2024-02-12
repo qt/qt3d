@@ -239,7 +239,7 @@ QBlendedClipAnimator::~QBlendedClipAnimator()
     be evaluated before being interpolated by the animator.
 */
 /*!
-    \property QBlendedClipAnimator::blendTree
+    \property Qt3DAnimation::QBlendedClipAnimator::blendTree
 
     This property holds the root of the animation blend tree that will be evaluated before being
     interpolated by the animator.

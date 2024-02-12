@@ -201,7 +201,7 @@ QKeyboardDevice::~QKeyboardDevice()
 */
 
 /*!
-    \property QKeyboardDevice::activeInput
+    \property Qt3DInput::QKeyboardDevice::activeInput
 
     Holds the active QKeyboardHandler of the device.
  */

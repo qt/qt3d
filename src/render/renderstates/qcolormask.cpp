@@ -95,7 +95,7 @@ bool QColorMask::isAlphaMasked() const
 }
 
 /*!
-    \property QColorMask::redMasked
+    \property Qt3DRender::QColorMask::redMasked
     Holds whether the red color component should be written to the frame buffer.
  */
 void QColorMask::setRedMasked(bool redMasked)
@@ -108,7 +108,7 @@ void QColorMask::setRedMasked(bool redMasked)
 }
 
 /*!
-    \property QColorMask::greenMasked
+    \property Qt3DRender::QColorMask::greenMasked
     Holds whether the green color component should be written to the frame buffer.
  */
 void QColorMask::setGreenMasked(bool greenMasked)
@@ -121,7 +121,7 @@ void QColorMask::setGreenMasked(bool greenMasked)
 }
 
 /*!
-    \property QColorMask::blueMasked
+    \property Qt3DRender::QColorMask::blueMasked
     Holds whether the blue color component should be written to the frame buffer.
  */
 void QColorMask::setBlueMasked(bool blueMasked)
@@ -134,7 +134,7 @@ void QColorMask::setBlueMasked(bool blueMasked)
 }
 
 /*!
-    \property QColorMask::alphaMasked
+    \property Qt3DRender::QColorMask::alphaMasked
     Holds whether the alphaMasked component should be written to the frame buffer.
  */
 void QColorMask::setAlphaMasked(bool alphaMasked)

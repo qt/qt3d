@@ -56,18 +56,18 @@ namespace Qt3DRender {
 
 
 /*!
-    \property QClipPlane::planeIndex
+    \property Qt3DRender::QClipPlane::planeIndex
     Holds the index of the plane.
     \note Usually between 0-7.
 */
 
 /*!
-    \property QClipPlane::normal
+    \property Qt3DRender::QClipPlane::normal
     Holds the normal of the plane.
 */
 
 /*!
-    \property QClipPlane::distance
+    \property Qt3DRender::QClipPlane::distance
     Holds the distance of the plane from the world origin.
 */
 

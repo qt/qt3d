@@ -36,7 +36,7 @@ namespace Qt3DRender {
  */
 
 /*!
-    \enum QFrontFace::WindingDirection
+    \enum Qt3DRender::QFrontFace::WindingDirection
 
     This enumeration specifies the winding direction values.
     \value ClockWise Clockwise polygons are front facing.
@@ -49,7 +49,7 @@ namespace Qt3DRender {
 */
 
 /*!
-    \property QFrontFace::direction
+    \property Qt3DRender::QFrontFace::direction
     Holds the winding direction of the front facing polygons. Default is Clockwise.
 */
 

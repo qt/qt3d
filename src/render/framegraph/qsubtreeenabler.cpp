@@ -72,7 +72,7 @@ QSubtreeEnabler::~QSubtreeEnabler()
 }
 
 /*!
-    \enum QSubtreeEnabler::Enablement
+    \enum Qt3DRender::QSubtreeEnabler::Enablement
 
     Specifies whether subtree enablement is persistent or transient.
 

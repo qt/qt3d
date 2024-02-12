@@ -124,7 +124,7 @@ QEnvironmentLight::~QEnvironmentLight()
 */
 
 /*!
-    \property QEnvironmentLight::irradiance
+    \property Qt3DRender::QEnvironmentLight::irradiance
 
     Holds the current environment irradiance map texture.
 
@@ -151,7 +151,7 @@ QAbstractTexture *QEnvironmentLight::irradiance() const
 */
 
 /*!
-    \property QEnvironmentLight::specular
+    \property Qt3DRender::QEnvironmentLight::specular
 
     Holds the current environment specular map texture.
 

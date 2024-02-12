@@ -58,7 +58,7 @@ QRenderTargetSelector::~QRenderTargetSelector()
 }
 
 /*!
-    \property QRenderTargetSelector::target
+    \property Qt3DRender::QRenderTargetSelector::target
     Holds the current render target
  */
 

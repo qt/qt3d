@@ -65,7 +65,7 @@ QBlendEquation::~QBlendEquation()
  */
 
 /*!
-    \property QBlendEquation::blendFunction
+    \property Qt3DRender::QBlendEquation::blendFunction
 
     Holds the blend function, which determines how source and destination colors are combined.
  */

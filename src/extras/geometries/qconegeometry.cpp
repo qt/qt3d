@@ -432,66 +432,66 @@ void QConeGeometry::updateIndices()
 }
 
 /*!
- * \property QConeGeometry::hasTopEndcap
+ * \property Qt3DExtras::QConeGeometry::hasTopEndcap
  *
  * Determines if the cone top is capped or open.
  */
 /*!
- * \property QConeGeometry::hasBottomEndcap
+ * \property Qt3DExtras::QConeGeometry::hasBottomEndcap
  *
  * Determines if the cone bottom is capped or open.
  */
 
 /*!
- * \property QConeGeometry::rings
+ * \property Qt3DExtras::QConeGeometry::rings
  *
  * Holds the number of rings in the geometry.
  */
 
 /*!
- * \property QConeGeometry::slices
+ * \property Qt3DExtras::QConeGeometry::slices
  *
  * Holds the number of slices in the geometry.
  */
 
 /*!
- * \property QConeGeometry::topRadius
+ * \property Qt3DExtras::QConeGeometry::topRadius
  *
  * Holds the top radius of the cone.
  */
 
 /*!
- * \property QConeGeometry::bottomRadius
+ * \property Qt3DExtras::QConeGeometry::bottomRadius
  *
  * Holds the bottom radius of the cone.
  */
 
 /*!
- * \property QConeGeometry::length
+ * \property Qt3DExtras::QConeGeometry::length
  *
  * Holds the length of the cone.
  */
 
 /*!
- * \property QConeGeometry::positionAttribute
+ * \property Qt3DExtras::QConeGeometry::positionAttribute
  *
  * Holds the geometry position attribute.
  */
 
 /*!
- * \property QConeGeometry::normalAttribute
+ * \property Qt3DExtras::QConeGeometry::normalAttribute
  *
  * Holds the geometry normal attribute.
  */
 
 /*!
- * \property QConeGeometry::texCoordAttribute
+ * \property Qt3DExtras::QConeGeometry::texCoordAttribute
  *
  * Holds the geometry texture coordinate attribute.
  */
 
 /*!
- * \property QConeGeometry::indexAttribute
+ * \property Qt3DExtras::QConeGeometry::indexAttribute
  *
  * Holds the geometry index attribute.
  */

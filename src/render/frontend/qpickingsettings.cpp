@@ -135,7 +135,7 @@ float QPickingSettings::worldSpaceTolerance() const
     \sa Qt3DRender::QPickingSettings::PickMethod
 */
 /*!
-    \property QPickingSettings::pickMethod
+    \property Qt3DRender::QPickingSettings::pickMethod
 
     Holds the current pick method.
 
@@ -184,7 +184,7 @@ void QPickingSettings::setPickMethod(QPickingSettings::PickMethod pickMethod)
     \sa Qt3DRender::QPickingSettings::PickResultMode
 */
 /*!
-    \property QPickingSettings::pickResultMode
+    \property Qt3DRender::QPickingSettings::pickResultMode
 
     Holds the current pick results mode.
 
@@ -232,7 +232,7 @@ void QPickingSettings::setPickResultMode(QPickingSettings::PickResultMode pickRe
     \endlist
 */
 /*!
-    \property QPickingSettings::faceOrientationPickingMode
+    \property Qt3DRender::QPickingSettings::faceOrientationPickingMode
 
     Specifies how face orientation affects triangle picking
 */
@@ -252,7 +252,7 @@ void QPickingSettings::setFaceOrientationPickingMode(QPickingSettings::FaceOrien
     Holds the threshold, in model space coordinates, used to evaluate line and point picking.
 */
 /*!
-    \property QPickingSettings::worldSpaceTolerance
+    \property Qt3DRender::QPickingSettings::worldSpaceTolerance
 
     Holds the threshold, in model space coordinates, used to evaluate line and point picking.
 */

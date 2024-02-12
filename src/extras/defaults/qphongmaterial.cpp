@@ -204,7 +204,7 @@ QPhongMaterial::~QPhongMaterial()
 }
 
 /*!
-    \property QPhongMaterial::ambient
+    \property Qt3DExtras::QPhongMaterial::ambient
 
     Holds the ambient color.
 */
@@ -215,7 +215,7 @@ QColor QPhongMaterial::ambient() const
 }
 
 /*!
-    \property QPhongMaterial::diffuse
+    \property Qt3DExtras::QPhongMaterial::diffuse
 
     Holds the diffuse color.
 */
@@ -226,7 +226,7 @@ QColor QPhongMaterial::diffuse() const
 }
 
 /*!
-    \property QPhongMaterial::specular
+    \property Qt3DExtras::QPhongMaterial::specular
 
     Holds the specular color.
 */
@@ -237,7 +237,7 @@ QColor QPhongMaterial::specular() const
 }
 
 /*!
-    \property QPhongMaterial::shininess
+    \property Qt3DExtras::QPhongMaterial::shininess
 
     Holds the shininess exponent.
 */

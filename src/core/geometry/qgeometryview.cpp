@@ -212,7 +212,7 @@ void QGeometryViewPrivate::update()
 
 
 /*!
-    \enum QGeometryView::PrimitiveType
+    \enum Qt3DCore::QGeometryView::PrimitiveType
 
     The type of the primitive.
 
@@ -337,7 +337,7 @@ QGeometryView::QGeometryView(QGeometryViewPrivate &dd, QNode *parent)
 }
 
 /*!
-    \property QGeometryView::instanceCount
+    \property Qt3DCore::QGeometryView::instanceCount
 
     Holds the instance count.
  */
@@ -348,7 +348,7 @@ int QGeometryView::instanceCount() const
 }
 
 /*!
-    \property QGeometryView::vertexCount
+    \property Qt3DCore::QGeometryView::vertexCount
 
     Holds the primitive count.
  */
@@ -359,7 +359,7 @@ int QGeometryView::vertexCount() const
 }
 
 /*!
-    \property QGeometryView::indexOffset
+    \property Qt3DCore::QGeometryView::indexOffset
 
     Holds the base vertex.
  */
@@ -370,7 +370,7 @@ int QGeometryView::indexOffset() const
 }
 
 /*!
-    \property QGeometryView::firstInstance
+    \property Qt3DCore::QGeometryView::firstInstance
 
     Holds the base instance.
  */
@@ -381,7 +381,7 @@ int QGeometryView::firstInstance() const
 }
 
 /*!
-    \property QGeometryView::firstVertex
+    \property Qt3DCore::QGeometryView::firstVertex
 
     Holds the base vertex.
  */
@@ -392,7 +392,7 @@ int QGeometryView::firstVertex() const
 }
 
 /*!
-    \property QGeometryView::indexBufferByteOffset
+    \property Qt3DCore::QGeometryView::indexBufferByteOffset
 
     Holds the byte offset into the index buffer.
  */
@@ -403,7 +403,7 @@ int QGeometryView::indexBufferByteOffset() const
 }
 
 /*!
-    \property QGeometryView::restartIndexValue
+    \property Qt3DCore::QGeometryView::restartIndexValue
 
     Holds the restart index.
  */
@@ -414,7 +414,7 @@ int QGeometryView::restartIndexValue() const
 }
 
 /*!
-    \property QGeometryView::verticesPerPatch
+    \property Qt3DCore::QGeometryView::verticesPerPatch
 
     Holds vertices per patch.
  */
@@ -425,7 +425,7 @@ int QGeometryView::verticesPerPatch() const
 }
 
 /*!
-    \property QGeometryView::primitiveRestartEnabled
+    \property Qt3DCore::QGeometryView::primitiveRestartEnabled
 
     Holds the primitive restart flag.
  */
@@ -436,7 +436,7 @@ bool QGeometryView::primitiveRestartEnabled() const
 }
 
 /*!
-    \property QGeometryView::geometry
+    \property Qt3DCore::QGeometryView::geometry
 
     Holds the geometry.
  */
@@ -447,7 +447,7 @@ QGeometry *QGeometryView::geometry() const
 }
 
 /*!
-    \property QGeometryView::primitiveType
+    \property Qt3DCore::QGeometryView::primitiveType
 
     Holds the primitive type.
  */

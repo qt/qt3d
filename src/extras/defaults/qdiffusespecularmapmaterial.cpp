@@ -228,7 +228,7 @@ QDiffuseSpecularMapMaterial::~QDiffuseSpecularMapMaterial()
 }
 
 /*!
-    \property QDiffuseSpecularMapMaterial::ambient
+    \property Qt3DExtras::QDiffuseSpecularMapMaterial::ambient
 
     Holds the current ambient color that is emitted by an object without any
     other light source.
@@ -240,7 +240,7 @@ QColor QDiffuseSpecularMapMaterial::ambient() const
 }
 
 /*!
-    \property QDiffuseSpecularMapMaterial::diffuse
+    \property Qt3DExtras::QDiffuseSpecularMapMaterial::diffuse
 
     Holds the current diffuse map texture.
 
@@ -260,7 +260,7 @@ QAbstractTexture *QDiffuseSpecularMapMaterial::diffuse() const
 }
 
 /*!
-    \property QDiffuseSpecularMapMaterial::specular
+    \property Qt3DExtras::QDiffuseSpecularMapMaterial::specular
 
     Holds the current specular map texture.
 
@@ -280,7 +280,7 @@ QAbstractTexture *QDiffuseSpecularMapMaterial::specular() const
 }
 
 /*!
-    \property QDiffuseSpecularMapMaterial::shininess
+    \property Qt3DExtras::QDiffuseSpecularMapMaterial::shininess
 
     Holds the current shininess as a float value. Higher values of shininess result in
     a smaller and brighter highlight.
@@ -294,7 +294,7 @@ float QDiffuseSpecularMapMaterial::shininess() const
 }
 
 /*!
-    \property QDiffuseSpecularMapMaterial::textureScale
+    \property Qt3DExtras::QDiffuseSpecularMapMaterial::textureScale
 
     Holds the current texture scale. It is applied as a multiplier to texture
     coordinates at render time. Defaults to 1.0.

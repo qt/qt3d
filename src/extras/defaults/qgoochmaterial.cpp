@@ -217,7 +217,7 @@ QGoochMaterial::QGoochMaterial(QGoochMaterialPrivate &dd, QNode *parent)
 }
 
 /*!
-    \property QGoochMaterial::diffuse
+    \property Qt3DExtras::QGoochMaterial::diffuse
 
     Holds the current diffuse color.
 */
@@ -228,7 +228,7 @@ QColor QGoochMaterial::diffuse() const
 }
 
 /*!
-    \property QGoochMaterial::specular
+    \property Qt3DExtras::QGoochMaterial::specular
 
     Holds the current specular color.
 */
@@ -239,7 +239,7 @@ QColor QGoochMaterial::specular() const
 }
 
 /*!
-    \property QGoochMaterial::cool
+    \property Qt3DExtras::QGoochMaterial::cool
 
     Holds the current cool color.
 */
@@ -250,7 +250,7 @@ QColor QGoochMaterial::cool() const
 }
 
 /*!
-    \property QGoochMaterial::warm
+    \property Qt3DExtras::QGoochMaterial::warm
 
     Holds the current warm color.
 */
@@ -261,7 +261,7 @@ QColor QGoochMaterial::warm() const
 }
 
 /*!
-    \property QGoochMaterial::alpha
+    \property Qt3DExtras::QGoochMaterial::alpha
 
     Holds the current alpha value. The start point of the color ramp
     used by the Gooch shader is calculated as {c = cool + alpha * diffuse}.
@@ -273,7 +273,7 @@ float QGoochMaterial::alpha() const
 }
 
 /*!
-    \property QGoochMaterial::beta
+    \property Qt3DExtras::QGoochMaterial::beta
 
     Holds the current beta value. The start point of the color ramp
     used by the Gooch shader is calculated as {c = warm + beta * diffuse}.
@@ -285,7 +285,7 @@ float QGoochMaterial::beta() const
 }
 
 /*!
-    \property QGoochMaterial::shininess
+    \property Qt3DExtras::QGoochMaterial::shininess
 
     Holds the current shininess value. Higher values of shininess result in
     a smaller and brighter highlight.

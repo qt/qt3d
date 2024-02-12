@@ -93,7 +93,7 @@ void QSphereGeometryView::setGenerateTangents(bool gen)
 }
 
 /*!
- * \property QSphereGeometryView::generateTangents
+ * \property Qt3DExtras::QSphereGeometryView::generateTangents
  *
  * Holds the value of the automatic tangent vectors generation flag.
  * Tangent vectors are orthogonal to normal vectors.
@@ -104,7 +104,7 @@ bool QSphereGeometryView::generateTangents() const
 }
 
 /*!
- * \property QSphereGeometryView::rings
+ * \property Qt3DExtras::QSphereGeometryView::rings
  *
  * Holds the number of rings in the mesh.
  */
@@ -114,7 +114,7 @@ int QSphereGeometryView::rings() const
 }
 
 /*!
- * \property QSphereGeometryView::slices
+ * \property Qt3DExtras::QSphereGeometryView::slices
  *
  * Holds the number of slices in the mesh.
  */
@@ -124,7 +124,7 @@ int QSphereGeometryView::slices() const
 }
 
 /*!
- * \property QSphereGeometryView::radius
+ * \property Qt3DExtras::QSphereGeometryView::radius
  *
  * Holds the radius of the sphere.
  */

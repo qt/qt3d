@@ -31,7 +31,7 @@ namespace Qt3DRender {
 */
 
 /*!
-    \property  QLineWidth::value
+    \property  Qt3DRender::QLineWidth::value
     Specifies the width value to be used.
 */
 

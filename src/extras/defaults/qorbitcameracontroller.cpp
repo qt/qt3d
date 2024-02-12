@@ -86,7 +86,7 @@ QOrbitCameraController::~QOrbitCameraController()
 }
 
 /*!
-    \property QOrbitCameraController::zoomInLimit
+    \property Qt3DExtras::QOrbitCameraController::zoomInLimit
 
     Holds the current zoom-in limit. The zoom-in limit determines how close to the view center
     the camera can be zoomed.

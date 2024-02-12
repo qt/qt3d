@@ -95,7 +95,7 @@ QAttributePrivate *QAttributePrivate::get(QAttribute *q)
  */
 
 /*!
- * \enum QAttribute::AttributeType
+ * \enum Qt3DCore::QAttribute::AttributeType
  *
  * The type of the attribute.
  *
@@ -105,7 +105,7 @@ QAttributePrivate *QAttributePrivate::get(QAttribute *q)
  */
 
 /*!
- * \enum QAttribute::VertexBaseType
+ * \enum Qt3DCore::QAttribute::VertexBaseType
  *
  * The type of the data.
  *
@@ -168,7 +168,7 @@ QAttribute::~QAttribute()
 }
 
 /*!
- * \property QAttribute::buffer
+ * \property Qt3DCore::QAttribute::buffer
  *
  * Holds the buffer.
  */
@@ -179,7 +179,7 @@ QBuffer *QAttribute::buffer() const
 }
 
 /*!
- * \property QAttribute::name
+ * \property Qt3DCore::QAttribute::name
  *
  * Holds the name.
  */
@@ -190,7 +190,7 @@ QString QAttribute::name() const
 }
 
 /*!
- * \property QAttribute::vertexSize
+ * \property Qt3DCore::QAttribute::vertexSize
  *
  * Holds the data size, it can only be 1 to 4 units (scalars and vectors),
  * 9 units (3x3 matrices) or 16 units (4x4 matrices).
@@ -202,7 +202,7 @@ uint QAttribute::vertexSize() const
 }
 
 /*!
- * \property QAttribute::vertexBaseType
+ * \property Qt3DCore::QAttribute::vertexBaseType
  *
  * Holds the data type.
  */
@@ -213,7 +213,7 @@ QAttribute::VertexBaseType QAttribute::vertexBaseType() const
 }
 
 /*!
- * \property QAttribute::count
+ * \property Qt3DCore::QAttribute::count
  *
  * Holds the count.
  */
@@ -224,7 +224,7 @@ uint QAttribute::count() const
 }
 
 /*!
- * \property QAttribute::byteStride
+ * \property Qt3DCore::QAttribute::byteStride
  *
  * Holds the byte stride.
  */
@@ -235,7 +235,7 @@ uint QAttribute::byteStride() const
 }
 
 /*!
- * \property QAttribute::byteOffset
+ * \property Qt3DCore::QAttribute::byteOffset
  *
  * Holds the byte offset.
  */
@@ -246,7 +246,7 @@ uint QAttribute::byteOffset() const
 }
 
 /*!
- * \property QAttribute::divisor
+ * \property Qt3DCore::QAttribute::divisor
  *
  * Holds the divisor.
  */
@@ -257,7 +257,7 @@ uint QAttribute::divisor() const
 }
 
 /*!
- * \property QAttribute::attributeType
+ * \property Qt3DCore::QAttribute::attributeType
  *
  * Holds the attribute type.
  */

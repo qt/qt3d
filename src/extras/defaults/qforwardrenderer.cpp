@@ -182,7 +182,7 @@ void QForwardRenderer::setShowDebugOverlay(bool showDebugOverlay)
     Holds the current normalized viewport rectangle.
 */
 /*!
-    \property QForwardRenderer::viewportRect
+    \property Qt3DExtras::QForwardRenderer::viewportRect
 
     Holds the current normalized viewport rectangle.
 */
@@ -199,7 +199,7 @@ QRectF QForwardRenderer::viewportRect() const
     before rendering.
 */
 /*!
-    \property QForwardRenderer::clearColor
+    \property Qt3DExtras::QForwardRenderer::clearColor
 
     Holds the current clear color of the scene. The frame buffer is initialized to the clear color
     before rendering.
@@ -217,7 +217,7 @@ QColor QForwardRenderer::clearColor() const
     \since 5.14
 */
 /*!
-    \property QForwardRenderer::buffersToClear
+    \property Qt3DExtras::QForwardRenderer::buffersToClear
 
     Holds the current buffers to be cleared. Default value is ColorDepthBuffer
     \since 5.14
@@ -236,7 +236,7 @@ QClearBuffers::BufferType QForwardRenderer::buffersToClear() const
     \note A camera is an Entity that has a CameraLens as one of its components.
 */
 /*!
-    \property QForwardRenderer::camera
+    \property Qt3DExtras::QForwardRenderer::camera
 
     Holds the current camera entity used to render the scene.
 
@@ -256,7 +256,7 @@ Qt3DCore::QEntity *QForwardRenderer::camera() const
     \deprecated
 */
 /*!
-    \property QForwardRenderer::window
+    \property Qt3DExtras::QForwardRenderer::window
 
     Holds the current render surface.
 
@@ -269,7 +269,7 @@ Qt3DCore::QEntity *QForwardRenderer::camera() const
     Holds the current render surface.
 */
 /*!
-    \property QForwardRenderer::surface
+    \property Qt3DExtras::QForwardRenderer::surface
 
     Holds the current render surface.
 */
@@ -287,7 +287,7 @@ QObject *QForwardRenderer::surface() const
     surface (as set in \l {surface}).
 */
 /*!
-    \property QForwardRenderer::externalRenderTargetSize
+    \property Qt3DExtras::QForwardRenderer::externalRenderTargetSize
 
     Contains the size of the external render target. External render
     targets are relevant when rendering does not target a window
@@ -305,7 +305,7 @@ QSize QForwardRenderer::externalRenderTargetSize() const
     Indicates if the renderer applies frustum culling to the scene.
 */
 /*!
-    \property QForwardRenderer::frustumCulling
+    \property Qt3DExtras::QForwardRenderer::frustumCulling
 
     Indicates if the renderer applies frustum culling to the scene.
 */
@@ -321,7 +321,7 @@ bool QForwardRenderer::isFrustumCullingEnabled() const
     Holds the gamma value the renderer applies to the scene.
 */
 /*!
-    \property QForwardRenderer::gamma
+    \property Qt3DExtras::QForwardRenderer::gamma
 
     Holds the gamma value the renderer applies to the scene.
 */
@@ -341,7 +341,7 @@ float QForwardRenderer::gamma() const
     \since 5.15
 */
 /*!
-    \property QForwardRenderer::showDebugOverlay
+    \property Qt3DExtras::QForwardRenderer::showDebugOverlay
 
     If true, a debug overlay will be rendered over the scene. It will show
     detailed information about the runtime rendering state, let the user

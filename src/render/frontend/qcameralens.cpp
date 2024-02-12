@@ -105,72 +105,72 @@ namespace Qt3DRender {
 
 
 /*!
- * \property QCameraLens::projectionType
+ * \property Qt3DRender::QCameraLens::projectionType
  *
  * Holds the type of the camera projection.
  * \sa Qt3DRender::QCameraLens::ProjectionType
  */
 
 /*!
- * \property QCameraLens::nearPlane
+ * \property Qt3DRender::QCameraLens::nearPlane
  * Holds the current near plane of the camera lens.
  */
 
 /*!
- * \property QCameraLens::farPlane
+ * \property Qt3DRender::QCameraLens::farPlane
  * Holds the current near plane of the camera lens.
  */
 
 /*!
- * \property QCameraLens::fieldOfView
+ * \property Qt3DRender::QCameraLens::fieldOfView
  * Holds the current field of view of the camera lens.
  * \note: The return value may be undefined if the projection type is not
  * Qt3DRender::QCameraLens::PerspectiveProjection.
  */
 
 /*!
- * \property QCameraLens::aspectRatio
+ * \property Qt3DRender::QCameraLens::aspectRatio
  * Holds the current aspect ratio of the camera lens.
  * \note: The return value may be undefined if the projection type is not
  * Qt3DRender::QCameraLens::PerspectiveProjection.
  */
 
 /*!
- * \property QCameraLens::left
+ * \property Qt3DRender::QCameraLens::left
  * Holds the current left plane of the camera lens.
  * \note The return value may be undefined if the projection type is
  * Qt3DRender::QCameraLens::PerspectiveProjection.
  */
 
 /*!
- * \property QCameraLens::right
+ * \property Qt3DRender::QCameraLens::right
  * Holds the current right plane of the camera lens.
  * \note The return value may be undefined if the projection type is
  * Qt3DRender::QCameraLens::PerspectiveProjection.
  */
 
 /*!
- * \property QCameraLens::bottom
+ * \property Qt3DRender::QCameraLens::bottom
  * Holds the current bottom plane of the camera lens.
  * \note The return value may be undefined if the projection type is
  * Qt3DRender::QCameraLens::PerspectiveProjection.
  */
 
 /*!
- * \property QCameraLens::top
+ * \property Qt3DRender::QCameraLens::top
  * Holds the current top plane of the camera lens.
  * \note The return value may be undefined if the projection type is
  * Qt3DRender::QCameraLens::PerspectiveProjection.
  */
 
 /*!
- * \property QCameraLens::projectionMatrix
+ * \property Qt3DRender::QCameraLens::projectionMatrix
  * Holds the current projection matrix of the camera lens.
  * \readonly
  */
 
 /*!
- * \property QCameraLens::exposure
+ * \property Qt3DRender::QCameraLens::exposure
  * Holds the current exposure of the camera lens.
  */
 

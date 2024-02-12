@@ -120,7 +120,7 @@ QList<QAbstractAxisInput *> QAxis::inputs() const
 }
 
 /*!
-  \property QAxis::value
+  \property Qt3DInput::QAxis::value
 
   The value of the axis.
  */

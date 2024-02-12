@@ -41,7 +41,7 @@ QLayerFilterPrivate::QLayerFilterPrivate()
 */
 
 /*!
-    \enum QLayerFilter::FilterMode
+    \enum Qt3DRender::QLayerFilter::FilterMode
 
     Specifies the rules for selecting entities to draw.
 

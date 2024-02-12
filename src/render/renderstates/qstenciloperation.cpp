@@ -52,12 +52,12 @@ QStencilOperationPrivate::~QStencilOperationPrivate() = default;
 */
 
 /*!
-    \property QStencilOperation::front
+    \property Qt3DRender::QStencilOperation::front
     Holds the stencil operation arguments for front-facing polygons.
 */
 
 /*!
-    \property QStencilOperation::back
+    \property Qt3DRender::QStencilOperation::back
     Holds the stencil operation arguments for back-facing polygons.
 */
 

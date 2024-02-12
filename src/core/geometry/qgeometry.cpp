@@ -107,7 +107,7 @@ void QGeometryPrivate::setExtent(const QVector3D &minExtent, const QVector3D &ma
  */
 
 /*!
-    \property QGeometry::boundingVolumePositionAttribute
+    \property Qt3DCore::QGeometry::boundingVolumePositionAttribute
 
     Holds the attribute used to compute the bounding volume. The bounding volume is used internally
     for picking and view frustum culling.
@@ -202,7 +202,7 @@ QAttribute *QGeometry::boundingVolumePositionAttribute() const
  */
 
 /*!
-    \property QGeometry::minExtent
+    \property Qt3DCore::QGeometry::minExtent
 
     Holds the vertex with the lowest x, y, z position values.
  */
@@ -219,7 +219,7 @@ QVector3D QGeometry::minExtent() const
  */
 
 /*!
-    \property QGeometry::maxExtent
+    \property Qt3DCore::QGeometry::maxExtent
 
     Holds the vertex with the highest x, y, z position values.
  */

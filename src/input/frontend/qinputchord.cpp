@@ -76,7 +76,7 @@ QInputChord::~QInputChord()
 }
 
 /*!
-    \property QInputChord::timeout
+    \property Qt3DInput::QInputChord::timeout
 
     The time in which all QAbstractActionInput's in the input chord must triggered within.
     The time is in milliseconds.

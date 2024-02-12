@@ -421,7 +421,7 @@ void QCylinderGeometry::setLength(float length)
 }
 
 /*!
- * \property QCylinderGeometry::rings
+ * \property Qt3DExtras::QCylinderGeometry::rings
  *
  * Holds the number of rings in the cylinder.
  */
@@ -432,7 +432,7 @@ int QCylinderGeometry::rings() const
 }
 
 /*!
- * \property QCylinderGeometry::slices
+ * \property Qt3DExtras::QCylinderGeometry::slices
  *
  * Holds the number of slices in the cylinder.
  */
@@ -443,7 +443,7 @@ int QCylinderGeometry::slices() const
 }
 
 /*!
- * \property QCylinderGeometry::radius
+ * \property Qt3DExtras::QCylinderGeometry::radius
  *
  * Holds the radius of the cylinder.
  */
@@ -454,7 +454,7 @@ float QCylinderGeometry::radius() const
 }
 
 /*!
- * \property QCylinderGeometry::length
+ * \property Qt3DExtras::QCylinderGeometry::length
  *
  * Holds the length of the cylinder.
  */
@@ -465,7 +465,7 @@ float QCylinderGeometry::length() const
 }
 
 /*!
- * \property QCylinderGeometry::positionAttribute
+ * \property Qt3DExtras::QCylinderGeometry::positionAttribute
  *
  * Holds the geometry position attribute.
  */
@@ -476,7 +476,7 @@ QAttribute *QCylinderGeometry::positionAttribute() const
 }
 
 /*!
- * \property QCylinderGeometry::normalAttribute
+ * \property Qt3DExtras::QCylinderGeometry::normalAttribute
  *
  * Holds the geometry normal attribute.
  */
@@ -487,7 +487,7 @@ QAttribute *QCylinderGeometry::normalAttribute() const
 }
 
 /*!
- * \property QCylinderGeometry::texCoordAttribute
+ * \property Qt3DExtras::QCylinderGeometry::texCoordAttribute
  *
  * Holds the geometry texture coordinate attribute.
  */
@@ -498,7 +498,7 @@ QAttribute *QCylinderGeometry::texCoordAttribute() const
 }
 
 /*!
- * \property QCylinderGeometry::indexAttribute
+ * \property Qt3DExtras::QCylinderGeometry::indexAttribute
  *
  * Holds the geometry index attribute.
  */

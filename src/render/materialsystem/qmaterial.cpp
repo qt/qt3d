@@ -184,7 +184,7 @@ QMaterial::QMaterial(QMaterialPrivate &dd, QNode *parent)
     Specifies the effect to be used with the material.
 */
 /*!
-    \property QMaterial::effect
+    \property Qt3DRender::QMaterial::effect
 
     Specifies the effect to be used with the material.
  */

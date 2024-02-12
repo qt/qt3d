@@ -71,7 +71,7 @@ should keep this enabled (even when providing explicit bounding volumes
 sizes using BoundingVolume).
 */
 /*!
-\property QCoreSettings::boundingVolumesEnabled
+\property Qt3DCore::QCoreSettings::boundingVolumesEnabled
 
 Holds whether bounding volumes handling is enabled. This is true by
 default. Disabling this allows to reduce the amount of computations

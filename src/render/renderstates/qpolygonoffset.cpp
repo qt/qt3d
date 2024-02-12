@@ -48,13 +48,13 @@ namespace Qt3DRender {
 */
 
 /*!
-    \property QPolygonOffset::scaleFactor
+    \property Qt3DRender::QPolygonOffset::scaleFactor
     Holds the scale factor used to create a variable depth offset for
     each polygon. Default value is 0.
 */
 
 /*!
-    \property QPolygonOffset::depthSteps
+    \property Qt3DRender::QPolygonOffset::depthSteps
     Holds the units that create constant depth offsets. Default value is 0.
 */
 

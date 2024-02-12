@@ -62,7 +62,7 @@ QRayCasterHitData::QRayCasterHitData(QRayCasterHit::HitType type, Qt3DCore::QNod
 */
 
 /*!
-    \enum QRayCasterHit::HitType
+    \enum Qt3DRender::QRayCasterHit::HitType
 
     Specifies type of hit that was returned. This is controlled using QPickingSettings.
 

@@ -103,25 +103,25 @@ QStencilOperationArgumentsPrivate::~QStencilOperationArgumentsPrivate() = defaul
 */
 
 /*!
-    \property QStencilOperationArguments::faceMode
+    \property Qt3DRender::QStencilOperationArguments::faceMode
     Holds the faces the arguments are applied to.
     \readonly
 */
 
 /*!
-    \property QStencilOperationArguments::stencilTestFailureOperation
+    \property Qt3DRender::QStencilOperationArguments::stencilTestFailureOperation
     Holds the stencil test operation for when the stencil test fails.
     Default is StencilOperationArguments.Keep.
 */
 
 /*!
-    \property QStencilOperationArguments::depthTestFailureOperation
+    \property Qt3DRender::QStencilOperationArguments::depthTestFailureOperation
     Holds the stencil test operation for when the stencil test passes, but
     depth test fails. Default is StencilOperationArguments.Keep.
 */
 
 /*!
-    \property QStencilOperationArguments::allTestsPassOperation
+    \property Qt3DRender::QStencilOperationArguments::allTestsPassOperation
     Holds the stencil test operation for when depth and stencil test pass. Default is StencilOperationArguments.Keep.
 */
 

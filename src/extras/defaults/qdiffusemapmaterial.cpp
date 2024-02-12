@@ -221,7 +221,7 @@ QDiffuseMapMaterial::~QDiffuseMapMaterial()
 }
 
 /*!
-    \property QDiffuseMapMaterial::ambient
+    \property Qt3DExtras::QDiffuseMapMaterial::ambient
 
     Holds the current ambient color.
 */
@@ -233,7 +233,7 @@ QColor QDiffuseMapMaterial::ambient() const
 }
 
 /*!
-    \property QDiffuseMapMaterial::specular
+    \property Qt3DExtras::QDiffuseMapMaterial::specular
 
     Holds the current specular color.
 */
@@ -244,7 +244,7 @@ QColor QDiffuseMapMaterial::specular() const
 }
 
 /*!
-    \property QDiffuseMapMaterial::shininess
+    \property Qt3DExtras::QDiffuseMapMaterial::shininess
 
     Holds the current shininess as a float value.
 */
@@ -255,7 +255,7 @@ float QDiffuseMapMaterial::shininess() const
 }
 
 /*!
-    \property QDiffuseMapMaterial::diffuse
+    \property Qt3DExtras::QDiffuseMapMaterial::diffuse
 
     Holds the current texture used as the diffuse map.
 
@@ -275,7 +275,7 @@ QAbstractTexture *QDiffuseMapMaterial::diffuse() const
 }
 
 /*!
-    \property QDiffuseMapMaterial::textureScale
+    \property Qt3DExtras::QDiffuseMapMaterial::textureScale
 
     Holds the current texture scale. It is applied as a multiplier to texture
     coordinates at render time. Defaults to 1.0.

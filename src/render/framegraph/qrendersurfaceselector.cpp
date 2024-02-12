@@ -67,16 +67,16 @@ namespace Qt3DRender {
  */
 
 /*!
-     \property QRenderSurfaceSelector::surface
+     \property Qt3DRender::QRenderSurfaceSelector::surface
      Holds the surface
  */
 
 /*!
-     \property QRenderSurfaceSelector::externalRenderTargetSize
+     \property Qt3DRender::QRenderSurfaceSelector::externalRenderTargetSize
      Holds the size of the external render target.
  */
 
-/*! \property QRenderSurfaceSelector::surfacePixelRatio
+/*! \property Qt3DRender::QRenderSurfaceSelector::surfacePixelRatio
 
     Holds the surfacePixelRatio of the surface.
  */

@@ -88,7 +88,7 @@ void QGeometryRendererPrivate::setView(QGeometryView *view)
 
 
 /*!
-    \enum QGeometryRenderer::PrimitiveType
+    \enum Qt3DRender::QGeometryRenderer::PrimitiveType
 
     The type of the primitive.
 
@@ -238,7 +238,7 @@ QGeometryRenderer::QGeometryRenderer(QGeometryRendererPrivate &dd, QNode *parent
 }
 
 /*!
-    \property QGeometryRenderer::instanceCount
+    \property Qt3DRender::QGeometryRenderer::instanceCount
 
     Holds the instance count.
  */
@@ -249,7 +249,7 @@ int QGeometryRenderer::instanceCount() const
 }
 
 /*!
-    \property QGeometryRenderer::vertexCount
+    \property Qt3DRender::QGeometryRenderer::vertexCount
 
     Holds the primitive count.
  */
@@ -260,7 +260,7 @@ int QGeometryRenderer::vertexCount() const
 }
 
 /*!
-    \property QGeometryRenderer::indexOffset
+    \property Qt3DRender::QGeometryRenderer::indexOffset
 
     Holds the base vertex.
  */
@@ -271,7 +271,7 @@ int QGeometryRenderer::indexOffset() const
 }
 
 /*!
-    \property QGeometryRenderer::firstInstance
+    \property Qt3DRender::QGeometryRenderer::firstInstance
 
     Holds the base instance.
  */
@@ -282,7 +282,7 @@ int QGeometryRenderer::firstInstance() const
 }
 
 /*!
-    \property QGeometryRenderer::firstVertex
+    \property Qt3DRender::QGeometryRenderer::firstVertex
 
     Holds the base vertex.
  */
@@ -293,7 +293,7 @@ int QGeometryRenderer::firstVertex() const
 }
 
 /*!
-    \property QGeometryRenderer::indexBufferByteOffset
+    \property Qt3DRender::QGeometryRenderer::indexBufferByteOffset
 
     Holds the byte offset into the index buffer.
  */
@@ -304,7 +304,7 @@ int QGeometryRenderer::indexBufferByteOffset() const
 }
 
 /*!
-    \property QGeometryRenderer::restartIndexValue
+    \property Qt3DRender::QGeometryRenderer::restartIndexValue
 
     Holds the restart index.
  */
@@ -315,7 +315,7 @@ int QGeometryRenderer::restartIndexValue() const
 }
 
 /*!
-    \property QGeometryRenderer::verticesPerPatch
+    \property Qt3DRender::QGeometryRenderer::verticesPerPatch
 
     Holds vertices per patch.
  */
@@ -326,7 +326,7 @@ int QGeometryRenderer::verticesPerPatch() const
 }
 
 /*!
-    \property QGeometryRenderer::primitiveRestartEnabled
+    \property Qt3DRender::QGeometryRenderer::primitiveRestartEnabled
 
     Holds the primitive restart flag.
  */
@@ -337,7 +337,7 @@ bool QGeometryRenderer::primitiveRestartEnabled() const
 }
 
 /*!
-    \property QGeometryRenderer::geometry
+    \property Qt3DRender::QGeometryRenderer::geometry
 
     Holds the geometry.
  */
@@ -348,7 +348,7 @@ QGeometry *QGeometryRenderer::geometry() const
 }
 
 /*!
-    \property QGeometryRenderer::primitiveType
+    \property Qt3DRender::QGeometryRenderer::primitiveType
 
     Holds the primitive type.
  */
@@ -359,7 +359,7 @@ QGeometryRenderer::PrimitiveType QGeometryRenderer::primitiveType() const
 }
 
 /*!
-    \property QGeometryRenderer::sortIndex
+    \property Qt3DRender::QGeometryRenderer::sortIndex
     \since 6.0
 
     Overrides the sorting index when depth sorting is enabled.

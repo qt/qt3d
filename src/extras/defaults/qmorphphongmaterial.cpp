@@ -210,7 +210,7 @@ QMorphPhongMaterial::~QMorphPhongMaterial()
 }
 
 /*!
-    \property QMorphPhongMaterial::ambient
+    \property Qt3DExtras::QMorphPhongMaterial::ambient
 
     Holds the ambient color.
 */
@@ -221,7 +221,7 @@ QColor QMorphPhongMaterial::ambient() const
 }
 
 /*!
-    \property QMorphPhongMaterial::diffuse
+    \property Qt3DExtras::QMorphPhongMaterial::diffuse
 
     Holds the diffuse color.
 */
@@ -232,7 +232,7 @@ QColor QMorphPhongMaterial::diffuse() const
 }
 
 /*!
-    \property QMorphPhongMaterial::specular
+    \property Qt3DExtras::QMorphPhongMaterial::specular
 
     Holds the specular color.
 */
@@ -243,7 +243,7 @@ QColor QMorphPhongMaterial::specular() const
 }
 
 /*!
-    \property QMorphPhongMaterial::shininess
+    \property Qt3DExtras::QMorphPhongMaterial::shininess
 
     Holds the shininess exponent.
 */
@@ -254,7 +254,7 @@ float QMorphPhongMaterial::shininess() const
 }
 
 /*!
-    \property QMorphPhongMaterial::interpolator
+    \property Qt3DExtras::QMorphPhongMaterial::interpolator
 
     Contains the interpolation method of the Phong lighting effect.
 */
