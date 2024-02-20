@@ -4,7 +4,7 @@
 /*!
     \example simple-qml
     \title Qt 3D: Simple QML Example
-    \examplecategory {Data Visualization & 3D}
+    \examplecategory {3D}
     \ingroup qt3d-examples-qml
     \brief A QML application that demonstrates how to render a scene in Qt 3D.
 

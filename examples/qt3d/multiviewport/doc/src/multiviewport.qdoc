@@ -4,7 +4,7 @@
 /*!
     \example multiviewport
     \title Qt 3D: Multi Viewport QML Example
-    \examplecategory {Data Visualization & 3D}
+    \examplecategory {3D}
     \ingroup qt3d-examples-qml
     \brief A QML example that demonstrates rendering a Scenegraph from multiple
     viewports.
