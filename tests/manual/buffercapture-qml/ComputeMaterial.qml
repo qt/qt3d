@@ -1,5 +1,5 @@
 // Copyright (C) 2017 Juan José Casafranca.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
 import Qt3D.Core 2.9
 import Qt3D.Render 2.9
