@@ -1,5 +1,5 @@
 // Copyright (C) 2020 The Qt Company.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
 import QtQuick 2.2
 import QtQuick.Window 2.12 as Win

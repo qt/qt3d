@@ -1,5 +1,5 @@
 // Copyright (C) 2018 Klaralvdalens Datakonsult AB (KDAB).
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
 import QtQuick 2.2 as QQ2
 import Qt3D.Core 2.0

@@ -1,5 +1,5 @@
 // Copyright (C) 2019 Klaralvdalens Datakonsult AB (KDAB).
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
 import QtQuick 2.12 as QQ2
 import QtQuick.Scene3D 2.12

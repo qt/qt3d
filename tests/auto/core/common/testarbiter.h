@@ -1,5 +1,5 @@
 // Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/private/qnode_p.h>
