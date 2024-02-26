@@ -66,6 +66,9 @@ void QPaintedTextureImagePrivate::repaint()
 QPaintedTextureImage::QPaintedTextureImage(Qt3DCore::QNode *parent)
     : QAbstractTextureImage(*new QPaintedTextureImagePrivate, parent)
 {
+    Q_D(QPaintedTextureImage);
+
+    d->m_currentGenerator = QSharedPointer<QPaintedTextureImageDataGenerator>::create(QImage{}, 0, id());
 }
 
 QPaintedTextureImage::~QPaintedTextureImage()
