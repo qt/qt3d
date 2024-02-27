@@ -767,6 +767,17 @@ std::optional<QRhiVertexInputAttribute::Format> rhiAttributeType(Attribute *attr
             return QRhiVertexInputAttribute::UNormByte4;
         break;
     }
+    case Qt3DCore::QAttribute::Int: {
+        if (attr->vertexSize() == 1)
+            return QRhiVertexInputAttribute::SInt;
+        if (attr->vertexSize() == 2)
+            return QRhiVertexInputAttribute::SInt2;
+        if (attr->vertexSize() == 3)
+            return QRhiVertexInputAttribute::SInt3;
+        if (attr->vertexSize() == 4)
+            return QRhiVertexInputAttribute::SInt4;
+        break;
+    }
     case Qt3DCore::QAttribute::UnsignedInt: {
         if (attr->vertexSize() == 1)
             return QRhiVertexInputAttribute::UInt;
@@ -776,6 +787,17 @@ std::optional<QRhiVertexInputAttribute::Format> rhiAttributeType(Attribute *attr
             return QRhiVertexInputAttribute::UInt3;
         if (attr->vertexSize() == 4)
             return QRhiVertexInputAttribute::UInt4;
+        break;
+    }
+    case Qt3DCore::QAttribute::HalfFloat: {
+        if (attr->vertexSize() == 1)
+            return QRhiVertexInputAttribute::Half;
+        if (attr->vertexSize() == 2)
+            return QRhiVertexInputAttribute::Half2;
+        if (attr->vertexSize() == 3)
+            return QRhiVertexInputAttribute::Half3;
+        if (attr->vertexSize() >= 4)
+            return QRhiVertexInputAttribute::Half4;
         break;
     }
     case Qt3DCore::QAttribute::Float: {
