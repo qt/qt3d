@@ -2763,7 +2763,6 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
 
     // All the RVs in the current passinfo target the same RenderTarget
     // A single beginPass should take place, unless Computes RVs are intermingled
-    QRhiResourceUpdateBatch *inPassUpdates = nullptr;
     static const bool supportsCompute = m_submissionContext->rhi()->isFeatureSupported(QRhi::Compute);
 
     // Per Pass Global States
@@ -2781,7 +2780,7 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
             if (supportsCompute) {
                 if (!inCompute) {
                     cb->beginComputePass(m_submissionContext->m_currentUpdates);
-                    m_submissionContext->m_currentUpdates = nullptr;
+                    m_submissionContext->m_currentUpdates = m_submissionContext->rhi()->nextResourceUpdateBatch();
                     inCompute = true;
                 }
                 executeComputeRenderView(rv);
@@ -2803,7 +2802,7 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
                     continue;
                 }
                 cb->beginPass(rhiRenderTarget, clearColor, clearDepthStencil, m_submissionContext->m_currentUpdates);
-                m_submissionContext->m_currentUpdates = nullptr;
+                m_submissionContext->m_currentUpdates = m_submissionContext->rhi()->nextResourceUpdateBatch();
                 inDraw = true;
             }
 
@@ -2852,8 +2851,7 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
                         const QRhiColorAttachment *color0Att = desc.colorAttachmentAt(0);
                         readbackDesc.setTexture(color0Att->texture());
                     }
-                    inPassUpdates = m_submissionContext->rhi()->nextResourceUpdateBatch();
-                    inPassUpdates->readBackTexture(readbackDesc, readBackResult);
+                    m_submissionContext->m_currentUpdates->readBackTexture(readbackDesc, readBackResult);
                 } else {
                     qCWarning(Backend) << "Requested capture rectangle is outside framebuffer";
                 }
@@ -2865,17 +2863,11 @@ bool Renderer::executeCommandsSubmission(const RHIPassInfo &passInfo)
     }
 
     if (Q_LIKELY(inDraw))
-        cb->endPass(inPassUpdates);
+        cb->endPass(m_submissionContext->m_currentUpdates);
     else if (inCompute)
-        cb->endComputePass();
+        cb->endComputePass(m_submissionContext->m_currentUpdates);
 
-    if (!renderViews.empty()) {
-        Q_ASSERT(m_submissionContext->m_currentUpdates == nullptr); // ensures that we are not leaking a batch
-        m_submissionContext->m_currentUpdates = m_submissionContext->rhi()->nextResourceUpdateBatch();
-    }
-    else {
-        // Keep the m_submissionContext->m_currentUpdates
-    }
+    m_submissionContext->m_currentUpdates = m_submissionContext->rhi()->nextResourceUpdateBatch();
 
     return allCommandsIssued;
 }
