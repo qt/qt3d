@@ -40,7 +40,7 @@ namespace Qt3DRender {
     RenderTargetOutput must be compatible with the given parameters.
 
     \note Left and Right attachment points are special values. They do not refer to
-    render target objects to be either of the back buffers used for stereo rendering.
+    render target objects, but rather to either of the back buffers used for stereo rendering.
  */
 
 /*!

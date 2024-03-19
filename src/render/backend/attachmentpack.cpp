@@ -47,30 +47,22 @@ AttachmentPack::AttachmentPack(const RenderTarget *target,
     if (drawBuffers.empty()) {
         m_drawBuffers.reserve(m_attachments.size());
         for (const Attachment &attachment : std::as_const(m_attachments)) {
-            switch (attachment.m_point) {
-            case QRenderTargetOutput::Left:
+            if (attachment.m_point >= QRenderTargetOutput::Color0 && attachment.m_point <= QRenderTargetOutput::Color15)
+                m_drawBuffers.push_back((int)attachment.m_point);
+            else if (attachment.m_point == QRenderTargetOutput::Left)
                 m_drawBuffers.push_back(GL_BACK_LEFT);
-            case QRenderTargetOutput::Right:
+            else if (attachment.m_point == QRenderTargetOutput::Right)
                 m_drawBuffers.push_back(GL_BACK_RIGHT);
-            default:
-                if (attachment.m_point >= QRenderTargetOutput::Color0 && attachment.m_point <= QRenderTargetOutput::Color15)
-                    m_drawBuffers.push_back((int) attachment.m_point);
-                break;
-            }
         }
     } else {
         m_drawBuffers.reserve(drawBuffers.size());
         for (QRenderTargetOutput::AttachmentPoint drawBuffer : drawBuffers) {
-            switch (drawBuffer) {
-            case QRenderTargetOutput::Left:
+            if (drawBuffer >= QRenderTargetOutput::Color0 && drawBuffer <= QRenderTargetOutput::Color15)
+                m_drawBuffers.push_back((int)drawBuffer);
+            else if (drawBuffer == QRenderTargetOutput::Left)
                 m_drawBuffers.push_back(GL_BACK_LEFT);
-            case QRenderTargetOutput::Right:
+            else if (drawBuffer == QRenderTargetOutput::Right)
                 m_drawBuffers.push_back(GL_BACK_RIGHT);
-            default:
-                if (drawBuffer >= QRenderTargetOutput::Color0 && drawBuffer <= QRenderTargetOutput::Color15)
-                    m_drawBuffers.push_back((int) drawBuffer);
-                break;
-            }
         }
     }
 }
