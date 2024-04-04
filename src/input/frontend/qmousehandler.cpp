@@ -13,29 +13,31 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 
 using namespace Qt3DCore;
+using namespace std::chrono_literals;
 
 /*! \internal */
 QMouseHandlerPrivate::QMouseHandlerPrivate()
     : QComponentPrivate()
     , m_mouseDevice(nullptr)
     , m_containsMouse(false)
-    , m_pressAndHoldTimer(new QTimer)
 {
     m_shareable = false;
-    m_pressAndHoldTimer->setSingleShot(true);
-    m_pressAndHoldTimer->setInterval(800);
-    QObject::connect(m_pressAndHoldTimer, &QTimer::timeout, q_func(), [this] {
-        emit q_func()->pressAndHold(m_lastPressedEvent.data());
-    });
 }
 
 QMouseHandlerPrivate::~QMouseHandlerPrivate()
 {
 }
 
-void QMouseHandlerPrivate::init(QObject *parent)
+void QMouseHandlerPrivate::init()
 {
-    m_pressAndHoldTimer->setParent(parent);
+    Q_Q(QMouseHandler);
+
+    m_pressAndHoldTimer = new QTimer(q);
+    m_pressAndHoldTimer->setSingleShot(true);
+    m_pressAndHoldTimer->setInterval(800ms);
+    QObject::connect(m_pressAndHoldTimer, &QTimer::timeout, q, [this, q] {
+        emit q->pressAndHold(m_lastPressedEvent.data());
+    });
 }
 
 void QMouseHandlerPrivate::mouseEvent(const QMouseEventPtr &event)
@@ -230,7 +232,7 @@ QMouseHandler::QMouseHandler(QNode *parent)
     : QComponent(*new QMouseHandlerPrivate, parent)
 {
     Q_D(QMouseHandler);
-    d->init(this);
+    d->init();
 }
 
 QMouseHandler::~QMouseHandler()

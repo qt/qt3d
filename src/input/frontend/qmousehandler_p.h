@@ -16,6 +16,7 @@
 //
 
 #include <Qt3DInput/qmouseevent.h>
+#include <Qt3DInput/qmousehandler.h>
 
 #include <Qt3DCore/private/qcomponent_p.h>
 
@@ -34,7 +35,7 @@ public:
     QMouseHandlerPrivate();
     ~QMouseHandlerPrivate();
 
-    void init(QObject *parent);
+    void init();
 
     QMouseDevice *m_mouseDevice;
     bool m_containsMouse;
