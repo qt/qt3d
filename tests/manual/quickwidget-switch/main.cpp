@@ -53,22 +53,22 @@ int main(int argc, char* argv[])
     subWindow->setWidget(quickWidget);
 
     QObject::connect(button1, &QPushButton::clicked,
-                     [mdiArea1, mdiArea2, subWindow, button1, button2]() {
-        mdiArea2->removeSubWindow(subWindow);
-        mdiArea1->addSubWindow(subWindow);
-        subWindow->show();
-        button1->setEnabled(false);
-        button2->setEnabled(true);
-    });
+                     &app, [mdiArea1, mdiArea2, subWindow, button1, button2]() {
+                         mdiArea2->removeSubWindow(subWindow);
+                         mdiArea1->addSubWindow(subWindow);
+                         subWindow->show();
+                         button1->setEnabled(false);
+                         button2->setEnabled(true);
+                     });
 
     QObject::connect(button2, &QPushButton::clicked,
-                     [mdiArea1, mdiArea2, subWindow, button1, button2]() {
-        mdiArea1->removeSubWindow(subWindow);
-        mdiArea2->addSubWindow(subWindow);
-        subWindow->show();
-        button1->setEnabled(true);
-        button2->setEnabled(false);
-    });
+                     &app, [mdiArea1, mdiArea2, subWindow, button1, button2]() {
+                         mdiArea1->removeSubWindow(subWindow);
+                         mdiArea2->addSubWindow(subWindow);
+                         subWindow->show();
+                         button1->setEnabled(true);
+                         button2->setEnabled(false);
+                     });
 
     mdiArea2->addSubWindow(subWindow);
     button2->setEnabled(false);
