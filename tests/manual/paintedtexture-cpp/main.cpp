@@ -69,7 +69,7 @@ int main(int argc, char **argv)
     changeSizeSlider->setOrientation(Qt::Horizontal);
     changeSizeSlider->setMinimum(0);
     changeSizeSlider->setMaximum(4);
-    QObject::connect(changeSizeSlider, &QSlider::valueChanged, [scene, sizeLabel](int value) {
+    QObject::connect(changeSizeSlider, &QSlider::valueChanged, scene, [scene, sizeLabel](int value) {
         int sz = 128 << value;
         scene->setSize(QSize(sz, sz));
         sizeLabel->setText(QString("Current Size: %1x%1").arg(sz));
