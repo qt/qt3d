@@ -257,13 +257,13 @@ int main(int argc, char* argv[])
 
     QTimer *cameraAnimationTimer = new QTimer(&view);
     QObject::connect(cameraAnimationTimer, &QTimer::timeout,
-                     [cameraEntity] {
-        static int angle = 0;
-        const float radius = 40.0f;
-        const float anglef = qDegreesToRadians(float(angle));
-        cameraEntity->setPosition(QVector3D(qSin(anglef), 0.0f, qCos(anglef))  * radius);
-        angle += 1;
-    });
+                     cameraEntity, [cameraEntity] {
+                         static int angle = 0;
+                         const float radius = 40.0f;
+                         const float anglef = qDegreesToRadians(float(angle));
+                         cameraEntity->setPosition(QVector3D(qSin(anglef), 0.0f, qCos(anglef)) * radius);
+                         angle += 1;
+                     });
     cameraAnimationTimer->start(16);
 
     // For camera controls
@@ -282,12 +282,12 @@ int main(int argc, char* argv[])
 
     QTimer *parameterAnimationTimer = new QTimer(&view);
     QObject::connect(parameterAnimationTimer, &QTimer::timeout,
-                     [parameter] {
-        static int angle = 0;
-        const float anglef = qDegreesToRadians(float(angle));
-        parameter->setValue(QColor::fromRgbF(fabs(qCos(anglef)), fabs(qSin(anglef)), 1.0f));
-        angle += 10;
-    });
+                     parameter, [parameter] {
+                         static int angle = 0;
+                         const float anglef = qDegreesToRadians(float(angle));
+                         parameter->setValue(QColor::fromRgbF(fabs(qCos(anglef)), fabs(qSin(anglef)), 1.0f));
+                         angle += 10;
+                     });
     parameterAnimationTimer->start(16);
 
     // Torus

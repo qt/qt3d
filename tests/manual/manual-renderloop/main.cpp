@@ -171,7 +171,7 @@ int main(int ac, char **av)
     renderer.initialize(&win, &ctx);
 
     QTimer t;
-    QObject::connect(&t, &QTimer::timeout, [&] { renderer.render(); });
+    QObject::connect(&t, &QTimer::timeout, &t, [&] { renderer.render(); });
     t.start(16);
 
     return app.exec();
