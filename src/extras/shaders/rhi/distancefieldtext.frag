@@ -8,7 +8,7 @@ layout(location = 0) out vec4 fragColor;
 layout(std140, binding = 2) uniform qt3d_custom_uniforms {
   float minAlpha;
   float maxAlpha;
-  float textureSize;
+  float textureWidth;
   vec4 color;
 };
 layout(binding = 3) uniform sampler2D distanceFieldTexture;
@@ -19,7 +19,7 @@ void main()
     // (that is, how many pixels are drawn for each texel)
     vec2 texelDeltaX = abs(dFdx(texCoord));
     vec2 texelDeltaY = abs(dFdy(texCoord));
-    float avgTexelDelta = textureSize * 0.5 * (texelDeltaX.x + texelDeltaX.y + texelDeltaY.x + texelDeltaY.y);
+    float avgTexelDelta = textureWidth * 0.5 * (texelDeltaX.x + texelDeltaX.y + texelDeltaY.x + texelDeltaY.y);
     float texScale = 1.0 / avgTexelDelta;
 
     // scaled to interval [0.0, 0.15]
