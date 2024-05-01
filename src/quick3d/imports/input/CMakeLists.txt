@@ -27,6 +27,7 @@ qt_internal_add_qml_module(quick3dinputplugin
         Qt::Gui
         Qt::Qml
 )
+target_include_directories(quick3dinputplugin PRIVATE ../../quick3dinput/items)
 
 #### Keys ignored in scope 1:.:.:importsinput.pro:<TRUE>:
 # CXX_MODULE = "qml"
