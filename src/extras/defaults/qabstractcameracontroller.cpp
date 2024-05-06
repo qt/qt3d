@@ -223,9 +223,6 @@ void QAbstractCameraControllerPrivate::applyInputAccelerations()
     mouse, and other devices. QAbstractCameraController is an abstract
     class and cannot itself be instantiated. It provides a standard
     interface for camera controllers.
-
-    Derived classes need only implement the frameActionTriggered()
-    method to move the camera.
 */
 
 /*!
