@@ -2,3 +2,5 @@
 #QTBUG-101556
 [bindFrameBufferAttachment]
 ubuntu-20.04
+# QTBUG-111291
+sles-15.4
