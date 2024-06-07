@@ -881,17 +881,17 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
         }
     }
 
+    // Set whether we want the Renderer to be allowed to render or not
+    const bool skipFrame = !needsRender(renderAspect);
+    renderer->setSkipFrame(skipFrame);
+    renderer->allowRender();
+
     // Let the renderer prepare anything it needs to prior to the rendering
     if (m_wasFrameProcessed)
         renderer->beforeSynchronize();
 
     // Force window->beforeRendering to be triggered
     managerNode->markDirty(QSGNode::DirtyForceUpdate);
-
-    // Set whether we want the Renderer to be allowed to render or not
-    const bool skipFrame = !needsRender(renderAspect);
-    renderer->setSkipFrame(skipFrame);
-    renderer->allowRender();
 
     m_wasSGUpdated = true;
 
