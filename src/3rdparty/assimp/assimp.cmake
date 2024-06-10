@@ -286,6 +286,8 @@ function(qt3d_extend_target_for_assimp target)
             ${assimpDir}/src/include/assimp/Compiler
             ${assimpDir}/unzip
         NO_UNITY_BUILD
+        ATTRIBUTION_FILE_DIR_PATHS
+            ${assimpDir}
     )
 
     qt_internal_extend_target(${target} CONDITION CMAKE_BUILD_TYPE STREQUAL Debug AND (CMAKE_CROSSCOMPILING OR NOT QT_FEATURE_qt3d_system_assimp) AND (host_build OR NOT QT_FEATURE_qt3d_system_assimp)
