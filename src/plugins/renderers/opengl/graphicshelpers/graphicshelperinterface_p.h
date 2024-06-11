@@ -93,7 +93,7 @@ public:
     virtual void    drawArraysIndirect(GLenum mode,void *indirect) = 0;
     virtual void    drawArraysInstanced(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances) = 0;
     virtual void    drawArraysInstancedBaseInstance(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances, GLsizei baseinstance) = 0;
-    virtual void    drawBuffers(GLsizei n, const int *bufs) = 0;
+    virtual void    drawBuffers(GLsizei n, const GLenum *bufs) = 0;
     virtual void    drawElements(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLint baseVertex) = 0;
     virtual void    drawElementsIndirect(GLenum mode, GLenum type, void *indirect) = 0;
     virtual void    drawElementsInstancedBaseVertexBaseInstance(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLsizei instances, GLint baseVertex, GLint baseInstance) = 0;

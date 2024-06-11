@@ -333,6 +333,16 @@ GLint glAttachmentPoint(const QRenderTargetOutput::AttachmentPoint &attachmentPo
         return GL_DEPTH_ATTACHMENT;
     case QRenderTargetOutput::Stencil:
         return GL_STENCIL_ATTACHMENT;
+    case QRenderTargetOutput::Left:
+#ifndef GL_BACK_LEFT:
+#  define GL_BACK_LEFT 0x0402
+#endif
+        return GL_BACK_LEFT;
+    case QRenderTargetOutput::Right:
+#ifndef GL_BACK_RIGHT:
+#  define GL_BACK_RIGHT 0x0403
+#endif
+        return GL_BACK_RIGHT;
     default:
         Q_UNREACHABLE_RETURN(GL_NONE);
     }
@@ -859,17 +869,22 @@ SubmissionContext::RenderTargetInfo SubmissionContext::bindFrameBufferAttachment
 
 void SubmissionContext::activateDrawBuffers(const AttachmentPack &attachments)
 {
-    const std::vector<int> &activeDrawBuffers = attachments.getGlDrawBuffers();
+    const std::vector<QRenderTargetOutput::AttachmentPoint> &activeDrawBuffers = attachments.getDrawBuffers();
+
+    std::vector<GLenum> activeGlDrawBuffers;
+    activeGlDrawBuffers.reserve(activeDrawBuffers.size());
+    for (const auto &attachmentPoint : activeDrawBuffers)
+        activeGlDrawBuffers.push_back(glAttachmentPoint(attachmentPoint));
 
     if (m_glHelper->checkFrameBufferComplete()) {
         if (activeDrawBuffers.size() > 1) {// We need MRT
             if (m_glHelper->supportsFeature(GraphicsHelperInterface::MRT)) {
                 // Set up MRT, glDrawBuffers...
-                m_glHelper->drawBuffers(GLsizei(activeDrawBuffers.size()), activeDrawBuffers.data());
+                m_glHelper->drawBuffers(GLsizei(activeGlDrawBuffers.size()), activeGlDrawBuffers.data());
             }
         }
         else if (activeDrawBuffers.size() == 1){
-            m_glHelper->drawBuffer(activeDrawBuffers.at(0));
+            m_glHelper->drawBuffer(activeGlDrawBuffers.at(0));
         }
     } else {
         qCWarning(Backend) << "FBO incomplete";
@@ -1616,7 +1631,7 @@ void SubmissionContext::blitFramebuffer(Qt3DCore::QNodeId inputRenderTargetId,
     if (!outputBufferIsDefault) {
         // Note that we use glDrawBuffers, not glDrawBuffer. The
         // latter is not available with GLES.
-        const int buf = outputAttachmentPoint;
+        const GLenum buf = glAttachmentPoint(outputAttachmentPoint);
         drawBuffers(1, &buf);
     }
 
@@ -1630,7 +1645,7 @@ void SubmissionContext::blitFramebuffer(Qt3DCore::QNodeId inputRenderTargetId,
     // Reset draw buffer
     bindFramebuffer(lastDrawFboId, GraphicsHelperInterface::FBOReadAndDraw);
     if (outputAttachmentPoint != QRenderTargetOutput::Color0) {
-        const int buf = QRenderTargetOutput::Color0;
+        const GLenum buf = GL_COLOR_ATTACHMENT0;
         drawBuffers(1, &buf);
     }
 }

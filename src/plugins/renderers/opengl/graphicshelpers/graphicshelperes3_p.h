@@ -38,7 +38,7 @@ public:
     void bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding) override;
     void blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter) override;
     void buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer) override;
-    void drawBuffers(GLsizei n, const int *bufs) override;
+    void drawBuffers(GLsizei n, const GLenum *bufs) override;
     void drawArraysInstanced(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances) override;
     void drawArraysInstancedBaseInstance(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances, GLsizei baseInstance) override;
     void drawElementsInstancedBaseVertexBaseInstance(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void *indices, GLsizei instances, GLint baseVertex = 0,  GLint baseInstance = 0) override;
