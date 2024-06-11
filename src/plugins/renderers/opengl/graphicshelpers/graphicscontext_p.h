@@ -134,14 +134,13 @@ public:
     void    pointSize(bool programmable, GLfloat value);
     void    readBuffer(GLenum mode);
     void    drawBuffer(GLenum mode);
-    void    drawBuffers(GLsizei n, const int *bufs);
+    void    drawBuffers(GLsizei n, const GLenum *bufs);
     void    setMSAAEnabled(bool enabled);
     void    setAlphaCoverageEnabled(bool enabled);
     void    setClipPlane(int clipPlane, const QVector3D &normal, float distance);
     void    setSeamlessCubemap(bool enable);
     void    setVerticesPerPatch(GLint verticesPerPatch);
     void    memoryBarrier(QMemoryBarrier::Operations barriers);
-    void    activateDrawBuffers(const AttachmentPack &attachments);
     void    rasterMode(GLenum faceMode, GLenum rasterMode);
 
     // Helper methods

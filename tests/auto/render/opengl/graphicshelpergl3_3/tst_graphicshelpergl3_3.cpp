@@ -818,12 +818,12 @@ private Q_SLOTS:
         QCOMPARE(enumValue, GL_COLOR_ATTACHMENT4);
 
         // WHEN
-        GLint newBufferEnum = 2;
+        GLenum newBufferEnum = GL_COLOR_ATTACHMENT0 + 2;
         m_glHelper.drawBuffers(1, &newBufferEnum);
 
         // THEN
         m_func->glGetIntegerv(GL_DRAW_BUFFER0, &enumValue);
-        QCOMPARE(enumValue, GL_COLOR_ATTACHMENT0 + newBufferEnum);
+        QCOMPARE(enumValue, GL_COLOR_ATTACHMENT0 + 2);
 
         // WHEN
         newBufferEnum = 0;
@@ -831,7 +831,7 @@ private Q_SLOTS:
 
         // THEN
         m_func->glGetIntegerv(GL_DRAW_BUFFER0, &enumValue);
-        QCOMPARE(enumValue, GL_COLOR_ATTACHMENT0 + newBufferEnum);
+        QCOMPARE(enumValue, GL_NONE);
 
         // Restore
         m_func->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);

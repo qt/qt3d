@@ -54,14 +54,14 @@ public:
                    const QList<QRenderTargetOutput::AttachmentPoint> &drawBuffers = {});
 
     const std::vector<Attachment> &attachments() const { return m_attachments; }
-    const std::vector<int> &getGlDrawBuffers() const { return m_drawBuffers; }
+    const std::vector<QRenderTargetOutput::AttachmentPoint> &getDrawBuffers() const { return m_drawBuffers; }
 
     // return index of given attachment within actual draw buffers list
     int getDrawBufferIndex(QRenderTargetOutput::AttachmentPoint attachmentPoint) const;
 
 private:
     std::vector<Attachment> m_attachments;
-    std::vector<int> m_drawBuffers;
+    std::vector<QRenderTargetOutput::AttachmentPoint> m_drawBuffers;
 };
 
 Q_3DRENDERSHARED_PRIVATE_EXPORT bool operator ==(const Attachment &a, const Attachment &b);

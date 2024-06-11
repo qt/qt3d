@@ -67,7 +67,7 @@ public:
     void drawArraysIndirect(GLenum mode,void *indirect) override;
     void drawArraysInstanced(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances) override;
     void drawArraysInstancedBaseInstance(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances, GLsizei baseInstance) override;
-    void drawBuffers(GLsizei n, const int *bufs) override;
+    void drawBuffers(GLsizei n, const GLenum *bufs) override;
     void drawElements(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void *indices, GLint baseVertex = 0) override;
     void drawElementsIndirect(GLenum mode, GLenum type, void *indirect) override;
     void drawElementsInstancedBaseVertexBaseInstance(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void *indices, GLsizei instances, GLint baseVertex = 0,  GLint baseInstance = 0) override;
