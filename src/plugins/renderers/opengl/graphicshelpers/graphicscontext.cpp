@@ -300,22 +300,6 @@ void GraphicsContext::loadShader(Shader *shaderNode,
     shaderNode->requestCacheRebuild();
 }
 
-void GraphicsContext::activateDrawBuffers(const AttachmentPack &attachments)
-{
-    const std::vector<int> &activeDrawBuffers = attachments.getGlDrawBuffers();
-
-    if (m_glHelper->checkFrameBufferComplete()) {
-        if (activeDrawBuffers.size() > 1) {// We need MRT
-            if (m_glHelper->supportsFeature(GraphicsHelperInterface::MRT)) {
-                // Set up MRT, glDrawBuffers...
-                m_glHelper->drawBuffers(GLsizei(activeDrawBuffers.size()), activeDrawBuffers.data());
-            }
-        }
-    } else {
-        qWarning() << "FBO incomplete";
-    }
-}
-
 void GraphicsContext::rasterMode(GLenum faceMode, GLenum rasterMode)
 {
     m_glHelper->rasterMode(faceMode, rasterMode);
@@ -726,7 +710,7 @@ void GraphicsContext::drawBuffer(GLenum mode)
     m_glHelper->drawBuffer(mode);
 }
 
-void GraphicsContext::drawBuffers(GLsizei n, const int *bufs)
+void GraphicsContext::drawBuffers(GLsizei n, const GLenum *bufs)
 {
     m_glHelper->drawBuffers(n, bufs);
 }

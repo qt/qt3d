@@ -843,14 +843,9 @@ bool GraphicsHelperGL4::supportsFeature(GraphicsHelperInterface::Feature feature
     }
 }
 
-void GraphicsHelperGL4::drawBuffers(GLsizei n, const int *bufs)
+void GraphicsHelperGL4::drawBuffers(GLsizei n, const GLenum *bufs)
 {
-    // Use QVarLengthArray here
-    QVarLengthArray<GLenum, 16> drawBufs(n);
-
-    for (int i = 0; i < n; i++)
-        drawBufs[i] = GL_COLOR_ATTACHMENT0 + bufs[i];
-    m_funcs->glDrawBuffers(n, drawBufs.constData());
+    m_funcs->glDrawBuffers(n, bufs);
 }
 
 void GraphicsHelperGL4::bindFragDataLocation(GLuint shader, const QHash<QString, int> &outputs)

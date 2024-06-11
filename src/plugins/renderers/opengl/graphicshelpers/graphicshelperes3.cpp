@@ -310,13 +310,9 @@ bool GraphicsHelperES3::supportsFeature(GraphicsHelperInterface::Feature feature
     }
 }
 
-void GraphicsHelperES3::drawBuffers(GLsizei n, const int *bufs)
+void GraphicsHelperES3::drawBuffers(GLsizei n, const GLenum *bufs)
 {
-    QVarLengthArray<GLenum, 16> drawBufs(n);
-
-    for (int i = 0; i < n; i++)
-        drawBufs[i] = GL_COLOR_ATTACHMENT0 + bufs[i];
-    m_extraFuncs->glDrawBuffers(n, drawBufs.constData());
+    m_extraFuncs->glDrawBuffers(n, bufs);
 }
 
 UniformType GraphicsHelperES3::uniformTypeFromGLType(GLenum glType)

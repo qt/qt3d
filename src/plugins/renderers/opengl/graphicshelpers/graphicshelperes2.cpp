@@ -513,7 +513,7 @@ bool GraphicsHelperES2::supportsFeature(GraphicsHelperInterface::Feature feature
     }
 }
 
-void GraphicsHelperES2::drawBuffers(GLsizei, const int *)
+void GraphicsHelperES2::drawBuffers(GLsizei, const GLenum *)
 {
     static bool showWarning = true;
     if (!showWarning)
