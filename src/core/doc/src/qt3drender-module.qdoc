@@ -7,6 +7,8 @@
     \brief The Qt 3D Render module contains functionality to support 2D and 3D
            rendering using Qt 3D.
     \since 5.7
+    \modulestate Deprecated
+    \deprecated [6.8]
 
     \ingroup modules
     \ingroup qt3d-modules
@@ -89,6 +91,8 @@
    \qmlmodule Qt3D.Render 2.\QtMinorVersion
    \title Qt 3D Render QML Types
    \since 5.7
+   \modulestate Deprecated
+   \deprecated [6.8]
 
    \ingroup qmlmodules
    \ingroup qt3d-qmlmodules

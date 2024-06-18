@@ -6,6 +6,8 @@
     \module Qt3DAnimation
     \title Qt 3D Animation C++ Classes
     \preliminary
+    \modulestate Deprecated
+    \deprecated [6.8]
 
     \keyword Qt 3D Animation
     \brief The Qt 3D Animation modules provides a set of prebuilt elements to help
@@ -195,6 +197,8 @@
    \qmlmodule Qt3D.Animation 2.\QtMinorVersion
    \title Qt 3D Qt3DAnimation QML Types
    \preliminary
+   \modulestate Deprecated
+   \deprecated [6.8]
 
    \ingroup qmlmodules
    \ingroup qt3d-qmlmodules-preliminary

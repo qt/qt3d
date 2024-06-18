@@ -6,6 +6,8 @@
     \title Qt 3D Scene2D C++ Classes
     \keyword Qt 3D Scene2D
     \preliminary
+    \modulestate Deprecated
+    \deprecated [6.8]
 
     \brief The Qt 3D Scene2D module provides a way to render Quick2 qml content
     to a Qt 3D texture.
@@ -51,6 +53,8 @@
    \title Qt 3D Scene2D QML Types
    \ingroup qmlmodules
    \ingroup qt3d-qmlmodules-preliminary
+   \modulestate Deprecated
+   \deprecated [6.8]
 
    \brief Provides Qt 3D QML types for the scene2d module.
 

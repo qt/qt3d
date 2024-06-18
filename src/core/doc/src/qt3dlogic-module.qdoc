@@ -6,6 +6,8 @@
     \title Qt 3D Logic C++ Classes
     \keyword Qt 3D Logic
     \since 5.7
+    \modulestate Deprecated
+    \deprecated [6.8]
 
     \brief The Qt 3D Logic module enables synchronizing frames with the Qt 3D
     backend.
@@ -40,6 +42,8 @@
    \qmlmodule Qt3D.Logic 2.\QtMinorVersion
    \title Qt 3D Logic QML Types
    \since 5.7
+   \modulestate Deprecated
+   \deprecated [6.8]
 
    \ingroup qmlmodules
    \ingroup qt3d-qmlmodules

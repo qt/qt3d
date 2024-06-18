@@ -7,6 +7,8 @@
    \title Qt 3D Scene3D QML Types
    \ingroup qmlmodules
    \ingroup qt3d-qmlmodules-preliminary
+   \modulestate Deprecated
+   \deprecated [6.8]
 
    \brief Provides Qt 3D QML types for the Scene3D module.
 
