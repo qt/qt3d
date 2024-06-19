@@ -465,7 +465,7 @@ void QText2DEntity::setHeight(float height)
 }
 
 /*!
-  \property QText2DEntity::alignment
+  \property Qt3DExtras::QText2DEntity::alignment
 
   Returns the alignment of the text item that is displayed in the
   Qt Quick scene.
