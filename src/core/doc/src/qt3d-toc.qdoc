@@ -1,0 +1,19 @@
+
+// Copyright (C) 2024 The Qt Company Ltd.
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+/*!
+    \page qt3d-toc.html
+    \title Qt 3D module topics
+    The following list has links to all the individual topics (HTML files)
+    in the Qt 3D module.
+
+    \list
+    \li \l {Qt 3D Overview}{Overview}
+    \li \l {Qt 3D Render Porting to RHI}{Porting to RHI}
+    \li \l {Qt 3D Render Framegraph}{Render Framegraph}
+    \li \l {Qt 3D Render Geometry}{Render Geometry}
+    \li \l {Qt 3D Render Pro Tips}{Render Pro Tips}
+    \li \l {Changes to Qt3D}{Upgrading from Qt 5}
+    \endlist
+
+*/

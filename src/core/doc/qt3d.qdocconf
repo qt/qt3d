@@ -18,7 +18,15 @@ qhp.Qt3D.virtualFolder       = qt3d
 qhp.Qt3D.indexTitle          = Qt 3D
 qhp.Qt3D.indexRoot           =
 
-qhp.Qt3D.subprojects                    = classes qmltypes examples
+qhp.Qt3D.subprojects = manual examples classes qmltypes
+qhp.Qt3D.subprojects.manual.title = Qt 3D
+qhp.Qt3D.subprojects.manual.indexTitle = Qt 3D module topics
+qhp.Qt3D.subprojects.manual.type = manual
+
+qhp.Qt3D.subprojects.examples.title      = Examples
+qhp.Qt3D.subprojects.examples.indexTitle = Qt 3D Examples
+qhp.Qt3D.subprojects.examples.selectors  = doc:example
+qhp.Qt3D.subprojects.examples.sortPages  = true
 
 qhp.Qt3D.subprojects.classes.title      = C++ Classes
 qhp.Qt3D.subprojects.classes.indexTitle = Qt 3D C++ Classes
@@ -29,11 +37,6 @@ qhp.Qt3D.subprojects.qmltypes.title      = QML Types
 qhp.Qt3D.subprojects.qmltypes.indexTitle = Qt 3D QML Types
 qhp.Qt3D.subprojects.qmltypes.selectors  = qmlclass
 qhp.Qt3D.subprojects.qmltypes.sortPages  = true
-
-qhp.Qt3D.subprojects.examples.title      = Examples
-qhp.Qt3D.subprojects.examples.indexTitle = Qt 3D Examples
-qhp.Qt3D.subprojects.examples.selectors  = doc:example
-qhp.Qt3D.subprojects.examples.sortPages  = true
 
 tagfile                 = qt3d.tags
 
@@ -93,3 +96,6 @@ manifestmeta.thumbnail.names += "Qt3D/Qt 3D: Deferred Renderer C++ Example"
 navigation.landingpage = "Qt 3D"
 navigation.cppclassespage = "Qt 3D C++ Classes"
 navigation.qmltypespage = "Qt 3D QML Types"
+# Auto-generate navigation linking based on "Qt 3D module topics":
+navigation.toctitles = "Qt 3D module topics"
+navigation.toctitles.inclusive = false
