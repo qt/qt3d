@@ -40,6 +40,7 @@ ui_*.h
 .rcc
 .uic
 .pch
+**/build/*
 
 # Test generated files
 tst_*
