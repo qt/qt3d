@@ -79,6 +79,7 @@ if(QT_FEATURE_private_tests)
             debug/imguirenderer.cpp debug/imguirenderer_p.h
             ${PROJECT_SOURCE_DIR}/src/3rdparty/imgui/imgui.cpp
             ${PROJECT_SOURCE_DIR}/src/3rdparty/imgui/imgui_draw.cpp
+            ${PROJECT_SOURCE_DIR}/src/3rdparty/imgui/imgui_tables.cpp
             ${PROJECT_SOURCE_DIR}/src/3rdparty/imgui/imgui_widgets.cpp
         INCLUDE_DIRECTORIES
             debug
@@ -129,6 +130,7 @@ qt_internal_extend_target(OpenGLRendererPlugin CONDITION NOT INTEGRITY
         debug/imguirenderer.cpp debug/imguirenderer_p.h
         ${PROJECT_SOURCE_DIR}/src/3rdparty/imgui/imgui.cpp
         ${PROJECT_SOURCE_DIR}/src/3rdparty/imgui/imgui_draw.cpp
+        ${PROJECT_SOURCE_DIR}/src/3rdparty/imgui/imgui_tables.cpp
         ${PROJECT_SOURCE_DIR}/src/3rdparty/imgui/imgui_widgets.cpp
     INCLUDE_DIRECTORIES
         debug

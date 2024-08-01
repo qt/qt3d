@@ -7,7 +7,7 @@
         "QtUsage": "Used in tests to demonstrate and verify the integration of an external GUI library.",
 
         "Homepage": "https://github.com/ocornut/imgui",
-        "Version": "v1.66b",
+        "Version": "v1.91.0",
         "License": "MIT License",
         "LicenseId": "MIT",
         "LicenseFile": "LICENSE.txt",
