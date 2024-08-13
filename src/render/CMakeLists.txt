@@ -312,13 +312,27 @@ qt_internal_add_module(3DRender
         Qt::3DCorePrivate
 
     NO_UNITY_BUILD_SOURCES
-        # name clashes with internal linkage
+        # name clashes with internal linkage / using namespace
         backend/pointsvisitor.cpp
         backend/segmentsvisitor.cpp
+        geometry/qmesh.cpp
         framegraph/frustumculling.cpp
+        jobs/abstractpickingjob.cpp
+        jobs/calcboundingvolumejob.cpp
         jobs/frustumcullingjob.cpp
+        jobs/pickboundingvolumejob.cpp
+        jobs/pickboundingvolumeutils.cpp
+        jobs/raycastingjob.cpp
+        jobs/sendbuffercapturejob.cpp
+        jobs/updatelevelofdetailjob.cpp
+        jobs/updateshaderdatatransformjob.cpp
         io/qsceneimportfactory.cpp
         io/qsceneexportfactory.cpp
+        materialsystem/shader.cpp
+        materialsystem/shaderdata.cpp
+        picking/objectpicker.cpp
+        picking/pickeventfilter.cpp
+        picking/qabstractraycaster.cpp
 )
 
 # Resources:
