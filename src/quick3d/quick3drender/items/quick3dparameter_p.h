@@ -19,6 +19,8 @@
 
 #include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
 
+#include <QtQml/qqmlregistration.h>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
@@ -30,6 +32,9 @@ class Quick3DParameterPrivate;
 class Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DParameter : public QParameter
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(Parameter)
+    QML_ADDED_IN_VERSION(2, 0);
+
 public:
     explicit Quick3DParameter(QNode *parent = nullptr);
 

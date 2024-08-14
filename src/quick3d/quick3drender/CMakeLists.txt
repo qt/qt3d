@@ -1,13 +1,20 @@
 # Copyright (C) 2022 The Qt Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-# Generated from quick3drender.pro.
+qt_internal_add_qml_module(3DQuickRender
+    URI "Qt3D.Render"
+    VERSION "${PROJECT_VERSION}"
+    PAST_MAJOR_VERSIONS 2
 
-#####################################################################
-## Qt::3DQuickRender Module:
-#####################################################################
+    PLUGIN_TARGET quick3drenderplugin
+    CLASS_NAME Qt3DQuick3DRenderPlugin
 
-qt_internal_add_module(3DQuickRender
+    DEPENDENCIES
+        QtQml/auto
+        Qt3D.Core/auto
+
+    NO_GENERATE_PLUGIN_SOURCE
+
     SOURCES
         items/quick3deffect.cpp items/quick3deffect_p.h
         items/quick3dlayerfilter.cpp items/quick3dlayerfilter_p.h
@@ -32,6 +39,7 @@ qt_internal_add_module(3DQuickRender
         items/quick3dviewport.cpp items/quick3dviewport_p.h
         qt3dquickrender_global.cpp qt3dquickrender_global.h qt3dquickrender_global_p.h
         qt3dquickrendernodefactory.cpp qt3dquickrendernodefactory_p.h
+        qt3dquick3drenderforeign_p.h
     INCLUDE_DIRECTORIES
         items
     LIBRARIES
@@ -55,12 +63,6 @@ qt_internal_add_module(3DQuickRender
         Qt::QmlPrivate
 )
 
-#### Keys ignored in scope 1:.:.:quick3drender.pro:<TRUE>:
-# MODULE = "3DQuickRender"
-
-## Scopes:
-#####################################################################
-
 qt_internal_extend_target(3DQuickRender CONDITION gcov
     COMPILE_OPTIONS
         -fprofile-arcs
@@ -68,4 +70,11 @@ qt_internal_extend_target(3DQuickRender CONDITION gcov
     LINK_OPTIONS
         "-fprofile-arcs"
         "-ftest-coverage"
+)
+
+qt_internal_extend_target(quick3drenderplugin
+    SOURCES
+        qt3dquick3drenderplugin.cpp qt3dquick3drenderplugin.h
+    LIBRARIES
+        Qt::3DQuickRenderPrivate
 )

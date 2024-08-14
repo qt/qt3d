@@ -23,12 +23,19 @@
 
 QT_BEGIN_NAMESPACE
 
+void Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT qml_register_types_Qt3D_Render();
+
 namespace Qt3DRender {
 
+namespace Render {
 namespace Quick {
+class Quick3DShaderDataArray;
+} // namespace Quick
+} // namespace Render
 
-Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT void Quick3DRender_initialize();
-Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT void Quick3DRender_registerType(const char *className, const char *quickName, int major, int minor);
+namespace Quick {
+void Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DRender_initialize();
+void Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DRender_registerType(const char *className, const char *quickName, int major, int minor);
 
 template<class T, class E> void registerExtendedType(const char *className, const char *quickName,
                                                      const char *uri, int major, int minor, const char *name)

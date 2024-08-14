@@ -21,6 +21,7 @@
 #include <Qt3DQuick/private/quick3dnode_p.h>
 
 #include <QtQml/QJSValue>
+#include <QtQml/qqmlregistration.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -33,6 +34,9 @@ class Quick3DRayCasterPrivate;
 class Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DRayCaster : public QRayCaster
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(RayCaster)
+    QML_ADDED_IN_VERSION(2, 11);
+
     Q_PROPERTY(QQmlListProperty<Qt3DRender::QLayer> layers READ qmlLayers)
 public:
     explicit Quick3DRayCaster(QObject *parent = nullptr);

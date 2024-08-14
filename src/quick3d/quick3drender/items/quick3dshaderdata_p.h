@@ -17,6 +17,7 @@
 
 #include <QtQml/QJSValue>
 #include <QtQml/QJSValueIterator>
+#include <QtQml/qqmlregistration.h>
 
 #include <Qt3DRender/qshaderdata.h>
 #include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
@@ -30,6 +31,9 @@ namespace Quick {
 class Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DShaderData : public QShaderData
 {
     Q_OBJECT
+
+    QML_NAMED_ELEMENT(ShaderData)
+    QML_ADDED_IN_VERSION(2, 0);
 public:
     explicit Quick3DShaderData(QNode *parent = 0);
 };
