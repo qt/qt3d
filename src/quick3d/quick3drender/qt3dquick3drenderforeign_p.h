@@ -45,6 +45,7 @@
 #include <Qt3DRender/qgraphicsapifilter.h>
 #include <Qt3DRender/qlayer.h>
 #include <Qt3DRender/qlevelofdetail.h>
+#include <Qt3DRender/qlevelofdetailboundingsphere.h>
 #include <Qt3DRender/qlevelofdetailswitch.h>
 #include <Qt3DRender/qlinewidth.h>
 #include <Qt3DRender/qmemorybarrier.h>
@@ -362,6 +363,12 @@ class QLevelOfDetailSwitchForeign {
     QML_NAMED_ELEMENT(LevelOfDetailSwitch)
     QML_FOREIGN(Qt3DRender::QLevelOfDetailSwitch)
     QML_ADDED_IN_VERSION(2, 9);
+};
+class QLevelOfDetailBoundingSphereForeign {
+    Q_GADGET
+    QML_NAMED_ELEMENT(levelOfDetailBoundingSphere)
+    QML_FOREIGN(Qt3DRender::QLevelOfDetailBoundingSphere)
+    QML_ADDED_IN_VERSION(6, 8);
 };
 class QMeshForeign {
     Q_GADGET
