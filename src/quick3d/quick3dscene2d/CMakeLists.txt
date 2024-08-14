@@ -1,13 +1,16 @@
 # Copyright (C) 2022 The Qt Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-# Generated from quick3dscene2d.pro.
-
-#####################################################################
-## Qt::3DQuickScene2D Module:
-#####################################################################
-
-qt_internal_add_module(3DQuickScene2D
+qt_internal_add_qml_module(3DQuickScene2D
+    URI "QtQuick.Scene2D"
+    VERSION "${PROJECT_VERSION}"
+    PAST_MAJOR_VERSIONS 2
+    DEPENDENCIES
+        Qt3D.Core/auto
+        Qt3D.Render/auto
+    NO_GENERATE_PLUGIN_SOURCE
+    CLASS_NAME QtQuickScene2DPlugin
+    PLUGIN_TARGET qtquickscene2dplugin
     SOURCES
         items/qscene2d.cpp items/qscene2d.h items/qscene2d_p.h
         items/qt3dquick3dscene2d.cpp items/qt3dquick3dscene2d_p.h
@@ -41,12 +44,6 @@ qt_internal_add_module(3DQuickScene2D
         Qt::QmlPrivate
 )
 
-#### Keys ignored in scope 1:.:.:quick3dscene2d.pro:<TRUE>:
-# MODULE = "3dquickscene2d"
-
-## Scopes:
-#####################################################################
-
 qt_internal_extend_target(3DQuickScene2D CONDITION gcov
     COMPILE_OPTIONS
         -fprofile-arcs
@@ -54,4 +51,13 @@ qt_internal_extend_target(3DQuickScene2D CONDITION gcov
     LINK_OPTIONS
         "-fprofile-arcs"
         "-ftest-coverage"
+)
+
+qt_internal_extend_target(qtquickscene2dplugin
+    SOURCES
+        qtquickscene2dplugin.h qtquickscene2dplugin.cpp
+    LIBRARIES
+        Qt::3DRenderPrivate
+        Qt::Core
+        Qt::Qml
 )

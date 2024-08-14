@@ -22,7 +22,11 @@
 
 QT_BEGIN_NAMESPACE
 
+void Q_3DQUICKSCENE2DSHARED_PRIVATE_EXPORT qml_register_types_QtQuick_Scene2D();
+
 namespace Qt3DRender {
+
+void Q_3DQUICKSCENE2DSHARED_PRIVATE_EXPORT initScene2dPlugin();
 
 namespace Quick {
 

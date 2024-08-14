@@ -13,13 +13,6 @@ namespace Qt3DRender {
 
 Q_GLOBAL_STATIC(QuickScene2DNodeFactory, quick_scene2d_node_factory)
 
-static void initScene2dPlugin()
-{
-    Qt3DRender::QRenderAspectPrivate::configurePlugin(QLatin1String("scene2d"));
-}
-
-Q_COREAPP_STARTUP_FUNCTION(initScene2dPlugin)
-
 QuickScene2DNodeFactory *QuickScene2DNodeFactory::instance()
 {
     return quick_scene2d_node_factory();

@@ -4,10 +4,20 @@
 #include "qt3dquickscene2d_global_p.h"
 #include "qt3dquickscene2dnodefactory_p.h"
 
+#include <private/qrenderaspect_p.h>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+void initScene2dPlugin()
+{
+    Qt3DRender::QRenderAspectPrivate::configurePlugin(QLatin1String("scene2d"));
+}
+
+Q_COREAPP_STARTUP_FUNCTION(initScene2dPlugin)
+
 namespace Quick {
+
 
 void Quick3DScene2D_initialize()
 {
