@@ -19,6 +19,7 @@
 
 #include <private/qnode_p.h>
 #include <private/scene2dsharedobject_p.h>
+#include <private/qt3dquick3dscene2d_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -32,6 +33,15 @@ namespace Quick {
 
 class QScene2D;
 class Scene2DManager;
+
+class QScene2dForeign {
+    Q_GADGET
+
+    QML_FOREIGN(Qt3DRender::Quick::QScene2D)
+    QML_NAMED_ELEMENT(Scene2D)
+    QML_EXTENDED(Qt3DRender::Render::Quick::QQuick3DScene2D)
+    QML_ADDED_IN_VERSION(2, 9);
+};
 
 class Q_AUTOTEST_EXPORT QScene2DPrivate : public Qt3DCore::QNodePrivate
 {
