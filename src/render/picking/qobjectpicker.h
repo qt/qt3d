@@ -21,7 +21,7 @@ class Q_3DRENDERSHARED_EXPORT QObjectPicker : public Qt3DCore::QComponent
     Q_PROPERTY(bool dragEnabled READ isDragEnabled WRITE setDragEnabled NOTIFY dragEnabledChanged)
     Q_PROPERTY(bool pressed READ isPressed NOTIFY pressedChanged)
     Q_PROPERTY(bool containsMouse READ containsMouse NOTIFY containsMouseChanged)
-    Q_PROPERTY(int priority READ priority WRITE setPriority NOTIFY priorityChanged REVISION 13)
+    Q_PROPERTY(int priority READ priority WRITE setPriority NOTIFY priorityChanged REVISION(2, 13))
 
 public:
     explicit QObjectPicker(QNode *parent = nullptr);
@@ -38,7 +38,7 @@ public:
 public Q_SLOTS:
     void setHoverEnabled(bool hoverEnabled);
     void setDragEnabled(bool dragEnabled);
-    Q_REVISION(13) void setPriority(int priority);
+    Q_REVISION(2, 13) void setPriority(int priority);
 
 Q_SIGNALS:
     void pressed(Qt3DRender::QPickEvent *pick);
@@ -51,7 +51,7 @@ Q_SIGNALS:
     void dragEnabledChanged(bool dragEnabled);
     void pressedChanged(bool pressed);
     void containsMouseChanged(bool containsMouse);
-    Q_REVISION(13) void priorityChanged(int priority);
+    Q_REVISION(2, 13) void priorityChanged(int priority);
 
 private:
     Q_DECLARE_PRIVATE(QObjectPicker)

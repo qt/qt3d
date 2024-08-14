@@ -18,7 +18,7 @@ class Q_3DRENDERSHARED_EXPORT QViewport : public QFrameGraphNode
 {
     Q_OBJECT
     Q_PROPERTY(QRectF normalizedRect READ normalizedRect WRITE setNormalizedRect NOTIFY normalizedRectChanged)
-    Q_PROPERTY(float gamma READ gamma WRITE setGamma NOTIFY gammaChanged REVISION 9)
+    Q_PROPERTY(float gamma READ gamma WRITE setGamma NOTIFY gammaChanged REVISION(2, 9))
 
 public:
     explicit QViewport(Qt3DCore::QNode *parent = nullptr);

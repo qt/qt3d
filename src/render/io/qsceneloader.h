@@ -44,9 +44,9 @@ public:
     QUrl source() const;
     Status status() const;
 
-    Q_REVISION(9) Q_INVOKABLE Qt3DCore::QEntity *entity(const QString &entityName) const;
-    Q_REVISION(9) Q_INVOKABLE QStringList entityNames() const;
-    Q_REVISION(9) Q_INVOKABLE Qt3DCore::QComponent *component(const QString &entityName,
+    Q_REVISION(2, 9) Q_INVOKABLE Qt3DCore::QEntity *entity(const QString &entityName) const;
+    Q_REVISION(2, 9) Q_INVOKABLE QStringList entityNames() const;
+    Q_REVISION(2, 9) Q_INVOKABLE Qt3DCore::QComponent *component(const QString &entityName,
                                                               ComponentType componentType) const;
 
 public Q_SLOTS:

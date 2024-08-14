@@ -32,7 +32,7 @@ class Q_3DRENDERSHARED_EXPORT QCamera : public Qt3DCore::QEntity
     Q_PROPERTY(float bottom READ bottom WRITE setBottom NOTIFY bottomChanged)
     Q_PROPERTY(float top READ top WRITE setTop NOTIFY topChanged)
     Q_PROPERTY(QMatrix4x4 projectionMatrix READ projectionMatrix WRITE setProjectionMatrix NOTIFY projectionMatrixChanged)
-    Q_PROPERTY(float exposure READ exposure WRITE setExposure NOTIFY exposureChanged REVISION 9)
+    Q_PROPERTY(float exposure READ exposure WRITE setExposure NOTIFY exposureChanged REVISION(2, 9))
     // LookAt
     Q_PROPERTY(QVector3D position READ position WRITE setPosition NOTIFY positionChanged)
     Q_PROPERTY(QVector3D upVector READ upVector WRITE setUpVector NOTIFY upVectorChanged)
@@ -40,8 +40,8 @@ class Q_3DRENDERSHARED_EXPORT QCamera : public Qt3DCore::QEntity
     Q_PROPERTY(QVector3D viewVector READ viewVector NOTIFY viewVectorChanged)
     Q_PROPERTY(QMatrix4x4 viewMatrix READ viewMatrix NOTIFY viewMatrixChanged)
 
-    Q_PROPERTY(Qt3DRender::QCameraLens *lens READ lens CONSTANT REVISION 14)
-    Q_PROPERTY(Qt3DCore::QTransform *transform  READ transform CONSTANT REVISION 14)
+    Q_PROPERTY(Qt3DRender::QCameraLens *lens READ lens CONSTANT REVISION(2, 14))
+    Q_PROPERTY(Qt3DCore::QTransform *transform  READ transform CONSTANT REVISION(2, 14))
 
 public:
     explicit QCamera(QNode *parent = nullptr);

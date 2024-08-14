@@ -19,7 +19,7 @@ class Q_3DRENDERSHARED_EXPORT QComputeCommand : public Qt3DCore::QComponent
     Q_PROPERTY(int workGroupX READ workGroupX WRITE setWorkGroupX NOTIFY workGroupXChanged)
     Q_PROPERTY(int workGroupY READ workGroupY WRITE setWorkGroupY NOTIFY workGroupYChanged)
     Q_PROPERTY(int workGroupZ READ workGroupZ WRITE setWorkGroupZ NOTIFY workGroupZChanged)
-    Q_PROPERTY(RunType runType READ runType WRITE setRunType NOTIFY runTypeChanged REVISION 13)
+    Q_PROPERTY(RunType runType READ runType WRITE setRunType NOTIFY runTypeChanged REVISION(2, 13))
 
 public:
     enum RunType {
@@ -40,10 +40,10 @@ public Q_SLOTS:
     void setWorkGroupX(int workGroupX);
     void setWorkGroupY(int workGroupY);
     void setWorkGroupZ(int workGroupZ);
-    Q_REVISION(13) void setRunType(RunType runType);
+    Q_REVISION(2, 13) void setRunType(RunType runType);
 
-    Q_REVISION(13) void trigger(int frameCount = 1);
-    Q_REVISION(13) void trigger(int workGroupX, int workGroupY, int workGroupZ, int frameCount = 1);
+    Q_REVISION(2, 13) void trigger(int frameCount = 1);
+    Q_REVISION(2, 13) void trigger(int workGroupX, int workGroupY, int workGroupZ, int frameCount = 1);
 
 Q_SIGNALS:
     void workGroupXChanged();

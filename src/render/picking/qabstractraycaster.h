@@ -20,9 +20,9 @@ class QLayer;
 class Q_3DRENDERSHARED_EXPORT QAbstractRayCaster : public Qt3DCore::QComponent
 {
     Q_OBJECT
-    Q_PROPERTY(RunMode runMode READ runMode WRITE setRunMode NOTIFY runModeChanged)
-    Q_PROPERTY(FilterMode filterMode READ filterMode WRITE setFilterMode NOTIFY filterModeChanged)
-    Q_PROPERTY(Hits hits READ hits NOTIFY hitsChanged)
+    Q_PROPERTY(Qt3DRender::QAbstractRayCaster::RunMode runMode READ runMode WRITE setRunMode NOTIFY runModeChanged)
+    Q_PROPERTY(Qt3DRender::QAbstractRayCaster::FilterMode filterMode READ filterMode WRITE setFilterMode NOTIFY filterModeChanged)
+    Q_PROPERTY(Qt3DRender::QAbstractRayCaster::Hits hits READ hits NOTIFY hitsChanged)
 public:
     enum RunMode {
         Continuous,

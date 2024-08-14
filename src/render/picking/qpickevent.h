@@ -30,8 +30,8 @@ class Q_3DRENDERSHARED_EXPORT QPickEvent : public QObject
     Q_PROPERTY(Qt3DRender::QPickEvent::Buttons button READ button CONSTANT)
     Q_PROPERTY(int buttons READ buttons CONSTANT)
     Q_PROPERTY(int modifiers READ modifiers CONSTANT)
-    Q_PROPERTY(Qt3DRender::QViewport *viewport READ viewport CONSTANT REVISION 14)
-    Q_PROPERTY(Qt3DCore::QEntity *entity READ entity CONSTANT REVISION 14)
+    Q_PROPERTY(Qt3DRender::QViewport *viewport READ viewport CONSTANT REVISION(2, 14))
+    Q_PROPERTY(Qt3DCore::QEntity *entity READ entity CONSTANT REVISION(2, 14))
 public:
     enum Buttons {
         LeftButton = Qt::LeftButton,

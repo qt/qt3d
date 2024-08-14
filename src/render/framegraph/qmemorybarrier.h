@@ -37,8 +37,8 @@ public:
         QueryBuffer = (1 << 13),
         All = 0xFFFFFFFF
     };
-    Q_ENUM(Operation)
     Q_DECLARE_FLAGS(Operations, Operation)
+    Q_FLAGS(Operations)
 
     Operations waitOperations() const;
 
@@ -58,7 +58,5 @@ private:
 } // Qt3DRender
 
 QT_END_NAMESPACE
-
-Q_DECLARE_METATYPE(Qt3DRender::QMemoryBarrier::Operations)
 
 #endif // QT3DRENDER_QMEMORYBARRIER_H
