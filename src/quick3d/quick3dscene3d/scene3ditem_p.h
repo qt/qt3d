@@ -41,12 +41,14 @@ class AspectEngineDestroyer;
 class Scene3DItem : public QQuickItem
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(Scene3D)
+    QML_ADDED_IN_VERSION(2, 0)
     Q_PROPERTY(Qt3DCore::QEntity* entity READ entity WRITE setEntity NOTIFY entityChanged)
     Q_PROPERTY(QStringList aspects READ aspects WRITE setAspects NOTIFY aspectsChanged)
     Q_PROPERTY(bool multisample READ multisample WRITE setMultisample NOTIFY multisampleChanged)
     Q_PROPERTY(CameraAspectRatioMode cameraAspectRatioMode READ cameraAspectRatioMode WRITE setCameraAspectRatioMode NOTIFY cameraAspectRatioModeChanged)
     Q_PROPERTY(bool hoverEnabled READ isHoverEnabled WRITE setHoverEnabled NOTIFY hoverEnabledChanged)
-    Q_PROPERTY(CompositingMode compositingMode READ compositingMode WRITE setCompositingMode NOTIFY compositingModeChanged REVISION 14)
+    Q_PROPERTY(CompositingMode compositingMode READ compositingMode WRITE setCompositingMode NOTIFY compositingModeChanged REVISION(2, 14))
     Q_CLASSINFO("DefaultProperty", "entity")
 public:
     explicit Scene3DItem(QQuickItem *parent = 0);

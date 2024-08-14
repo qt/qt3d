@@ -1,0 +1,46 @@
+# Copyright (C) 2022 The Qt Company Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
+qt_internal_add_qml_module(3DQuickScene3D
+    URI "QtQuick.Scene3D"
+    VERSION "${PROJECT_VERSION}"
+    PAST_MAJOR_VERSIONS 2
+    PLUGIN_TARGET qtquickscene3dplugin
+    SOURCES
+        scene3ditem.cpp scene3ditem_p.h
+        scene3dlogging.cpp scene3dlogging_p.h
+        scene3drenderer.cpp scene3drenderer_p.h
+        scene3dsgmaterial.cpp scene3dsgmaterial_p.h
+        scene3dsgmaterialshader.cpp scene3dsgmaterialshader_p.h
+        scene3dsgnode.cpp scene3dsgnode_p.h
+    DEPENDENCIES
+        Qt3D.Core/auto
+        QtQuick/auto
+    RESOURCES
+        shaders/scene3dmaterial.vert.qsb
+        shaders/scene3dmaterial.frag.qsb
+    LIBRARIES
+        Qt::3DCore
+        Qt::3DRender
+        Qt::3DRenderPrivate
+        Qt::Core
+        Qt::Gui
+        Qt::Qml
+        Qt::Quick
+        Qt::QuickPrivate
+)
+
+qt_internal_extend_target(3DQuickScene3D CONDITION QT_FEATURE_qt3d_input
+    LIBRARIES
+        Qt::3DInput
+)
+
+qt_internal_extend_target(3DQuickScene3D CONDITION QT_FEATURE_qt3d_logic
+    LIBRARIES
+        Qt::3DLogic
+)
+
+qt_internal_extend_target(3DQuickScene3D CONDITION QT_FEATURE_qt3d_animation
+    LIBRARIES
+        Qt::3DAnimation
+)
