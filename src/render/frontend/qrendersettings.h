@@ -19,7 +19,7 @@ class QRenderSettingsPrivate;
 class Q_3DRENDERSHARED_EXPORT QRenderSettings : public Qt3DCore::QComponent
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DRender::QRenderCapabilities* renderCapabilities READ renderCapabilities CONSTANT REVISION 15)
+    Q_PROPERTY(Qt3DRender::QRenderCapabilities* renderCapabilities READ renderCapabilities CONSTANT REVISION(2, 15))
     Q_PROPERTY(Qt3DRender::QPickingSettings* pickingSettings READ pickingSettings CONSTANT)
     Q_PROPERTY(RenderPolicy renderPolicy READ renderPolicy WRITE setRenderPolicy NOTIFY renderPolicyChanged)
     Q_PROPERTY(Qt3DRender::QFrameGraphNode *activeFrameGraph READ activeFrameGraph WRITE setActiveFrameGraph NOTIFY activeFrameGraphChanged)

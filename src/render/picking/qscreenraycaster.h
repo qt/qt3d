@@ -28,7 +28,7 @@ public Q_SLOTS:
 
     void trigger();
     void trigger(const QPoint &position);
-    Hits pick(const QPoint &position);
+    Qt3DRender::QAbstractRayCaster::Hits pick(const QPoint &position);
 
 Q_SIGNALS:
     void positionChanged(const QPoint &position);

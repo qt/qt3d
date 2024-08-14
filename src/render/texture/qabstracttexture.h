@@ -37,8 +37,8 @@ class Q_3DRENDERSHARED_EXPORT QAbstractTexture : public Qt3DCore::QNode
     Q_PROPERTY(ComparisonMode comparisonMode READ comparisonMode WRITE setComparisonMode NOTIFY comparisonModeChanged)
     Q_PROPERTY(int layers READ layers WRITE setLayers NOTIFY layersChanged)
     Q_PROPERTY(int samples READ samples WRITE setSamples NOTIFY samplesChanged)
-    Q_PROPERTY(HandleType handleType READ handleType NOTIFY handleTypeChanged REVISION 13)
-    Q_PROPERTY(QVariant handle READ handle NOTIFY handleChanged REVISION 13)
+    Q_PROPERTY(HandleType handleType READ handleType NOTIFY handleTypeChanged REVISION(2, 13))
+    Q_PROPERTY(QVariant handle READ handle NOTIFY handleChanged REVISION(2, 13))
 
 public:
 

@@ -22,9 +22,9 @@ class Q_3DRENDERSHARED_EXPORT QShaderProgram : public Qt3DCore::QNode
     Q_PROPERTY(QByteArray geometryShaderCode READ geometryShaderCode WRITE setGeometryShaderCode NOTIFY geometryShaderCodeChanged)
     Q_PROPERTY(QByteArray fragmentShaderCode READ fragmentShaderCode WRITE setFragmentShaderCode NOTIFY fragmentShaderCodeChanged)
     Q_PROPERTY(QByteArray computeShaderCode READ computeShaderCode WRITE setComputeShaderCode NOTIFY computeShaderCodeChanged)
-    Q_PROPERTY(QString log READ log NOTIFY logChanged REVISION 9)
-    Q_PROPERTY(Status status READ status NOTIFY statusChanged REVISION 9)
-    Q_PROPERTY(Format format READ format WRITE setFormat NOTIFY formatChanged REVISION 15)
+    Q_PROPERTY(QString log READ log NOTIFY logChanged REVISION(2, 9))
+    Q_PROPERTY(Status status READ status NOTIFY statusChanged REVISION(2, 9))
+    Q_PROPERTY(Format format READ format WRITE setFormat NOTIFY formatChanged REVISION(2, 15))
 
 public:
     explicit QShaderProgram(Qt3DCore::QNode *parent = nullptr);

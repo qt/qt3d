@@ -27,12 +27,12 @@ class Q_3DRENDERSHARED_EXPORT QShaderProgramBuilder : public Qt3DCore::QNode
     Q_PROPERTY(QUrl geometryShaderGraph READ geometryShaderGraph WRITE setGeometryShaderGraph NOTIFY geometryShaderGraphChanged)
     Q_PROPERTY(QUrl fragmentShaderGraph READ fragmentShaderGraph WRITE setFragmentShaderGraph NOTIFY fragmentShaderGraphChanged)
     Q_PROPERTY(QUrl computeShaderGraph READ computeShaderGraph WRITE setComputeShaderGraph NOTIFY computeShaderGraphChanged)
-    Q_PROPERTY(QByteArray vertexShaderCode READ vertexShaderCode NOTIFY vertexShaderCodeChanged REVISION 13)
-    Q_PROPERTY(QByteArray tessellationControlShaderCode READ tessellationControlShaderCode NOTIFY tessellationControlShaderCodeChanged REVISION 13)
-    Q_PROPERTY(QByteArray tessellationEvaluationShaderCode READ tessellationEvaluationShaderCode  NOTIFY tessellationEvaluationShaderCodeChanged REVISION 13)
-    Q_PROPERTY(QByteArray geometryShaderCode READ geometryShaderCode NOTIFY geometryShaderCodeChanged REVISION 13)
-    Q_PROPERTY(QByteArray fragmentShaderCode READ fragmentShaderCode NOTIFY fragmentShaderCodeChanged REVISION 13)
-    Q_PROPERTY(QByteArray computeShaderCode READ computeShaderCode NOTIFY computeShaderCodeChanged REVISION 13)
+    Q_PROPERTY(QByteArray vertexShaderCode READ vertexShaderCode NOTIFY vertexShaderCodeChanged REVISION(2, 13))
+    Q_PROPERTY(QByteArray tessellationControlShaderCode READ tessellationControlShaderCode NOTIFY tessellationControlShaderCodeChanged REVISION(2, 13))
+    Q_PROPERTY(QByteArray tessellationEvaluationShaderCode READ tessellationEvaluationShaderCode  NOTIFY tessellationEvaluationShaderCodeChanged REVISION(2, 13))
+    Q_PROPERTY(QByteArray geometryShaderCode READ geometryShaderCode NOTIFY geometryShaderCodeChanged REVISION(2, 13))
+    Q_PROPERTY(QByteArray fragmentShaderCode READ fragmentShaderCode NOTIFY fragmentShaderCodeChanged REVISION(2, 13))
+    Q_PROPERTY(QByteArray computeShaderCode READ computeShaderCode NOTIFY computeShaderCodeChanged REVISION(2, 13))
 
 public:
     explicit QShaderProgramBuilder(Qt3DCore::QNode *parent = nullptr);

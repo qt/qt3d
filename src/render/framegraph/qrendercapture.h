@@ -47,8 +47,8 @@ public:
     explicit QRenderCapture(Qt3DCore::QNode *parent = nullptr);
 
     Qt3DRender::QRenderCaptureReply *requestCapture(int captureId);
-    Q_REVISION(9) Q_INVOKABLE Qt3DRender::QRenderCaptureReply *requestCapture();
-    Q_REVISION(10) Q_INVOKABLE Qt3DRender::QRenderCaptureReply *requestCapture(const QRect &rect);
+    Q_REVISION(2, 9) Q_INVOKABLE Qt3DRender::QRenderCaptureReply *requestCapture();
+    Q_REVISION(2, 10) Q_INVOKABLE Qt3DRender::QRenderCaptureReply *requestCapture(const QRect &rect);
 
 private:
     Q_DECLARE_PRIVATE(QRenderCapture)

@@ -36,7 +36,7 @@ public Q_SLOTS:
     void trigger();
     void trigger(const QVector3D& origin, const QVector3D& direction, float length);
 
-    Hits pick(const QVector3D& origin, const QVector3D& direction, float length);
+    Qt3DRender::QAbstractRayCaster::Hits pick(const QVector3D& origin, const QVector3D& direction, float length);
 
 Q_SIGNALS:
     void originChanged(const QVector3D &origin);

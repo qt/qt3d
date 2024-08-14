@@ -30,7 +30,7 @@ class Q_3DRENDERSHARED_EXPORT QCameraLens : public Qt3DCore::QComponent
     Q_PROPERTY(float bottom READ bottom WRITE setBottom NOTIFY bottomChanged)
     Q_PROPERTY(float top READ top WRITE setTop NOTIFY topChanged)
     Q_PROPERTY(QMatrix4x4 projectionMatrix READ projectionMatrix WRITE setProjectionMatrix NOTIFY projectionMatrixChanged)
-    Q_PROPERTY(float exposure READ exposure WRITE setExposure NOTIFY exposureChanged REVISION 9)
+    Q_PROPERTY(float exposure READ exposure WRITE setExposure NOTIFY exposureChanged REVISION(2, 9))
 
 public:
     explicit QCameraLens(QNode *parent = nullptr);
