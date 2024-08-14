@@ -40,7 +40,6 @@ if(TARGET Qt::Quick)
 
     # Quick3D imports
     if (TARGET Qt::3DRender)
-        add_subdirectory(quick3d/imports/render)
         if (TARGET Qt::3DExtras)
             add_subdirectory(quick3d/imports/extras)
         endif()

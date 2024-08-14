@@ -17,6 +17,7 @@
 
 #include <Qt3DCore/qnode.h>
 #include <QtQml/QQmlListProperty>
+#include <QtQml/qqmlregistration.h>
 
 #include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
 #include <Qt3DQuickRender/private/quick3dshaderdata_p.h>
@@ -36,6 +37,9 @@ class Quick3DShaderData;
 class Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DShaderDataArray : public Qt3DCore::QNode
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(ShaderDataArray)
+    QML_ADDED_IN_VERSION(2, 0);
+
     Q_PROPERTY(QQmlListProperty<Qt3DRender::QShaderData> values READ valuesList)
     Q_CLASSINFO("DefaultProperty", "values")
 

@@ -20,6 +20,8 @@
 #include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
 #include <Qt3DQuick/private/quick3dnode_p.h>
 
+#include <QtQml/qqmlregistration.h>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
@@ -31,6 +33,9 @@ class Quick3DScreenRayCasterPrivate;
 class Q_3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DScreenRayCaster : public QScreenRayCaster
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(ScreenRayCaster)
+    QML_ADDED_IN_VERSION(2, 11);
+
     Q_PROPERTY(QQmlListProperty<Qt3DRender::QLayer> layers READ qmlLayers)
 public:
     explicit Quick3DScreenRayCaster(QObject *parent = nullptr);
