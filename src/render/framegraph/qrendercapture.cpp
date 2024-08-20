@@ -28,7 +28,7 @@ namespace Qt3DRender {
 
 /*!
  * \qmltype RenderCapture
- * \instantiates Qt3DRender::QRenderCapture
+ * \nativetype Qt3DRender::QRenderCapture
  * \inherits FrameGraphNode
  * \inqmlmodule Qt3D.Render
  * \since 5.8
@@ -49,7 +49,7 @@ namespace Qt3DRender {
 
 /*!
  * \qmltype RenderCaptureReply
- * \instantiates Qt3DRender::QRenderCaptureReply
+ * \nativetype Qt3DRender::QRenderCaptureReply
  * \inherits QObject
  * \inqmlmodule Qt3D.Render
  * \since 5.8

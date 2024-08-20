@@ -140,7 +140,7 @@ QComponent::QComponent(QComponentPrivate &dd, QNode *parent)
 
 /*!
     \qmltype Component3D
-    \instantiates Qt3DCore::QComponent
+    \nativetype Qt3DCore::QComponent
     \inqmlmodule Qt3D.Core
     \inherits Node
     \since 5.5

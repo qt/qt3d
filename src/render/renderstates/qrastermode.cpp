@@ -32,7 +32,7 @@ namespace Qt3DRender {
     \since 5.14
     \inqmlmodule Qt3D.Render
     \inherits RenderState
-    \instantiates Qt3DRender::QRasterMode
+    \nativetype Qt3DRender::QRasterMode
     \ingroup renderstates
 
     The QRasterMode class is used to control the rasterization step of the

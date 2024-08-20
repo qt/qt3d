@@ -23,7 +23,7 @@ QClipBlendValuePrivate::QClipBlendValuePrivate()
 */
 /*!
    \qmltype ClipBlendValue
-   \instantiates Qt3DAnimation::QClipBlendValue
+   \nativetype Qt3DAnimation::QClipBlendValue
    \inqmlmodule Qt3D.Animation
    \brief Type used for including a clip in a blend tree.
 */

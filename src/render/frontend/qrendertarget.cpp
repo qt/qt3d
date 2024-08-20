@@ -33,7 +33,7 @@ using namespace Qt3DCore;
     object) which the renderer can render into.
     \since 5.7
     \inqmlmodule Qt3D.Render
-    \instantiates Qt3DRender::QRenderTarget
+    \nativetype Qt3DRender::QRenderTarget
 
     A RenderTarget comprises of RenderTargetOutput objects, which specify the the buffers
     the render target is rendering to. The user can specify MRT(Multiple Render Targets)

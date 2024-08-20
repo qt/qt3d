@@ -37,7 +37,7 @@ public:
 
 /*!
  * \qmltype PickLineEvent
- * \instantiates Qt3DRender::QPickLineEvent
+ * \nativetype Qt3DRender::QPickLineEvent
  * \inqmlmodule Qt3D.Render
  * \brief PickLineEvent holds information when a segment of a line is picked.
  * \sa ObjectPicker

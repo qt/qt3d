@@ -237,7 +237,7 @@ QFrameGraphNodePrivate::QFrameGraphNodePrivate()
 /*!
     \qmltype FrameGraphNode
     \inqmlmodule Qt3D.Render
-    \instantiates Qt3DRender::QFrameGraphNode
+    \nativetype Qt3DRender::QFrameGraphNode
     \inherits Node
     \since 5.5
     \brief Base class of all FrameGraph configuration nodes.

@@ -33,7 +33,7 @@ namespace Qt3DRender {
     \brief used to perform ray casting tests in 3d world coordinates.
     \inqmlmodule Qt3D.Render
     \since 5.11
-    \instantiates Qt3DRender::QRayCaster
+    \nativetype Qt3DRender::QRayCaster
 
     The 3d ray is defined by its origin, direction and length. It will be affected by the
     transformations applied to the entity it belongs to.

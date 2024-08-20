@@ -32,7 +32,7 @@ namespace Qt3DRender {
     \since 5.7
     \inqmlmodule Qt3D.Render
     \inherits Node
-    \instantiates Qt3DRender::QRenderTargetOutput
+    \nativetype Qt3DRender::QRenderTargetOutput
 
     A RenderTargetOutput specifies the attachment point and parameters for texture
     that is attached to render target. In addition to the attachment point, texture

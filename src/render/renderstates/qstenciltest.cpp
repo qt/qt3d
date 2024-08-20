@@ -32,7 +32,7 @@ namespace Qt3DRender {
     \inqmlmodule Qt3D.Render
     \brief The StencilTest type specifies arguments for the stecil test.
     \inherits RenderState
-    \instantiates Qt3DRender::QStencilTest
+    \nativetype Qt3DRender::QStencilTest
 
     A StencilTest type specifies argument for the stencil test.
     The stencil test comprises of three arguments: stencil test function,

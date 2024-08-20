@@ -17,7 +17,7 @@ namespace  Qt3DExtras {
 
 /*!
  * \qmltype TorusMesh
- * \instantiates Qt3DExtras::QTorusMesh
+ * \nativetype Qt3DExtras::QTorusMesh
  * \inqmlmodule Qt3D.Extras
  * \brief A toroidal mesh.
  */

@@ -37,7 +37,7 @@ namespace Qt3DAnimation {
     \inqmlmodule Qt3D.Animation
     \since 5.9
     \inherits AbstractAnimation
-    \instantiates Qt3DAnimation::QMorphingAnimation
+    \nativetype Qt3DAnimation::QMorphingAnimation
 
     A MorphingAnimation type implements blend-shape morphing animation
     to a target \l GeometryRenderer. The MorphingAnimation sets the correct

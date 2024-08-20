@@ -48,7 +48,7 @@ namespace Qt3DRender {
 
 /*!
     \qmltype NoDraw
-    \instantiates Qt3DRender::QNoDraw
+    \nativetype Qt3DRender::QNoDraw
     \inherits FrameGraphNode
     \inqmlmodule Qt3D.Render
     \since 5.5

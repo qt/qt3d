@@ -25,7 +25,7 @@ QT_BEGIN_NAMESPACE
    \brief The CoreSettings class holds settings related to core data handling process.
    \since 6.0
    \inqmlmodule Qt3D.Core
-   \instantiates Qt3DCore::QCoreSettings
+   \nativetype Qt3DCore::QCoreSettings
 
     The CoreSettings component should be set as a component of the scene root entity
     (although it could be anywhere in the scene graph). There should be a single instance.

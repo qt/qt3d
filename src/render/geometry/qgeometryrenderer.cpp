@@ -64,7 +64,7 @@ void QGeometryRendererPrivate::setView(QGeometryView *view)
 
 /*!
     \qmltype GeometryRenderer
-    \instantiates Qt3DRender::QGeometryRenderer
+    \nativetype Qt3DRender::QGeometryRenderer
     \inqmlmodule Qt3D.Render
     \inherits BoundingVolume
     \since 5.7

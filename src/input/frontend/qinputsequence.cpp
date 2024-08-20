@@ -31,7 +31,7 @@ QInputSequencePrivate::QInputSequencePrivate()
     \qmltype InputSequence
     \inqmlmodule Qt3D.Input
     \inherits QAbstractAggregateActionInput
-    \instantiates Qt3DInput::QInputSequence
+    \nativetype Qt3DInput::QInputSequence
     \brief QML frontend for the Qt3DInput::QInputSequence C++ class.
 
     Represents a set of QAbstractActionInput's that must be triggerd one after the other.

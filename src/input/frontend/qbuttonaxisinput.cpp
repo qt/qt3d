@@ -12,7 +12,7 @@ namespace Qt3DInput {
 
 /*!
  * \qmltype ButtonAxisInput
- * \instantiates Qt3DInput::QButtonAxisInput
+ * \nativetype Qt3DInput::QButtonAxisInput
  * \inqmlmodule Qt3D.Input
  * \brief QML frontend for QButtonAxisInput C++ class.
  * \since 5.7

@@ -27,7 +27,7 @@ bool QAbstractClipAnimatorPrivate::canPlay() const
 
 /*!
     \qmltype AbstractClipAnimator
-    \instantiates Qt3DAnimation::QAbstractClipAnimator
+    \nativetype Qt3DAnimation::QAbstractClipAnimator
     \inqmlmodule Qt3D.Animation
     \since 5.9
 

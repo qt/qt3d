@@ -11,7 +11,7 @@ namespace  Qt3DExtras {
 
 /*!
  * \qmltype CuboidMesh
- * \instantiates Qt3DExtras::QCuboidMesh
+ * \nativetype Qt3DExtras::QCuboidMesh
  * \inqmlmodule Qt3D.Extras
  * \brief A cuboid mesh.
  */

@@ -41,7 +41,7 @@ QFrameActionPrivate::QFrameActionPrivate()
 /*!
     \qmltype FrameAction
     \inqmlmodule Qt3D.Logic
-    \instantiates Qt3DLogic::QFrameAction
+    \nativetype Qt3DLogic::QFrameAction
     \inherits Component3D
     \since 5.5
     \brief Provides a way to have a synchronous function executed each frame.

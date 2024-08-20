@@ -26,7 +26,7 @@ namespace Qt3DRender {
     \inqmlmodule Qt3D.Render
     \since 5.7
     \inherits RenderState
-    \instantiates Qt3DRender::QColorMask
+    \nativetype Qt3DRender::QColorMask
     \brief Allows specifying which color components should be written to the
     currently bound frame buffer.
 

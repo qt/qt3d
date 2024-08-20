@@ -45,7 +45,7 @@ void QBufferPrivate::setData(const QByteArray &data)
 
 /*!
  * \qmltype Buffer
- * \instantiates Qt3DCore::QBuffer
+ * \nativetype Qt3DCore::QBuffer
  * \inqmlmodule Qt3D.Core
  *
  * \brief Provides a data store for raw data to later be used as vertices or

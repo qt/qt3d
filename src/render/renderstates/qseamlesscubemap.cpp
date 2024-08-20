@@ -24,7 +24,7 @@ namespace Qt3DRender {
     \brief Enables seamless cubemap texture filtering.
     \since 5.7
     \inqmlmodule Qt3D.Render
-    \instantiates Qt3DRender::QSeamlessCubemap
+    \nativetype Qt3DRender::QSeamlessCubemap
     \inherits RenderState
 
     When present in a state set, enables the seamless cubemap texture filtering

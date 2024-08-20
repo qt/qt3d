@@ -18,7 +18,7 @@ QBlendedClipAnimatorPrivate::QBlendedClipAnimatorPrivate()
 
 /*!
     \qmltype BlendedClipAnimator
-    \instantiates Qt3DAnimation::QBlendedClipAnimator
+    \nativetype Qt3DAnimation::QBlendedClipAnimator
     \inqmlmodule Qt3D.Animation
     \inherits AbstractClipAnimator
     \since 5.9

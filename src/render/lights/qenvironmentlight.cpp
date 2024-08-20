@@ -16,7 +16,7 @@ namespace Qt3DRender
 /*!
  * \qmltype EnvironmentLight
  * \inqmlmodule Qt3D.Render
- * \instantiates Qt3DRender::QEnvironmentLight
+ * \nativetype Qt3DRender::QEnvironmentLight
  * \brief Encapsulate an environment light object in a Qt 3D scene.
  * \since 5.9
  *

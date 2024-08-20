@@ -104,7 +104,7 @@ void QAbstractRayCasterPrivate::dispatchHits(const QAbstractRayCaster::Hits &hit
     \brief An abstract base class for ray casting in 3d scenes.
     \inqmlmodule Qt3D.Render
     \since 5.11
-    \instantiates Qt3DRender::QAbstractRayCaster
+    \nativetype Qt3DRender::QAbstractRayCaster
 
     AbstractRayCaster is an abstract base class for casting rays into a 3d scene.
     AbstractRayCaster can not be directly instantiated, but rather

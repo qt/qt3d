@@ -238,7 +238,7 @@
 
 /*!
     \qmltype ShaderProgram
-    \instantiates Qt3DRender::QShaderProgram
+    \nativetype Qt3DRender::QShaderProgram
     \inqmlmodule Qt3D.Render
     \brief Encapsulates a Shader Program.
     \since 5.5

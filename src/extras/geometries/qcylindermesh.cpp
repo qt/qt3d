@@ -24,7 +24,7 @@ using namespace Qt3DCore;
 
 /*!
  * \qmltype CylinderMesh
- * \instantiates Qt3DExtras::QCylinderMesh
+ * \nativetype Qt3DExtras::QCylinderMesh
  * \inqmlmodule Qt3D.Extras
  * \brief A cylindrical mesh.
  *

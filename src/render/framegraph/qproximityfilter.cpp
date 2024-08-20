@@ -43,7 +43,7 @@ QProximityFilterPrivate::QProximityFilterPrivate()
 
 /*!
     \qmltype ProximityFilter
-    \instantiates Qt3DRender::QProximityFilter
+    \nativetype Qt3DRender::QProximityFilter
     \inherits FrameGraphNode
     \inqmlmodule Qt3D.Render
     \since 5.10

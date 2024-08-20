@@ -40,7 +40,7 @@ namespace Qt3DAnimation {
     \inqmlmodule Qt3D.Animation
     \since 5.9
     \inherits AbstractAnimation
-    \instantiates Qt3DAnimation::QVertexBlendAnimation
+    \nativetype Qt3DAnimation::QVertexBlendAnimation
 
     A VertexBlendAnimation type implements vertex-blend morphing animation
     to a target \l GeometryRenderer. The VertexBlendAnimation sets the correct

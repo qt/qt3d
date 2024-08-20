@@ -157,7 +157,7 @@ void QExtrudedTextGeometryPrivate::init()
 
 /*!
  * \qmltype ExtrudedTextGeometry
- * \instantiates Qt3DExtras::QExtrudedTextGeometry
+ * \nativetype Qt3DExtras::QExtrudedTextGeometry
  * \inqmlmodule Qt3D.Extras
  * \brief ExtrudedTextGeometry allows creation of a 3D text in 3D space.
  *

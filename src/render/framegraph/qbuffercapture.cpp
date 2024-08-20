@@ -28,7 +28,7 @@ QBufferCapturePrivate::QBufferCapturePrivate()
 /*!
     \qmltype BufferCapture
     \inqmlmodule Qt3D.Render
-    \instantiates Qt3DRender::QBufferCapture
+    \nativetype Qt3DRender::QBufferCapture
     \brief Exchanges buffer data between GPU and CPU.
 */
 

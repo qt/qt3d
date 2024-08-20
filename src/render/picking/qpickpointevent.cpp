@@ -33,7 +33,7 @@ public:
 
 /*!
  * \qmltype PickPointEvent
- * \instantiates Qt3DRender::QPickPointEvent
+ * \nativetype Qt3DRender::QPickPointEvent
  * \inqmlmodule Qt3D.Render
  * \brief PickPointEvent holds information when a segment of a point cloud is picked.
  * \sa ObjectPicker

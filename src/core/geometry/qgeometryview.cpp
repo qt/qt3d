@@ -188,7 +188,7 @@ void QGeometryViewPrivate::update()
 
 /*!
     \qmltype GeometryView
-    \instantiates Qt3DCore::QGeometryView
+    \nativetype Qt3DCore::QGeometryView
     \inqmlmodule Qt3D.Core
     \inherits Node
     \since 6.0

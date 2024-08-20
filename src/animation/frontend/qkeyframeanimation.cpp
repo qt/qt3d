@@ -31,7 +31,7 @@ namespace Qt3DAnimation {
     \inqmlmodule Qt3D.Animation
     \since 5.9
     \inherits AbstractAnimation
-    \instantiates Qt3DAnimation::QKeyframeAnimation
+    \nativetype Qt3DAnimation::QKeyframeAnimation
 
     A KeyframeAnimation type implements simple keyframe animation
     that can be used to animate \l Transform. The keyframes consists of multiple

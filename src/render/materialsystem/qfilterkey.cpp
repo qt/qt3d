@@ -30,7 +30,7 @@ QFilterKeyPrivate::QFilterKeyPrivate()
 
 /*!
     \qmltype FilterKey
-    \instantiates Qt3DRender::QFilterKey
+    \nativetype Qt3DRender::QFilterKey
     \inherits Node
     \inqmlmodule Qt3D.Render
     \since 5.5

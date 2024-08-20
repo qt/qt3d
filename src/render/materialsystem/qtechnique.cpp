@@ -24,7 +24,7 @@ QTechniquePrivate::~QTechniquePrivate()
 
 /*!
     \qmltype Technique
-    \instantiates Qt3DRender::QTechnique
+    \nativetype Qt3DRender::QTechnique
     \inqmlmodule Qt3D.Render
     \inherits Qt3DCore::QNode
     \since 5.7

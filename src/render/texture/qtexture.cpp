@@ -1122,7 +1122,7 @@ void TextureDownloadRequest::onCompleted()
  */
 /*!
     \qmltype Texture1D
-    \instantiates Qt3DRender::QTexture1D
+    \nativetype Qt3DRender::QTexture1D
     \inqmlmodule Qt3D.Render
     \since 5.5
     \brief An AbstractTexture with a Target1D target format.
@@ -1150,7 +1150,7 @@ QTexture1D::~QTexture1D()
  */
 /*!
     \qmltype Texture1DArray
-    \instantiates Qt3DRender::QTexture1DArray
+    \nativetype Qt3DRender::QTexture1DArray
     \inqmlmodule Qt3D.Render
     \since 5.5
     \brief An AbstractTexture with a Target1DArray target format.
@@ -1178,7 +1178,7 @@ QTexture1DArray::~QTexture1DArray()
  */
 /*!
     \qmltype Texture2D
-    \instantiates Qt3DRender::QTexture2D
+    \nativetype Qt3DRender::QTexture2D
     \inqmlmodule Qt3D.Render
     \since 5.5
     \brief An AbstractTexture with a Target2D target format.
@@ -1206,7 +1206,7 @@ QTexture2D::~QTexture2D()
  */
 /*!
     \qmltype Texture2DArray
-    \instantiates Qt3DRender::QTexture2DArray
+    \nativetype Qt3DRender::QTexture2DArray
     \inqmlmodule Qt3D.Render
     \since 5.5
     \brief An AbstractTexture with a Target2DArray target format.
@@ -1234,7 +1234,7 @@ QTexture2DArray::~QTexture2DArray()
  */
 /*!
     \qmltype Texture3D
-    \instantiates Qt3DRender::QTexture3D
+    \nativetype Qt3DRender::QTexture3D
     \inqmlmodule Qt3D.Render
     \since 5.5
     \brief An AbstractTexture with a Target3D target format.
@@ -1262,7 +1262,7 @@ QTexture3D::~QTexture3D()
  */
 /*!
     \qmltype TextureCubeMap
-    \instantiates Qt3DRender::QTextureCubeMap
+    \nativetype Qt3DRender::QTextureCubeMap
     \inqmlmodule Qt3D.Render
     \since 5.5
     \brief An AbstractTexture with a TargetCubeMap target format.
@@ -1290,7 +1290,7 @@ QTextureCubeMap::~QTextureCubeMap()
  */
 /*!
     \qmltype TextureCubeMapArray
-    \instantiates Qt3DRender::QTextureCubeMapArray
+    \nativetype Qt3DRender::QTextureCubeMapArray
     \inqmlmodule Qt3D.Render
     \since 5.5
     \brief An AbstractTexture with a TargetCubeMapArray target format.
@@ -1318,7 +1318,7 @@ QTextureCubeMapArray::~QTextureCubeMapArray()
  */
 /*!
     \qmltype Texture2DMultisample
-    \instantiates Qt3DRender::QTexture2DMultisample
+    \nativetype Qt3DRender::QTexture2DMultisample
     \inqmlmodule Qt3D.Render
     \since 5.5
     \brief An AbstractTexture with a Target2DMultisample target format.
@@ -1346,7 +1346,7 @@ QTexture2DMultisample::~QTexture2DMultisample()
  */
 /*!
     \qmltype Texture2DMultisampleArray
-    \instantiates Qt3DRender::QTexture2DMultisampleArray
+    \nativetype Qt3DRender::QTexture2DMultisampleArray
     \inqmlmodule Qt3D.Render
     \since 5.5
     \brief An AbstractTexture with a Target2DMultisampleArray target format.
@@ -1374,7 +1374,7 @@ QTexture2DMultisampleArray::~QTexture2DMultisampleArray()
  */
 /*!
     \qmltype TextureRectangle
-    \instantiates Qt3DRender::QTextureRectangle
+    \nativetype Qt3DRender::QTextureRectangle
     \inqmlmodule Qt3D.Render
     \since 5.5
     \brief An AbstractTexture with a TargetRectangle target format.
@@ -1402,7 +1402,7 @@ QTextureRectangle::~QTextureRectangle()
  */
 /*!
     \qmltype TextureBuffer
-    \instantiates Qt3DRender::QTextureBuffer
+    \nativetype Qt3DRender::QTextureBuffer
     \inqmlmodule Qt3D.Render
     \since 5.5
     \brief An AbstractTexture with a TargetBuffer target format.
@@ -1448,7 +1448,7 @@ void QTextureLoaderPrivate::updateGenerator()
 */
 /*!
    \qmltype TextureLoader
-   \instantiates Qt3DRender::QTextureLoader
+   \nativetype Qt3DRender::QTextureLoader
    \inqmlmodule Qt3D.Render
 
    \brief Handles the texture loading and setting the texture's properties.
@@ -1695,7 +1695,7 @@ bool QTextureFromSourceGenerator::isMirrored() const
 
 /*!
     \qmltype SharedGLTexture
-    \instantiates Qt3DRender::QSharedGLTexture
+    \nativetype Qt3DRender::QSharedGLTexture
     \inqmlmodule Qt3D.Render
     \brief Allows to use a textureId from a separate OpenGL context in a Qt 3D scene.
     \since 5.13

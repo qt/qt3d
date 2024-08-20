@@ -10,7 +10,7 @@
 
 /*!
     \qmltype Material
-    \instantiates Qt3DRender::QMaterial
+    \nativetype Qt3DRender::QMaterial
     \inqmlmodule Qt3D.Render
     \brief Non-creatable abstract base for materials.
     \since 5.5

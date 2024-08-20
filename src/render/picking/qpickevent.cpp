@@ -25,7 +25,7 @@ namespace Qt3DRender {
 
 /*!
  * \qmltype PickEvent
- * \instantiates Qt3DRender::QPickEvent
+ * \nativetype Qt3DRender::QPickEvent
  * \inqmlmodule Qt3D.Render
  * \sa ObjectPicker PickingSettings
  * \brief PickEvent holds information when an object is picked.

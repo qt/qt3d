@@ -28,7 +28,7 @@ using namespace Qt3DCore;
     \qmltype RenderTargetSelector
     \inqmlmodule Qt3D.Render
     \since 5.7
-    \instantiates Qt3DRender::QRenderTargetSelector
+    \nativetype Qt3DRender::QRenderTargetSelector
     \inherits FrameGraphNode
     \brief Provides a way of specifying a render target.
 

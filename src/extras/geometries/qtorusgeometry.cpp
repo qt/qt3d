@@ -212,7 +212,7 @@ QByteArray QTorusGeometryPrivate::generateIndexData() const
 
 /*!
  * \qmltype TorusGeometry
- * \instantiates Qt3DExtras::QTorusGeometry
+ * \nativetype Qt3DExtras::QTorusGeometry
  * \inqmlmodule Qt3D.Extras
  * \brief TorusGeometry allows creation of a torus in 3D space.
  *

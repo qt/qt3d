@@ -21,7 +21,7 @@ namespace Qt3DInput {
 
     \qmltype AxisSetting
     \inqmlmodule Qt3D.Input
-    \instantiates Qt3DInput::QAxisSetting
+    \nativetype Qt3DInput::QAxisSetting
     \brief QML frontend for the Qt3DInput::QAxisSetting C++ class.
 
     Stores settings for the specified list of Axis

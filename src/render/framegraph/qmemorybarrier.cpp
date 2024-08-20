@@ -36,7 +36,7 @@ namespace Qt3DRender {
 /*!
     \qmltype MemoryBarrier
     \inqmlmodule Qt3D.Render
-    \instantiates Qt3DRender::QMemoryBarrier
+    \nativetype Qt3DRender::QMemoryBarrier
     \inherits FrameGraphNode
     \since 5.9
     \brief Class to place a memory barrier.

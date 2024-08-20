@@ -33,7 +33,7 @@ namespace Qt3DRender {
     \brief The PickingSettings class specifies how entity picking is handled.
     \since 5.7
     \inqmlmodule Qt3D.Render
-    \instantiates Qt3DRender::QPickingSettings
+    \nativetype Qt3DRender::QPickingSettings
 
     The picking settings determine how the entity picking is handled. For more details about
     entity picking, see Qt3D.Render::ObjectPicker or Qt3D.Render::RayCaster component documentation.

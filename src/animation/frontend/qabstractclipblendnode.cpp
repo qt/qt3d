@@ -15,7 +15,7 @@ QAbstractClipBlendNodePrivate::QAbstractClipBlendNodePrivate()
 
 /*!
     \qmltype AbstractClipBlendNode
-    \instantiates Qt3DAnimation::QAbstractClipBlendNode
+    \nativetype Qt3DAnimation::QAbstractClipBlendNode
     \inqmlmodule Qt3D.Animation
     \since 5.9
 

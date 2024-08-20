@@ -12,7 +12,7 @@ namespace Quick {
 
 /*!
     \qmltype Entity
-    \instantiates Qt3DCore::QEntity
+    \nativetype Qt3DCore::QEntity
     \inherits Node
     \inqmlmodule Qt3D.Core
     \since 5.5

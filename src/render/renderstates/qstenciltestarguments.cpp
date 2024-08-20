@@ -25,7 +25,7 @@ namespace Qt3DRender {
     \since 5.7
     \ingroup renderstates
     \inqmlmodule Qt3D.Render
-    \instantiates Qt3DRender::QStencilTestArguments
+    \nativetype Qt3DRender::QStencilTestArguments
     \inherits QtObject
 
     The StencilTestArguments type specifies the arguments for

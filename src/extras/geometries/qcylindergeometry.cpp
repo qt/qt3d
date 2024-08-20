@@ -255,7 +255,7 @@ QByteArray QCylinderGeometryPrivate::generateIndexData() const
 
 /*!
  * \qmltype CylinderGeometry
- * \instantiates Qt3DExtras::QCylinderGeometry
+ * \nativetype Qt3DExtras::QCylinderGeometry
  * \inqmlmodule Qt3D.Extras
  * \brief CylinderGeometry allows creation of a cylinder in 3D space.
  *

@@ -21,7 +21,7 @@ namespace Qt3DInput {
 /*!
     \qmltype Axis
     \inqmlmodule Qt3D.Input
-    \instantiates Qt3DInput::QAxis
+    \nativetype Qt3DInput::QAxis
     \brief QML frontend for the Qt3DInput::QAxis C++ class.
 
     Links a set of AbstractAxisInputs that trigger the same event.

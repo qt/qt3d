@@ -29,7 +29,7 @@ namespace Qt3DRender {
     \inqmlmodule Qt3D.Render
     \ingroup renderstates
     \inherits RenderState
-    \instantiates Qt3DRender::QPolygonOffset
+    \nativetype Qt3DRender::QPolygonOffset
 
     A PolygonOffset type adds an offset to the fragment depth value prior to
     depth test and depth write. The offset can be used to avoid z-fighting when

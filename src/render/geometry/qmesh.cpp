@@ -71,7 +71,7 @@ void QMeshPrivate::setStatus(QMesh::Status status)
 
 /*!
  * \qmltype Mesh
- * \instantiates Qt3DRender::QMesh
+ * \nativetype Qt3DRender::QMesh
  * \inqmlmodule Qt3D.Render
  * \brief A custom mesh loader.
  *

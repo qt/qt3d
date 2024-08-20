@@ -24,7 +24,7 @@ namespace Qt3DRender {
 
 /*!
     \qmltype DepthRange
-    \instantiates Qt3DRender::QDepthRange
+    \nativetype Qt3DRender::QDepthRange
     \inherits RenderState
     \inqmlmodule Qt3D.Render
     \ingroup renderstates

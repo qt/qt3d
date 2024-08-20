@@ -51,7 +51,7 @@ using namespace Qt3DCore;
     \qmltype Scene2D
     \inqmlmodule QtQuick.Scene2D
     \since 5.9
-    \instantiates Qt3DRender::Quick::QScene2D
+    \nativetype Qt3DRender::Quick::QScene2D
 
     \brief This type enables rendering qml into a texture, which then can be
     used as a part of 3D scene.

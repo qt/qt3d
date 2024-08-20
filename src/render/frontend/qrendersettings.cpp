@@ -31,7 +31,7 @@ namespace Qt3DRender {
    \l{Qt 3D Render Framegraph}{FrameGraph}.
    \since 5.7
    \inqmlmodule Qt3D.Render
-   \instantiates Qt3DRender::QRenderSettings
+   \nativetype Qt3DRender::QRenderSettings
 
    The RenderSettings component must be set as a component of the scene root entity. It specifies
    render policy and picking settings, as well as hosts the active

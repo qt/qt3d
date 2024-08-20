@@ -178,7 +178,7 @@ QKeyboardDevicePrivate::QKeyboardDevicePrivate()
     \inqmlmodule Qt3D.Input
     \brief QML frontend for QKeyboardDevice C++ class.
     \since 5.5
-    \instantiates Qt3DInput::QKeyboardDevice
+    \nativetype Qt3DInput::QKeyboardDevice
     \inherits Node
 */
 

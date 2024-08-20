@@ -26,7 +26,7 @@ namespace Qt3DRender {
     \brief An abstract base type for all render states.
     \since 5.7
     \inherits Node
-    \instantiates Qt3DRender::QRenderState
+    \nativetype Qt3DRender::QRenderState
     \ingroup renderstates
 
     A RenderState type is abstract base class for all render states.

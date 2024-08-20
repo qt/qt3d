@@ -58,7 +58,7 @@ using namespace Qt3DCore;
 /*!
     \qmltype SceneLoader
     \inqmlmodule Qt3D.Render
-    \instantiates Qt3DRender::QSceneLoader
+    \nativetype Qt3DRender::QSceneLoader
     \inherits Component
     \since 5.7
     \brief Provides the facility to load an existing Scene.

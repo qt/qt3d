@@ -11,7 +11,7 @@ namespace  Qt3DExtras {
 
 /*!
  * \qmltype CuboidGeometryView
- * \instantiates Qt3DExtras::QCuboidGeometryView
+ * \nativetype Qt3DExtras::QCuboidGeometryView
  * \inqmlmodule Qt3D.Extras
  * \brief A cuboid mesh.
  */

@@ -31,7 +31,7 @@ namespace Qt3DRender {
     \since 5.7
     \ingroup renderstates
     \inqmlmodule Qt3D.Render
-    \instantiates Qt3DRender::QStencilMask
+    \nativetype Qt3DRender::QStencilMask
     \inherits RenderState
 
     A StencilMask type specifies the mask for the stencil test. Mask can be specified
