@@ -12,7 +12,7 @@ namespace Qt3DInput {
 
 /*!
  * \qmltype AnalogAxisInput
- * \instantiates Qt3DInput::QAnalogAxisInput
+ * \nativetype Qt3DInput::QAnalogAxisInput
  * \inqmlmodule Qt3D.Input
  * \brief QML frontend for QAnalogAxisInput C++ class.
  * \since 5.7

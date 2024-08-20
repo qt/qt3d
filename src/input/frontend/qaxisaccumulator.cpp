@@ -34,7 +34,7 @@ namespace Qt3DInput {
 /*!
     \qmltype AxisAccumulator
     \inqmlmodule Qt3D.Input
-    \instantiates Qt3DInput::QAxisAccumulator
+    \nativetype Qt3DInput::QAxisAccumulator
     \brief QML frontend for the Qt3DInput::QAxisAccumulator C++ class.
     \since 5.8
 

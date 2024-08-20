@@ -27,7 +27,7 @@ namespace Qt3DAnimation {
     \brief An abstract base type for Qt3D animations.
     \inqmlmodule Qt3D.Animation
     \since 5.9
-    \instantiates Qt3DAnimation::QAbstractAnimation
+    \nativetype Qt3DAnimation::QAbstractAnimation
 
     AbstractAnimation is an abstract base type for all animations.
     AbstractAnimation can not be directly instantiated, but rather

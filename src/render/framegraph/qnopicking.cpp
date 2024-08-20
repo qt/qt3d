@@ -45,7 +45,7 @@ namespace Qt3DRender {
 
 /*!
     \qmltype NoPicking
-    \instantiates Qt3DRender::QNoPicking
+    \nativetype Qt3DRender::QNoPicking
     \inherits FrameGraphNode
     \inqmlmodule Qt3D.Render
     \since 5.14

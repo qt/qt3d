@@ -29,7 +29,7 @@ namespace Qt3DRender {
     \brief Performe ray casting test based on screen coordinates.
     \inqmlmodule Qt3D.Render
     \since 5.11
-    \instantiates Qt3DRender::QScreenRayCaster
+    \nativetype Qt3DRender::QScreenRayCaster
 
     ScreenRayCaster can be used to perform ray casting tests by specifying coordinates in
     screen space, which will be used to construct an actual 3D ray between the near and

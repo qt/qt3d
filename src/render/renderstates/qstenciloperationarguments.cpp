@@ -31,7 +31,7 @@ QStencilOperationArgumentsPrivate::~QStencilOperationArgumentsPrivate() = defaul
     \since 5.7
     \ingroup renderstates
     \inqmlmodule Qt3D.Render
-    \instantiates Qt3DRender::QStencilOperationArguments
+    \nativetype Qt3DRender::QStencilOperationArguments
     \inherits QtObject
 
     The StencilOperationArguments type specifies the arguments for the stencil operations.

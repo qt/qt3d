@@ -37,7 +37,7 @@ namespace Qt3DRender {
     \qmltype RenderSurfaceSelector
     \inqmlmodule Qt3D.Render
     \since 5.7
-    \instantiates Qt3DRender::QRenderSurfaceSelector
+    \nativetype Qt3DRender::QRenderSurfaceSelector
     \inherits FrameGraphNode
     \brief Provides a way of specifying the render surface.
 

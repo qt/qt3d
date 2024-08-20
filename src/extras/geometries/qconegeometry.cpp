@@ -308,7 +308,7 @@ QByteArray QConeGeometryPrivate::generateIndexData() const
 
 /*!
  * \qmltype ConeGeometry
- * \instantiates Qt3DExtras::QConeGeometry
+ * \nativetype Qt3DExtras::QConeGeometry
  * \inqmlmodule Qt3D.Extras
  * \brief ConeGeometry allows creation of a cone in 3D space.
  *

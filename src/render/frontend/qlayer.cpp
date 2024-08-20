@@ -59,7 +59,7 @@ QLayerPrivate::QLayerPrivate()
 
 /*!
     \qmltype Layer
-    \instantiates Qt3DRender::QLayer
+    \nativetype Qt3DRender::QLayer
     \inherits Component3D
     \inqmlmodule Qt3D.Render
     \since 5.5

@@ -32,7 +32,7 @@ QLogicalDevicePrivate::~QLogicalDevicePrivate()
 /*!
     \qmltype LogicalDevice
     \inqmlmodule Qt3D.Input
-    \instantiates Qt3DInput::QLogicalDevice
+    \nativetype Qt3DInput::QLogicalDevice
     \brief QML frontend for the Qt3DInput::QLogicalDevice C++ class.
 
     Allows the user to define a set of actions that they wish to use within an application.

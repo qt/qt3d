@@ -25,7 +25,7 @@ namespace Qt3DRender {
 /*!
     \qmltype CameraSelector
     \inqmlmodule Qt3D.Render
-    \instantiates Qt3DRender::QCameraSelector
+    \nativetype Qt3DRender::QCameraSelector
     \inherits FrameGraphNode
     \since 5.5
     \brief Class to allow for selection of camera to be used.

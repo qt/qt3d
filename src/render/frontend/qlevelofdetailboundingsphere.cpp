@@ -38,7 +38,7 @@ public:
 
 /*!
     \qmltype LevelOfDetailBoundingSphere
-    \instantiates Qt3DRender::QLevelOfDetailBoundingSphere
+    \nativetype Qt3DRender::QLevelOfDetailBoundingSphere
     \inherits Component3D
     \inqmlmodule Qt3D.Render
     \brief The LevelOfDetailBoundingSphere QML type provides a simple spherical volume, defined by its center and radius.

@@ -16,7 +16,7 @@ namespace Qt3DExtras {
 
 /*!
  * \qmltype ConeGeometryView
- * \instantiates Qt3DExtras::QConeGeometryView
+ * \nativetype Qt3DExtras::QConeGeometryView
  * \inqmlmodule Qt3D.Extras
  * \brief A conical mesh.
  */

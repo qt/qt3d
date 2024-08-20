@@ -23,7 +23,7 @@ namespace Qt3DInput {
 /*!
     \qmltype Action
     \inqmlmodule Qt3D.Input
-    \instantiates Qt3DInput::QAction
+    \nativetype Qt3DInput::QAction
     \brief QML frontend for the Qt3DInput::QAction C++ class.
 
     Links a set of AbstractActionInput that trigger the same event.

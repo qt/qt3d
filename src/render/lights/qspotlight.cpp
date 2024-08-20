@@ -62,7 +62,7 @@ QSpotLightPrivate::QSpotLightPrivate()
 
 /*!
     \qmltype SpotLight
-    \instantiates Qt3DRender::QSpotLight
+    \nativetype Qt3DRender::QSpotLight
     \inherits AbstractLight
     \inqmlmodule Qt3D.Render
     \since 5.5

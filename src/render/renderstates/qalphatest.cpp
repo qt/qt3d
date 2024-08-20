@@ -27,7 +27,7 @@ namespace Qt3DRender {
     \since 5.7
     \inqmlmodule Qt3D.Render
     \inherits RenderState
-    \instantiates Qt3DRender::QAlphaTest
+    \nativetype Qt3DRender::QAlphaTest
     \ingroup renderstates
 
     As the OpenGL documentation explains; The alpha test discards a fragment

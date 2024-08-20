@@ -87,7 +87,7 @@ void QForwardRendererPrivate::init()
     implementation of a forward renderer.
     \since 5.7
     \inqmlmodule Qt3D.Extras
-    \instantiates Qt3DExtras::QForwardRenderer
+    \nativetype Qt3DExtras::QForwardRenderer
 
     Forward rendering is what OpenGL traditionally uses. It renders directly to the backbuffer
     one object at a time shading each one as it goes.

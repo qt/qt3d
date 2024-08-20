@@ -67,7 +67,7 @@ QPickTriangleEvent *QPickTriangleEventPrivate::clone() const
 
 /*!
  * \qmltype PickTriangleEvent
- * \instantiates Qt3DRender::QPickTriangleEvent
+ * \nativetype Qt3DRender::QPickTriangleEvent
  * \inqmlmodule Qt3D.Render
  * \brief PickTriangleEvent holds information when a triangle is picked.
  *

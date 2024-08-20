@@ -32,7 +32,7 @@ QStencilOperationPrivate::~QStencilOperationPrivate() = default;
     \ingroup renderstates
     \inqmlmodule Qt3D.Render
     \inherits RenderState
-    \instantiates Qt3DRender::QStencilOperation
+    \nativetype Qt3DRender::QStencilOperation
 
     A StencilOperation type specifies the stencil operations
     for the front- and back-facing polygons. The stencil operation control

@@ -25,7 +25,7 @@ namespace Qt3DRender {
 /*!
     \qmltype DebugOverlay
     \inqmlmodule Qt3D.Render
-    \instantiates Qt3DRender::QDebugOverlay
+    \nativetype Qt3DRender::QDebugOverlay
     \inherits FrameGraphNode
     \since 2.16
     \brief Enables a visual overlay with scene details.

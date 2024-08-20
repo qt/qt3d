@@ -26,7 +26,7 @@ namespace Qt3DRender {
 /*!
     \qmltype DispatchCompute
     \inqmlmodule Qt3D.Render
-    \instantiates Qt3DRender::QDispatchCompute
+    \nativetype Qt3DRender::QDispatchCompute
     \inherits FrameGraphNode
     \since 5.7
     \brief FrameGraph node to issue work for the compute shader on GPU.

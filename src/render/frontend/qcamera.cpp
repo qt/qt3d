@@ -58,7 +58,7 @@ void QCameraPrivate::updateViewMatrixAndTransform(bool doEmit)
 
 /*!
  * \qmltype Camera
- * \instantiates Qt3DRender::QCamera
+ * \nativetype Qt3DRender::QCamera
  * \inherits Entity
  * \inqmlmodule Qt3D.Render
  * \since 5.5

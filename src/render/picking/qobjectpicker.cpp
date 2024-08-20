@@ -54,7 +54,7 @@ namespace Qt3DRender {
 
 /*!
     \qmltype ObjectPicker
-    \instantiates Qt3DRender::QObjectPicker
+    \nativetype Qt3DRender::QObjectPicker
     \inqmlmodule Qt3D.Render
     \brief The ObjectPicker class instantiates a component that can
     be used to interact with an Entity by a process known as picking.

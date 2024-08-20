@@ -27,7 +27,7 @@ namespace Qt3DRender {
 
 /*!
     \qmltype BlendEquationArguments
-    \instantiates Qt3DRender::QBlendEquationArguments
+    \nativetype Qt3DRender::QBlendEquationArguments
     \inherits RenderState
     \inqmlmodule Qt3D.Render
     \since 5.5

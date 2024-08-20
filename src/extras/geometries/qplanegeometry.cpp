@@ -112,7 +112,7 @@ QByteArray createPlaneIndexData(const QSize &resolution)
 
 /*!
  * \qmltype PlaneGeometry
- * \instantiates Qt3DExtras::QPlaneGeometry
+ * \nativetype Qt3DExtras::QPlaneGeometry
  * \inqmlmodule Qt3D.Extras
  * \brief PlaneGeometry allows creation of a plane in 3D space.
  *

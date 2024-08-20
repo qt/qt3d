@@ -37,7 +37,7 @@ QTechniqueFilterPrivate::QTechniqueFilterPrivate()
 /*!
     \qmltype TechniqueFilter
     \inqmlmodule Qt3D.Render
-    \instantiates Qt3DRender::QTechniqueFilter
+    \nativetype Qt3DRender::QTechniqueFilter
     \inherits FrameGraphNode
     \since 5.7
     \brief A FrameGraphNode used to select used Techniques.

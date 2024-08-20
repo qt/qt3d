@@ -21,7 +21,7 @@ namespace Qt3DRender {
 
 /*!
  * \qmltype CameraLens
- * \instantiates Qt3DRender::QCameraLens
+ * \nativetype Qt3DRender::QCameraLens
  * \inqmlmodule Qt3D.Render
  * \inherits Component3D
  * \since 5.5

@@ -29,7 +29,7 @@ namespace Qt3DRender {
     \since 5.7
     \ingroup renderstates
     \inqmlmodule Qt3D.Render
-    \instantiates Qt3DRender::QScissorTest
+    \nativetype Qt3DRender::QScissorTest
     \inherits RenderState
 
     A ScissorTest type enables scissor test, which discards fragments outside

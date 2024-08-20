@@ -26,7 +26,7 @@ QShaderImagePrivate::~QShaderImagePrivate()
 
 /*!
     \qmltype ShaderImage
-    \instantiates Qt3DRender::QShaderImage
+    \nativetype Qt3DRender::QShaderImage
     \inqmlmodule Qt3D.Render
     \since 5.14
     \brief Provides Image access to shader programs.

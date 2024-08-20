@@ -20,7 +20,7 @@ namespace Qt3DInput {
 /*!
     \qmltype KeyEvent
     \inqmlmodule Qt3D.Input
-    \instantiates Qt3DInput::QKeyEvent
+    \nativetype Qt3DInput::QKeyEvent
     \brief QML frontend for QKeyEvent C++ class.
     \since 5.5
     \brief Contains parameters that describe a key event

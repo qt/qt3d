@@ -19,7 +19,7 @@ QArmaturePrivate::QArmaturePrivate()
     \qmltype Armature
     \inqmlmodule Qt3D.Core
     \inherits Component3D
-    \instantiates Qt3DCore::QArmature
+    \nativetype Qt3DCore::QArmature
     \since 5.10
     \brief Used to calculate skinning transform matrices and set them on shaders.
 

@@ -11,7 +11,7 @@ namespace  Qt3DExtras {
 
 /*!
  * \qmltype PlaneGeometryView
- * \instantiates Qt3DExtras::QPlaneGeometryView
+ * \nativetype Qt3DExtras::QPlaneGeometryView
  * \inqmlmodule Qt3D.Extras
  * \brief A square planar mesh.
  */

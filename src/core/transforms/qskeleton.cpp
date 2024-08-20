@@ -20,7 +20,7 @@ QSkeletonPrivate::QSkeletonPrivate()
     \qmltype Skeleton
     \inqmlmodule Qt3D.Core
     \inherits AbstractSkeleton
-    \instantiates Qt3DCore::QSkeleton
+    \nativetype Qt3DCore::QSkeleton
     \since 5.10
     \brief Holds the data for a skeleton to be used with skinned meshes.
 

@@ -68,7 +68,7 @@ QTextureImageDataGeneratorPtr QAbstractTextureImagePrivate::dataGenerator() cons
 
 /*!
     \qmltype AbstractTextureImage
-    \instantiates Qt3DRender::QAbstractTextureImage
+    \nativetype Qt3DRender::QAbstractTextureImage
     \inherits Node
     \inqmlmodule Qt3D.Render
     \qmlabstract

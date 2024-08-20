@@ -34,7 +34,7 @@ namespace Qt3DAnimation {
     \brief A controller type for animations.
     \inqmlmodule Qt3D.Animation
     \since 5.9
-    \instantiates Qt3DAnimation::QAnimationController
+    \nativetype Qt3DAnimation::QAnimationController
 
     AnimationController type controls the selection and playback of animations.
     The type can be used to find all animations from Entity tree and create

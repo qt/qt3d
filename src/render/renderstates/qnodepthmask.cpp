@@ -29,7 +29,7 @@ namespace Qt3DRender {
     \ingroup renderstates
     \inqmlmodule Qt3D.Render
     \inherits RenderState
-    \instantiates Qt3DRender::QNoDepthMask
+    \nativetype Qt3DRender::QNoDepthMask
 
     A NoDepthMask type disables fragment depth write to depth buffer.
 

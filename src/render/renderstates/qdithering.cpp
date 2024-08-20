@@ -27,7 +27,7 @@ namespace Qt3DRender {
     \since 5.7
     \inqmlmodule Qt3D.Render
     \inherits RenderState
-    \instantiates Qt3DRender::QDithering
+    \nativetype Qt3DRender::QDithering
     \brief Enable dithering.
 
     A Dithering type enables dithering. Dithering adds noise to the

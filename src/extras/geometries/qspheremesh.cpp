@@ -12,7 +12,7 @@ namespace  Qt3DExtras {
 
 /*!
  * \qmltype SphereMesh
- * \instantiates Qt3DExtras::QSphereMesh
+ * \nativetype Qt3DExtras::QSphereMesh
  * \inqmlmodule Qt3D.Extras
  * \brief A spherical mesh.
  */

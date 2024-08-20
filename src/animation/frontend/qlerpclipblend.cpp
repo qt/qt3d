@@ -10,7 +10,7 @@ namespace Qt3DAnimation {
 
 /*!
     \qmltype LerpClipBlend
-    \instantiates Qt3DAnimation::QLerpClipBlend
+    \nativetype Qt3DAnimation::QLerpClipBlend
     \inqmlmodule Qt3D.Animation
 
     \brief Performs a linear interpolation of two animation clips based on a

@@ -38,7 +38,7 @@
 
 /*!
     \qmltype ShaderProgramBuilder
-    \instantiates Qt3DRender::QShaderProgramBuilder
+    \nativetype Qt3DRender::QShaderProgramBuilder
     \inqmlmodule Qt3D.Render
     \brief Generates a Shader Program content from loaded graphs.
     \since 5.10

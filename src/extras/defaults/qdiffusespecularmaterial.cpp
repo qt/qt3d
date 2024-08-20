@@ -231,7 +231,7 @@ void QDiffuseSpecularMaterialPrivate::handleTextureScaleChanged(const QVariant &
     of the phong lighting effect.
     \since 5.10
     \inqmlmodule Qt3D.Extras
-    \instantiates Qt3DExtras::QDiffuseSpecularMaterial
+    \nativetype Qt3DExtras::QDiffuseSpecularMaterial
 
     The phong lighting effect is based on the combination of 3 lighting
     components ambient, diffuse and specular. The relative strengths of these

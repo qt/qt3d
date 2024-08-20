@@ -22,7 +22,7 @@ QRenderPassPrivate::QRenderPassPrivate()
 }
 /*!
     \qmltype RenderPass
-    \instantiates Qt3DRender::QRenderPass
+    \nativetype Qt3DRender::QRenderPass
     \inqmlmodule Qt3D.Render
     \inherits Node
     \since 5.7

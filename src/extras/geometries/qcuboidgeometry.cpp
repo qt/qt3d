@@ -452,7 +452,7 @@ QByteArray QCuboidGeometryPrivate::generateIndexData() const
 
 /*!
  * \qmltype CuboidGeometry
- * \instantiates Qt3DExtras::QCuboidGeometry
+ * \nativetype Qt3DExtras::QCuboidGeometry
  * \inqmlmodule Qt3D.Extras
  * \brief CuboidGeometry allows creation of a cuboid in 3D space.
  *

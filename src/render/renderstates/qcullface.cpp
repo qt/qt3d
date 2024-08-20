@@ -60,7 +60,7 @@ namespace Qt3DRender {
     is enabled.
     \since 5.7
     \inqmlmodule Qt3D.Render
-    \instantiates Qt3DRender::QCullFace
+    \nativetype Qt3DRender::QCullFace
     \inherits RenderState
     \ingroup renderstates
 

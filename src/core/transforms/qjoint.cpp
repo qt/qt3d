@@ -21,7 +21,7 @@ QJointPrivate::QJointPrivate()
     \qmltype Joint
     \inqmlmodule Qt3D.Core
     \inherits Node
-    \instantiates Qt3DCore::QJoint
+    \nativetype Qt3DCore::QJoint
     \since 5.10
     \brief Used to transforms parts of skinned meshes.
 

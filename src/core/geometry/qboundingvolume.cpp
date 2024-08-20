@@ -81,7 +81,7 @@ QBoundingVolumePrivate *QBoundingVolumePrivate::get(QBoundingVolume *q)
 
 /*!
  * \qmltype BoundingVolume
- * \instantiates Qt3DCore::QBoundingVolume
+ * \nativetype Qt3DCore::QBoundingVolume
  * \inqmlmodule Qt3D.Core
  * \since 2.16
  *

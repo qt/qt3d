@@ -24,7 +24,7 @@ namespace Qt3DRender {
 
 /*!
     \qmltype ClipPlane
-    \instantiates Qt3DRender::QClipPlane
+    \nativetype Qt3DRender::QClipPlane
     \inherits RenderState
     \inqmlmodule Qt3D.Render
     \since 5.5

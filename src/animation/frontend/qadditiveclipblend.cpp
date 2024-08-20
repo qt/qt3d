@@ -11,7 +11,7 @@ namespace Qt3DAnimation {
 
 /*!
     \qmltype AdditiveClipBlend
-    \instantiates Qt3DAnimation::QAdditiveClipBlend
+    \nativetype Qt3DAnimation::QAdditiveClipBlend
     \inqmlmodule Qt3D.Animation
 
     \since 5.9

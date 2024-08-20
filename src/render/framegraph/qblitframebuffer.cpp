@@ -88,7 +88,7 @@ namespace Qt3DRender {
 /*!
     \qmltype BlitFramebuffer
     \inqmlmodule Qt3D.Render
-    \instantiates Qt3DRender::QBlitFramebuffer
+    \nativetype Qt3DRender::QBlitFramebuffer
     \inherits FrameGraphNode
     \since 5.10
     \brief FrameGraph node to transfer a rectangle of pixel values from one

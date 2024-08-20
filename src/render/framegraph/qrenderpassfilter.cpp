@@ -35,7 +35,7 @@ using namespace Qt3DCore;
     \qmltype RenderPassFilter
     \inqmlmodule Qt3D.Render
     \since 5.7
-    \instantiates Qt3DRender::QRenderPassFilter
+    \nativetype Qt3DRender::QRenderPassFilter
     \inherits FrameGraphNode
     \brief Provides storage for vectors of Filter Keys and Parameters.
 

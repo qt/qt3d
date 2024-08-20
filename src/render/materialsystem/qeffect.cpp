@@ -64,7 +64,7 @@ QEffectPrivate::QEffectPrivate()
 
 /*!
     \qmltype Effect
-    \instantiates Qt3DRender::QEffect
+    \nativetype Qt3DRender::QEffect
     \inherits Node
     \inqmlmodule Qt3D.Render
     \since 5.7

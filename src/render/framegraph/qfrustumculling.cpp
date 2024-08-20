@@ -27,7 +27,7 @@ namespace Qt3DRender {
 /*!
     \qmltype FrustumCulling
     \inqmlmodule Qt3D.Render
-    \instantiates Qt3DRender::QFrustumCulling
+    \nativetype Qt3DRender::QFrustumCulling
     \inherits FrameGraphNode
     \since 5.7
     \brief Enable frustum culling for the FrameGraph.

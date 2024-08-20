@@ -35,7 +35,7 @@ QAbstractSkeletonPrivate *QAbstractSkeletonPrivate::get(QAbstractSkeleton *q)
     \qmltype AbstractSkeleton
     \inqmlmodule Qt3D.Core
     \inherits Node
-    \instantiates Qt3DCore::QAbstractSkeleton
+    \nativetype Qt3DCore::QAbstractSkeleton
     \since 5.10
     \brief A skeleton contains the joints for a skinned mesh.
 

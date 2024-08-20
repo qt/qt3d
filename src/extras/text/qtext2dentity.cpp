@@ -35,7 +35,7 @@ namespace Qt3DExtras {
 
 /*!
  * \qmltype Text2DEntity
- * \instantiates Qt3DExtras::QText2DEntity
+ * \nativetype Qt3DExtras::QText2DEntity
  * \inqmlmodule Qt3D.Extras
  * \brief Text2DEntity allows creation of a 2D text in 3D space.
  *

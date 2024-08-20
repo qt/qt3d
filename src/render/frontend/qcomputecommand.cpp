@@ -32,7 +32,7 @@ namespace Qt3DRender {
     \since 5.7
     \inqmlmodule Qt3D.Render
     \inherits Component3D
-    \instantiates Qt3DRender::QComputeCommand
+    \nativetype Qt3DRender::QComputeCommand
     \brief Component to issue work for the compute shader on GPU.
 
     A ComputeCommand is used to issue work for the compute shader.

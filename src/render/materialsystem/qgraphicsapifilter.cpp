@@ -107,7 +107,7 @@ const QGraphicsApiFilterPrivate *QGraphicsApiFilterPrivate::get(const QGraphicsA
 
 /*!
     \qmltype GraphicsApiFilter
-    \instantiates Qt3DRender::QGraphicsApiFilter
+    \nativetype Qt3DRender::QGraphicsApiFilter
     \inherits QtObject
     \inqmlmodule Qt3D.Render
     \since 5.5

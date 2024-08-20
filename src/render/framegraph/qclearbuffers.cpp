@@ -21,7 +21,7 @@ namespace Qt3DRender {
 /*!
     \qmltype ClearBuffers
     \inqmlmodule Qt3D.Render
-    \instantiates Qt3DRender::QClearBuffers
+    \nativetype Qt3DRender::QClearBuffers
     \inherits FrameGraphNode
     \since 5.7
     \brief Class to clear buffers.

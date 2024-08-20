@@ -35,7 +35,7 @@ QAbstractPhysicalDevicePrivate::~QAbstractPhysicalDevicePrivate()
 /*!
     \qmltype AbstractPhysicalDevice
     \inqmlmodule Qt3D.Input
-    \instantiates Qt3DInput::QAbstractPhysicalDevice
+    \nativetype Qt3DInput::QAbstractPhysicalDevice
     \brief QML frontend for the abstract Qt3DInput::QAbstractPhysicalDevice C++ class.
 
     The base class used by Qt3d to interact with arbitrary input devices.

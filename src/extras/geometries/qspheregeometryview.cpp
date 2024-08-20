@@ -12,7 +12,7 @@ namespace  Qt3DExtras {
 
 /*!
  * \qmltype SphereGeometryView
- * \instantiates Qt3DExtras::QSphereGeometryView
+ * \nativetype Qt3DExtras::QSphereGeometryView
  * \inqmlmodule Qt3D.Extras
  * \brief A spherical mesh.
  */

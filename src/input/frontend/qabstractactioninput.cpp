@@ -20,7 +20,7 @@ namespace Qt3DInput {
 /*!
     \qmltype AbstractActionInput
     \inqmlmodule Qt3D.Input
-    \instantiates Qt3DInput::QAbstractActionInput
+    \nativetype Qt3DInput::QAbstractActionInput
     \brief QML frontend for the abstract Qt3DInput::QAbstractActionInput C++ class.
 
     The base class for the Action Input and all Aggregate Action Inputs.

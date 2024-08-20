@@ -46,7 +46,7 @@ typename EventClass::Modifiers modifiersForEvent(const QtEventClass *event)
 
 /*!
  * \qmltype MouseEvent
- * \instantiates Qt3DInput::QMouseEvent
+ * \nativetype Qt3DInput::QMouseEvent
  * \inqmlmodule Qt3D.Input
  * \since 5.5
  * \brief Provides parameters that describe a mouse event.
@@ -269,7 +269,7 @@ QMouseEvent::Modifiers QMouseEvent::modifiers() const
 
 /*!
  * \qmltype WheelEvent
- * \instantiates Qt3DInput::QWheelEvent
+ * \nativetype Qt3DInput::QWheelEvent
  * \inqmlmodule Qt3D.Input
  * \since 5.5
  * \brief Contains parameters that describe a mouse wheel event.

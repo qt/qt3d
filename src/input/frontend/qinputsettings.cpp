@@ -26,7 +26,7 @@ namespace Qt3DInput {
     \qmltype InputSettings
     \inqmlmodule Qt3D.Input
     \inherits Component3D
-    \instantiates Qt3DInput::QInputSettings
+    \nativetype Qt3DInput::QInputSettings
     \brief InputSettings holds the pointer to an input event source object.
     \since 5.7
 

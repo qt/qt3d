@@ -10,7 +10,7 @@ namespace Qt3DExtras {
 
 /*!
  * \qmltype ExtrudedTextMesh
- * \instantiates Qt3DExtras::QExtrudedTextMesh
+ * \nativetype Qt3DExtras::QExtrudedTextMesh
  * \inqmlmodule Qt3D.Extras
  * \brief A 3D extruded Text mesh.
  *

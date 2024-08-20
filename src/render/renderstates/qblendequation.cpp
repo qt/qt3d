@@ -17,7 +17,7 @@
 
 /*!
     \qmltype BlendEquation
-    \instantiates Qt3DRender::QBlendEquation
+    \nativetype Qt3DRender::QBlendEquation
     \inherits RenderState
     \inqmlmodule Qt3D.Render
     \since 5.5

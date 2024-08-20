@@ -25,7 +25,7 @@ namespace Qt3DRender {
 
 /*!
     \qmltype TextureImage
-    \instantiates Qt3DRender::QTextureImage
+    \nativetype Qt3DRender::QTextureImage
     \inherits AbstractTextureImage
     \inqmlmodule Qt3D.Render
     \since 5.5

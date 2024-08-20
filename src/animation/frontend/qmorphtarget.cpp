@@ -27,7 +27,7 @@ namespace Qt3DAnimation {
     \inqmlmodule Qt3D.Animation
     \since 5.9
     \inherits QtObject
-    \instantiates Qt3DAnimation::QMorphTarget
+    \nativetype Qt3DAnimation::QMorphTarget
 
     A MorphTarget type is a convenience type, which provides a list
     of \l {Qt3D.Core::Attribute} {Attributes}, which the MorphingAnimation uses

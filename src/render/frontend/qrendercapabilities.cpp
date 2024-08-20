@@ -85,7 +85,7 @@ on whether compute shaders are available or not.
    \brief The QRenderCapabilities class holds settings related to available rendering engines.
    \since 5.15
    \inqmlmodule Qt3D.Render
-   \instantiates Qt3DRender::QRenderCapabilities
+   \nativetype Qt3DRender::QRenderCapabilities
 
 RenderCapabilities provides details of graphical features that are available at runtime.
 It can be used to decide which code path to use for some algorithms, for example, depending

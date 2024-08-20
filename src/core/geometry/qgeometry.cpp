@@ -66,7 +66,7 @@ void QGeometryPrivate::setExtent(const QVector3D &minExtent, const QVector3D &ma
 
 /*!
     \qmltype Geometry
-    \instantiates Qt3DCore::QGeometry
+    \nativetype Qt3DCore::QGeometry
     \inqmlmodule Qt3D.Core
     \inherits Node
     \since 5.7

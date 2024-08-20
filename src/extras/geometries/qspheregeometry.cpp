@@ -228,7 +228,7 @@ QByteArray QSphereGeometryPrivate::generateIndexData() const
 
 /*!
  * \qmltype SphereGeometry
- * \instantiates Qt3DExtras::QSphereGeometry
+ * \nativetype Qt3DExtras::QSphereGeometry
  * \inqmlmodule Qt3D.Extras
  * \brief SphereGeometry allows creation of a sphere in 3D space.
  *

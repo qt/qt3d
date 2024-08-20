@@ -59,7 +59,7 @@ namespace Qt3DRender {
     \since 5.7
     \ingroup renderstates
     \inqmlmodule Qt3D.Render
-    \instantiates Qt3DRender::QAlphaCoverage
+    \nativetype Qt3DRender::QAlphaCoverage
     \inherits RenderState
     \brief Enable alpha-to-coverage multisampling mode.
 

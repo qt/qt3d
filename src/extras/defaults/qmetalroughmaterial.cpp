@@ -198,7 +198,7 @@ void QMetalRoughMaterialPrivate::updateVertexShaderBasedOnLayers(const QStringLi
 
 /*!
    \qmltype MetalRoughMaterial
-   \instantiates Qt3DExtras::QMetalRoughMaterial
+   \nativetype Qt3DExtras::QMetalRoughMaterial
    \inqmlmodule Qt3D.Extras
 
    \brief This material uses an effect with a single render pass approach and

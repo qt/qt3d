@@ -38,7 +38,7 @@ QAttributePrivate *QAttributePrivate::get(QAttribute *q)
 
 /*!
  * \qmltype Attribute
- * \instantiates Qt3DCore::QAttribute
+ * \nativetype Qt3DCore::QAttribute
  * \inqmlmodule Qt3D.Core
  * \brief Defines an attribute and how data should be read from a Buffer.
  *

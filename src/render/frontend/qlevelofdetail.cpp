@@ -75,7 +75,7 @@ void QLevelOfDetailPrivate::setCurrentIndex(int currentIndex)
 
 /*!
     \qmltype LevelOfDetail
-    \instantiates Qt3DRender::QLevelOfDetail
+    \nativetype Qt3DRender::QLevelOfDetail
     \inherits Component3D
     \inqmlmodule Qt3D.Render
     \since 5.9
