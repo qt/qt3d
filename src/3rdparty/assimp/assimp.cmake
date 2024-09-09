@@ -251,6 +251,7 @@ function(qt3d_extend_target_for_assimp target)
             ASSIMP_BUILD_NO_SMD_IMPORTER
             ASSIMP_BUILD_NO_STEP_IMPORTER
             ASSIMP_BUILD_NO_TERRAGEN_IMPORTER
+            ASSIMP_BUILD_NO_USD_IMPORTER
             ASSIMP_BUILD_NO_X3D_IMPORTER
             ASSIMP_BUILD_NO_XGL_IMPORTER
             ASSIMP_BUILD_NO_X_IMPORTER
