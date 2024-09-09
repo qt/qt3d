@@ -1,14 +1,14 @@
 {
     "Id": "assimp",
     "Name": "Open Asset Import Library",
-    "QDocModule": "qtquick3d",
+    "QDocModule": "qt3d",
     "Description": "assimp (Open Asset Import Library) is a portable open source library to import various well-known 3D model formats in a uniform manner.",
-    "QtUsage": "Used for importing assets for use with Qt Quick 3D",
+    "QtUsage": "Used for importing assets for use with Qt 3D",
     "Homepage": "http://www.assimp.org/",
-    "Version": "5.4.1",
-    "DownloadLocation": "https://github.com/assimp/assimp/releases/tag/v5.4.1",
+    "Version": "5.4.3",
+    "DownloadLocation": "https://github.com/assimp/assimp/releases/tag/v5.4.3",
     "License": "BSD 3-clause \"New\" or \"Revised\" Licensee",
     "LicenseId": "BSD-3-Clause",
     "LicenseFile": "LICENSE",
-    "Copyright": "Copyright (c) 2006-2018, assimp team"
+    "Copyright": "Copyright (c) 2006-2023, assimp team"
 }
