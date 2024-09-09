@@ -334,12 +334,12 @@ GLint glAttachmentPoint(const QRenderTargetOutput::AttachmentPoint &attachmentPo
     case QRenderTargetOutput::Stencil:
         return GL_STENCIL_ATTACHMENT;
     case QRenderTargetOutput::Left:
-#ifndef GL_BACK_LEFT:
+#ifndef GL_BACK_LEFT
 #  define GL_BACK_LEFT 0x0402
 #endif
         return GL_BACK_LEFT;
     case QRenderTargetOutput::Right:
-#ifndef GL_BACK_RIGHT:
+#ifndef GL_BACK_RIGHT
 #  define GL_BACK_RIGHT 0x0403
 #endif
         return GL_BACK_RIGHT;
