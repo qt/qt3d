@@ -150,6 +150,9 @@ void traverseSegmentStrip(Vertex *vertices,
 {
     uint i = 0;
 
+    if (vertexInfo.count < 1)
+        return;
+
     const uint verticesStride = vertexInfo.byteStride / sizeof(Vertex);
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
 
