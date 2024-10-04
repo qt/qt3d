@@ -3,8 +3,8 @@ dependencies:
     ref: 017d80e12fa50c50fa6751a039d3a7c9e799f34c
     required: true
   ../tqtc-qtdeclarative:
-    ref: b078003a3c81f1438dcaf932371d564003c99395
+    ref: 9886ff37350f661aad5b8bfaf2776e8429f208a7
     required: false
   ../tqtc-qtshadertools:
-    ref: 35662703a974d3929d1ea039c2534271cf60700f
+    ref: e6be6ff4be1820e5377d78efa388321de216b66f
     required: false
