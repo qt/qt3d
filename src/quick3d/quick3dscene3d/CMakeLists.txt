@@ -16,9 +16,6 @@ qt_internal_add_qml_module(3DQuickScene3D
     DEPENDENCIES
         Qt3D.Core/auto
         QtQuick/auto
-    RESOURCES
-        shaders/scene3dmaterial.vert.qsb
-        shaders/scene3dmaterial.frag.qsb
     LIBRARIES
         Qt::3DCore
         Qt::3DRender
@@ -43,4 +40,16 @@ qt_internal_extend_target(3DQuickScene3D CONDITION QT_FEATURE_qt3d_logic
 qt_internal_extend_target(3DQuickScene3D CONDITION QT_FEATURE_qt3d_animation
     LIBRARIES
         Qt::3DAnimation
+)
+
+# Resources:
+set(shader_resource_files
+    "shaders/scene3dmaterial.vert.qsb"
+    "shaders/scene3dmaterial.frag.qsb"
+)
+qt_internal_add_resource(3DQuickScene3D "scene3d"
+    PREFIX
+        "/"
+    FILES
+        ${shader_resource_files}
 )
