@@ -17,7 +17,6 @@
 #include <QtCore/qpointer.h>
 #include <QtQuick/QQuickItem>
 #include <Qt3DCore/qentity.h>
-#include <private/qglobal_p.h>
 
 QT_BEGIN_NAMESPACE
 

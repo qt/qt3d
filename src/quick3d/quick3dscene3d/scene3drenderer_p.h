@@ -19,7 +19,7 @@
 #include <QtCore/qsize.h>
 #include <QtCore/QMutex>
 #include <QtCore/QSemaphore>
-#include <scene3ditem_p.h>
+#include <private/scene3ditem_p.h>
 
 QT_BEGIN_NAMESPACE
 

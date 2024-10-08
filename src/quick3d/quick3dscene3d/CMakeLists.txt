@@ -16,14 +16,16 @@ qt_internal_add_qml_module(3DQuickScene3D
     DEPENDENCIES
         Qt3D.Core/auto
         QtQuick/auto
-    LIBRARIES
+    PUBLIC_LIBRARIES
         Qt::3DCore
+        Qt::Core
+        Qt::Quick
+    LIBRARIES
         Qt::3DRender
         Qt::3DRenderPrivate
-        Qt::Core
         Qt::Gui
         Qt::Qml
-        Qt::Quick
+        Qt::CorePrivate
         Qt::QuickPrivate
 )
 

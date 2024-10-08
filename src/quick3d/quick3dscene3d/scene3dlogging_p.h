@@ -15,7 +15,6 @@
 //
 
 #include <QtCore/QLoggingCategory>
-#include <private/qglobal_p.h>
 
 QT_BEGIN_NAMESPACE
 
