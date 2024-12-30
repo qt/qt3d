@@ -333,6 +333,8 @@ qt_internal_add_module(3DRender
         picking/objectpicker.cpp
         picking/pickeventfilter.cpp
         picking/qabstractraycaster.cpp
+        qrendererpluginfactory.cpp # redef of `loader` from frontend/qrenderpluginfactory.cpp
+        texture/qpaintedtextureimage.cpp # qbrush.h being infected by Qt3D...::QTransform
 )
 
 # Resources:
