@@ -56,13 +56,13 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-namespace {
-
 struct TransformUpdate
 {
     Qt3DCore::QNodeId peerId;
     QMatrix4x4 worldTransformMatrix;
 };
+
+namespace {
 
 void updateWorldTransformAndBounds(NodeManagers *manager, Entity *node, const Matrix4x4 &parentTransform, QVector<TransformUpdate> &updatedTransforms)
 {
