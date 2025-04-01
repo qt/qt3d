@@ -260,8 +260,10 @@ bool InternalEventFilter::processMouseEvent(QObject *obj, QT_PREPEND_NAMESPACE(Q
 
             if (mouseHandler->mouseDevice() == controller->peerId()) {
                 QMouseHandler *node = qobject_cast<QMouseHandler *>(m_inputHandler->m_scene->lookupNode(mouseHandler->peerId()));
-                QMouseHandlerPrivate *dnode = static_cast<QMouseHandlerPrivate *>(QMouseHandlerPrivate::get(node));
-                dnode->mouseEvent(QMouseEventPtr::create(*event));  // Do we really need Qt3D specific events?
+                if (node) {
+                    QMouseHandlerPrivate *dnode = static_cast<QMouseHandlerPrivate *>(QMouseHandlerPrivate::get(node));
+                    dnode->mouseEvent(QMouseEventPtr::create(*event));  // Do we really need Qt3D specific events?
+                }
             }
         }
     }
