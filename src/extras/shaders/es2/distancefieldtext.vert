@@ -12,6 +12,6 @@ void main()
     texCoord = vertexTexCoord;
     position = vec3(modelView * vec4(vertexPosition, 1.0));
 
-    gl_Position = mvp * vec4(vertexPosition, 1.0);
+    gl_Position = mvp * vec4(vertexPosition.xy, 0.0, 1.0);
 }
 
