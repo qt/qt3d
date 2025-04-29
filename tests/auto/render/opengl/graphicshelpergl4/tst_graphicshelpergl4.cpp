@@ -12,6 +12,7 @@
 #include <QOpenGLVertexArrayObject>
 #include <QSurfaceFormat>
 #include <QtOpenGL/QOpenGLVersionFunctionsFactory>
+#include <QElapsedTimer>
 
 #if !QT_CONFIG(opengles2) && defined(QT_OPENGL_4_3)
 

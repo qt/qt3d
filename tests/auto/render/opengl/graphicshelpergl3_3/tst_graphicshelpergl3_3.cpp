@@ -11,6 +11,7 @@
 #include <QOpenGLFunctions_3_3_Core>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLVertexArrayObject>
+#include <QElapsedTimer>
 
 #if !QT_CONFIG(opengles2) && defined(QT_OPENGL_3_2)
 
