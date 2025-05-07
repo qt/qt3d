@@ -1,5 +1,5 @@
 // Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial
 
 #include "entity_p.h"
 #include "entity_p_p.h"

@@ -1,6 +1,6 @@
 // Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
 // Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial
 
 #ifndef QT3DRENDER_QRAY3D_H
 #define QT3DRENDER_QRAY3D_H

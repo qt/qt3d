@@ -1,6 +1,6 @@
 // Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
 // Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial
 
 #include <Qt3DRender/private/qray3d_p.h>
 #include <QtCore/qdebug.h>

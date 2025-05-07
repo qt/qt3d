@@ -1,6 +1,6 @@
 // Copyright (C) 2020 Klaralvdalens Datakonsult AB (KDAB).
 // Copyright (C) 2016 Paul Lemire <paul.lemire350@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial
 
 #include "commandexecuter_p.h"
 

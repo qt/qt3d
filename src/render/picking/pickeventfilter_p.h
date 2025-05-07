@@ -1,5 +1,5 @@
 // Copyright (C) 2015 Paul Lemire paul.lemire350@gmail.com
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial
 
 #ifndef QT3DRENDER_RENDER_PICKEVENTFILTER_H
 #define QT3DRENDER_RENDER_PICKEVENTFILTER_H
