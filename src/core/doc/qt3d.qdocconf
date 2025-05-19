@@ -10,6 +10,9 @@ includepaths            = -I .
 
 examplesinstallpath     = qt3d
 
+# Path to the root of qt3d (for automatic linking to source code)
+url.sources.rootdir     = ../../..
+
 qhp.projects            = Qt3D
 
 qhp.Qt3D.file                = qt3d.qhp
