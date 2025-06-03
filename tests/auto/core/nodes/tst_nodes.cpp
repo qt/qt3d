@@ -1616,7 +1616,7 @@ void tst_Nodes::checkPropertyChanges()
 
     {
         // WHEN
-        QSignalSpy spy(&node, SIGNAL(parentChanged(QObject *)));
+        QSignalSpy spy(&node, SIGNAL(parentChanged(QObject*)));
         Qt3DCore::QNode *newValue = &parentNode;
         node.setParent(newValue);
 

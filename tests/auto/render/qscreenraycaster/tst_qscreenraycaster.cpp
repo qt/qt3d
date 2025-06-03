@@ -85,7 +85,7 @@ private Q_SLOTS:
         QTest::addColumn<QByteArray>("propertyName");
 
         QTest::newRow("hits")
-                << QByteArray(SIGNAL(hitsChanged(const Hits &)))
+                << QByteArray(SIGNAL(hitsChanged(Hits)))
                 << QByteArrayLiteral("hits");
     }
 };

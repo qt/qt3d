@@ -41,7 +41,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            QSignalSpy spy(&forwardRenderer, SIGNAL(surfaceChanged(QObject *)));
+            QSignalSpy spy(&forwardRenderer, SIGNAL(surfaceChanged(QObject*)));
             QWindow newValue;
             forwardRenderer.setSurface(&newValue);
 
@@ -104,7 +104,7 @@ private Q_SLOTS:
         }
         {
             // WHEN
-            QSignalSpy spy(&forwardRenderer, SIGNAL(cameraChanged(Qt3DCore::QEntity *)));
+            QSignalSpy spy(&forwardRenderer, SIGNAL(cameraChanged(Qt3DCore::QEntity*)));
             Qt3DCore::QEntity newValue;
             forwardRenderer.setCamera(&newValue);
 
