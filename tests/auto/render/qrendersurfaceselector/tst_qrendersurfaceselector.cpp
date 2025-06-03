@@ -96,7 +96,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            QSignalSpy spy(&renderSurfaceSelector, SIGNAL(surfaceChanged(QObject *)));
+            QSignalSpy spy(&renderSurfaceSelector, SIGNAL(surfaceChanged(QObject*)));
             QWindow newValue;
             renderSurfaceSelector.setSurface(&newValue);
 

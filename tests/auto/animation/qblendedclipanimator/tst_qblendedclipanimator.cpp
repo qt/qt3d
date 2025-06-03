@@ -42,7 +42,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            QSignalSpy spy(&blendedClipAnimator, SIGNAL(blendTreeChanged(QAbstractClipBlendNode *)));
+            QSignalSpy spy(&blendedClipAnimator, SIGNAL(blendTreeChanged(QAbstractClipBlendNode*)));
             Qt3DAnimation::QLerpClipBlend newValue;
             blendedClipAnimator.setBlendTree(&newValue);
 
@@ -61,7 +61,7 @@ private Q_SLOTS:
         }
         {
             // WHEN
-            QSignalSpy spy(&blendedClipAnimator, SIGNAL(channelMapperChanged(QChannelMapper *)));
+            QSignalSpy spy(&blendedClipAnimator, SIGNAL(channelMapperChanged(QChannelMapper*)));
             Qt3DAnimation::QChannelMapper newValue;
             blendedClipAnimator.setChannelMapper(&newValue);
 

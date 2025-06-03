@@ -112,7 +112,7 @@ private Q_SLOTS:
         {
             // WHEN
             QScopedPointer<Qt3DCore::QEntity> entity(new Qt3DCore::QEntity);
-            QSignalSpy spy(&animationController, SIGNAL(entityChanged(Qt3DCore::QEntity *)));
+            QSignalSpy spy(&animationController, SIGNAL(entityChanged(Qt3DCore::QEntity*)));
             Qt3DCore::QEntity * newValue = entity.data();
             animationController.setEntity(newValue);
 
