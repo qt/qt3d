@@ -157,7 +157,7 @@ private Q_SLOTS:
     {
         // GIVEN
         QScopedPointer<MyRayCaster> rayCaster(new MyRayCaster());
-        QSignalSpy spy(rayCaster.data(), SIGNAL(hitsChanged(const Hits &)));
+        QSignalSpy spy(rayCaster.data(), SIGNAL(hitsChanged(Hits)));
         Qt3DRender::QRayCaster::Hits hits;
 
         QVERIFY(spy.isValid());

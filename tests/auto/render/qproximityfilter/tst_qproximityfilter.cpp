@@ -40,7 +40,7 @@ private Q_SLOTS:
             // WHEN
             Qt3DCore::QEntity entity;
 
-            QSignalSpy spy(&proximityFilter, SIGNAL(entityChanged(Qt3DCore::QEntity *)));
+            QSignalSpy spy(&proximityFilter, SIGNAL(entityChanged(Qt3DCore::QEntity*)));
             Qt3DCore::QEntity *newValue = &entity;
             proximityFilter.setEntity(newValue);
 
