@@ -7,6 +7,10 @@
     "Homepage": "http://www.assimp.org/",
     "Version": "5.4.3",
     "DownloadLocation": "https://github.com/assimp/assimp/releases/tag/v5.4.3",
+    "PURL": [
+        "pkg:github/assimp/assimp@v$<VERSION>"
+    ],
+    "CPE": "cpe:2.3:a:assimp:assimp:$<VERSION>:*:*:*:*:*:*:*",
     "License": "BSD 3-clause \"New\" or \"Revised\" Licensee",
     "LicenseId": "BSD-3-Clause",
     "LicenseFile": "LICENSE",
