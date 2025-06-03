@@ -8,6 +8,10 @@
 
         "Homepage": "https://github.com/ocornut/imgui",
         "Version": "v1.66b",
+        "PURL": [
+            "pkg:github/ocornut/imgui@$<VERSION>"
+        ],
+        "Comment": "no relevant CPE found",
         "License": "MIT License",
         "LicenseId": "MIT",
         "LicenseFile": "LICENSE.txt",
@@ -22,6 +26,7 @@
         "Files": "imgui_draw.cpp",
 
         "Homepage": "https://github.com/bluescan/proggyfonts",
+        "Comment": "No relevant PURL or CPE set, because the dependency is a font file",
         "License": "MIT License",
         "LicenseId": "MIT",
         "LicenseFile": "LICENSE_proggyclean.txt",
@@ -36,6 +41,7 @@
         "Files": "imstb_rectpack.h imstb_textedit.h imstb_truetype.h",
 
         "Homepage": "https://github.com/nothings/stb/",
+        "Comment": "No relevant PURL or CPE set, because the dependency is a single file",
         "License": "MIT License or Public Domain",
         "LicenseId": "MIT OR CC0-1.0",
         "LicenseFile": "LICENSE_imstb.txt",
