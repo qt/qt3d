@@ -14,8 +14,8 @@ BoxEntity::BoxEntity(QNode *parent)
     , m_angle(0.0f)
     , m_radius(1.0f)
 {
-    connect(m_material, SIGNAL(diffuseChanged(const QColor &)),
-            this, SIGNAL(diffuseColorChanged(const QColor &)));
+    connect(m_material, SIGNAL(diffuseChanged(QColor)),
+            this, SIGNAL(diffuseColorChanged(QColor)));
     m_material->setAmbient(Qt::gray);
     m_material->setSpecular(Qt::white);
     m_material->setShininess(150.0f);

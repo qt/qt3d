@@ -45,7 +45,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            QSignalSpy spy(&animator, SIGNAL(clipChanged(Qt3DAnimation::QAbstractAnimationClip *)));
+            QSignalSpy spy(&animator, SIGNAL(clipChanged(Qt3DAnimation::QAbstractAnimationClip*)));
             auto newValue = new Qt3DAnimation::QAnimationClipLoader();
             animator.setClip(newValue);
 
@@ -66,7 +66,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            QSignalSpy spy(&animator, SIGNAL(channelMapperChanged(Qt3DAnimation::QChannelMapper *)));
+            QSignalSpy spy(&animator, SIGNAL(channelMapperChanged(Qt3DAnimation::QChannelMapper*)));
             auto newValue = new Qt3DAnimation::QChannelMapper();
             animator.setChannelMapper(newValue);
 
@@ -87,7 +87,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            QSignalSpy spy(&animator, SIGNAL(clockChanged(Qt3DAnimation::QClock *)));
+            QSignalSpy spy(&animator, SIGNAL(clockChanged(Qt3DAnimation::QClock*)));
             auto clock = new Qt3DAnimation::QClock();
             animator.setClock(clock);
 

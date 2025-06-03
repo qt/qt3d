@@ -32,7 +32,7 @@ private Q_SLOTS:
             // WHEN
             QScopedPointer<Qt3DRender::QGeometryRenderer> gm(new Qt3DRender::QGeometryRenderer);
             QSignalSpy spy(&vertexBlendAnimation,
-                           SIGNAL(targetChanged(Qt3DRender::QGeometryRenderer *)));
+                           SIGNAL(targetChanged(Qt3DRender::QGeometryRenderer*)));
             Qt3DRender::QGeometryRenderer *newValue = gm.data();
             vertexBlendAnimation.setTarget(newValue);
 

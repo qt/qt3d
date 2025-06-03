@@ -66,7 +66,7 @@ private Q_SLOTS:
         }
         {
             // WHEN
-            QSignalSpy spy(&renderSettings, SIGNAL(activeFrameGraphChanged(QFrameGraphNode *)));
+            QSignalSpy spy(&renderSettings, SIGNAL(activeFrameGraphChanged(QFrameGraphNode*)));
 
             Qt3DRender::QViewport newValue;
             renderSettings.setActiveFrameGraph(&newValue);

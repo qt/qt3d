@@ -63,7 +63,7 @@ private Q_SLOTS:
         }
         {
             // WHEN
-            QSignalSpy spy(&renderTargetOutput, SIGNAL(textureChanged(QAbstractTexture *)));
+            QSignalSpy spy(&renderTargetOutput, SIGNAL(textureChanged(QAbstractTexture*)));
             Qt3DRender::QTexture3D newValue;
             renderTargetOutput.setTexture(&newValue);
 

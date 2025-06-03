@@ -43,7 +43,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            QSignalSpy spy(&renderPass, SIGNAL(shaderProgramChanged(QShaderProgram *)));
+            QSignalSpy spy(&renderPass, SIGNAL(shaderProgramChanged(QShaderProgram*)));
             Qt3DRender::QShaderProgram newValue;
             renderPass.setShaderProgram(&newValue);
 
