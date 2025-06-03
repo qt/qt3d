@@ -42,7 +42,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            QSignalSpy spy(&shaderImage, SIGNAL(textureChanged(Qt3DRender::QAbstractTexture *)));
+            QSignalSpy spy(&shaderImage, SIGNAL(textureChanged(Qt3DRender::QAbstractTexture*)));
             Qt3DRender::QTexture2D newValue;
             shaderImage.setTexture(&newValue);
 
@@ -341,7 +341,7 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::QShaderImage shaderImage;
-        QSignalSpy spy(&shaderImage, SIGNAL(textureChanged(Qt3DRender::QAbstractTexture *)));
+        QSignalSpy spy(&shaderImage, SIGNAL(textureChanged(Qt3DRender::QAbstractTexture*)));
 
         {
             // WHEN

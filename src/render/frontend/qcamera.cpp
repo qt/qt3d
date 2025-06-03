@@ -537,7 +537,8 @@ QCamera::QCamera(Qt3DCore::QNode *parent)
     QObject::connect(d_func()->m_lens, SIGNAL(rightChanged(float)), this, SIGNAL(rightChanged(float)));
     QObject::connect(d_func()->m_lens, SIGNAL(bottomChanged(float)), this, SIGNAL(bottomChanged(float)));
     QObject::connect(d_func()->m_lens, SIGNAL(topChanged(float)), this, SIGNAL(topChanged(float)));
-    QObject::connect(d_func()->m_lens, SIGNAL(projectionMatrixChanged(const QMatrix4x4 &)), this, SIGNAL(projectionMatrixChanged(const QMatrix4x4 &)));
+    QObject::connect(d_func()->m_lens, SIGNAL(projectionMatrixChanged(QMatrix4x4)),
+                     this, SIGNAL(projectionMatrixChanged(QMatrix4x4)));
     QObject::connect(d_func()->m_lens, SIGNAL(exposureChanged(float)), this, SIGNAL(exposureChanged(float)));
     QObject::connect(d_func()->m_lens, &QCameraLens::viewSphere, this, &QCamera::viewSphere);
 
@@ -567,7 +568,8 @@ QCamera::QCamera(QCameraPrivate &dd, Qt3DCore::QNode *parent)
     QObject::connect(d_func()->m_lens, SIGNAL(rightChanged(float)), this, SIGNAL(rightChanged(float)));
     QObject::connect(d_func()->m_lens, SIGNAL(bottomChanged(float)), this, SIGNAL(bottomChanged(float)));
     QObject::connect(d_func()->m_lens, SIGNAL(topChanged(float)), this, SIGNAL(topChanged(float)));
-    QObject::connect(d_func()->m_lens, SIGNAL(projectionMatrixChanged(const QMatrix4x4 &)), this, SIGNAL(projectionMatrixChanged(const QMatrix4x4 &)));
+    QObject::connect(d_func()->m_lens, SIGNAL(projectionMatrixChanged(QMatrix4x4)),
+                     this, SIGNAL(projectionMatrixChanged(QMatrix4x4)));
     QObject::connect(d_func()->m_lens, &QCameraLens::viewSphere, this, &QCamera::viewSphere);
 
     addComponent(d_func()->m_lens);
