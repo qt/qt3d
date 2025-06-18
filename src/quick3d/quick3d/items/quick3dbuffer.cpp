@@ -93,7 +93,7 @@ void Quick3DBuffer::initEngines()
 {
     if (m_engine == nullptr) {
         m_engine = qmlEngine(parent());
-        m_v4engine = QQmlEnginePrivate::getV4Engine(m_engine);
+        m_v4engine = m_engine->handle();
     }
 }
 
