@@ -150,7 +150,6 @@ Scene3DItem::Scene3DItem(QQuickItem *parent)
     , m_wasSGUpdated(false)
     , m_cameraAspectRatioMode(AutomaticAspectRatio)
     , m_compositingMode(FBO)
-    , m_dummySurface(nullptr)
     , m_framesToRender(ms_framesNeededToFlushPipeline)
 {
     setFlag(QQuickItem::ItemHasContents, true);
@@ -185,9 +184,6 @@ Scene3DItem::~Scene3DItem()
 
     if (m_aspectEngineDestroyer)
         m_aspectEngineDestroyer->allowRelease();
-
-    if (m_dummySurface)
-        m_dummySurface->deleteLater();
 }
 
 /*!
@@ -500,14 +496,13 @@ void Scene3DItem::requestUpdate()
 
 void Scene3DItem::updateWindowSurface()
 {
-    if (!m_entity || !m_dummySurface)
+    if (!m_entity)
         return;
     Qt3DRender::QRenderSurfaceSelector *surfaceSelector =
         Qt3DRender::QRenderSurfaceSelectorPrivate::find(entity());
     if (surfaceSelector) {
         if (QWindow *rw = QQuickRenderControl::renderWindowFor(this->window())) {
-            m_dummySurface->deleteLater();
-            createDummySurface(rw, surfaceSelector);
+            surfaceSelector->setSurface(rw);
         }
     }
 }
@@ -522,25 +517,13 @@ void Scene3DItem::setWindowSurface(QObject *rootObject)
         // We may not have a real, exposed QQuickWindow when the Quick rendering
         // is redirected via QQuickRenderControl (f.ex. QQuickWidget).
         if (QWindow *rw = QQuickRenderControl::renderWindowFor(this->window())) {
-            createDummySurface(rw, surfaceSelector);
+            surfaceSelector->setSurface(rw);
         } else {
             surfaceSelector->setSurface(this->window());
         }
     }
 }
 
-void Scene3DItem::createDummySurface(QWindow *rw, Qt3DRender::QRenderSurfaceSelector *surfaceSelector)
-{
-    // rw is the top-level window that is backed by a native window. Do
-    // not use that though since we must not clash with e.g. the widget
-    // backingstore compositor in the gui thread.
-    m_dummySurface = new QOffscreenSurface;
-    m_dummySurface->setParent(qGuiApp); // parent to something suitably long-living
-    m_dummySurface->setFormat(rw->format());
-    m_dummySurface->setScreen(rw->screen());
-    m_dummySurface->create();
-    surfaceSelector->setSurface(m_dummySurface);
-}
 /*!
     \qmlmethod void Scene3D::setItemAreaAndDevicePixelRatio(size area, real devicePixelRatio)
 
