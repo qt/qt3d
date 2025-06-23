@@ -105,7 +105,6 @@ private:
     void mousePressEvent(QMouseEvent *event) override;
     bool needsRender(QRenderAspect *renderAspect);
     void updateWindowSurface();
-    void createDummySurface(QWindow *window, QRenderSurfaceSelector *surfaceSelector);
     void applyAspects();
 
     QStringList m_aspects;
@@ -124,7 +123,6 @@ private:
     QPointer<Qt3DRender::QCamera> m_camera;
     CameraAspectRatioMode m_cameraAspectRatioMode;
     CompositingMode m_compositingMode;
-    QOffscreenSurface *m_dummySurface;
     QMetaObject::Connection m_windowConnection;
     qint8 m_framesToRender;
 
