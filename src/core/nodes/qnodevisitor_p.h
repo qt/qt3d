@@ -109,7 +109,9 @@ private:
     template<typename NodeVisitorFunctor, typename EntityVisitorFunctor>
     void traverseChildren(NodeVisitorFunctor &fN, EntityVisitorFunctor &fE)
     {
-        for (QObject *n : currentNode()->children()) {
+        // iterate on copy, in case user code changes children list
+        const QObjectList children = currentNode()->children();
+        for (QObject *n : children) {
             QNode *node = qobject_cast<QNode *>(n);
             if (node != nullptr)
                 outerVisitNode(node, fN, fE);
@@ -119,7 +121,9 @@ private:
     template<typename NodeVisitorFunctor>
     void traverseChildren(NodeVisitorFunctor &fN)
     {
-        for (QObject *n : currentNode()->children()) {
+        // iterate on copy, in case user code changes children list
+        const QObjectList children = currentNode()->children();
+        for (QObject *n : children) {
             QNode *node = qobject_cast<QNode *>(n);
             if (node != nullptr)
                 outerVisitNode(node, fN);
