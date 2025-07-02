@@ -17,6 +17,9 @@ function(qt3d_extend_target_for_assimp target)
         SOURCES
             ${assimpDir}/config.h
             ${assimpDir}/revision.h
+            ${assimpDir}/src/contrib/pugixml/src/pugixml.hpp
+            ${assimpDir}/src/contrib/pugixml/src/pugiconfig.hpp
+            ${assimpDir}/src/contrib/pugixml/src/pugixml.cpp
             ${assimpDir}/src/code/CApi/CInterfaceIOWrapper.cpp ${assimpDir}/src/code/CApi/CInterfaceIOWrapper.h
             ${assimpDir}/src/code/AssetLib/Collada/ColladaHelper.cpp ${assimpDir}/src/code/AssetLib/Collada/ColladaHelper.h
             ${assimpDir}/src/code/AssetLib/Collada/ColladaLoader.cpp ${assimpDir}/src/code/AssetLib/Collada/ColladaLoader.h
@@ -114,9 +117,9 @@ function(qt3d_extend_target_for_assimp target)
             ${assimpDir}/src/code/PostProcessing/TriangulateProcess.cpp ${assimpDir}/src/code/PostProcessing/TriangulateProcess.h
             ${assimpDir}/src/code/PostProcessing/ValidateDataStructure.cpp ${assimpDir}/src/code/PostProcessing/ValidateDataStructure.h
             ${assimpDir}/src/code/AssetLib/STL/STLLoader.cpp ${assimpDir}/src/code/AssetLib/STL/STLLoader.h
+            ${assimpDir}/src/code/AssetLib/glTFCommon/glTFCommon.cpp ${assimpDir}/src/code/AssetLib/glTFCommon/glTFCommon.h
             ${assimpDir}/src/code/AssetLib/glTF/glTFAsset.h ${assimpDir}/src/code/AssetLib/glTF/glTFAsset.inl
             ${assimpDir}/src/code/AssetLib/glTF/glTFAssetWriter.h ${assimpDir}/src/code/AssetLib/glTF/glTFAssetWriter.inl
-            ${assimpDir}/src/code/AssetLib/glTF/glTFCommon.cpp ${assimpDir}/src/code/AssetLib/glTF/glTFCommon.h
             ${assimpDir}/src/code/AssetLib/glTF/glTFImporter.cpp ${assimpDir}/src/code/AssetLib/glTF/glTFImporter.h
             ${assimpDir}/src/code/AssetLib/glTF2/glTF2Asset.h ${assimpDir}/src/code/AssetLib/glTF2/glTF2Asset.inl
             ${assimpDir}/src/code/AssetLib/glTF2/glTF2AssetWriter.h ${assimpDir}/src/code/AssetLib/glTF2/glTF2AssetWriter.inl
@@ -277,6 +280,8 @@ function(qt3d_extend_target_for_assimp target)
             ${assimpDir}/src/code/glTF
             ${assimpDir}/src/code/glTF2
             ${assimpDir}/src/contrib/irrXML
+            ${assimpDir}/src/contrib/pugixml/src
+            ${assimpDir}/src/contrib/pugixml/contrib
             ${assimpDir}/src/contrib/openddlparser/include
             ${assimpDir}/src/contrib/poly2tri
             ${assimpDir}/src/contrib/pugixml/src
