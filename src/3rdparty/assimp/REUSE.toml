@@ -4,5 +4,5 @@ version = 1
 path = ["**"]
 precedence = "closest"
 comment = "assuming the info in qt_attribution.json applies to everything in the directory."
-SPDX-FileCopyrightText = "Copyright (c) 2006-2023, assimp team"
+SPDX-FileCopyrightText = "Copyright (c) 2006-2025, assimp team"
 SPDX-License-Identifier = "BSD-3-Clause"
