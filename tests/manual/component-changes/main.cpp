@@ -15,6 +15,8 @@
 #include <Qt3DExtras/qt3dwindow.h>
 #include <Qt3DExtras/qorbitcameracontroller.h>
 
+#include <QtGui/qquaternion.h>
+
 #include <QTimer>
 
 class ComponentSwapper : public QObject

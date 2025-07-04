@@ -34,6 +34,8 @@
 #include <QtCore/QFileInfo>
 #include <QtCore/QJsonArray>
 #include <QtCore/QJsonObject>
+
+#include <QtGui/qquaternion.h>
 #include <QtGui/QVector2D>
 
 #include "gltfio.h"

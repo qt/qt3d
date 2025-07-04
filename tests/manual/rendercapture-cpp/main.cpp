@@ -28,6 +28,8 @@
 #include "qorbitcameracontroller.h"
 #include "mycapture.h"
 
+#include <QtGui/qquaternion.h>
+
 Qt3DCore::QEntity *createScene()
 {
     // Root entity
