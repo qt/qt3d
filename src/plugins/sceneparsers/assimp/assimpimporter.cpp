@@ -25,7 +25,9 @@
 #include <Qt3DAnimation/qkeyframeanimation.h>
 #include <Qt3DAnimation/qmorphinganimation.h>
 #include <QtCore/QFileInfo>
+
 #include <QtGui/QColor>
+#include <QtGui/qquaternion.h>
 
 #include <qmath.h>
 

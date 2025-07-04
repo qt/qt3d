@@ -29,6 +29,8 @@
 #include "qfirstpersoncameracontroller.h"
 #include "planematerial.h"
 
+#include <QtGui/qquaternion.h>
+
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
