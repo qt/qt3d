@@ -6,6 +6,8 @@
 #include <qobject.h>
 #include <qsignalspy.h>
 
+#include <QtGui/qquaternion.h>
+
 class tst_QKeyframeAnimation : public QObject
 {
     Q_OBJECT

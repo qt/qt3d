@@ -19,6 +19,8 @@
 #include <Qt3DCore/private/sqt_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
 
+#include <QtGui/qquaternion.h>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
