@@ -17,6 +17,8 @@
 #include <Qt3DCore/private/qmath3d_p.h>
 #include <Qt3DCore/private/qloadgltf_p.h>
 
+#include <QtGui/qquaternion.h>
+
 QT_BEGIN_NAMESPACE
 
 using namespace Qt3DCore;

@@ -18,6 +18,8 @@
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DExtras/QTorusMesh>
 
+#include <QtGui/QQuaternion>
+
 #include <QPropertyAnimation>
 
 #include "qt3dwindow.h"

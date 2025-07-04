@@ -19,6 +19,8 @@
 #include <Qt3DAnimation/qkeyframeanimation.h>
 #include <private/qabstractanimation_p.h>
 
+#include <QtGui/qquaternion.h>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
