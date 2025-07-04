@@ -8,6 +8,8 @@
 #include <QtCore/QDateTime>
 
 #include <QtGui/QPainter>
+#include <QtGui/qquaternion.h>
+
 #include <Qt3DRender/QPaintedTextureImage>
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QGeometryRenderer>

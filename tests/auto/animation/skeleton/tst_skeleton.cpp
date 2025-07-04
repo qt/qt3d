@@ -11,6 +11,8 @@
 #include <qbackendnodetester.h>
 #include <testarbiter.h>
 
+#include <QtGui/qquaternion.h>
+
 using namespace Qt3DCore;
 using namespace Qt3DAnimation;
 using namespace Qt3DAnimation::Animation;

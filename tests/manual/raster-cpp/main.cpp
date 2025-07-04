@@ -27,6 +27,8 @@
 #include <Qt3DExtras/qt3dwindow.h>
 #include <Qt3DExtras/qorbitcameracontroller.h>
 
+#include <QtGui/qquaternion.h>
+
 int main(int argc, char **argv)
 {
     QGuiApplication app(argc, argv);

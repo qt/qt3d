@@ -22,6 +22,8 @@
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DExtras/qfirstpersoncameracontroller.h>
 
+#include <QtGui/qquaternion.h>
+
 int main(int argc, char **argv)
 {
     QGuiApplication app(argc, argv);

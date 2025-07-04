@@ -24,6 +24,8 @@
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DExtras/QTorusMesh>
 
+#include <QtGui/qquaternion.h>
+
 #include <QPropertyAnimation>
 #include <QThread>
 
