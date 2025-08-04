@@ -110,5 +110,5 @@
     Furthermore Qt 3D contains third party
     modules under following permissive licenses:
 
-    \generatelist{groupsbymodule attributions-qt3d}
+    \annotatedlist attributions-qt3d
 */
