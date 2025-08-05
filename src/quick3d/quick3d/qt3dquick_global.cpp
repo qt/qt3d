@@ -26,7 +26,7 @@ static QQmlPrivate::AutoParentResult qquick3ditem_autoParent(QObject *obj, QObje
             node->setParent(parentNode);
             return QQmlPrivate::Parented;
         }
-    } else {
+    } else if (qmlobject_cast<Qt3DCore::QNode *>(obj)) {
         return QQmlPrivate::IncompatibleParent;
     }
     return QQmlPrivate::IncompatibleObject;
