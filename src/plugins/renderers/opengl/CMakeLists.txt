@@ -82,6 +82,7 @@ if(QT_FEATURE_private_tests)
             ${PROJECT_SOURCE_DIR}/src/3rdparty/imgui/imgui_widgets.cpp
     )
 
+    qt_internal_extend_sbom(OpenGLRendererLib TYPE CUSTOM)
     qt_internal_extend_target(OpenGLRendererLib CONDITION NOT INTEGRITY
         SOURCES
             ${openGLRendererImguiSources}
