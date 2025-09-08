@@ -228,11 +228,11 @@ void QAbstractCameraControllerPrivate::applyInputAccelerations()
 /*!
     \fn void Qt3DExtras::QAbstractCameraController::moveCamera(const InputState &state, float dt) = 0
 
-    This method is called whenever a frame action is triggered. Derived
-    classes must override this method to implement the camera movement
-    specific to the controller.
+    Subclasses must override this method to implement the camera movement
+    specific to the controller. \a state represents the input state, and \a dt
+    is the time step.
 
-    In the base class this is a pure virtual function.
+    This function is called whenever a frame action is triggered.
 */
 
 QAbstractCameraController::QAbstractCameraController(Qt3DCore::QNode *parent)
