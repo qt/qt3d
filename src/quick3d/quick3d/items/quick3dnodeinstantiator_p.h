@@ -1,6 +1,6 @@
 // Copyright (C) 2013 Research In Motion.
 // Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QT3D_QUICK_NODEINSTANTIATOR_P_H
 #define QT3D_QUICK_NODEINSTANTIATOR_P_H

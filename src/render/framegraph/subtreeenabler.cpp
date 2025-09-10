@@ -1,5 +1,5 @@
 // Copyright (C) 2019 Ford Motor Company
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "subtreeenabler_p.h"
 #include <Qt3DRender/private/qsubtreeenabler_p.h>

@@ -1,5 +1,5 @@
 // Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "framecleanupjob_p.h"
 #include <private/nodemanagers_p.h>

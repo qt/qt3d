@@ -1,5 +1,5 @@
 // Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "quick3dspritesheet_p.h"
 #include <Qt3DExtras/qspritesheetitem.h>

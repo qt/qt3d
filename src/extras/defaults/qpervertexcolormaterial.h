@@ -1,5 +1,5 @@
 // Copyright (C) 2015 Lorenz Esch (TU Ilmenau).
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QT3DEXTRAS_QPERVERTEXCOLORMATERIAL_H
 #define QT3DEXTRAS_QPERVERTEXCOLORMATERIAL_H
