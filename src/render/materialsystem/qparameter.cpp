@@ -5,8 +5,7 @@
 #include "qparameter_p.h"
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/qtexture.h>
-#include <QtCore/qiterable.h>
-#include <QtCore/qsequentialiterable.h>
+#include <QtCore/qmetasequence.h>
 
 /*!
     \qmltype Parameter
@@ -162,7 +161,7 @@ inline QVariant toBackendValue(const QVariant &v)
 void QParameterPrivate::setValue(const QVariant &v)
 {
     if (v.metaType().id() == QMetaType::QVariantList) {
-        QSequentialIterable iterable = v.value<QSequentialIterable>();
+        QMetaSequence::Iterable iterable = v.value<QMetaSequence::Iterable>();
         QVariantList variants;
         variants.reserve(iterable.size());
         for (const auto &v : iterable)
