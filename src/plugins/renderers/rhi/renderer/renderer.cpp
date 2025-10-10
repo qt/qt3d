@@ -1140,10 +1140,10 @@ void Renderer::createRenderTarget(RenderTarget *target)
     auto cleanAllocatedResources = [&] {
         QStringList descDetails;
         auto texDetails = [](QRhiTexture *tex) {
-            return QString("Texture format: %1; flags: %2; samples: %3").arg(tex->format()).arg(tex->flags()).arg(tex->sampleCount());
+            return QString("Texture format: %1; flags: %2; samples: %3").arg(tex->format()).arg(tex->flags().toInt()).arg(tex->sampleCount());
         };
         auto bufferDetails = [](QRhiRenderBuffer* buffer) {
-            return QString("Buffer Type: %1; flags: %2; samples: %3").arg(buffer->type()).arg(buffer->flags()).arg(buffer->sampleCount());
+            return QString("Buffer Type: %1; flags: %2; samples: %3").arg(buffer->type()).arg(buffer->flags().toInt()).arg(buffer->sampleCount());
         };
         const auto itEnd = desc.cendColorAttachments();
         for (auto it = desc.cbeginColorAttachments(); it != itEnd; ++it) {
