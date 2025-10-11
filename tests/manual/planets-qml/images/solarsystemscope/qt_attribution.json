@@ -2,7 +2,7 @@
     "Id": "solar_system_scope",
     "Name": "Solar System Scope Texture Library",
     "QDocModule": "qt3d",
-    "QtParts": ["examples"],
+    "QtParts": ["tests"],
     "Description": "Solar System Scope provides high quality, free to use textures for objects in the solar system.",
     "QtUsage": "Used in Qt 3D planets-qml example.",
 
