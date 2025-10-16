@@ -8,13 +8,19 @@
 
 QT_BEGIN_NAMESPACE
 
+#ifdef QT_STATIC
+void Quick3DExtras_initialize_extras_resource() {
+    Q_INIT_RESOURCE(extras); // from the Qt3DExtras module
+}
+#endif
+
 namespace Qt3DExtras {
 namespace Quick {
 
 void Quick3DExtras_initialize()
 {
 #ifdef QT_STATIC
-    Q_INIT_RESOURCE(extras); // from the Qt3DQuickExtras module
+    Quick3DExtras_initialize_extras_resource();
 #endif
     Qt3DCore::QAbstractNodeFactory::registerNodeFactory(QuickExtrasNodeFactory::instance());
     Qt3DExtras::Quick::Quick3DExtras_registerType("QSpriteSheet", "Qt3D.Extras/SpriteSheet", 2, 10);
