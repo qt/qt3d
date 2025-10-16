@@ -13,7 +13,7 @@ qt_internal_add_qml_module(3DQuickLogic
         Qt3D.Core
     LIBRARIES
         Qt::3DCore
-        3DLogic
+        Qt::3DLogic
         Qt::Core
         Qt::CorePrivate
         Qt::Gui
