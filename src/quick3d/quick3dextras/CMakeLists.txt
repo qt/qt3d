@@ -40,7 +40,7 @@ qt_internal_add_qml_module(3DQuickExtras
         Qt::3DCore
         Qt::3DExtras
         Qt::3DInput
-        3DLogic
+        Qt::3DLogic
         Qt::3DQuick
         Qt::3DRender
         Qt::Core

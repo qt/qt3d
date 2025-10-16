@@ -35,13 +35,13 @@ qt_internal_add_qml_module(3DQuick
     INCLUDE_DIRECTORIES
         items
     LIBRARIES
+        Qt::3DCorePrivate
         Qt::CorePrivate
         Qt::GuiPrivate
         Qt::QmlPrivate
         Qt::QuickPrivate
     PUBLIC_LIBRARIES
         Qt::3DCore
-        Qt::3DCorePrivate
         Qt::Core
         Qt::Gui
         Qt::Qml
