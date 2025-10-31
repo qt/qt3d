@@ -274,7 +274,7 @@ void QSkyboxEntity::setBaseName(const QString &baseName)
     Contains the base name of the Skybox.
 */
 /*!
-    \qmlproperty string QSkyboxEntity::baseName
+    \qmlproperty string SkyboxEntity::baseName
 
     Contains the base name of the Skybox.
 */
@@ -310,7 +310,7 @@ void QSkyboxEntity::setExtension(const QString &extension)
 */
 
 /*!
-    \qmlproperty string QSkyboxEntity::extension
+    \qmlproperty string SkyboxEntity::extension
 
     Contains the extension of the filename for the skybox image, including the
     leading '.'.
@@ -358,7 +358,7 @@ bool QSkyboxEntity::isGammaCorrectEnabled() const
     \since 5.9
 */
 /*!
-    \qmlproperty bool QSkyboxEntity::gammaCorrect
+    \qmlproperty bool SkyboxEntity::gammaCorrect
 
     A boolean indicating whether gamma correction is enabled.
     \since 5.9

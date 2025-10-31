@@ -29,7 +29,7 @@ namespace Qt3DInput {
 */
 
 /*!
-    \qmlproperty int QAxis::value
+    \qmlproperty int Axis::value
     \readonly
 
     Holds the value of the axis.

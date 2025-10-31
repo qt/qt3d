@@ -51,13 +51,6 @@ namespace Qt3DInput {
 */
 
 /*!
-    \qmlproperty int Qt3D.Input::Axis::value
-    \readonly
-
-    Holds the value accumulated from the sourceAxis.
-*/
-
-/*!
  * \enum Qt3DInput::QAxisAccumulator::SourceAxisType
  *
  * \value Velocity

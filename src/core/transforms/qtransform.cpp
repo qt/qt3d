@@ -97,7 +97,7 @@ QTransformPrivate::~QTransformPrivate()
  */
 
 /*!
-    \qmlproperty matrix4x4 QTransform::worldMatrix
+    \qmlproperty matrix4x4 Transform::worldMatrix
 
     Holds the world transformation matrix for the transform. This assumes the
     Transform component is being referenced by an Entity. This makes it more
