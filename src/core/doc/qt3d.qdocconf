@@ -91,3 +91,6 @@ navigation.toctitles.inclusive = false
 
 # Allow no documentation warnings when testing in CI
 warninglimit = 0
+
+# Suppress a specific warning category
+spurious += "No output generated for .*"
