@@ -42,6 +42,11 @@ QCallbackMapping::~QCallbackMapping()
 {
 }
 
+/*!
+    \property Qt3DAnimation::QCallbackMapping::channelName
+
+    Holds the name of the channel for the callback mapping.
+*/
 QString QCallbackMapping::channelName() const
 {
     Q_D(const QCallbackMapping);

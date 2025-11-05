@@ -106,6 +106,13 @@ void QOrbitCameraController::setZoomInLimit(float zoomInLimit)
     }
 }
 
+/*!
+    \property Qt3DExtras::QOrbitCameraController::upVector
+    \brief Holds the up vector for the camera's orbital rotation.
+
+    The up vector defines the vertical axis around which the camera orbits.
+    The default value is (0.0, 1.0, 0.0).
+*/
 QVector3D QOrbitCameraController::upVector() const {
     Q_D(const QOrbitCameraController);
     return d->m_upVector;
@@ -120,6 +127,13 @@ void QOrbitCameraController::setUpVector(const QVector3D& upVector)
     }
 }
 
+/*!
+    \property Qt3DExtras::QOrbitCameraController::inverseXTranslate
+    \brief Holds whether the horizontal translation is inverted.
+
+    When enabled, horizontal mouse movements and input translate the camera
+    in the opposite direction.
+*/
 bool QOrbitCameraController::inverseXTranslate() const
 {
     Q_D(const QOrbitCameraController);
@@ -135,6 +149,13 @@ void QOrbitCameraController::setInverseXTranslate(bool isInverse)
     }
 }
 
+/*!
+    \property Qt3DExtras::QOrbitCameraController::inverseYTranslate
+    \brief Holds whether the vertical translation is inverted.
+
+    When enabled, vertical mouse movements and input translate the camera
+    in the opposite direction.
+*/
 bool QOrbitCameraController::inverseYTranslate() const
 {
     Q_D(const QOrbitCameraController);
@@ -150,6 +171,13 @@ void QOrbitCameraController::setInverseYTranslate(bool isInverse)
     }
 }
 
+/*!
+    \property Qt3DExtras::QOrbitCameraController::inversePan
+    \brief Holds whether panning is inverted.
+
+    When enabled, horizontal pan movements rotate the camera around the
+    view center in the opposite direction.
+*/
 bool QOrbitCameraController::inversePan() const
 {
     Q_D(const QOrbitCameraController);
@@ -165,6 +193,13 @@ void QOrbitCameraController::setInversePan(bool isInverse)
     }
 }
 
+/*!
+    \property Qt3DExtras::QOrbitCameraController::inverseTilt
+    \brief Holds whether tilting is inverted.
+
+    When enabled, vertical tilt movements rotate the camera around the
+    view center in the opposite direction.
+*/
 bool QOrbitCameraController::inverseTilt() const
 {
     Q_D(const QOrbitCameraController);
@@ -180,6 +215,13 @@ void QOrbitCameraController::setInverseTilt(bool isInverse)
     }
 }
 
+/*!
+    \property Qt3DExtras::QOrbitCameraController::zoomTranslateViewCenter
+    \brief Holds whether the view center is translated during zoom operations.
+
+    When enabled, zooming translates the view center. When disabled, only the
+    camera position changes during zoom operations. The default value is true.
+*/
 bool QOrbitCameraController::zoomTranslateViewCenter() const
 {
     Q_D(const QOrbitCameraController);

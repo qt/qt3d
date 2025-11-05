@@ -168,6 +168,14 @@ bool QSkeletonLoader::isCreateJointsEnabled() const
     Q_D(const QSkeletonLoader);
     return d->m_createJoints;
 }
+
+/*!
+    \property Qt3DCore::QSkeletonLoader::rootJoint
+    \brief the root joint of the hierarchy of joints forming the skeleton.
+
+    Holds the root joint of the skeleton hierarchy loaded from the source.
+*/
+
 /*!
     Returns the root joint of the hierarchy of joints forming the skeleton.
 */

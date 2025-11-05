@@ -374,6 +374,15 @@ void QAttribute::setAttributeType(AttributeType attributeType)
     d->m_attributeType = attributeType;
     emit attributeTypeChanged(attributeType);
 }
+
+/*!
+ * \property Qt3DCore::QAttribute::defaultPositionAttributeName
+ * \brief the name of the default position attribute.
+ * \readonly
+ *
+ * Returns the name of the default position attribute: "vertexPosition".
+ */
+
 /*!
  * \brief QAttribute::defaultPositionAttributeName
  * \return the name of the default position attribute
@@ -382,6 +391,15 @@ QString QAttribute::defaultPositionAttributeName()
 {
     return QStringLiteral("vertexPosition");
 }
+
+/*!
+ * \property Qt3DCore::QAttribute::defaultNormalAttributeName
+ * \brief the name of the default normal attribute.
+ * \readonly
+ *
+ * Returns the name of the default normal attribute: "vertexNormal".
+ */
+
 /*!
  * \brief QAttribute::defaultNormalAttributeName
  * \return the name of the default normal attribute
@@ -390,6 +408,15 @@ QString QAttribute::defaultNormalAttributeName()
 {
     return QStringLiteral("vertexNormal");
 }
+
+/*!
+ * \property Qt3DCore::QAttribute::defaultColorAttributeName
+ * \brief the name of the default color attribute.
+ * \readonly
+ *
+ * Returns the name of the default color attribute: "vertexColor".
+ */
+
 /*!
  * \brief QAttribute::defaultColorAttributeName
  * \return the name of the default color attribute
@@ -398,6 +425,15 @@ QString QAttribute::defaultColorAttributeName()
 {
     return QStringLiteral("vertexColor");
 }
+
+/*!
+ * \property Qt3DCore::QAttribute::defaultTextureCoordinateAttributeName
+ * \brief the name of the default texture coordinate attribute.
+ * \readonly
+ *
+ * Returns the name of the default texture coordinate attribute: "vertexTexCoord".
+ */
+
 /*!
  * \brief QAttribute::defaultTextureCoordinateAttributeName
  * \return the name of the default texture coordinate attribute
@@ -406,32 +442,15 @@ QString QAttribute::defaultTextureCoordinateAttributeName()
 {
     return QStringLiteral("vertexTexCoord");
 }
-/*!
- * \brief QAttribute::defaultTangentAttributeName
- * \return the name of the default tangent attribute
- */
-QString QAttribute::defaultTangentAttributeName()
-{
-    return QStringLiteral("vertexTangent");
-}
 
 /*!
- * \brief QAttribute::defaultJointIndicesAttributeName
- * \return the name of the default joint indices attribute
+ * \property Qt3DCore::QAttribute::defaultTextureCoordinate1AttributeName
+ * \brief the name of the default attribute for the second layer of texture coordinates.
+ * \readonly
+ *
+ * Returns the name of the default attribute for the second layer of texture coordinates:
+ * "vertexTexCoord1".
  */
-QString QAttribute::defaultJointIndicesAttributeName()
-{
-    return QStringLiteral("vertexJointIndices");
-}
-
-/*!
- * \brief QAttribute::defaultJointIndicesAttributeName
- * \return the name of the default joint weights attribute
- */
-QString QAttribute::defaultJointWeightsAttributeName()
-{
-    return QStringLiteral("vertexJointWeights");
-}
 
 /*!
  * \brief QAttribute::defaultTextureCoordinate1AttributeName
@@ -444,6 +463,15 @@ QString QAttribute::defaultTextureCoordinate1AttributeName()
 }
 
 /*!
+ * \property Qt3DCore::QAttribute::defaultTextureCoordinate2AttributeName
+ * \brief the name of the default attribute for the third layer of texture coordinates.
+ * \readonly
+ *
+ * Returns the name of the default attribute for the third layer of texture coordinates:
+ * "vertexTexCoord2".
+ */
+
+/*!
  * \brief QAttribute::defaultTextureCoordinate2AttributeName
  * \return the name of the default attribute for the third layer of texture
  * coordinates
@@ -451,6 +479,57 @@ QString QAttribute::defaultTextureCoordinate1AttributeName()
 QString QAttribute::defaultTextureCoordinate2AttributeName()
 {
     return QStringLiteral("vertexTexCoord2");
+}
+
+/*!
+ * \property Qt3DCore::QAttribute::defaultTangentAttributeName
+ * \brief the name of the default tangent attribute.
+ * \readonly
+ *
+ * Returns the name of the default tangent attribute: "vertexTangent".
+ */
+
+/*!
+ * \brief QAttribute::defaultTangentAttributeName
+ * \return the name of the default tangent attribute
+ */
+QString QAttribute::defaultTangentAttributeName()
+{
+    return QStringLiteral("vertexTangent");
+}
+
+/*!
+ * \property Qt3DCore::QAttribute::defaultJointIndicesAttributeName
+ * \brief the name of the default joint indices attribute.
+ * \readonly
+ *
+ * Returns the name of the default joint indices attribute: "vertexJointIndices".
+ */
+
+/*!
+ * \brief QAttribute::defaultJointIndicesAttributeName
+ * \return the name of the default joint indices attribute
+ */
+QString QAttribute::defaultJointIndicesAttributeName()
+{
+    return QStringLiteral("vertexJointIndices");
+}
+
+/*!
+ * \property Qt3DCore::QAttribute::defaultJointWeightsAttributeName
+ * \brief the name of the default joint weights attribute.
+ * \readonly
+ *
+ * Returns the name of the default joint weights attribute: "vertexJointWeights".
+ */
+
+/*!
+ * \brief QAttribute::defaultJointIndicesAttributeName
+ * \return the name of the default joint weights attribute
+ */
+QString QAttribute::defaultJointWeightsAttributeName()
+{
+    return QStringLiteral("vertexJointWeights");
 }
 
 /*!

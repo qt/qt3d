@@ -251,6 +251,13 @@ QRenderTargetOutput::AttachmentPoint QBlitFramebuffer::destinationAttachmentPoin
 }
 
 /*!
+  \property Qt3DRender::QBlitFramebuffer::interpolationMethod
+  \brief the interpolation method applied if the image is stretched.
+
+  Specifies the interpolation applied if the image is stretched. Defaults to Linear.
+ */
+
+/*!
   \return the interpolation method.
  */
 QBlitFramebuffer::InterpolationMethod QBlitFramebuffer::interpolationMethod() const

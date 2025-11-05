@@ -84,6 +84,13 @@ QSpriteGrid::~QSpriteGrid()
 {
 }
 
+/*!
+    \property Qt3DExtras::QSpriteGrid::rows
+    \brief Holds the number of rows in the sprite grid.
+
+    Specifies how many rows of sprites the sprite sheet texture contains.
+    The default value is 1.
+*/
 int QSpriteGrid::rows() const
 {
     Q_D(const QSpriteGrid);
@@ -100,6 +107,13 @@ void QSpriteGrid::setRows(int rows)
     }
 }
 
+/*!
+    \property Qt3DExtras::QSpriteGrid::columns
+    \brief Holds the number of columns in the sprite grid.
+
+    Specifies how many columns of sprites the sprite sheet texture contains.
+    The default value is 1.
+*/
 int QSpriteGrid::columns() const
 {
     Q_D(const QSpriteGrid);

@@ -27,6 +27,13 @@ QSpriteSheetItem::QSpriteSheetItem(QNode *parent)
 
 }
 
+/*!
+    \property Qt3DExtras::QSpriteSheetItem::x
+    \brief Holds the x position of the sprite within the sprite sheet texture.
+
+    Specifies the horizontal pixel position of the sprite's top-left corner
+    within the sprite sheet texture. The default value is 0.
+*/
 int QSpriteSheetItem::x() const
 {
     Q_D(const QSpriteSheetItem);
@@ -42,6 +49,13 @@ void QSpriteSheetItem::setX(int x)
     }
 }
 
+/*!
+    \property Qt3DExtras::QSpriteSheetItem::y
+    \brief Holds the y position of the sprite within the sprite sheet texture.
+
+    Specifies the vertical pixel position of the sprite's top-left corner
+    within the sprite sheet texture. The default value is 0.
+*/
 int QSpriteSheetItem::y() const
 {
     Q_D(const QSpriteSheetItem);
@@ -57,6 +71,13 @@ void QSpriteSheetItem::setY(int y)
     }
 }
 
+/*!
+    \property Qt3DExtras::QSpriteSheetItem::width
+    \brief Holds the width of the sprite in pixels.
+
+    Specifies the width of the sprite region within the sprite sheet texture.
+    The default value is 0.
+*/
 int QSpriteSheetItem::width() const
 {
     Q_D(const QSpriteSheetItem);
@@ -72,6 +93,13 @@ void QSpriteSheetItem::setWidth(int width)
     }
 }
 
+/*!
+    \property Qt3DExtras::QSpriteSheetItem::height
+    \brief Holds the height of the sprite in pixels.
+
+    Specifies the height of the sprite region within the sprite sheet texture.
+    The default value is 0.
+*/
 int QSpriteSheetItem::height() const
 {
     Q_D(const QSpriteSheetItem);

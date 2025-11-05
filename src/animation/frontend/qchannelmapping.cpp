@@ -148,18 +148,33 @@ QChannelMapping::~QChannelMapping()
 {
 }
 
+/*!
+    \property Qt3DAnimation::QChannelMapping::channelName
+
+    Holds the name of the channel for the channel mapping.
+*/
 QString QChannelMapping::channelName() const
 {
     Q_D(const QChannelMapping);
     return d->m_channelName;
 }
 
+/*!
+    \property Qt3DAnimation::QChannelMapping::target
+
+    Holds the target node for the channel mapping.
+*/
 Qt3DCore::QNode *QChannelMapping::target() const
 {
     Q_D(const QChannelMapping);
     return d->m_target;
 }
 
+/*!
+    \property Qt3DAnimation::QChannelMapping::property
+
+    Holds the name of the property on the target node that should be animated.
+*/
 QString QChannelMapping::property() const
 {
     Q_D(const QChannelMapping);

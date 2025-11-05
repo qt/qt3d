@@ -834,6 +834,11 @@ QShaderImage::~QShaderImage()
 
 }
 
+/*!
+    \property Qt3DRender::QShaderImage::texture
+
+    Holds the texture to be used by the shader image.
+*/
 QAbstractTexture *QShaderImage::texture() const
 {
     Q_D(const QShaderImage);

@@ -119,6 +119,12 @@ QAxisAccumulator::~QAxisAccumulator()
  */
 
 /*!
+    \property Qt3DInput::QAxisAccumulator::sourceAxis
+
+    Holds the QAxis for which the accumulator should integrate axis values.
+ */
+
+/*!
    \return QAxis for which the accumulator should integrate axis values.
  */
 QAxis *QAxisAccumulator::sourceAxis() const
@@ -132,6 +138,13 @@ QAxis *QAxisAccumulator::sourceAxis() const
 
     The sourceAxisType property specifies how the accumulator treats the values
     from the source axis.
+ */
+
+/*!
+    \property Qt3DInput::QAxisAccumulator::sourceAxisType
+
+    Holds the type that specifies how the accumulator treats the values from
+    the source axis.
  */
 
 /*!
@@ -172,6 +185,16 @@ float QAxisAccumulator::value() const
 */
 
 /*!
+    \property Qt3DInput::QAxisAccumulator::velocity
+    \brief Holds the velocity.
+
+    If the sourceAxisType is set to Velocity this is simply the value of the
+    source axis multiplied by the scale. If the sourceAxisType is set to
+    Acceleration, the velocity is integrated using the source axis' value as an
+    acceleration.
+ */
+
+/*!
    Returns the velocity. If the sourceAxisType is set to Velocity this is
    simply the value of the source axis multiplied by the scale. If the
    sourceAxisType is set to Acceleration, the velocity is integrated using
@@ -190,6 +213,13 @@ float QAxisAccumulator::velocity() const
     thought of as the maximum velocity or acceleration the axis can
     control.
 */
+
+/*!
+    \property Qt3DInput::QAxisAccumulator::scale
+
+    Holds the amount to scale the axis value by when accumulating. This can be
+    thought of as the maximum velocity or acceleration the axis can control.
+ */
 
 /*!
     The amount to scale the axis value by when accumulating. This can be

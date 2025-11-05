@@ -35,6 +35,12 @@ QAnimationClip::~QAnimationClip()
 }
 
 /*!
+    \property Qt3DAnimation::QAnimationClip::clipData
+
+    Holds the data describing the animation clip.
+*/
+
+/*!
     Returns the data describing the animation clip.
 */
 QAnimationClipData QAnimationClip::clipData() const

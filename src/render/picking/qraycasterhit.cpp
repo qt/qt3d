@@ -110,12 +110,26 @@ QRayCasterHit &QRayCasterHit::operator =(const QRayCasterHit &other)
 }
 
 /*!
+ * \property Qt3DRender::QRayCasterHit::type
+ * \brief the type of the hit.
+ *
+ * Holds the type of the hit, which can be TriangleHit, LineHit, PointHit, or EntityHit.
+ */
+
+/*!
  * \brief Returns the type of the hit
  */
 QRayCasterHit::HitType Qt3DRender::QRayCasterHit::type() const
 {
     return d->m_type;
 }
+
+/*!
+ * \property Qt3DRender::QRayCasterHit::entityId
+ * \brief the id of the entity that was hit.
+ *
+ * Holds the node id of the entity that was hit by the ray.
+ */
 
 /*!
  * \brief Returns the id of the entity that was hit
@@ -126,12 +140,27 @@ Qt3DCore::QNodeId QRayCasterHit::entityId() const
 }
 
 /*!
+ * \property Qt3DRender::QRayCasterHit::entity
+ * \brief a pointer to the entity that was hit.
+ *
+ * Holds a pointer to the QEntity that was hit by the ray.
+ */
+
+/*!
  * \brief Returns a pointer to the entity that was hit
  */
 Qt3DCore::QEntity *QRayCasterHit::entity() const
 {
     return d->m_entity;
 }
+
+/*!
+ * \property Qt3DRender::QRayCasterHit::distance
+ * \brief the distance between the origin of the ray and the intersection point.
+ *
+ * Holds the distance from the ray origin to the point where the ray intersected
+ * with the entity.
+ */
 
 /*!
  * \brief Returns the distance between the origin of the ray and the intersection point
@@ -142,12 +171,26 @@ float QRayCasterHit::distance() const
 }
 
 /*!
+ * \property Qt3DRender::QRayCasterHit::localIntersection
+ * \brief the coordinates of the intersection point in the entity's coordinate system.
+ *
+ * Holds the coordinates of the intersection point in the entity's local coordinate system.
+ */
+
+/*!
  * \brief Returns the coordinates of the intersection point in the entity's coordinate system
  */
 QVector3D QRayCasterHit::localIntersection() const
 {
     return d->m_localIntersection;
 }
+
+/*!
+ * \property Qt3DRender::QRayCasterHit::worldIntersection
+ * \brief the coordinates of the intersection point in the model's coordinate system.
+ *
+ * Holds the coordinates of the intersection point in the world coordinate system.
+ */
 
 /*!
  * \brief Returns the coordinates of the intersection point in the model's coordinate system
@@ -158,12 +201,27 @@ QVector3D QRayCasterHit::worldIntersection() const
 }
 
 /*!
+ * \property Qt3DRender::QRayCasterHit::primitiveIndex
+ * \brief the index of the picked primitive.
+ *
+ * Holds the index of the primitive (triangle, line, or point) that was picked.
+ */
+
+/*!
  * \brief Returns the index of the picked primitive
  */
 uint QRayCasterHit::primitiveIndex() const
 {
     return d->m_primitiveIndex;
 }
+
+/*!
+ * \property Qt3DRender::QRayCasterHit::vertex1Index
+ * \brief the index of the first vertex of the picked primitive.
+ *
+ * Holds the index of the first vertex of the picked primitive. For a triangle hit,
+ * this is one of the three vertices. For a line hit, this is one of the two vertices.
+ */
 
 /*!
  * \brief Returns the index of the first vertex of the picked primitive
@@ -174,12 +232,28 @@ uint QRayCasterHit::vertex1Index() const
 }
 
 /*!
+ * \property Qt3DRender::QRayCasterHit::vertex2Index
+ * \brief the index of the second vertex of the picked primitive.
+ *
+ * Holds the index of the second vertex of the picked primitive. For a triangle hit,
+ * this is one of the three vertices. For a line hit, this is one of the two vertices.
+ */
+
+/*!
  * \brief Returns the index of the second vertex of the picked primitive
  */
 uint QRayCasterHit::vertex2Index() const
 {
     return d->m_vertex2Index;
 }
+
+/*!
+ * \property Qt3DRender::QRayCasterHit::vertex3Index
+ * \brief the index of the third vertex of the picked primitive.
+ *
+ * Holds the index of the third vertex of the picked primitive. This is only valid
+ * for triangle hits.
+ */
 
 /*!
  * \brief Returns the index of the third vertex of the picked primitive

@@ -82,6 +82,14 @@ QSpriteSheet::~QSpriteSheet()
 {
 }
 
+/*!
+    \property Qt3DExtras::QSpriteSheet::sprites
+    \brief Holds the list of sprites in the sprite sheet.
+
+    Contains all QSpriteSheetItem instances that define individual sprite regions
+    within the sprite sheet texture. Each sprite item specifies its position and
+    dimensions within the texture.
+*/
 QList<QSpriteSheetItem *> QSpriteSheet::sprites() const
 {
     Q_D(const QSpriteSheet);

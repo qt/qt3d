@@ -30,6 +30,11 @@ QSkeletonMapping::~QSkeletonMapping()
 {
 }
 
+/*!
+    \property Qt3DAnimation::QSkeletonMapping::skeleton
+
+    Holds the skeleton that should be used for the skeleton mapping.
+*/
 Qt3DCore::QAbstractSkeleton *QSkeletonMapping::skeleton() const
 {
     Q_D(const QSkeletonMapping);

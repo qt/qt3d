@@ -57,6 +57,14 @@ void QLineWidth::setValue(float width)
     emit valueChanged(width);
 }
 
+/*!
+    \property Qt3DRender::QLineWidth::smooth
+    \brief whether smooth line rendering is enabled.
+
+    When enabled, line smoothing provides antialiased line rendering.
+    The default value is \c false.
+*/
+
 bool QLineWidth::smooth() const
 {
     Q_D(const QLineWidth);

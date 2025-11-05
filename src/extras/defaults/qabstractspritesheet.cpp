@@ -85,12 +85,26 @@ void QAbstractSpriteSheet::setTexture(Qt3DRender::QAbstractTexture *texture)
     }
 }
 
+/*!
+    \property Qt3DExtras::QAbstractSpriteSheet::textureTransform
+    \brief Holds the current texture transform.
+
+    Holds the texture transform matrix applied to map sprite coordinates
+    within the sprite sheet texture.
+*/
 QMatrix3x3 QAbstractSpriteSheet::textureTransform() const
 {
     Q_D(const QAbstractSpriteSheet);
     return d->m_textureTransform;
 }
 
+/*!
+    \property Qt3DExtras::QAbstractSpriteSheet::currentIndex
+    \brief Holds the current sprite index in the sprite sheet.
+
+    The sprite index determines which sprite from the sprite sheet is currently
+    displayed. Valid indices are based on the specific sprite sheet implementation.
+*/
 int QAbstractSpriteSheet::currentIndex() const
 {
     Q_D(const QAbstractSpriteSheet);

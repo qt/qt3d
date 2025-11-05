@@ -344,6 +344,14 @@ QList<QJoint *> QJoint::childJoints() const
 }
 
 /*!
+    \property Qt3DCore::QJoint::name
+    \brief the name of the joint.
+
+    Holds the name of the joint, which can be used to identify the joint
+    within a skeleton.
+*/
+
+/*!
     Returns the name of the joint.
 */
 QString QJoint::name() const
