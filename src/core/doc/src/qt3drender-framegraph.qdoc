@@ -174,7 +174,8 @@
     As you can see, this tree has a single leaf and is composed of 3 nodes in
     total as shown in the following diagram.
 
-    \image simple-framegraph.png
+    \image simple-framegraph.png {Diagram showing how rendering steps merge into a RenderView
+           with Viewport, TechniqueFilter, and CameraSelector}
 
     Using the rules defined \l {Framegraph Rules}{above}, this framegraph tree yields a single
     RenderView with the following configuration:
@@ -230,7 +231,8 @@
     could be adjusted to help with rendering a rear-view mirror in a car racing
     game or a CCTV camera display.
 
-    \image multiviewport.png
+    \image multiviewport.png {Four camera views of a 3D scene with planters,
+           barrels, a red knot sculpture, and a treasure chest}
 
     \badcode
     Viewport {
@@ -277,9 +279,11 @@
     RenderViews are very similar to the second diagram just with the other
     sub-trees.
 
-    \image multiviewport-1.png
+    \image multiviewport-1.png {Diagram showing four camera viewports merged
+           into one RenderView with a viewport and clear buffer}
 
-    \image multiviewport-2.png
+    \image multiviewport-2.png {Diagram showing the top left viewport and
+           camera selector combined into one RenderView}
 
     In full, the RenderViews created are:
 
@@ -335,7 +339,8 @@
     with the number of available cores. This is shown in the following diagram
     for the previous example.
 
-    \image framegraph-parallel-build.png
+    \image framegraph-parallel-build.png {Diagram showing how jon manager is
+           divided into five renderviews}
 
     The RenderCommands for the RenderViews can be generated in parallel across
     many cores, and as long as we take care to submit the RenderViews in the
@@ -461,7 +466,8 @@ Viewport {
 
     Graphically, the resulting framegraph looks like:
 
-    \image deferred-framegraph.png
+    \image deferred-framegraph.png {Flowchart of a deferred rendering framegraph
+           with scene and screen quad branches}
 
     And the resulting RenderViews are:
 

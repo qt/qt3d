@@ -8,7 +8,7 @@
     \ingroup qt3d-examples-qml
     \brief A QML application that demonstrates how to render a scene in Qt 3D.
 
-    \image simple-qml.png
+    \image simple-qml.png {Screenshot of how a 3d object is rendered}
 
     \e {Simple} demonstrates how to render a scene in Qt 3D.
 

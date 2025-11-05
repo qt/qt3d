@@ -98,11 +98,14 @@
     The following image displays a scene with a self-shadowed plane and trefoil
     knot:
 
-    \image shadowmapping-qt3d.png
+    \image shadowmapping-qt3d.png {A 3D rendered scene showing a metallic knot
+           hovering above a green plane and an orange plane flying in the
+           background}
 
     The following image shows an exaggerated shadow map texture of the scene:
 
-    \image shadowmapping-depth.png
+    \image shadowmapping-depth.png {Grayscale depth map of a 3D knot and
+           airplane}
 
     The image indicates the depth stored when rendering the scene from the light
     point of view. Darker colors represent a shallow depth (that is, closer to
@@ -199,7 +202,7 @@
     rendering the state of those objects onto the screen. The Space Invaders
     example contains the following objects:
 
-    \image Space-invaders.jpg
+    \image Space-invaders.jpg {Screenshot of a space invaders gameplay}
 
     \list
         \li The player's ground cannon
@@ -269,7 +272,7 @@
 
     \section2 ECS Backend
 
-    \image ecs-2.png
+    \image ecs-2.png {Diagram showing components of QEntity}
 
     The backend of Qt 3D implements the \e system part of the ECS paradigm in
     the form of \e aspects. An aspect implements the particular vertical slice
@@ -314,7 +317,7 @@
     referenced by components. For example, the QShaderProgram class specifies
     the GLSL code to be used when rendering a set of entities.
 
-    \image ecs-1.png
+    \image ecs-1.png {Diagram showing relation between QEntity, QComponent, QNode and QObject}
 
     Components in Qt 3D are implemented by subclassing Qt3DCore::QComponent and adding the
     data necessary for the corresponding aspect to do its work. For example, the

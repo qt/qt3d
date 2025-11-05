@@ -8,7 +8,8 @@
     \ingroup qt3d-examples-qml
     \brief A QML application that demonstrates using PBR materials.
 
-    \image pbr-materials.png
+    \image pbr-materials.png {Illustration showing five 3d objects
+           with each one having different materials}
 
     \e {Pbr-Materials} demonstrates using the Qt 3D material system.
 

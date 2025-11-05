@@ -10,7 +10,8 @@
     \brief A Qt 3D QML application that implements a single-pass wireframe
     rendering method.
 
-    \image qt3d-wireframe-rendering.png
+    \image qt3d-wireframe-rendering.png {3D wireframe rendering of a red torus
+           knot with triangular mesh}
 
     \e {Qt 3D Wireframe Rendering} illustrates how to draw a single entity
     (a trefoil knot) using a custom set of shaders to implement a single-pass
