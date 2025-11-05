@@ -9,7 +9,8 @@
     \brief A QML example that demonstrates rendering a Scenegraph from multiple
     viewports.
 
-    \image multiviewport-qml-example.jpg
+    \image multiviewport-qml-example.jpg {Illustration showing a 3d object on
+           different angles}
 
     \e {Multi Viewport} renders a Scenegraph from the point of view of four
     virtual cameras into the four quadrants of a window. This is a common

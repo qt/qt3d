@@ -8,7 +8,7 @@
     \ingroup qt3d-examples-qml
     \brief Demonstrates creating a custom material in Qt 3D.
 
-    \image simple-custom-material.jpg
+    \image simple-custom-material.jpg {Illustration of a red square}
 
     \e This example demonstrates creating a simple custom material.
 
