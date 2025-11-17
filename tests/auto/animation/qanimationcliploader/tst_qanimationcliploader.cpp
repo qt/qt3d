@@ -9,6 +9,8 @@
 #include <QSignalSpy>
 #include <testarbiter.h>
 
+using namespace Qt::StringLiterals;
+
 class tst_QAnimationClipLoader : public Qt3DAnimation::QAnimationClipLoader
 {
     Q_OBJECT
@@ -71,7 +73,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            clip.setSource(QStringLiteral("qrc:/toyplane.qlip"));
+            clip.setSource(QUrl{u"qrc:/toyplane.qlip"_s});
 
             // THEN
             QCOMPARE(arbiter.dirtyNodes().size(), 0);

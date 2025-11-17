@@ -10,6 +10,8 @@
 #include <QSignalSpy>
 #include <testarbiter.h>
 
+using namespace Qt::StringLiterals;
+
 using namespace Qt3DCore;
 
 class tst_QSkeletonLoader : public QSkeletonLoader
@@ -95,7 +97,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            skeleton.setSource(QStringLiteral("qrc:/hydralisk.skel"));
+            skeleton.setSource(QUrl{u"qrc:/hydralisk.skel"_s});
             QCoreApplication::processEvents();
 
             // THEN

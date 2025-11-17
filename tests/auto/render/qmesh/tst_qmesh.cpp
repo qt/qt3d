@@ -3,6 +3,7 @@
 
 // TODO Remove in Qt6
 #include <QtCore/qcompilerdetection.h>
+
 QT_WARNING_DISABLE_DEPRECATED
 
 #include <QtTest/QTest>
@@ -14,6 +15,10 @@ QT_WARNING_DISABLE_DEPRECATED
 #include <QSignalSpy>
 #include <Qt3DCore/private/qscene_p.h>
 #include "testarbiter.h"
+
+#include <QtCore/qstring.h>
+
+using namespace Qt::StringLiterals;
 
 class MyQMesh : public Qt3DRender::QMesh
 {
@@ -114,7 +119,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            mesh.setSource(QStringLiteral("qrc:/toyplane.obj"));
+            mesh.setSource(QUrl{u"qrc:/toyplane.obj"_s});
             QCoreApplication::processEvents();
 
             // THEN
