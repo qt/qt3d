@@ -38,7 +38,7 @@ public:
         All = 0xFFFFFFFF
     };
     Q_DECLARE_FLAGS(Operations, Operation)
-    Q_FLAGS(Operations)
+    Q_FLAG(Operations)
 
     Operations waitOperations() const;
 
