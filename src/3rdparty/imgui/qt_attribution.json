@@ -21,7 +21,7 @@
         "QtUsage": "Used in tests to demonstrate and verify the integration of an external GUI library.",
         "Files": "imgui_draw.cpp",
 
-        "Homepage": "http://upperbounds.net",
+        "Homepage": "https://github.com/bluescan/proggyfonts",
         "License": "MIT License",
         "LicenseId": "MIT",
         "LicenseFile": "LICENSE_proggyclean.txt",
