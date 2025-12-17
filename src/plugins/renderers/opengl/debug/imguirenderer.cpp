@@ -133,6 +133,13 @@ Qt3DRRD::ImGuiRenderer::ImGuiRenderer(Qt3DRR::OpenGL::Renderer *renderer)
 
     ImGuiIO &io = ImGui::GetIO();
 
+    auto imGuiPath = qgetenv("QT3D_IMGUI_PATH");
+    if (!imGuiPath.isEmpty()) {
+        io.IniFilename = QByteArray{imGuiPath + QByteArray{"/imgui.ini"}}.constData();
+    } else {
+        io.IniFilename = nullptr;
+    }
+
 #ifndef QT_NO_CLIPBOARD
     io.SetClipboardTextFn = [](void *user_data, const char *text) {
         Q_UNUSED(user_data);
