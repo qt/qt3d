@@ -57,14 +57,14 @@ namespace Qt3DRender {
 QScreenRayCaster::QScreenRayCaster(Qt3DCore::QNode *parent)
     : QAbstractRayCaster(parent)
 {
-    QAbstractRayCasterPrivate::get(this)->m_rayCasterType = QAbstractRayCasterPrivate::ScreenScapeRayCaster;
+    QAbstractRayCasterPrivate::get(this)->m_rayCasterType = QAbstractRayCasterPrivate::ScreenSpaceRayCaster;
 }
 
 /*! \internal */
 QScreenRayCaster::QScreenRayCaster(QAbstractRayCasterPrivate &dd, Qt3DCore::QNode *parent)
     : QAbstractRayCaster(dd, parent)
 {
-    QAbstractRayCasterPrivate::get(this)->m_rayCasterType = QAbstractRayCasterPrivate::ScreenScapeRayCaster;
+    QAbstractRayCasterPrivate::get(this)->m_rayCasterType = QAbstractRayCasterPrivate::ScreenSpaceRayCaster;
 }
 
 /*! \internal */

@@ -151,7 +151,7 @@ bool RayCastingJob::pick(const QList<QPair<Entity *, RayCaster *>> &entities)
                               pair.second->length() > 0.f ? pair.second->length() : sceneRayLength);
             rays.back().transform(*pair.first->worldTransform());
             break;
-        case QAbstractRayCasterPrivate::ScreenScapeRayCaster:
+        case QAbstractRayCasterPrivate::ScreenSpaceRayCaster:
             for (const PickingUtils::ViewportCameraAreaDetails &vca : pickConfiguration.vcaDetails) {
                 const auto ray = rayForViewportAndCamera(vca, nullptr, pair.second->position());
                 if (ray.isValid())

@@ -38,7 +38,7 @@ public:
 
     enum RayCasterType {
         WorldSpaceRayCaster,
-        ScreenScapeRayCaster
+        ScreenSpaceRayCaster
     };
 
     static QAbstractRayCasterPrivate *get(QAbstractRayCaster *obj);
