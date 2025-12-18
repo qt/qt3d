@@ -595,7 +595,12 @@ bool SubmissionContext::beginDrawing(QSurface *surface)
     QRhiSwapChain *swapChain = swapChainInfo->swapChain;
 
     // Resize swapchain if needed
-    if (surface->size() != swapChain->currentPixelSize()) {
+    qreal devicePixelRatio = 1.0;
+    QWindow *window = swapChain->window();
+    if (window) {
+        devicePixelRatio = window->devicePixelRatio();
+    }
+    if (surface->size() * devicePixelRatio != swapChain->currentPixelSize()) {
         bool couldRebuild = swapChain->createOrResize();
         if (!couldRebuild)
             return false;
