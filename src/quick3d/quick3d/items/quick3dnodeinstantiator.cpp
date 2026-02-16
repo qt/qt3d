@@ -475,7 +475,8 @@ QObject *Quick3DNodeInstantiator::object() const
 }
 
 /*!
-    \qmlmethod QtQml::QtObject Qt3D.Core::NodeInstantiator::objectAt(int index)
+    \qmlmethod object Qt3D.Core::NodeInstantiator::objectAt(int index)
+
 
     Returns a reference to the object with the given \a index.
 */
