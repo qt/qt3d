@@ -5,8 +5,8 @@
     "Description": "assimp (Open Asset Import Library) is a portable open source library to import various well-known 3D model formats in a uniform manner.",
     "QtUsage": "Used for importing assets for use with Qt 3D",
     "Homepage": "http://www.assimp.org/",
-    "Version": "6.0.2",
-    "DownloadLocation": "https://github.com/assimp/assimp/releases/tag/v6.0.2",
+    "Version": "6.0.4",
+    "DownloadLocation": "https://github.com/assimp/assimp/releases/tag/v6.0.4",
     "PURL": [
         "pkg:github/assimp/assimp@v$<VERSION>"
     ],
@@ -14,5 +14,5 @@
     "License": "BSD 3-clause \"New\" or \"Revised\" Licensee",
     "LicenseId": "BSD-3-Clause",
     "LicenseFile": "LICENSE",
-    "Copyright": "Copyright (c) 2006-2023, assimp team"
+    "Copyright": "Copyright (c) 2006-2026, assimp team"
 }
