@@ -32,8 +32,8 @@ class Q_3DQUICKSHARED_PRIVATE_EXPORT QQuaternionAnimation : public QQuickPropert
     Q_OBJECT
     Q_DECLARE_PRIVATE(QQuaternionAnimation)
 
-    Q_PROPERTY(QQuaternion from READ from WRITE setFrom)
-    Q_PROPERTY(QQuaternion to READ to WRITE setTo)
+    Q_PROPERTY(QQuaternion from READ from WRITE setFrom OVERRIDE)
+    Q_PROPERTY(QQuaternion to READ to WRITE setTo OVERRIDE)
     Q_PROPERTY(Type type READ type WRITE setType NOTIFY typeChanged)
 
     Q_PROPERTY(float fromXRotation READ fromXRotation WRITE setFromXRotation NOTIFY fromXRotationChanged)
