@@ -18,9 +18,9 @@ static void addFaceVertex(const FaceIndices &faceIndices,
                           QList<FaceIndices> &faceIndexVector,
                           QHash<FaceIndices, unsigned int> &faceIndexMap);
 
-inline uint qHash(const FaceIndices &faceIndices)
+size_t qHash(const FaceIndices &faceIndices, size_t seed = 0)
 {
-    return faceIndices.positionIndex
+    return seed + faceIndices.positionIndex
             + 10 * faceIndices.texCoordIndex
             + 100 * faceIndices.normalIndex;
 }
