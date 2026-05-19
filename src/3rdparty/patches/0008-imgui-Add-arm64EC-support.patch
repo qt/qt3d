@@ -1,0 +1,16 @@
+diff --git a/src/3rdparty/imgui/imgui_internal.h b/src/3rdparty/imgui/imgui_internal.h
+index ab43922ba..e7949843d 100644
+--- a/src/3rdparty/imgui/imgui_internal.h
++++ b/src/3rdparty/imgui/imgui_internal.h
+@@ -57,7 +57,7 @@ Index of this file:
+ #include <limits.h>     // INT_MIN, INT_MAX
+
+ // Enable SSE intrinsics if available
+-#if (defined __SSE__ || defined __x86_64__ || defined _M_X64 || (defined(_M_IX86_FP) && (_M_IX86_FP >= 1))) && !defined(IMGUI_DISABLE_SSE)
++#if (defined __SSE__ || defined __x86_64__ || defined _M_X64 || (defined(_M_IX86_FP) && (_M_IX86_FP >= 1))) && !defined(IMGUI_DISABLE_SSE) && !defined(_M_ARM64) && !defined(_M_ARM64EC)
+ #define IMGUI_ENABLE_SSE
+ #include <immintrin.h>
+ #endif
+--
+2.52.0.windows.1
+
