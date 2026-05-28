@@ -28,9 +28,9 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
-
 namespace Qt3DRender {
+
+using namespace Qt3DCore;
 
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, geometryLoader, (QGeometryLoaderFactory_iid, QLatin1String("/geometryloaders"), Qt::CaseInsensitive))
 

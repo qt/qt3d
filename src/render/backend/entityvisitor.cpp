@@ -5,8 +5,10 @@
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 
-QT_USE_NAMESPACE
-using namespace Qt3DRender::Render;
+QT_BEGIN_NAMESPACE
+
+namespace Qt3DRender {
+namespace Render {
 
 EntityVisitor::EntityVisitor(NodeManagers *manager)
     : m_manager(manager)
@@ -75,3 +77,8 @@ bool EntityVisitor::apply(Entity *root) {
 
     return true;
 }
+
+} // namespace Render
+} // namespace Qt3DRender
+
+QT_END_NAMESPACE

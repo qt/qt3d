@@ -10,15 +10,14 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
-
 namespace Qt3DRender {
 namespace Render {
+
+using namespace Qt3DCore;
 
 namespace {
 
 const QString blockArray = QStringLiteral("[%1]");
-const int qNodeIdTypeId = qMetaTypeId<QNodeId>();
 
 }
 
@@ -40,6 +39,7 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(const Shader
                                                                     const int propertyNameId,
                                                                     const ShaderData::PropertyValue *value)
 {
+    static const int qNodeIdTypeId = qMetaTypeId<QNodeId>();
     // In the end, values are either scalar or a scalar array
     // Composed elements (structs, structs array) are simplified into simple scalars
     if (value->isArray) { // Array

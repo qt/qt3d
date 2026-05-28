@@ -10,12 +10,12 @@
 #include "qeffect.h"
 #include <Qt3DRender/private/qmaterial_p.h>
 
-using namespace Qt3DCore;
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
+
+using namespace Qt3DCore;
 
 Material::Material()
     : BackendNode()

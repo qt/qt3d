@@ -10,9 +10,10 @@
 
 QT_BEGIN_NAMESPACE
 
+namespace Qt3DInput {
+
 using namespace Qt3DCore;
 
-namespace Qt3DInput {
 /*! \internal */
 QMouseHandlerPrivate::QMouseHandlerPrivate()
     : QComponentPrivate()

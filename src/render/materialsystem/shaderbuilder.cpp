@@ -77,10 +77,10 @@ private:
 
 Q_GLOBAL_STATIC(GlobalShaderPrototypes, qt3dGlobalShaderPrototypes)
 
-using namespace Qt3DCore;
-
 namespace Qt3DRender {
 namespace Render {
+
+using namespace Qt3DCore;
 
 QString ShaderBuilder::getPrototypesFile()
 {

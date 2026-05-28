@@ -62,7 +62,7 @@ Entity {
                 }
             }
         }
-        parameters: Parameter { name: "instanceCount"; value: cylinderMeshRenderer.instanceCount }
+        parameters: Parameter { name: "instanceCount"; value: cylinderMeshRenderer.view.instanceCount }
     }
 
     CylinderMesh {

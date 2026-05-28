@@ -310,10 +310,32 @@ qt_internal_add_module(3DRender
         Qt::Concurrent
         Qt::CorePrivate
         Qt::3DCorePrivate
-)
 
-# QTransform conflicts
-set_target_properties(3DRender PROPERTIES UNITY_BUILD OFF)
+    NO_UNITY_BUILD_SOURCES
+        # name clashes with internal linkage / using namespace
+        backend/pointsvisitor.cpp
+        backend/segmentsvisitor.cpp
+        geometry/qmesh.cpp
+        framegraph/frustumculling.cpp
+        jobs/abstractpickingjob.cpp
+        jobs/calcboundingvolumejob.cpp
+        jobs/frustumcullingjob.cpp
+        jobs/pickboundingvolumejob.cpp
+        jobs/pickboundingvolumeutils.cpp
+        jobs/raycastingjob.cpp
+        jobs/sendbuffercapturejob.cpp
+        jobs/updatelevelofdetailjob.cpp
+        jobs/updateshaderdatatransformjob.cpp
+        io/qsceneimportfactory.cpp
+        io/qsceneexportfactory.cpp
+        materialsystem/shader.cpp
+        materialsystem/shaderdata.cpp
+        picking/objectpicker.cpp
+        picking/pickeventfilter.cpp
+        picking/qabstractraycaster.cpp
+        qrendererpluginfactory.cpp # redef of `loader` from frontend/qrenderpluginfactory.cpp
+        texture/qpaintedtextureimage.cpp # qbrush.h being infected by Qt3D...::QTransform
+)
 
 # Resources:
 set(materialsystem_resource_files

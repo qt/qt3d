@@ -14,10 +14,10 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
-
 namespace Qt3DRender {
 namespace Render {
+
+using namespace Qt3DCore;
 
 GeometryRenderer::GeometryRenderer()
     : BackendNode(ReadWrite)

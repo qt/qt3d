@@ -19,9 +19,10 @@ QT_BEGIN_NAMESPACE
 
 #define DEFAULT_IMAGE_PADDING 1
 
-using namespace Qt3DCore;
 
 namespace Qt3DExtras {
+
+using namespace Qt3DCore;
 
 // ref-count glyphs and keep track of where they are stored
 class StoredGlyph {
