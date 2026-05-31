@@ -230,11 +230,7 @@ float QRay3D::projectedDistance(const Vector3D  &point) const
 }
 
 /*!
-    Returns the projection of \a vector onto this ray.  In the
-    following diagram, the dotted line is the ray, and V is the
-    \a vector.  The return value will be the vector V':
-
-    \image qray3d-project.png
+    Returns the projection of \a vector onto this ray.
 
     \sa projectedDistance()
 */
