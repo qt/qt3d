@@ -92,5 +92,8 @@ navigation.toctitles.inclusive = false
 # Allow no documentation warnings when testing in CI
 warninglimit = 0
 
+# Report warnings for images without alt text
+reportmissingalttextforimages = true
+
 # Suppress a specific warning category
 spurious += "No output generated for .*"
