@@ -15,6 +15,8 @@ Entity {
         id: win
         width: 600
         height: 600
+        // Keep the requested size instead of being maximized on some platforms
+        visibility: Window.Windowed
         visible: true
     }
 
