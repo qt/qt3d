@@ -96,7 +96,7 @@ private Q_SLOTS:
             QCOMPARE(arbiter.dirtyNodes().size(), 1);
             QCOMPARE(arbiter.dirtyNodes().front(), &textureLoader);
 
-            Qt3DRender::QAbstractTexturePrivate *d = dynamic_cast<Qt3DRender::QAbstractTexturePrivate *>(Qt3DRender::QAbstractTexturePrivate::get(&textureLoader));
+            Qt3DRender::QAbstractTexturePrivate *d = static_cast<Qt3DRender::QAbstractTexturePrivate *>(Qt3DRender::QAbstractTexturePrivate::get(&textureLoader));
             const auto generator = qSharedPointerCast<Qt3DRender::QTextureFromSourceGenerator>(d->dataFunctor());
             QVERIFY(generator);
             QCOMPARE(generator->url(), QUrl(QStringLiteral("Gary")));
@@ -121,7 +121,7 @@ private Q_SLOTS:
             QCOMPARE(arbiter.dirtyNodes().size(), 1);
             QCOMPARE(arbiter.dirtyNodes().front(), &textureLoader);
 
-            Qt3DRender::QAbstractTexturePrivate *d = dynamic_cast<Qt3DRender::QAbstractTexturePrivate *>(Qt3DRender::QAbstractTexturePrivate::get(&textureLoader));
+            Qt3DRender::QAbstractTexturePrivate *d = static_cast<Qt3DRender::QAbstractTexturePrivate *>(Qt3DRender::QAbstractTexturePrivate::get(&textureLoader));
             const auto generator = qSharedPointerCast<Qt3DRender::QTextureFromSourceGenerator>(d->dataFunctor());
             QVERIFY(generator);
             QCOMPARE(generator->isMirrored(), false);
