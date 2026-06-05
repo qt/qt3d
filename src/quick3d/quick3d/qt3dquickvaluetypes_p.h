@@ -25,6 +25,7 @@
 
 #include <Qt3DQuick/private/qt3dquick_global_p.h>
 #include <QtQml/private/qqmlvaluetype_p.h>
+#include <QtQml/private/qqmlglobal_p.h>
 
 QT_BEGIN_NAMESPACE
 
