@@ -95,5 +95,7 @@ warninglimit = 0
 # Report warnings for images without alt text
 reportmissingalttextforimages = true
 
-# Suppress a specific warning category
-spurious += "No output generated for .*"
+# Suppress a specific warning categories
+spurious += \
+    "No output generated for .*" \
+    "No documentation for .*"
