@@ -383,8 +383,13 @@ void QNodePrivate::unsetSceneHelper(QNode *node)
         }
     }
 
-    if (nodePrivate->m_scene != nullptr)
+    if (nodePrivate->m_scene != nullptr) {
         nodePrivate->m_scene->removeObservable(node);
+        // The node's own destructor can no longer dequeue it once the scene is gone,
+        // so do it here, before the subtree is deleted by ~QObject.
+        if (nodePrivate->m_scene->postConstructorInit())
+            nodePrivate->m_scene->postConstructorInit()->removeNode(node);
+    }
     nodePrivate->setScene(nullptr);
 }
 
