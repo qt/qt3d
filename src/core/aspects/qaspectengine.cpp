@@ -55,11 +55,13 @@ QList<Qt3DCore::QNode *> getNodesForRemoval(Qt3DCore::QNode *root)
     QList<QNode *> nodes;
     QNodeVisitor visitor;
     visitor.traverse(root, [&nodes](QNode *node) {
-        nodes.append(node);
+        QNodePrivate *d = QNodePrivate::get(node);
+        if (d->m_hasBackendNode)
+            nodes.append(node);
 
         // Mark this node as having been handled for destruction so we don't
         // repeat it unnecessarily in an O(n^2) manner
-        QNodePrivate::get(node)->m_hasBackendNode = false;
+        d->m_hasBackendNode = false;
     });
 
     return nodes;
