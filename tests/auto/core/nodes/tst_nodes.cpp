@@ -78,6 +78,7 @@ private slots:
     void checkEnabledUpdate();
 
     void checkNodeRemovedFromDirtyListOnDestruction();
+    void checkNodeDestroyedBeforeBackendCreation();
 
     void checkBookkeepingSingleNode();
     void checkBookkeeping_QVector_OfNode();
@@ -1732,6 +1733,45 @@ void tst_Nodes::checkNodeRemovedFromDirtyListOnDestruction()
         // THEN
         QCOMPARE(arbiter.dirtyNodes().size(), 0);
     }
+}
+
+void tst_Nodes::checkNodeDestroyedBeforeBackendCreation()
+{
+    // GIVEN
+    TestArbiter arbiter;
+    Qt3DCore::QAspectEngine engine;
+    engine.setRunMode(Qt3DCore::QAspectEngine::Manual);
+    auto aspect = new TestAspect;
+    engine.registerAspect(aspect);
+
+    QScopedPointer<MyQEntity> root(new MyQEntity());
+    root->setArbiterAndEngine(&arbiter, &engine);
+    QCoreApplication::processEvents();
+    engine.processFrame();
+
+    // GIVEN a node whose backend node has been created
+    auto parent = new MyQNode(root.data());
+    QCoreApplication::processEvents();
+    engine.processFrame();
+    QVERIFY(Qt3DCore::QNodePrivate::get(parent)->m_hasBackendNode == true);
+    aspect->clearNodes();
+
+    // WHEN a child is created, and its parent destroyed before the event loop spins
+    auto child = new MyQNode(parent);
+    QVERIFY(Qt3DCore::QNodePrivate::get(child)->m_hasBackendNode == false);
+    delete parent;
+
+    // THEN the child, destroyed along with its parent, must no longer be queued for
+    // post-construction init (used to be a use-after-free)
+    QCoreApplication::processEvents();
+
+    // THEN the aspects must not be asked to destroy a backend node the child never had
+    // (used to assert in QAbstractAspectPrivate::mapperForNode)
+    engine.processFrame();
+
+    // THEN only the parent had a backend node to destroy, and the child was never created
+    QCOMPARE(aspect->filteredEvents(TestAspect::Creation).size(), 0);
+    QCOMPARE(aspect->filteredEvents(TestAspect::Destruction).size(), 1);
 }
 
 void tst_Nodes::checkBookkeepingSingleNode()
