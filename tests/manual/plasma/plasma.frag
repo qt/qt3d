@@ -22,7 +22,7 @@ float displacement(vec3 p)
 
 void main()
 {
-    vec3 color;
+    vec3 color = vec3(0.0);
     float d = 2.5;
     vec2 screenPos = gl_FragCoord.xy / winsize.xy - vec2(0.6, 0.4);
     vec3 pos = normalize(vec3(screenPos, -1.0));
