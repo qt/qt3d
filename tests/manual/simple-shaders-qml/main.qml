@@ -118,7 +118,7 @@ Entity {
         // Shader defined inline
         property Material material: Material {
 
-            parameters: Parameter { name: "finalColor"; value: "#e76140" /* Inferno Orange */ }
+            parameters: Parameter { name: "finalColor"; value: Qt.color("#e76140") /* Inferno Orange */ }
 
             effect: Effect {
                 techniques: [
@@ -184,7 +184,7 @@ Entity {
         // Shader defined in a separate file
         property Material material: Material {
 
-            parameters: Parameter { name: "finalColor"; value: "yellow" }
+            parameters: Parameter { name: "finalColor"; value: Qt.color("yellow") }
 
             effect: Effect {
                 techniques: [
