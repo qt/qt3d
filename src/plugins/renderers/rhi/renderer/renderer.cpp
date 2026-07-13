@@ -507,6 +507,10 @@ void Renderer::shutdown()
 
     releaseGraphicsResources();
 
+    // Cached RenderCommands may hold QRhi resources (e.g. shader resource
+    // bindings), release them
+    m_cache.leafNodeCache.clear();
+
     // Destroy internal managers
     // This needs to be done before the nodeManager is destroy
     // as the internal resources might somehow rely on nodeManager resources
