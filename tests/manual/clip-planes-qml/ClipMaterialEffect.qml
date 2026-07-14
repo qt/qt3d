@@ -8,9 +8,9 @@ Effect {
     property ShaderData sectionsData;
 
     parameters: [
-        Parameter { name: "ka"; value: "black" },
-        Parameter { name: "kd"; value: "blue" },
-        Parameter { name: "ks"; value: "white" },
+        Parameter { name: "ka"; value: Qt.color("black") },
+        Parameter { name: "kd"; value: Qt.color("blue") },
+        Parameter { name: "ks"; value: Qt.color("white") },
         Parameter { name: "shininess"; value: 100 },
         Parameter { name: "lightPosition"; value: Qt.vector4d(1.0, 1.0, 0.0, 1.0) },
         Parameter { name: "lightIntensity"; value: Qt.vector3d(1.0, 1.0, 1.0) },
