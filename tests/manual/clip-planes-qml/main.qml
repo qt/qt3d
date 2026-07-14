@@ -53,9 +53,9 @@ Entity {
         property Material material: Material {
             effect: clipMaterialEffect
             parameters: [
-                Parameter { name: "ka"; value: "black" },
-                Parameter { name: "kd"; value: "blue" },
-                Parameter { name: "ks"; value: "white" }
+                Parameter { name: "ka"; value: Qt.color("black") },
+                Parameter { name: "kd"; value: Qt.color("blue") },
+                Parameter { name: "ks"; value: Qt.color("white") }
             ]
         }
 
