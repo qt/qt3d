@@ -507,10 +507,6 @@ void Renderer::shutdown()
 
     releaseGraphicsResources();
 
-    // Cached RenderCommands may hold QRhi resources (e.g. shader resource
-    // bindings), release them
-    m_cache.leafNodeCache.clear();
-
     // Destroy internal managers
     // This needs to be done before the nodeManager is destroy
     // as the internal resources might somehow rely on nodeManager resources
@@ -537,6 +533,11 @@ void Renderer::releaseGraphicsResources()
     // check that we haven't already cleaned up before going any further.
     if (!m_submissionContext)
         return;
+
+    // Cached RenderCommands may hold QRhi resources (e.g. shader resource
+    // bindings), release them
+    m_cache.leafNodeCache.clear();
+
     m_submissionContext.reset(nullptr);
 
     qCDebug(Backend) << Q_FUNC_INFO << "Renderer properly shutdown";
