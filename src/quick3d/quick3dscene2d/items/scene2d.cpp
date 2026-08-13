@@ -9,8 +9,8 @@
 #include <QtCore/qthread.h>
 #include <QtCore/qatomic.h>
 #include <QtGui/qevent.h>
-#include <QtGui/QOpenGLFunctions>
-#include <QQuickRenderTarget>
+#include <QtQuick/QQuickGraphicsDevice>
+#include <QtQuick/QQuickRenderTarget>
 
 #include <private/qscene2d_p.h>
 #include <private/scene2d_p.h>
@@ -85,8 +85,6 @@ Scene2D::Scene2D()
     , m_shareContext(nullptr)
     , m_renderThread(nullptr)
     , m_sharedObject(nullptr)
-    , m_fbo(0)
-    , m_rbo(0)
     , m_initialized(false)
     , m_renderInitialized(false)
     , m_mouseEnabled(true)
@@ -212,39 +210,14 @@ void Scene2D::initializeRender()
         m_context->setShareContext(m_shareContext);
         m_context->create();
 
-        m_context->makeCurrent(m_sharedObject->m_surface);
+        QQuickGraphicsDevice graphicsDevice = QQuickGraphicsDevice::fromOpenGLContext(m_context);
+        m_sharedObject->m_quickWindow->setGraphicsDevice(graphicsDevice);
         m_sharedObject->m_renderControl->initialize();
-        m_context->doneCurrent();
 
         QCoreApplication::postEvent(m_sharedObject->m_renderManager,
                                     new Scene2DEvent(Scene2DEvent::Prepare));
         m_renderInitialized = true;
     }
-}
-
-bool Scene2D::updateFbo(QOpenGLTexture *texture)
-{
-    QOpenGLFunctions *gl = m_context->functions();
-    if (m_fbo == 0) {
-        gl->glGenFramebuffers(1, &m_fbo);
-        gl->glGenRenderbuffers(1, &m_rbo);
-    }
-    // TODO: Add another codepath when GL_DEPTH24_STENCIL8 is not supported
-    gl->glBindRenderbuffer(GL_RENDERBUFFER, m_rbo);
-    gl->glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8,
-                              m_textureSize.width(), m_textureSize.height());
-    gl->glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
-    gl->glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
-    gl->glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                               GL_TEXTURE_2D, texture->textureId(), 0);
-    gl->glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_rbo);
-    GLenum status = gl->glCheckFramebufferStatus(GL_FRAMEBUFFER);
-    gl->glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    if (status != GL_FRAMEBUFFER_COMPLETE)
-        return false;
-    return true;
 }
 
 void Scene2D::syncRenderControl()
@@ -253,7 +226,9 @@ void Scene2D::syncRenderControl()
 
         m_sharedObject->clearSyncRequest();
 
+        m_sharedObject->m_renderControl->beginFrame();
         m_sharedObject->m_renderControl->sync();
+        m_sharedObject->m_renderControl->endFrame();
 
         // gui thread can now continue
         m_sharedObject->wake();
@@ -269,8 +244,6 @@ void Scene2D::render()
         QOpenGLTexture *texture = nullptr;
         const Qt3DRender::Render::Attachment *attachmentData = nullptr;
         QMutex *textureLock = nullptr;
-
-        m_context->makeCurrent(m_sharedObject->m_surface);
 
         if (resourceAccessor()->accessResource(RenderBackendResourceAccessor::OutputAttachment,
                                                m_outputId, (void**)&attachmentData, nullptr)) {
@@ -295,24 +268,15 @@ void Scene2D::render()
                 || m_textureSize != textureSize) {
                 m_textureSize = textureSize;
                 m_attachmentData = *attachmentData;
-                if (!updateFbo(texture)) {
-                    // Need to call sync even if the fbo is not usable
-                    syncRenderControl();
-                    textureLock->unlock();
-                    m_context->doneCurrent();
-                    qCWarning(Qt3DRender::Quick::Scene2D) << Q_FUNC_INFO << "Fbo not initialized.";
-                    return;
-                }
+                m_sharedObject->m_quickWindow->setRenderTarget(QQuickRenderTarget::fromOpenGLTexture(texture->textureId(), m_textureSize));
             }
         }
-
-        // TODO QT6 FIXME
-//        if (m_fbo != m_sharedObject->m_quickWindow->renderTargetId())
-//            m_sharedObject->m_quickWindow->setRenderTarget(QQuickRenderTarget::fromNativeTexture({m_fbo, 0}, m_textureSize));
 
         // Call disallow rendering while mutex is locked
         if (m_renderPolicy == QScene2D::SingleShot)
             m_sharedObject->disallowRender();
+
+        m_sharedObject->m_renderControl->beginFrame();
 
         // Sync
         if (m_sharedObject->isSyncRequested()) {
@@ -325,18 +289,19 @@ void Scene2D::render()
         // Render
         m_sharedObject->m_renderControl->render();
 
+        m_sharedObject->m_renderControl->endFrame();
+
         // Tell main thread we are done so it can begin cleanup if this is final frame
         if (m_renderPolicy == QScene2D::SingleShot)
             QCoreApplication::postEvent(m_sharedObject->m_renderManager,
                                         new Scene2DEvent(Scene2DEvent::Rendered));
 
-        // TODOQT6 Restore functionality
-//        m_sharedObject->m_quickWindow->resetOpenGLState();
-        m_context->functions()->glFlush();
-        if (texture->isAutoMipMapGenerationEnabled())
+        if (texture->isAutoMipMapGenerationEnabled()) {
+            m_context->makeCurrent(m_sharedObject->m_surface);
             texture->generateMipMaps();
+            m_context->doneCurrent();
+        }
         textureLock->unlock();
-        m_context->doneCurrent();
 
         // gui thread can now continue
         m_sharedObject->wake();
@@ -347,11 +312,7 @@ void Scene2D::render()
 void Scene2D::cleanup()
 {
     if (m_renderInitialized && m_initialized) {
-        m_context->makeCurrent(m_sharedObject->m_surface);
         m_sharedObject->m_renderControl->invalidate();
-        m_context->functions()->glDeleteFramebuffers(1, &m_fbo);
-        m_context->functions()->glDeleteRenderbuffers(1, &m_rbo);
-        m_context->doneCurrent();
         m_renderInitialized = false;
     }
     if (m_initialized) {
