@@ -62,7 +62,6 @@ public:
 
     void syncFromFrontEnd(const Qt3DCore::QNode *frontEnd, bool firstTime) override;
 
-    bool updateFbo(QOpenGLTexture *texture);
     void syncRenderControl();
     bool registerObjectPickerEvents(Qt3DCore::QEntity *qentity);
     void unregisterObjectPickerEvents(Qt3DCore::QNodeId entityId);
@@ -76,8 +75,6 @@ public:
     Qt3DCore::QNodeId m_peerId;
     Qt3DRender::Render::Attachment m_attachmentData;
 
-    GLuint m_fbo;
-    GLuint m_rbo;
     QSize m_textureSize;
 
     bool m_initialized;
