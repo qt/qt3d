@@ -43,6 +43,7 @@ QPickTriangleEvent *QPickTriangleEventPrivate::clone() const
     res->d_func()->m_vertex1Index = m_vertex1Index;
     res->d_func()->m_vertex2Index = m_vertex2Index;
     res->d_func()->m_vertex3Index = m_vertex3Index;
+    res->d_func()->m_uvw = m_uvw;
     return res;
 }
 
