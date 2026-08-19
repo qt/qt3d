@@ -76,6 +76,9 @@ int main(int argc, char *argv[])
     qmlTextureRenderer->setOutput(output);
     QQmlEngine engine;
     QQmlComponent component(&engine, QUrl(QStringLiteral("qrc:/OffscreenGui.qml")));
+    if (component.isError()) {
+        qFatal() << component.errors();
+    }
     qmlTextureRenderer->setItem(static_cast<QQuickItem *>(component.create()));
 
     Qt3DCore::QEntity* planeEntity = new Qt3DCore::QEntity(sceneRoot);
