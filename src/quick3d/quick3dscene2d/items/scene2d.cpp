@@ -252,7 +252,6 @@ void Scene2D::render()
                                                        (void**)&texture, &textureLock)) {
                 // Need to call sync even if the texture is not in use
                 syncRenderControl();
-                m_context->doneCurrent();
                 qCDebug(Qt3DRender::Quick::Scene2D) << Q_FUNC_INFO << "Texture not in use.";
                 QCoreApplication::postEvent(m_sharedObject->m_renderObject,
                                             new Scene2DEvent(Scene2DEvent::Render));
