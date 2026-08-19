@@ -1,9 +1,8 @@
 // Copyright (C) 2017 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-import QtQuick 2.0
-import QtQuick.Controls 1.2
-import QtQuick.Controls.Styles 1.3
+import QtQuick
+import QtQuick.Controls
 
 Rectangle {
     width: 1024
@@ -53,8 +52,8 @@ Rectangle {
         anchors.left: parent.left
         width: 400
         value: 1
-        minimumValue: 0
-        maximumValue: 1
+        from: 0.0
+        to: 1.0
 
         onValueChanged: {
             rect.color = Qt.rgba(value, 0, 0, 1)
