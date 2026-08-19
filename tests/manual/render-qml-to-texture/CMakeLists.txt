@@ -23,6 +23,7 @@ qt_internal_add_manual_test(render-qml-to-texture
         Qt::Gui
         Qt::Qml
         Qt::Quick
+        Qt::QuickControls2
 )
 
 # Resources:
