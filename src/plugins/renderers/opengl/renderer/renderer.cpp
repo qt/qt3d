@@ -345,11 +345,11 @@ NodeManagers *Renderer::nodeManagers() const
 */
 QOpenGLContext *Renderer::shareContext() const
 {
-    QMutexLocker lock(&m_shareContextMutex);
+    QMutexLocker lock(&m_hasBeenInitializedMutex);
     return m_shareContext ? m_shareContext
-                          : (m_submissionContext->openGLContext()
-                             ? m_submissionContext->openGLContext()->shareContext()
-                             : nullptr);
+                          : (m_submissionContext && m_submissionContext->openGLContext()
+                                     ? m_submissionContext->openGLContext()->shareContext()
+                                     : nullptr);
 }
 
 void Renderer::setOpenGLContext(QOpenGLContext *context)
@@ -409,66 +409,63 @@ void Renderer::initialize()
     m_submissionContext.reset(new SubmissionContext);
     m_submissionContext->setRenderer(this);
 
-    {
-        QMutexLocker lock(&m_shareContextMutex);
-        // If we are using our own context (not provided by QtQuick),
-        // we need to create it
-        if (!m_glContext) {
-            m_glContext = new QOpenGLContext;
-            if (m_screen)
-                m_glContext->setScreen(m_screen);
-            m_glContext->setShareContext(qt_gl_global_share_context());
+    // If we are using our own context (not provided by QtQuick),
+    // we need to create it
+    if (!m_glContext) {
+        m_glContext = new QOpenGLContext;
+        if (m_screen)
+            m_glContext->setScreen(m_screen);
+        m_glContext->setShareContext(qt_gl_global_share_context());
 
-            // TO DO: Shouldn't we use the highest context available and trust
-            // QOpenGLContext to fall back on the best lowest supported ?
-            const QByteArray debugLoggingMode = qgetenv("QT3DRENDER_DEBUG_LOGGING");
+        // TO DO: Shouldn't we use the highest context available and trust
+        // QOpenGLContext to fall back on the best lowest supported ?
+        const QByteArray debugLoggingMode = qgetenv("QT3DRENDER_DEBUG_LOGGING");
 
-            if (!debugLoggingMode.isEmpty()) {
-                QSurfaceFormat sf = m_glContext->format();
-                sf.setOption(QSurfaceFormat::DebugContext);
-                m_glContext->setFormat(sf);
-            }
-
-            // Create OpenGL context
-
-            if (m_glContext->create())
-                qCDebug(Backend) << "OpenGL context created with actual format" << m_glContext->format();
-            else
-                qCWarning(Backend) << Q_FUNC_INFO << "OpenGL context creation failed";
-            m_ownedContext = true;
-
-            QObject::connect(m_glContext, &QOpenGLContext::aboutToBeDestroyed, m_glContext,
-                             [this] { m_frameProfiler.reset(); });
-        } else {
-            // Context is not owned by us, so we need to know if it gets destroyed
-            m_contextConnection = QObject::connect(m_glContext, &QOpenGLContext::aboutToBeDestroyed,
-                                                   m_glContext, [this] { releaseGraphicsResources(); });
+        if (!debugLoggingMode.isEmpty()) {
+            QSurfaceFormat sf = m_glContext->format();
+            sf.setOption(QSurfaceFormat::DebugContext);
+            m_glContext->setFormat(sf);
         }
 
-        qCDebug(Backend) << "Qt3D shared context:" << m_glContext->shareContext();
-        qCDebug(Backend) << "Qt global shared context:" << qt_gl_global_share_context();
+        // Create OpenGL context
 
-        if (!m_glContext->shareContext()) {
-            m_shareContext = new QOpenGLContext;
-            if (m_glContext->screen())
-                m_shareContext->setScreen(m_glContext->screen());
-            m_shareContext->setFormat(m_glContext->format());
-            m_shareContext->setShareContext(m_glContext);
-            m_shareContext->create();
-        }
+        if (m_glContext->create())
+            qCDebug(Backend) << "OpenGL context created with actual format" << m_glContext->format();
+        else
+            qCWarning(Backend) << Q_FUNC_INFO << "OpenGL context creation failed";
+        m_ownedContext = true;
 
-        // Note: we don't have a surface at this point
-        // The context will be made current later on (at render time)
-        m_submissionContext->setOpenGLContext(m_glContext);
-
-        // Store the format used by the context and queue up creating an
-        // offscreen surface in the main thread so that it is available
-        // for use when we want to shutdown the renderer. We need to create
-        // the offscreen surface on the main thread because on some platforms
-        // (MS Windows), an offscreen surface is just a hidden QWindow.
-        m_format = m_glContext->format();
-        QMetaObject::invokeMethod(m_offscreenHelper, "createOffscreenSurface");
+        QObject::connect(m_glContext, &QOpenGLContext::aboutToBeDestroyed, m_glContext,
+                         [this] { m_frameProfiler.reset(); });
+    } else {
+        // Context is not owned by us, so we need to know if it gets destroyed
+        m_contextConnection = QObject::connect(m_glContext, &QOpenGLContext::aboutToBeDestroyed,
+                                               m_glContext, [this] { releaseGraphicsResources(); });
     }
+
+    qCDebug(Backend) << "Qt3D shared context:" << m_glContext->shareContext();
+    qCDebug(Backend) << "Qt global shared context:" << qt_gl_global_share_context();
+
+    if (!m_glContext->shareContext()) {
+        m_shareContext = new QOpenGLContext;
+        if (m_glContext->screen())
+            m_shareContext->setScreen(m_glContext->screen());
+        m_shareContext->setFormat(m_glContext->format());
+        m_shareContext->setShareContext(m_glContext);
+        m_shareContext->create();
+    }
+
+    // Note: we don't have a surface at this point
+    // The context will be made current later on (at render time)
+    m_submissionContext->setOpenGLContext(m_glContext);
+
+    // Store the format used by the context and queue up creating an
+    // offscreen surface in the main thread so that it is available
+    // for use when we want to shutdown the renderer. We need to create
+    // the offscreen surface on the main thread because on some platforms
+    // (MS Windows), an offscreen surface is just a hidden QWindow.
+    m_format = m_glContext->format();
+    QMetaObject::invokeMethod(m_offscreenHelper, "createOffscreenSurface");
 
     // Awake setScenegraphRoot in case it was waiting
     m_waitForInitializationToBeCompleted.release(1);
