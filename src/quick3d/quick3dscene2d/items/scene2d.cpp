@@ -247,17 +247,26 @@ void Scene2D::render()
 
         if (resourceAccessor()->accessResource(RenderBackendResourceAccessor::OutputAttachment,
                                                m_outputId, (void**)&attachmentData, nullptr)) {
-            if (!resourceAccessor()->accessResource(RenderBackendResourceAccessor::OGLTextureWrite,
-                                                    attachmentData->m_textureUuid,
-                                                       (void**)&texture, &textureLock)) {
-                // Need to call sync even if the texture is not in use
+            auto syncAndRequestRender = [this] {
                 syncRenderControl();
-                qCDebug(Qt3DRender::Quick::Scene2D) << Q_FUNC_INFO << "Texture not in use.";
                 QCoreApplication::postEvent(m_sharedObject->m_renderObject,
                                             new Scene2DEvent(Scene2DEvent::Render));
+            };
+            if (!resourceAccessor()->accessResource(RenderBackendResourceAccessor::OGLTextureWrite,
+                                                    attachmentData->m_textureUuid,
+                                                    (void **)&texture, &textureLock)) {
+                qCDebug(Qt3DRender::Quick::Scene2D) << Q_FUNC_INFO << "Texture not in use.";
+                // Need to call sync even if the texture is not in use
+                syncAndRequestRender();
                 return;
             }
             textureLock->lock();
+            if (!texture) {
+                textureLock->unlock();
+                qCDebug(Qt3DRender::Quick::Scene2D) << Q_FUNC_INFO << "Missing texture.";
+                syncAndRequestRender();
+                return;
+            }
             const QSize textureSize = QSize(texture->width(), texture->height());
             if (m_attachmentData.m_textureUuid != attachmentData->m_textureUuid
                 || m_attachmentData.m_point != attachmentData->m_point
