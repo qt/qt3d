@@ -292,7 +292,7 @@ private:
 
     QSemaphore m_submitRenderViewsSemaphore;
     QSemaphore m_waitForInitializationToBeCompleted;
-    QMutex m_hasBeenInitializedMutex;
+    mutable QMutex m_hasBeenInitializedMutex;
 
     QAtomicInt m_running;
 
@@ -309,7 +309,6 @@ private:
     QAtomicInt m_lastFrameCorrect;
     QOpenGLContext *m_glContext;
     QOpenGLContext *m_shareContext;
-    mutable QMutex m_shareContextMutex;
 
     qint64 m_time;
 
