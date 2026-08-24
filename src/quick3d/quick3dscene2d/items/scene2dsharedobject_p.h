@@ -20,7 +20,6 @@
 
 #include <QtQuick/QQuickWindow>
 #include <QtQuick/QQuickRenderControl>
-#include <QtGui/QOffscreenSurface>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QWaitCondition>
 #include <QtCore/QThread>
@@ -46,7 +45,6 @@ public:
     QQuickRenderControl *m_renderControl;
     QQuickWindow *m_quickWindow;
     Scene2DManager *m_renderManager;
-    QOffscreenSurface *m_surface;
 
     QThread *m_renderThread;
     QObject *m_renderObject;
@@ -57,8 +55,11 @@ public:
     bool isInitialized() const;
     void setInitialized();
 
+    bool isQuitting() const;
+    void setQuitting();
+
     void requestQuit();
-    bool isQuit() const;
+    void requestInvalidate();
 
     void requestRender(bool sync);
 
@@ -79,7 +80,7 @@ public:
 private:
 
     bool m_disallowed;
-    bool m_quit;
+    bool m_quitting;
     bool m_requestSync;
     bool m_prepared;
     bool m_initialized;

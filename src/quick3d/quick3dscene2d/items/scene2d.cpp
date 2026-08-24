@@ -9,6 +9,7 @@
 #include <QtCore/qthread.h>
 #include <QtCore/qatomic.h>
 #include <QtGui/qevent.h>
+#include <QtGui/rhi/qrhi.h>
 #include <QtQuick/QQuickGraphicsDevice>
 #include <QtQuick/QQuickRenderTarget>
 
@@ -27,7 +28,6 @@
 #include <private/qpicktriangleevent_p.h>
 #include <private/entity_p.h>
 #include <private/trianglesvisitor_p.h>
-
 
 QT_BEGIN_NAMESPACE
 
@@ -68,6 +68,11 @@ bool RenderQmlEventHandler::event(QEvent *e)
         return true;
     }
 
+    case Scene2DEvent::Invalidate: {
+        m_node->invalidate();
+        return true;
+    }
+
     case Scene2DEvent::Quit: {
         m_node->cleanup();
         return true;
@@ -81,8 +86,10 @@ bool RenderQmlEventHandler::event(QEvent *e)
 
 Scene2D::Scene2D()
     : Qt3DRender::Render::BackendNode(Qt3DCore::QBackendNode::ReadWrite)
+    , m_surface(nullptr)
     , m_context(nullptr)
     , m_shareContext(nullptr)
+    , m_rhi(nullptr)
     , m_renderThread(nullptr)
     , m_sharedObject(nullptr)
     , m_initialized(false)
@@ -205,12 +212,26 @@ void Scene2D::initializeRender()
                                         new Scene2DEvent(Scene2DEvent::Initialize));
             return;
         }
+
         m_context = new QOpenGLContext();
         m_context->setFormat(m_shareContext->format());
         m_context->setShareContext(m_shareContext);
         m_context->create();
 
-        QQuickGraphicsDevice graphicsDevice = QQuickGraphicsDevice::fromOpenGLContext(m_context);
+        m_surface = new QOffscreenSurface;
+        m_surface->setFormat(m_context->format());
+        m_surface->create();
+
+        const QSurfaceFormat format = m_sharedObject->m_quickWindow->requestedFormat();
+        QRhiGles2InitParams rhiParams;
+        rhiParams.format = format;
+        rhiParams.fallbackSurface = m_surface;
+        rhiParams.window = m_sharedObject->m_quickWindow;
+        QRhiGles2NativeHandles importDev;
+        importDev.context = m_context;
+        m_rhi = QRhi::create(QRhi::OpenGLES2, &rhiParams, { }, &importDev);
+
+        const QQuickGraphicsDevice graphicsDevice = QQuickGraphicsDevice::fromRhi(m_rhi);
         m_sharedObject->m_quickWindow->setGraphicsDevice(graphicsDevice);
         m_sharedObject->m_renderControl->initialize();
 
@@ -238,7 +259,6 @@ void Scene2D::syncRenderControl()
 void Scene2D::render()
 {
     if (m_initialized && m_renderInitialized && m_sharedObject.data() != nullptr) {
-
         QMutexLocker lock(&m_sharedObject->m_mutex);
 
         QOpenGLTexture *texture = nullptr;
@@ -305,7 +325,7 @@ void Scene2D::render()
                                         new Scene2DEvent(Scene2DEvent::Rendered));
 
         if (texture->isAutoMipMapGenerationEnabled()) {
-            m_context->makeCurrent(m_sharedObject->m_surface);
+            m_context->makeCurrent(m_surface);
             texture->generateMipMaps();
             m_context->doneCurrent();
         }
@@ -317,17 +337,34 @@ void Scene2D::render()
 }
 
 // this function gets called while the main thread is waiting
-void Scene2D::cleanup()
+void Scene2D::invalidate()
 {
     if (m_renderInitialized && m_initialized) {
         m_sharedObject->m_renderControl->invalidate();
+        m_sharedObject->m_quickWindow->setRenderTarget({ });
+        m_sharedObject->m_quickWindow->setGraphicsDevice({ });
+    }
+    if (m_sharedObject) {
+        // wake up the main thread
+        m_sharedObject->wake();
+    }
+}
+
+// this function gets called while the main thread is waiting
+void Scene2D::cleanup()
+{
+    if (m_renderInitialized && m_initialized) {
+        delete m_rhi;
+        m_rhi = nullptr;
+        delete m_context;
+        m_context = nullptr;
+        delete m_surface;
+        m_surface = nullptr;
         m_renderInitialized = false;
     }
     if (m_initialized) {
         delete m_sharedObject->m_renderObject;
         m_sharedObject->m_renderObject = nullptr;
-        delete m_context;
-        m_context = nullptr;
         m_initialized = false;
     }
     if (m_sharedObject) {
@@ -341,7 +378,6 @@ void Scene2D::cleanup()
             renderThread->quit();
     }
 }
-
 
 bool Scene2D::registerObjectPickerEvents(Qt3DCore::QEntity *qentity)
 {
