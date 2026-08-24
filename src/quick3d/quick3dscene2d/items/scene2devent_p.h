@@ -35,7 +35,8 @@ public:
         Prepare,
         Initialized,
         Rendered,
-        Quit
+        Invalidate,
+        Quit,
     };
     Scene2DEvent(Type type)
         : QEvent(static_cast<QEvent::Type>(type))
