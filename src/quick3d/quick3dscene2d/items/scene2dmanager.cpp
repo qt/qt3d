@@ -49,10 +49,6 @@ Scene2DManager::Scene2DManager(QScene2DPrivate *priv)
     , m_backendInitialized(false)
     , m_mouseEnabled(true)
 {
-    m_sharedObject->m_surface = new QOffscreenSurface;
-    m_sharedObject->m_surface->setFormat(QSurfaceFormat::defaultFormat());
-    m_sharedObject->m_surface->create();
-
     // Create render control
     m_sharedObject->m_renderControl = new RenderControl(nullptr);
 
@@ -125,10 +121,21 @@ void Scene2DManager::startIfInitialized()
 void Scene2DManager::stopAndClean()
 {
     if (m_sharedObject->isInitialized()) {
-        QMutexLocker lock(&m_sharedObject->m_mutex);
+        // invalidate render control
+        m_sharedObject->m_mutex.lock();
+        m_sharedObject->setQuitting();
+        m_sharedObject->requestInvalidate();
+        m_sharedObject->wait();
+        m_sharedObject->m_mutex.unlock();
+
+        // delete QQuick render control and window
+        m_sharedObject->cleanup();
+
+        // delete QRhi and OpenGL context
+        m_sharedObject->m_mutex.lock();
         m_sharedObject->requestQuit();
         m_sharedObject->wait();
-        m_sharedObject->cleanup();
+        m_sharedObject->m_mutex.unlock();
     }
 }
 
@@ -163,7 +170,7 @@ bool Scene2DManager::event(QEvent *e)
 
     case Scene2DEvent::RenderSync: {
         // sync and render request, main and render threads must be synchronized
-        if (!m_sharedObject->isQuit())
+        if (!m_sharedObject->isQuitting())
             doRenderSync();
         m_requested = false;
         return true;

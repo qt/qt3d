@@ -25,11 +25,10 @@ Scene2DSharedObject::Scene2DSharedObject(Scene2DManager *manager)
     : m_renderControl(nullptr)
     , m_quickWindow(nullptr)
     , m_renderManager(manager)
-    , m_surface(nullptr)
     , m_renderThread(nullptr)
     , m_renderObject(nullptr)
     , m_disallowed(false)
-    , m_quit(false)
+    , m_quitting(false)
     , m_requestSync(false)
     , m_prepared(false)
     , m_initialized(false)
@@ -43,11 +42,9 @@ Scene2DSharedObject::~Scene2DSharedObject()
 void Scene2DSharedObject::cleanup()
 {
     delete m_renderControl;
-    delete m_quickWindow;
-    delete m_surface;
     m_renderControl = nullptr;
+    delete m_quickWindow;
     m_quickWindow = nullptr;
-    m_surface = nullptr;
     m_initialized = false;
 }
 
@@ -82,17 +79,30 @@ void Scene2DSharedObject::setPrepared()
 }
 
 // not protected, call only from main thread
-bool Scene2DSharedObject::isQuit() const
+bool Scene2DSharedObject::isQuitting() const
 {
     Q_ASSERT(QThread::currentThread() == QCoreApplication::instance()->thread());
-    return m_quit;
+    return m_quitting;
+}
+
+// not protected, call only from main thread
+void Scene2DSharedObject::setQuitting()
+{
+    Q_ASSERT(QThread::currentThread() == QCoreApplication::instance()->thread());
+    m_quitting = true;
+}
+
+// not protected, call only from main thread
+void Scene2DSharedObject::requestInvalidate()
+{
+    Q_ASSERT(QThread::currentThread() == QCoreApplication::instance()->thread());
+    QCoreApplication::postEvent(m_renderObject, new Scene2DEvent(Scene2DEvent::Invalidate));
 }
 
 // not protected, call only from main thread
 void Scene2DSharedObject::requestQuit()
 {
     Q_ASSERT(QThread::currentThread() == QCoreApplication::instance()->thread());
-    m_quit = true;
     QCoreApplication::postEvent(m_renderObject, new Scene2DEvent(Scene2DEvent::Quit));
 }
 
