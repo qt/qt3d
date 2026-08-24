@@ -386,8 +386,7 @@ bool Renderer::accessOpenGLTexture(Qt3DCore::QNodeId nodeId,
     if (!readonly)
         glTex->setExternalRenderingEnabled(true);
 
-    GLTexture::TextureUpdateInfo texInfo = glTex->createOrUpdateGLTexture();
-    *texture = texInfo.texture;
+    *texture = glTex->getGLTexture();
 
     if (!readonly)
         *lock = glTex->externalRenderingLock();
