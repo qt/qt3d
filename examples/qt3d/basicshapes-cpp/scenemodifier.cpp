@@ -2,7 +2,11 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
 
 #include "scenemodifier.h"
+
 #include <Qt3DRender/QGeometryRenderer>
+
+#include <QtGui/QQuaternion>
+
 #include <QtCore/QDebug>
 
 SceneModifier::SceneModifier(Qt3DCore::QEntity *rootEntity)

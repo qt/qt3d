@@ -10,6 +10,7 @@
 #include <QtCore/qjsonobject.h>
 #include <QtCore/qmath.h>
 
+#include <QtGui/qquaternion.h>
 #include <QtGui/qvector2d.h>
 
 #include <Qt3DCore/qentity.h>

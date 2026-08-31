@@ -8,6 +8,8 @@
 #include <QSignalSpy>
 #include <testarbiter.h>
 
+#include <QtGui/qquaternion.h>
+
 using namespace Qt3DCore;
 
 class tst_QJoint : public QObject

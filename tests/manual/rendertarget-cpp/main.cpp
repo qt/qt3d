@@ -42,6 +42,8 @@
 #include "orbittransformcontroller.h"
 #include "qorbitcameracontroller.h"
 
+#include <QtGui/qquaternion.h>
+
 class Renderer : public Qt3DRender::QRenderSurfaceSelector
 {
 public:

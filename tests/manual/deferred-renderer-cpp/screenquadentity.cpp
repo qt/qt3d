@@ -10,6 +10,8 @@
 #include <Qt3DCore/QTransform>
 #include <Qt3DExtras/QPlaneMesh>
 
+#include <QtGui/qquaternion.h>
+
 QT_BEGIN_NAMESPACE
 
 ScreenQuadEntity::ScreenQuadEntity(Qt3DCore::QNode *parent)

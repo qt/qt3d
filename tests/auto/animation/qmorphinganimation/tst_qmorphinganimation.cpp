@@ -53,7 +53,7 @@ private Q_SLOTS:
             // WHEN
             QScopedPointer<Qt3DRender::QGeometryRenderer> gr(new Qt3DRender::QGeometryRenderer);
             QSignalSpy spy(&morphingAnimation,
-                           SIGNAL(targetChanged(Qt3DRender::QGeometryRenderer *)));
+                           SIGNAL(targetChanged(Qt3DRender::QGeometryRenderer*)));
             Qt3DRender::QGeometryRenderer *newValue = gr.data();
             morphingAnimation.setTarget(newValue);
 

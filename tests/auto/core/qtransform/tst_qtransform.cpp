@@ -7,7 +7,11 @@
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DCore/private/qtransform_p.h>
+
+#include <QtGui/qquaternion.h>
+
 #include <QtCore/qscopedpointer.h>
+
 #include "testarbiter.h"
 
 using namespace Qt3DCore;

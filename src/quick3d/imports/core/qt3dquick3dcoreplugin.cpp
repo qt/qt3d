@@ -26,6 +26,8 @@
 
 #include <QtQml/qqml.h>
 
+#include <QtGui/qquaternion.h>
+
 QT_BEGIN_NAMESPACE
 
 extern void qml_register_types_Qt3D_Core();

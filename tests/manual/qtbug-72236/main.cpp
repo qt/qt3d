@@ -30,6 +30,8 @@
 #include <Qt3DRender/QLayer>
 #include <Qt3DRender/QLayerFilter>
 
+#include <QtGui/qquaternion.h>
+
 using namespace Qt3DRender;
 
 int main(int argc, char **argv)

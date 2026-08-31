@@ -6,6 +6,8 @@
 #include <qobject.h>
 #include <qsignalspy.h>
 
+#include <QtGui/qquaternion.h>
+
 class tst_QKeyframeAnimation : public QObject
 {
     Q_OBJECT
@@ -39,7 +41,7 @@ private Q_SLOTS:
         {
             // WHEN
             QScopedPointer<Qt3DCore::QTransform> transform(new Qt3DCore::QTransform);
-            QSignalSpy spy(&keyframeAnimation, SIGNAL(targetChanged(Qt3DCore::QTransform *)));
+            QSignalSpy spy(&keyframeAnimation, SIGNAL(targetChanged(Qt3DCore::QTransform*)));
             Qt3DCore::QTransform * newValue = transform.data();
             keyframeAnimation.setTarget(newValue);
 
@@ -58,7 +60,7 @@ private Q_SLOTS:
         }
         {
             // WHEN
-            QSignalSpy spy(&keyframeAnimation, SIGNAL(easingChanged(const QEasingCurve &)));
+            QSignalSpy spy(&keyframeAnimation, SIGNAL(easingChanged(QEasingCurve)));
             const QEasingCurve newValue = QEasingCurve(QEasingCurve::CosineCurve);
             keyframeAnimation.setEasing(newValue);
 

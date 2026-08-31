@@ -16,7 +16,10 @@
 //
 
 #include <Qt3DAnimation/private/backendnode_p.h>
+
 #include <Qt3DCore/private/sqt_p.h>
+
+#include <QtGui/qquaternion.h>
 
 QT_BEGIN_NAMESPACE
 
