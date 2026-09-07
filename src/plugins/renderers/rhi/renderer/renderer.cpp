@@ -512,6 +512,9 @@ void Renderer::shutdown()
     // as the internal resources might somehow rely on nodeManager resources
     delete m_RHIResourceManagers;
     m_RHIResourceManagers = nullptr;
+
+    delete m_settings;
+    m_settings = nullptr;
 }
 
 /*!
