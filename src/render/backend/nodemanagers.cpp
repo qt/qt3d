@@ -100,6 +100,7 @@ NodeManagers::~NodeManagers()
     delete m_skeletonManager;
     delete m_jointManager;
     delete m_shaderImageManager;
+    delete m_pickingProxyManager;
 }
 
 template<>
