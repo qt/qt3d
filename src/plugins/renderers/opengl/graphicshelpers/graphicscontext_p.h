@@ -164,7 +164,7 @@ public:
     QOpenGLContext *m_gl;
     GraphicsHelperInterface *m_glHelper;
 
-    QHash<QSurface *, GraphicsHelperInterface*> m_glHelpers;
+    std::unordered_map<QSurface *, std::unique_ptr<GraphicsHelperInterface>> m_glHelpers;
     GraphicsApiFilterData m_contextInfo;
 #ifdef QT_OPENGL_LIB
     QScopedPointer<QOpenGLDebugLogger> m_debugLogger;
