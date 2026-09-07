@@ -188,11 +188,10 @@ void GraphicsContext::initializeHelpers(QSurface *surface)
 {
     // Set the correct GL Helper depending on the surface
     // If no helper exists, create one
-    m_glHelper = m_glHelpers.value(surface);
-    if (!m_glHelper) {
-        m_glHelper = resolveHighestOpenGLFunctions();
-        m_glHelpers.insert(surface, m_glHelper);
-    }
+    auto it = m_glHelpers.find(surface);
+    if (it == m_glHelpers.end())
+        std::tie(it, std::ignore) = m_glHelpers.emplace(surface, resolveHighestOpenGLFunctions());
+    m_glHelper = it->second.get();
 }
 
 void GraphicsContext::doneCurrent()
@@ -243,9 +242,8 @@ GraphicsContext::ShaderCreationInfo GraphicsContext::createShaderProgram(GLShade
 void GraphicsContext::introspectShaderInterface(GLShader *shader)
 {
     QOpenGLShaderProgram *shaderProgram = shader->shaderProgram();
-    GraphicsHelperInterface *glHelper = resolveHighestOpenGLFunctions();
-    shader->initializeUniforms(glHelper->programUniformsAndLocations(shaderProgram->programId()));
-    shader->initializeAttributes(glHelper->programAttributesAndLocations(shaderProgram->programId()));
+    shader->initializeUniforms(m_glHelper->programUniformsAndLocations(shaderProgram->programId()));
+    shader->initializeAttributes(m_glHelper->programAttributesAndLocations(shaderProgram->programId()));
     if (m_glHelper->supportsFeature(GraphicsHelperInterface::UniformBufferObject))
         shader->initializeUniformBlocks(m_glHelper->programUniformBlocks(shaderProgram->programId()));
     if (m_glHelper->supportsFeature(GraphicsHelperInterface::ShaderStorageObject))
