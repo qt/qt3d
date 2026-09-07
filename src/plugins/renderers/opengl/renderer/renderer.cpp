@@ -508,6 +508,9 @@ void Renderer::shutdown()
     // as the internal resources might somehow rely on nodeManager resources
     delete m_glResourceManagers;
     m_glResourceManagers = nullptr;
+
+    delete m_settings;
+    m_settings = nullptr;
 }
 
 /*!
