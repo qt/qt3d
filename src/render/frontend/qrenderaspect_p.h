@@ -95,7 +95,7 @@ public:
     bool m_sceneImportersLoaded;
     QList<QSceneImporter *> m_sceneImporters;
     QList<QString> m_loadedPlugins;
-    QList<Render::QRenderPlugin *> m_renderPlugins;
+    std::vector<std::unique_ptr<Render::QRenderPlugin>> m_renderPlugins;
     Render::OffscreenSurfaceHelper *m_offscreenHelper;
     QScreen *m_screen = nullptr;
 
