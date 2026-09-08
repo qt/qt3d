@@ -34,6 +34,7 @@ class AbstractRenderer;
 class Q_3DRENDERSHARED_PRIVATE_EXPORT QRenderPlugin
 {
 public:
+    virtual ~QRenderPlugin() = default;
     virtual bool registerBackendTypes(QRenderAspect *aspect, AbstractRenderer *renderer) = 0;
     virtual bool unregisterBackendTypes(QRenderAspect *aspect) = 0;
 
