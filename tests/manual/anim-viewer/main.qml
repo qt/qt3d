@@ -2,9 +2,8 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
 import QtQuick 2.0 as Quick
-import QtQuick.Layouts 1.3
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import QtQuick.Layouts
+import QtQuick.Controls
 
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
@@ -81,7 +80,7 @@ Quick.Item {
                                 AnimationController {
                                     id: animator
                                     property bool initialized : false
-                                    onPositionChanged: {
+                                    onPositionChanged: position => {
                                         slider.value = position
                                     }
                                 }
@@ -92,7 +91,7 @@ Quick.Item {
                                     loops: Quick.Animation.Infinite
                                     from: 0.0
                                 }
-                                onStatusChanged: {
+                                onStatusChanged: status => {
                                     console.log(status)
                                     if (status === SceneLoader.Ready) {
 
@@ -102,7 +101,7 @@ Quick.Item {
                                         var group = animator.getGroup(0)
                                         animPosition.to = group.duration
                                         animPosition.duration = group.duration * 1000
-                                        slider.maximumValue = group.duration
+                                        slider.to = group.duration
 
                                         var animList = []
                                         var groups = animator.animationGroups
@@ -126,8 +125,6 @@ Quick.Item {
 
         ComboBox {
             id: animationSelector
-            anchors.topMargin: 10
-            anchors.top: background.bottom
             implicitWidth: 400
             model: [ "Gears", "Blend Shape" ]
             onCurrentIndexChanged: {
@@ -149,8 +146,6 @@ Quick.Item {
 
         ComboBox {
             id: comboBox
-            anchors.topMargin: 10
-            anchors.top: animationSelector.bottom
             implicitWidth: 400
             onCurrentIndexChanged: {
                 if (animator.initialized) {
@@ -158,13 +153,13 @@ Quick.Item {
                     var group = animator.getGroup(currentIndex)
                     animPosition.to = group.duration
                     animPosition.duration = group.duration * 1000
-                    slider.maximumValue = group.duration
+                    slider.to = group.duration
                 }
             }
         }
 
         RowLayout {
-            anchors.left: parent.left
+            Layout.fillWidth: true
 
             Button {
                 text: "play"
@@ -193,9 +188,7 @@ Quick.Item {
         }
         Slider {
             id: slider
-            anchors.bottomMargin: 10
-            anchors.left: parent.left
-            anchors.right: parent.right
+            Layout.fillWidth: true
             value: 0.0
             onValueChanged: {
                 if (pressed) {
