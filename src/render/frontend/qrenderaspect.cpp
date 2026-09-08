@@ -554,7 +554,7 @@ void QRenderAspectPrivate::unregisterBackendTypes()
     unregisterBackendType<QScreenRayCaster>();
 
     // Plugins
-    for (Render::QRenderPlugin *plugin : std::as_const(m_renderPlugins))
+    for (auto &plugin : m_renderPlugins)
         plugin->unregisterBackendTypes(q);
 }
 
@@ -948,12 +948,11 @@ void QRenderAspectPrivate::loadRenderPlugin(const QString &pluginName)
         return;
 
     if (m_pluginConfig.contains(pluginName) && !m_loadedPlugins.contains(pluginName)) {
-        Render::QRenderPlugin *plugin
-                = Render::QRenderPluginFactory::create(pluginName, QStringList());
-        if (plugin != nullptr) {
+        auto plugin = std::unique_ptr<Render::QRenderPlugin>(Render::QRenderPluginFactory::create(pluginName, QStringList()));
+        if (plugin) {
             m_loadedPlugins.append(pluginName);
-            m_renderPlugins.append(plugin);
             plugin->registerBackendTypes(q, m_renderer);
+            m_renderPlugins.push_back(std::move(plugin));
         }
     }
 }
