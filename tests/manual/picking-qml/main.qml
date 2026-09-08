@@ -141,7 +141,7 @@ Entity {
         onReleased: cube2.diffuseColor = "red"
 
         property bool toggled: false
-        onClicked: {
+        onClicked: event => {
             console.log("Clicked cube 2", event.button)
             toggled = !toggled
         }
