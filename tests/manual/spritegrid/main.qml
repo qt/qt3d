@@ -77,7 +77,7 @@ Entity {
         id: material1
         texture: TextureLoader {
             id: textureLoader
-            source: "spritegrid.png"
+            source: "qrc:/spritegrid.png"
             mirrored: false
         }
         textureTransform: spriteGrid.textureTransform
