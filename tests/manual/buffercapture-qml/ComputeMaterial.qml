@@ -30,7 +30,7 @@ Material {
                         shaderProgram: computeShaderGL43
                         // We set the buffer as the parameter data
                         parameters: [
-                            Parameter { name: "input"; value: dataBuffer }
+                            Parameter { name: "inputData"; value: dataBuffer }
                         ]
                     }
                 ]
