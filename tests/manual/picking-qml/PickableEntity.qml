@@ -29,9 +29,9 @@ Entity {
 
     ObjectPicker {
         id: objectPicker
-        onClicked: root.clicked(pick)
-        onPressed: root.pressed(pick)
-        onReleased: root.released(pick)
+        onClicked: pick => root.clicked(pick)
+        onPressed: pick => root.pressed(pick)
+        onReleased: pick => root.released(pick)
         onEntered: root.entered()
         onExited: root.exited();
     }
