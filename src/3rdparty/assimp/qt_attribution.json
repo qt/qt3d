@@ -4,6 +4,8 @@
     "QDocModule": "qt3d",
     "Description": "assimp (Open Asset Import Library) is a portable open source library to import various well-known 3D model formats in a uniform manner.",
     "QtUsage": "Used for importing assets for use with Qt 3D",
+    "SecurityCritical": true,
+
     "Homepage": "http://www.assimp.org/",
     "Version": "6.0.5",
     "DownloadLocation": "https://github.com/assimp/assimp/releases/tag/v6.0.5",
