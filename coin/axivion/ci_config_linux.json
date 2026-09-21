@@ -25,11 +25,11 @@
             "_copy_from": "AxivionLinker",
             "input_files": [
                 "build/lib/lib*.so*.ir",
-                "build/qml/*/*/lib*.so*.ir"
+                "build/qml/**/lib*.so*.ir"
             ],
             "ir": "build/$(env:TESTED_MODULE_COIN).ir",
             "plugin_files": [
-                "build/plugins/*/lib*.so*.ir"
+                "build/plugins/**/lib*.so*.ir"
             ]
         }
     },
