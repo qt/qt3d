@@ -1542,8 +1542,8 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, ParameterInfoList 
                 setUniformValue(command->m_parameterPack, specularStructId, spec);
             }
         }
-        setUniformValue(command->m_parameterPack,
-                        StringToInt::lookupId(QStringLiteral("envLightCount")), envLightCount);
+        static const int envLightCountId = StringToInt::lookupId(QLatin1String("envLightCount"));
+        setUniformValue(command->m_parameterPack, envLightCountId, envLightCount);
     }
 }
 
