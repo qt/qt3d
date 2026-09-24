@@ -1439,7 +1439,8 @@ void RenderView::updateLightUniforms(RenderCommand *command, const Entity *entit
         setUniformValue(command->m_parameterPack, specularId, m_renderer->submissionContext()->maxTextureUnitsCount());
         setUniformValue(command->m_parameterPack, specularStructId, m_renderer->submissionContext()->maxTextureUnitsCount());
     }
-    setUniformValue(command->m_parameterPack, StringToInt::lookupId(QStringLiteral("envLightCount")), envLightCount);
+    static const int envLightCountId = StringToInt::lookupId(QLatin1String("envLightCount"));
+    setUniformValue(command->m_parameterPack, envLightCountId, envLightCount);
 }
 
 bool RenderView::hasBlitFramebufferInfo() const
