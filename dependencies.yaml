@@ -6,7 +6,7 @@ dependencies:
     ref: da546431040e659725e603984cab38eccbf67978
     required: false
   ../qtmultimedia:
-    ref: 7429146eea78025f409fb621731789a46dd4049c
+    ref: c08ffad124e8298d5f553c1bbdaa2df913e9ec07
     required: false
   ../qtshadertools:
     ref: 5404a9aacf19895b6494422f0e1b7aa825a18059
