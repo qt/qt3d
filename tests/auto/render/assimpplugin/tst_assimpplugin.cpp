@@ -13,6 +13,18 @@
 #include <Qt3DRender/private/qsceneimportfactory_p.h>
 #include <Qt3DRender/private/qsceneimporter_p.h>
 
+namespace {
+
+bool morphTargetHasAttribute(const Qt3DAnimation::QMorphTarget *morphTarget, const QString &attributeName)
+{
+    const auto attrList = morphTarget->attributeList();
+    return std::any_of(attrList.begin(), attrList.end(), [&attributeName](const Qt3DCore::QAttribute *attr) {
+        return attr->name() == attributeName;
+    });
+}
+
+} // namespace
+
 class tst_assimpPlugin : public QObject
 {
     Q_OBJECT
@@ -23,6 +35,7 @@ private Q_SLOTS:
     void cleanup();
     void importMesh();
     void importMorphTarget();
+    void importMorphTargetMixedAttribs();
 
 private:
     Qt3DRender::QSceneImporter *m_importer{ nullptr };
@@ -87,6 +100,56 @@ void tst_assimpPlugin::importMorphTarget()
         Qt3DCore::QAttribute* attr = morphTarget->attributeList().front();
         QCOMPARE(attr->count(), 3);
     }
+
+    delete rootEntity;
+}
+
+void tst_assimpPlugin::importMorphTargetMixedAttribs()
+{
+    if (m_importer == nullptr)
+        QSKIP("Missing assimp importer");
+
+    m_importer->setSource(QUrl(QStringLiteral("qrc:/mixed_morph_target_attribs.gltf")));
+
+    Qt3DCore::QEntity *rootEntity = m_importer->scene();
+    QVERIFY(rootEntity != nullptr);
+
+    auto *morphingAnimation = rootEntity->findChild<Qt3DAnimation::QMorphingAnimation *>();
+    QVERIFY(morphingAnimation != nullptr);
+
+    const auto morphTargets = morphingAnimation->morphTargetList();
+    QCOMPARE(morphTargets.size(), 2);
+
+    // POSITION morph target
+    const Qt3DAnimation::QMorphTarget *positionMorphTarget = [&morphTargets]() -> Qt3DAnimation::QMorphTarget * {
+        auto it = std::find_if(morphTargets.begin(), morphTargets.end(), [](const Qt3DAnimation::QMorphTarget *morphTarget) {
+            return morphTarget->attributeList().size() == 1 && morphTargetHasAttribute(morphTarget, Qt3DCore::QAttribute::defaultPositionAttributeName());
+        });
+        return it != morphTargets.end() ? *it : nullptr;
+    }();
+    QVERIFY(positionMorphTarget != nullptr);
+
+    // POSITION/NORMAL morph target
+    const Qt3DAnimation::QMorphTarget *positionNormalMorphTarget = [&morphTargets]() -> Qt3DAnimation::QMorphTarget * {
+        auto it = std::find_if(morphTargets.begin(), morphTargets.end(), [](const Qt3DAnimation::QMorphTarget *morphTarget) {
+            return morphTarget->attributeList().size() == 2
+                    && morphTargetHasAttribute(morphTarget, Qt3DCore::QAttribute::defaultPositionAttributeName())
+                    && morphTargetHasAttribute(morphTarget, Qt3DCore::QAttribute::defaultNormalAttributeName());
+        });
+        return it != morphTargets.end() ? *it : nullptr;
+    }();
+    QVERIFY(positionNormalMorphTarget != nullptr);
+
+    const auto vertexCount = positionMorphTarget->attributeList().front()->count();
+    QCOMPARE(vertexCount, 3);
+
+    const Qt3DCore::QBuffer *positionBuffer = positionMorphTarget->attributeList().front()->buffer();
+    QVERIFY(positionBuffer != nullptr);
+    QCOMPARE(positionBuffer->data().size(), vertexCount * 3 * sizeof(float));
+
+    const Qt3DCore::QBuffer *positionNormalBuffer = positionNormalMorphTarget->attributeList().front()->buffer();
+    QVERIFY(positionNormalBuffer != nullptr);
+    QCOMPARE(positionNormalBuffer->data().size(), vertexCount * 6 * sizeof(float));
 
     delete rootEntity;
 }
