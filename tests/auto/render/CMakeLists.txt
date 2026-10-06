@@ -145,3 +145,6 @@ if(QT_FEATURE_private_tests AND NOT (CMAKE_OSX_ARCHITECTURES MATCHES ";") AND
         (TEST_architecture_arch STREQUAL i386 OR TEST_architecture_arch STREQUAL x86_64))
     add_subdirectory(alignedresourcesmanagers-sse)
 endif()
+if(QT_FEATURE_private_tests AND QT_FEATURE_qt3d_assimp)
+    add_subdirectory(assimpplugin)
+endif()
