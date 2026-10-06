@@ -6,6 +6,8 @@
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qentity.h>
 
+#include <Qt3DAnimation/qmorphinganimation.h>
+
 #include <Qt3DRender/qgeometryrenderer.h>
 
 #include <Qt3DRender/private/qsceneimportfactory_p.h>
@@ -20,6 +22,7 @@ private Q_SLOTS:
     void init();
     void cleanup();
     void importMesh();
+    void importMorphTarget();
 
 private:
     Qt3DRender::QSceneImporter *m_importer{ nullptr };
@@ -59,6 +62,29 @@ void tst_assimpPlugin::importMesh()
     QCOMPARE(attributes.size(), 3);
 
     for (const Qt3DCore::QAttribute *attr : attributes) {
+        QCOMPARE(attr->count(), 3);
+    }
+
+    delete rootEntity;
+}
+
+void tst_assimpPlugin::importMorphTarget()
+{
+    if (m_importer == nullptr)
+        QSKIP("Missing assimp importer");
+
+    m_importer->setSource(QUrl(QStringLiteral("qrc:/morph_target.gltf")));
+
+    Qt3DCore::QEntity *rootEntity = m_importer->scene();
+    QVERIFY(rootEntity != nullptr);
+
+    auto *morphingAnimation = rootEntity->findChild<Qt3DAnimation::QMorphingAnimation *>();
+    QVERIFY(morphingAnimation != nullptr);
+    QCOMPARE(morphingAnimation->morphTargetList().size(), 2);
+
+    for (const Qt3DAnimation::QMorphTarget* morphTarget : morphingAnimation->morphTargetList()) {
+        QVERIFY(morphTarget->attributeList().size() == 1);
+        Qt3DCore::QAttribute* attr = morphTarget->attributeList().front();
         QCOMPARE(attr->count(), 3);
     }
 
