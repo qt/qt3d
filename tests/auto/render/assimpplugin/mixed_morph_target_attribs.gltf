@@ -1,0 +1,137 @@
+{
+    "asset": {
+        "version": "2.0"
+    },
+    "extensionsRequired": [
+        "KHR_morph_targets"
+    ],
+    "extensionsUsed": [
+        "KHR_morph_targets"
+    ],
+    "scene": 0,
+    "scenes": [
+        {
+            "nodes": [
+                0
+            ]
+        }
+    ],
+    "nodes": [
+        {
+            "mesh": 0,
+            "name": "m"
+        }
+    ],
+    "meshes": [
+        {
+            "name": "m",
+            "primitives": [
+                {
+                    "attributes": {
+                        "POSITION": 0,
+                        "NORMAL": 1
+                    },
+                    "indices": 5,
+                    "mode": 4,
+                    "targets": [
+                        {
+                            "POSITION": 2
+                        },
+                        {
+                            "POSITION": 3,
+                            "NORMAL": 4
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "accessors": [
+        {
+            "bufferView": 0,
+            "componentType": 5126,
+            "count": 3,
+            "type": "VEC3",
+            "byteOffset": 0,
+            "byteLength": 36
+        },
+        {
+            "bufferView": 1,
+            "componentType": 5126,
+            "count": 3,
+            "type": "VEC3",
+            "byteOffset": 0,
+            "byteLength": 36
+        },
+        {
+            "bufferView": 2,
+            "componentType": 5126,
+            "count": 3,
+            "type": "VEC3",
+            "byteOffset": 0,
+            "byteLength": 36
+        },
+        {
+            "bufferView": 3,
+            "componentType": 5126,
+            "count": 3,
+            "type": "VEC3",
+            "byteOffset": 0,
+            "byteLength": 36
+        },
+        {
+            "bufferView": 4,
+            "componentType": 5126,
+            "count": 3,
+            "type": "VEC3",
+            "byteOffset": 0,
+            "byteLength": 36
+        },
+        {
+            "bufferView": 5,
+            "componentType": 5123,
+            "count": 3,
+            "type": "SCALAR",
+            "byteOffset": 0,
+            "byteLength": 6
+        }
+    ],
+    "bufferViews": [
+        {
+            "buffer": 0,
+            "byteOffset": 0,
+            "byteLength": 36
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 36,
+            "byteLength": 36
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 72,
+            "byteLength": 36
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 108,
+            "byteLength": 36
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 144,
+            "byteLength": 36
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 180,
+            "byteLength": 6
+        }
+    ],
+    "buffers": [
+        {
+            "byteLength": 186,
+            "uri": "data:application/octet-stream;base64,AAAAAM3MzD3NzEw+mpmZPs3MzD4AAAA/mpkZPzMzMz/NzEw/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AAAAAAAAAAAAAAAACtcjPArXIzwK1yM8CtcjPArXIzwK1yM8CtcjPArXIzwK1yM8CtejPArXozwK16M8CtejPArXozwK16M8CtejPArXozwK16M8AAAAAAAAAAAAAAAAzczMPc3MzD3NzMw9AAAAAAAAAAAAAAAAAAABAAIA"
+        }
+    ]
+}

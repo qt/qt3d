@@ -817,51 +817,19 @@ QGeometryRenderer *AssimpImporter::loadMesh(uint meshIndex)
 
         Qt3DAnimation::QMorphingAnimation *morphingAnimation
                 = new Qt3DAnimation::QMorphingAnimation(geometryRenderer);
-        QList<QString> names;
 
         QList<Qt3DAnimation::QMorphTarget *> targets;
-        uint voff = 0;
-        uint noff = 0;
-        uint tanoff = 0;
-        uint texoff = 0;
-        uint coloff = 0;
-        uint offset = 0;
-        if (animesh->mVertices) {
-            names.push_back(VERTICES_ATTRIBUTE_NAME);
-            offset += 3;
-        }
-        if (animesh->mNormals) {
-            names.push_back(NORMAL_ATTRIBUTE_NAME);
-            noff = offset;
-            offset += 3;
-        }
-        if (animesh->mTangents) {
-            names.push_back(TANGENT_ATTRIBUTE_NAME);
-            tanoff = offset;
-            offset += 3;
-        }
-        if (animesh->mTextureCoords[0]) {
-            names.push_back(TEXTCOORD_ATTRIBUTE_NAME);
-            texoff = offset;
-            offset += 2;
-        }
-        if (animesh->mColors[0]) {
-            names.push_back(COLOR_ATTRIBUTE_NAME);
-            coloff = offset;
-        }
-
-        ushort clumpSize = (animesh->mVertices ? 3 : 0)
-                            + (animesh->mNormals ? 3 : 0)
-                            + (animesh->mTangents ? 3 : 0)
-                            + (animesh->mColors[0] ? 4 : 0)
-                            + (animesh->mTextureCoords[0] ? 2 : 0);
-
 
         for (uint i = 0; i < mesh->mNumAnimMeshes; i++) {
             aiAnimMesh *animesh = mesh->mAnimMeshes[i];
             Qt3DAnimation::QMorphTarget *target = new Qt3DAnimation::QMorphTarget(geometryRenderer);
             targets.push_back(target);
             QList<QAttribute *> attributes;
+            ushort clumpSize = (animesh->mVertices ? 3 : 0)
+                    + (animesh->mNormals ? 3 : 0)
+                    + (animesh->mTangents ? 3 : 0)
+                    + (animesh->mColors[0] ? 4 : 0)
+                    + (animesh->mTextureCoords[0] ? 2 : 0);
             QByteArray targetBufferArray;
             targetBufferArray.resize(clumpSize * mesh->mNumVertices * sizeof(float));
             float *dst = reinterpret_cast<float *>(targetBufferArray.data());
@@ -899,34 +867,39 @@ QGeometryRenderer *AssimpImporter::loadMesh(uint meshIndex)
             targetBuffer->setData(targetBufferArray);
             targetBuffer->setParent(meshGeometry);
 
+            uint offset = 0;
             if (animesh->mVertices) {
                 attributes.push_back(createAttribute(targetBuffer, VERTICES_ATTRIBUTE_NAME,
                                                      QAttribute::Float, 3,
-                                                     animesh->mNumVertices, voff * sizeof(float),
+                                                     animesh->mNumVertices, offset * sizeof(float),
                                                      clumpSize * sizeof(float), meshGeometry));
+                offset += 3;
             }
             if (animesh->mNormals) {
                 attributes.push_back(createAttribute(targetBuffer, NORMAL_ATTRIBUTE_NAME,
                                                      QAttribute::Float, 3,
-                                                     animesh->mNumVertices, noff * sizeof(float),
+                                                     animesh->mNumVertices, offset * sizeof(float),
                                                      clumpSize * sizeof(float), meshGeometry));
+                offset += 3;
             }
             if (animesh->mTangents) {
                 attributes.push_back(createAttribute(targetBuffer, TANGENT_ATTRIBUTE_NAME,
                                                      QAttribute::Float, 3,
-                                                     animesh->mNumVertices, tanoff * sizeof(float),
+                                                     animesh->mNumVertices, offset * sizeof(float),
                                                      clumpSize * sizeof(float), meshGeometry));
+                offset += 3;
             }
             if (animesh->mTextureCoords[0]) {
                 attributes.push_back(createAttribute(targetBuffer, TEXTCOORD_ATTRIBUTE_NAME,
                                                      QAttribute::Float, 2,
-                                                     animesh->mNumVertices, texoff * sizeof(float),
+                                                     animesh->mNumVertices, offset * sizeof(float),
                                                      clumpSize * sizeof(float), meshGeometry));
+                offset += 2;
             }
             if (animesh->mColors[0]) {
                 attributes.push_back(createAttribute(targetBuffer, COLOR_ATTRIBUTE_NAME,
                                                      QAttribute::Float, 4,
-                                                     animesh->mNumVertices, coloff * sizeof(float),
+                                                     animesh->mNumVertices, offset * sizeof(float),
                                                      clumpSize * sizeof(float), meshGeometry));
             }
             target->setAttributes(attributes);

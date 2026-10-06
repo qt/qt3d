@@ -23,6 +23,7 @@ qt_internal_add_test(tst_assimpplugin
 set(tst_assimpplugin_resource_files
     "triangle.gltf"
     "morph_target.gltf"
+    "mixed_morph_target_attribs.gltf"
 )
 
 qt_internal_add_resource(tst_assimpplugin "assimpplugin"
