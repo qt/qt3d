@@ -16,11 +16,13 @@ qt_internal_add_test(tst_assimpplugin
         Qt::3DExtras
         Qt::3DRender
         Qt::3DRenderPrivate
+        Qt::3DAnimation
         Qt::Gui
 )
 
 set(tst_assimpplugin_resource_files
     "triangle.gltf"
+    "morph_target.gltf"
 )
 
 qt_internal_add_resource(tst_assimpplugin "assimpplugin"
