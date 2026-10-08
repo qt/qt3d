@@ -129,13 +129,13 @@ private:
 
     It is not recommended to instantiate more than a single Scene3D instance
     per application. The reason for this is that a Scene3D instance
-    instantiates the entire Qt 3D engine (memory managers, thread pool, render
-    ...) under the scene.
+    instantiates the entire Qt 3D engine (for example, memory managers,
+    thread pool, render) under the scene.
 
-    \note Śetting the visibility of the Scene3D element to false will halt the
+    \note Setting the visibility of the Scene3D element to false will halt the
     Qt 3D simulation loop. This means that binding the visible property to an
     expression that depends on property updates driven by the Qt 3D simulation
-    loop (FrameAction) will never reavaluates.
+    loop (FrameAction) will never reevaluate.
  */
 Scene3DItem::Scene3DItem(QQuickItem *parent)
     : QQuickItem(parent)
@@ -329,12 +329,13 @@ void Scene3DItem::setCompositingMode(Scene3DItem::CompositingMode mode)
 /*!
     \qmlproperty enumeration Scene3D::cameraAspectRatioMode
 
+    Defines how the aspect ratio of a camera found in the scene is computed.
+
     \value Scene3D.AutomaticAspectRatio
            Automatic aspect ratio.
 
     \value Scene3D.UserAspectRatio
            User defined aspect ratio.
-    \brief \TODO
  */
 Scene3DItem::CameraAspectRatioMode Scene3DItem::cameraAspectRatioMode() const
 {

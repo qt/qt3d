@@ -49,7 +49,8 @@ headerdirs += . \
               ../../extras \
               ../../animation \
               ../../quick3d/quick3dscene2d \
-              ../../quick3d/imports/scene3d
+              ../../quick3d/imports/scene3d \
+              ../../quick3d/quick3dscene3d
 
 # Exclude private header files from the documentation build
 excludefiles += "*_p.h"
