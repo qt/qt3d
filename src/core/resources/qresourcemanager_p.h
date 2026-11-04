@@ -53,13 +53,6 @@ struct NonLockingPolicy
         void unlock() {}
         void relock() {}
     };
-
-    struct Locker
-    {
-        Locker(const NonLockingPolicy*) {}
-        void unlock() {}
-        void relock() {}
-    };
 };
 
 template <class Host>
@@ -111,33 +104,10 @@ public :
         QWriteLocker m_locker;
     };
 
-    class Locker
-    {
-    public:
-        Locker(const ObjectLevelLockingPolicy *host)
-            : m_locker(&host->m_lock)
-        { }
-
-        void unlock()
-        {
-            m_locker.unlock();
-        }
-
-        void relock()
-        {
-            m_locker.relock();
-        }
-
-    private:
-        QMutexLocker<QMutex> m_locker;
-    };
-
 private:
-    friend class Locker;
     friend class ReadLocker;
     friend class WriteLocker;
     mutable QReadWriteLock m_readWritelock;
-    mutable QMutex m_lock;
 };
 
 template <typename T>
