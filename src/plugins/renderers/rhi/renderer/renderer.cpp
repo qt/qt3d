@@ -2084,16 +2084,22 @@ void Renderer::cleanupRenderTarget(const Qt3DCore::QNodeId &renderTargetId)
 void Renderer::downloadRHIBuffers()
 {
     const std::vector<Qt3DCore::QNodeId> downloadableHandles = Qt3DCore::moveAndClear(m_downloadableBuffers);
+    BufferManager *bufferManager = m_nodesManager->bufferManager();
     for (const Qt3DCore::QNodeId &bufferId : downloadableHandles) {
-        BufferManager *bufferManager = m_nodesManager->bufferManager();
-        BufferManager::ReadLocker locker(const_cast<const BufferManager *>(bufferManager));
-        Buffer *buffer = bufferManager->lookupResource(bufferId);
-        // Buffer could have been destroyed at this point
-        if (!buffer)
-            continue;
-        // locker is protecting us from the buffer being destroy while we're looking
-        // up its content
-        const QByteArray content = m_submissionContext->downloadBufferContent(buffer);
+        QByteArray content;
+        {
+            BufferManager::ReadLocker locker(const_cast<const BufferManager *>(bufferManager));
+            // We already hold the read lock, use the unlocked variant to avoid recursive locking
+            Buffer *buffer = bufferManager->lookupResourceUnlocked(bufferId);
+            // Buffer could have been destroyed at this point
+            if (!buffer)
+                continue;
+            // locker is protecting us from the buffer being destroyed while we're looking
+            // up its content
+            content = m_submissionContext->downloadBufferContent(buffer);
+        }
+        // Called without holding the BufferManager lock as SendBufferCaptureJob::run
+        // acquires its mutex then the BufferManager lock (lock order inversion otherwise)
         m_sendBufferCaptureJob->addRequest(QPair<Qt3DCore::QNodeId, QByteArray>(bufferId, content));
     }
 }

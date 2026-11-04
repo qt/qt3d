@@ -1406,14 +1406,18 @@ void Renderer::downloadGLBuffers()
     const std::vector<Qt3DCore::QNodeId> downloadableHandles = Qt3DCore::moveAndClear(m_downloadableBuffers);
     for (const Qt3DCore::QNodeId &bufferId : downloadableHandles) {
         BufferManager *bufferManager = m_nodesManager->bufferManager();
-        BufferManager::ReadLocker locker(const_cast<const BufferManager *>(bufferManager));
-        Buffer *buffer = bufferManager->lookupResource(bufferId);
-        // Buffer could have been destroyed at this point
-        if (!buffer)
-            continue;
-        // locker is protecting us from the buffer being destroy while we're looking
-        // up its content
-        const QByteArray content = m_submissionContext->downloadBufferContent(buffer);
+        QByteArray content;
+        {
+            BufferManager::ReadLocker locker(const_cast<const BufferManager *>(bufferManager));
+            // We already hold the read lock, use the unlocked variant to avoid recursive locking
+            Buffer *buffer = bufferManager->lookupResourceUnlocked(bufferId);
+            // Buffer could have been destroyed at this point
+            if (!buffer)
+                continue;
+            // locker is protecting us from the buffer being destroyed while we're looking
+            // up its content
+            content = m_submissionContext->downloadBufferContent(buffer);
+        }
         m_sendBufferCaptureJob->addRequest(QPair<Qt3DCore::QNodeId, QByteArray>(bufferId, content));
     }
 }
