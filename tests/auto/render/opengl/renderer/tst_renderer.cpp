@@ -36,16 +36,16 @@ private Q_SLOTS:
         Qt3DRender::Render::NodeManagers nodeManagers;
         Qt3DRender::Render::OpenGL::Renderer renderer;
         Qt3DRender::Render::OffscreenSurfaceHelper offscreenHelper(&renderer);
-        Qt3DRender::Render::RenderSettings settings;
+        auto settingsUPtr = std::make_unique<Qt3DRender::Render::RenderSettings>();
         // owned by FG manager
         Qt3DRender::Render::ViewportNode *fgRoot = new Qt3DRender::Render::ViewportNode();
         const Qt3DCore::QNodeId fgRootId = Qt3DCore::QNodeId::createId();
 
         nodeManagers.frameGraphManager()->appendNode(fgRootId, fgRoot);
-        settings.setActiveFrameGraphId(fgRootId);
+        settingsUPtr->setActiveFrameGraphId(fgRootId);
 
         renderer.setNodeManagers(&nodeManagers);
-        renderer.setSettings(&settings);
+        renderer.setSettings(settingsUPtr.release()); // Renderer takes ownership of RenderSettings
         renderer.setOffscreenSurfaceHelper(&offscreenHelper);
         renderer.initialize();
 
@@ -90,7 +90,7 @@ private Q_SLOTS:
         auto &renderer = *(static_cast<Qt3DRender::Render::OpenGL::Renderer *>(daspect->m_renderer));
         Qt3DRender::Render::RenderQueue<Qt3DRender::Render::OpenGL::RenderView> *renderQueue = renderer.renderQueue();
         Qt3DRender::Render::OffscreenSurfaceHelper offscreenHelper(&renderer);
-        Qt3DRender::Render::RenderSettings settings;
+        auto settingsUPtr = std::make_unique<Qt3DRender::Render::RenderSettings>();
         // owned by FG manager
         Qt3DRender::Render::ViewportNode *fgRoot = new Qt3DRender::Render::ViewportNode();
         const Qt3DCore::QNodeId fgRootId = Qt3DCore::QNodeId::createId();
@@ -100,10 +100,10 @@ private Q_SLOTS:
         nodeManagers.materialManager()->getOrCreateResource(materialId);
 
         nodeManagers.frameGraphManager()->appendNode(fgRootId, fgRoot);
-        settings.setActiveFrameGraphId(fgRootId);
+        settingsUPtr->setActiveFrameGraphId(fgRootId);
 
         renderer.setNodeManagers(&nodeManagers);
-        renderer.setSettings(&settings);
+        renderer.setSettings(settingsUPtr.release()); // Renderer takes ownership of RenderSettings
         renderer.setOffscreenSurfaceHelper(&offscreenHelper);
         renderer.initialize();
 
