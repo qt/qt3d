@@ -35,15 +35,15 @@ public:
         daspect->m_renderer->setSceneRoot(sceneRoot);
 
         // Give it a setting instance
-        Qt3DRender::Render::RenderSettings settings;
+        auto settingsUPtr = std::make_unique<Qt3DRender::Render::RenderSettings>();
         // owned by FG manager
         Qt3DRender::Render::ViewportNode *fgRoot = new Qt3DRender::Render::ViewportNode();
         const Qt3DCore::QNodeId fgRootId = Qt3DCore::QNodeId::createId();
 
         daspect->m_nodeManagers->frameGraphManager()->appendNode(fgRootId, fgRoot);
-        settings.setActiveFrameGraphId(fgRootId);
+        settingsUPtr->setActiveFrameGraphId(fgRootId);
 
-        daspect->m_renderer->setSettings(&settings);
+        daspect->m_renderer->setSettings(settingsUPtr.release()); // Transfer ownship
     }
 };
 

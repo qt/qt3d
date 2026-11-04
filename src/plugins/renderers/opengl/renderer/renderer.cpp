@@ -643,6 +643,7 @@ void Renderer::setSceneRoot(Entity *sgRoot)
     m_dirtyBits.marked |= AbstractRenderer::AllDirty;
 }
 
+// Takes ownership of the pointer
 void Renderer::setSettings(RenderSettings *settings)
 {
     m_settings = settings;
