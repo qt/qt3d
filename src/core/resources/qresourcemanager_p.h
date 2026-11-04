@@ -223,6 +223,11 @@ public:
         return h.operator->();
     }
 
+    const T *data(Handle h) const
+    {
+        return h.operator->();
+    }
+
     void for_each(std::function<void(T*)> f)
     {
         Bucket *b = firstBucket;
@@ -376,19 +381,28 @@ public:
     Handle lookupHandle(const KeyType &id)
     {
         typename LockingPolicy<QResourceManager>::ReadLocker lock(this);
-        return m_keyToHandleMap.value(id);
+        return lookupHandleUnlocked(id);
     }
 
     ValueType *lookupResource(const KeyType &id)
     {
-        ValueType* ret = nullptr;
-        {
-            typename LockingPolicy<QResourceManager>::ReadLocker lock(this);
-            Handle handle = m_keyToHandleMap.value(id);
-            if (!handle.isNull())
-                ret = Allocator::data(handle);
-        }
-        return ret;
+        typename LockingPolicy<QResourceManager>::ReadLocker lock(this);
+        return lookupResourceUnlocked(id);
+    }
+
+    // Variants that don't acquire the lock. Allows cases where you
+    // might want to hold the lock yourself.
+    Handle lookupHandleUnlocked(const KeyType &id) const
+    {
+        return m_keyToHandleMap.value(id);
+    }
+
+    ValueType *lookupResourceUnlocked(const KeyType &id)
+    {
+        const Handle handle = m_keyToHandleMap.value(id);
+        if (!handle.isNull())
+            return Allocator::data(handle);
+        return nullptr;
     }
 
     ValueType *getOrCreateResource(const KeyType &id)
