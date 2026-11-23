@@ -287,14 +287,6 @@ float QRay3D::distance(const Vector3D  &point) const
     \sa operator==()
 */
 
-/*!
-    \fn bool qFuzzyCompare(const Qt3DRender::RayCasting::QRay3D &ray1, const Qt3DRender::RayCasting::QRay3D &ray2)
-    \relates  Qt3DRender::RayCasting::QRay3D
-
-    Returns \c true if \a ray1 and \a ray2 are almost equal; \c false
-    otherwise.
-*/
-
 #ifndef QT_NO_DEBUG_STREAM
 
 QDebug operator<<(QDebug dbg, const QRay3D &ray)
@@ -350,5 +342,13 @@ QDataStream &operator>>(QDataStream &stream, QRay3D &ray)
 
 }  // namespace RayCasting
 }  // namespace Qt3DRender
+
+/*!
+    \fn bool qFuzzyCompare(const Qt3DRender::RayCasting::QRay3D &ray1, const Qt3DRender::RayCasting::QRay3D &ray2)
+    \relates  Qt3DRender::RayCasting::QRay3D
+
+    Returns \c true if \a ray1 and \a ray2 are almost equal; \c false
+    otherwise.
+*/
 
 QT_END_NAMESPACE
