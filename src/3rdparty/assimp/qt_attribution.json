@@ -7,8 +7,8 @@
     "SecurityCritical": true,
 
     "Homepage": "http://www.assimp.org/",
-    "Version": "6.0.5",
-    "DownloadLocation": "https://github.com/assimp/assimp/releases/tag/v6.0.5",
+    "Version": "6.0.6",
+    "DownloadLocation": "https://github.com/assimp/assimp/releases/tag/v6.0.6",
     "PURL": [
         "pkg:github/assimp/assimp@v$<VERSION>"
     ],
