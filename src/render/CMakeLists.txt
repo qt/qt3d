@@ -358,17 +358,6 @@ qt_internal_add_resource(3DRender "materialsystem"
 ## Scopes:
 #####################################################################
 
-# special case begin
-# TODO: Prepare for removal, once Platform brings in Threads.
-if(NOT TARGET Threads::Threads)
-    set(THREADS_PREFER_PTHREAD_FLAG 1)
-    find_package(Threads)
-    if(TARGET Threads::Threads)
-        target_link_libraries(3DRender PRIVATE Threads::Threads)
-    endif()
-endif()
-# special case end
-
 qt_internal_extend_target(3DRender CONDITION gcov
     COMPILE_OPTIONS
         -fprofile-arcs
